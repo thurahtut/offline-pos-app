@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '/components/export_files.dart';
 
 class MainScreen extends StatefulWidget {
@@ -325,110 +327,90 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _currentOrderWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(child: _noOrderWidget()),
+        _calculatorWidget(),
+      ],
+    );
+  }
+
+  Widget _noOrderWidget() {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return SizedBox(
       width: isTabletMode
           ? (MediaQuery.of(context).size.width / 10) * 9
-          : MediaQuery.of(context).size.width / 5.5,
+          : MediaQuery.of(context).size.width -
+              (MediaQuery.of(context).size.width / 5.5) -
+              ((MediaQuery.of(context).size.width / 5.3) * 3),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _noOrderWidget(),
-          Expanded(child: _calculatorWidget()),
+          CommonUtils.svgIconActionButton("assets/svg/no_order.svg",
+              height: 60,
+              onPressed: null,
+              iconColor: Constants.disableColor.withOpacity(
+                0.77,
+              )),
+          Center(
+            child: Text(
+              'This Order is Empty',
+              style: TextStyle(
+                color: Constants.disableColor.withOpacity(
+                  0.87,
+                ),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _noOrderWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CommonUtils.svgIconActionButton("assets/svg/no_order.svg",
-            height: 40,
-            onPressed: null,
-            iconColor: Constants.disableColor.withOpacity(
-              0.77,
-            )),
-        Center(
-          child: Text(
-            'This Order is Empty',
-            style: TextStyle(
-              color: Constants.disableColor.withOpacity(
-                0.87,
-              ),
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _calculatorWidget() {
     bool isTabletMode = CommonUtils.isTabletMode(context);
-    return GridView(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isTabletMode ? 10 : 5,
-        mainAxisSpacing: 2,
-        crossAxisSpacing: 8,
-        // childAspectRatio: (isTabletMode
-        //         ? (MediaQuery.of(context).size.width / 10) * 9
-        //         : MediaQuery.of(context).size.width / 5.5) /
-        //     (50 * (isTabletMode ? 10 : 5)),
-      ),
-      children: CommonUtils.calculatorActionWidgetList.map((e) => e).toList(),
+    List<Widget> list = [];
+    List<Widget> rowList = [];
+
+    for (var i = 0;
+        i < CommonUtils.calculatorActionWidgetList.length;
+        i += (isTabletMode ? 10 : 5)) {
+      int start = (list.length * (isTabletMode ? 10 : 5));
+      int end =
+          (isTabletMode ? 10 : 5) + (list.length * (isTabletMode ? 10 : 5));
+      rowList.addAll(CommonUtils.calculatorActionWidgetList.getRange(
+          start, min(end, CommonUtils.calculatorActionWidgetList.length)));
+
+      // if (end > CommonUtils.calculatorActionWidgetList.length - 1) break;
+      list.add(SizedBox(
+        width: isTabletMode
+            ? (MediaQuery.of(context).size.width / 10) * 9
+            : MediaQuery.of(context).size.width -
+                (MediaQuery.of(context).size.width / 5.5) -
+                ((MediaQuery.of(context).size.width / 5.3) * 3),
+        child: Row(
+          children: rowList.map((e) {
+            // var child = e.toString();
+            return Expanded(
+              //UnconstrainedBox
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                child: e,
+              ),
+            );
+          }).toList(),
+        ),
+      ));
+      rowList = [];
+    }
+
+    return Column(
+      children: list,
     );
-
-    // List<Widget> list = [];
-    // List<Widget> rowList = [];
-    // int index = 0;
-    // for (var i = 0; i < CommonUtils.calculatorActionWidgetList.length; i++) {
-    //   // index = list.length;
-    //   if (index > CommonUtils.calculatorActionWidgetList.length - 1) {
-    //     break;
-    //   }
-    //   for (var j = 0; j < (isTabletMode ? 10 : 5); j++) {
-    //     if (index > CommonUtils.calculatorActionWidgetList.length - 1) {
-    //       break;
-    //     }
-    //     rowList.add(CommonUtils.calculatorActionWidgetList[index]);
-    //     index++;
-    //   }
-    //   list.add(Row(
-    //     children: rowList
-    //         .map((e) => Expanded(
-    //                 child: Padding(
-    //               padding: const EdgeInsets.all(8.0),
-    //               child: e,
-    //             )))
-    //         .toList(),
-    //   ));
-    //   rowList = [];
-    // }
-
-    // for (var j = 0; j < (isTabletMode ? 10 : 5); j++) {
-    //   rowList.addAll(CommonUtils.calculatorActionWidgetList.getRange(
-    //       (list.length * (isTabletMode ? 10 : 5)),
-    //       (isTabletMode ? 10 : 5) +
-    //           (list.length * (isTabletMode ? 10 : 5)) -
-    //           1));
-    //   // index++;
-    //   list.add(Row(
-    //     children: rowList
-    //         .map((e) => Expanded(
-    //                 child: Padding(
-    //               padding: const EdgeInsets.all(8.0),
-    //               child: e,
-    //             )))
-    //         .toList(),
-    //   ));
-    //   rowList = [];
-    // }
-
-    // return Column(
-    //   children: list,
-    // );
   }
 }

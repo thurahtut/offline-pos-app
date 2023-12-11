@@ -237,7 +237,7 @@ class CommonUtils {
       onTap: onPressed,
       child: Container(
         width: size ?? 50,
-        height: size ?? 50,
+        height: 50,
         padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
