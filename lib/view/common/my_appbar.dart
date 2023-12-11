@@ -37,7 +37,7 @@ class _MyAppBarState extends State<MyAppBar> {
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CommonUtils.appBarActionButtonWithSrcIn(
+          CommonUtils.svgIconActionButton(
             'assets/svg/border_color.svg',
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,
@@ -61,7 +61,7 @@ class _MyAppBarState extends State<MyAppBar> {
                       if (showSearchBox) {
                         return Expanded(child: _searchProductWidget());
                       }
-                      return CommonUtils.appBarActionButtonWithSrcIn(
+                      return CommonUtils.svgIconActionButton(
                         'assets/svg/search.svg',
                         onPressed: () {
                           _showSearchBox.value = !_showSearchBox.value;
@@ -69,7 +69,7 @@ class _MyAppBarState extends State<MyAppBar> {
                       );
                     },
                   ),
-                  CommonUtils.appBarActionButtonWithSrcIn(
+                  CommonUtils.svgIconActionButton(
                     'assets/svg/menu.svg',
                   ),
                 ]
@@ -86,15 +86,15 @@ class _MyAppBarState extends State<MyAppBar> {
                     fontSize: 16,
                   ),
                   spacer,
-                  CommonUtils.appBarActionButtonWithSrcIn(
+                  CommonUtils.svgIconActionButton(
                     'assets/svg/network_wifi.svg',
                   ),
                   spacer,
-                  CommonUtils.appBarActionButtonWithSrcIn(
+                  CommonUtils.svgIconActionButton(
                     'assets/svg/credit_card.svg',
                   ),
                   spacer,
-                  CommonUtils.appBarActionButtonWithSrcIn(
+                  CommonUtils.svgIconActionButton(
                     'assets/svg/lock_open_right.svg',
                   ),
                   spacer,
@@ -177,7 +177,7 @@ class _MyAppBarState extends State<MyAppBar> {
   }) {
     return Row(
       children: [
-        CommonUtils.appBarActionButtonWithSrcIn(
+        CommonUtils.svgIconActionButton(
           svg,
           width: width,
           height: height,

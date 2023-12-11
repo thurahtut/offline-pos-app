@@ -11,4 +11,6 @@ class Constants {
   static const disableColor = Color(0xFFA9A9A9);
   static const greyColor = Color(0xFFE9E9E9);
   static const greyColor2 = Color(0xFF8C8C8C);
+  static const unselectedColor = Color(0xFFDCDCDC);
+  static const calculatorBgColor = Color(0xFFD9D9D9);
 }

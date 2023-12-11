@@ -1,11 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:offline_pos/service/navigation_service.dart';
-import 'package:offline_pos/view/login/login_screen.dart';
-
-import 'components/routers.dart';
+import 'package:offline_pos/components/export_files.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,15 +10,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
     ]);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Offline POS',
       navigatorKey: NavigationService.navigatorKey,
-      initialRoute: LoginScreen.routeName,
+      initialRoute: MainScreen.routeName,
       onGenerateRoute: Routers.generateRoute,
     );
   }
