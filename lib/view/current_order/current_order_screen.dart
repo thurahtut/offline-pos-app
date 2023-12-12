@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/product_uom/product_unit_dialog.dart';
 
 class CurrentOrderScreen extends StatefulWidget {
   const CurrentOrderScreen({super.key});
@@ -69,71 +70,72 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                 .map((e) => Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        InkWell(
-                          onTap: () {},
-                          child: Container(
-                            height: isTabletMode ? 80 : 100,
-                            width: isTabletMode ? (_width ?? 100) - 16 : _width,
-                            margin: isTabletMode ? EdgeInsets.all(8) : null,
-                            decoration: BoxDecoration(
-                              color: Constants.currentOrderDividerColor,
-                              borderRadius: isTabletMode
-                                  ? BorderRadius.circular(20)
-                                  : null,
-                            ),
-                            child: Center(
-                              child: ListTile(
-                                title: Row(
-                                  children: [
-                                    Expanded(
-                                      child: RichText(
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        text: TextSpan(text: "", children: [
-                                          TextSpan(
-                                            text: "[${e["id"]}]",
-                                            style: textStyle.copyWith(
-                                                color: Constants.successColor),
-                                          ),
-                                          TextSpan(
-                                              text: e["name"],
-                                              style: textStyle),
-                                        ]),
-                                      ),
+                        Container(
+                          height: isTabletMode ? 80 : 100,
+                          width: isTabletMode ? (_width ?? 100) - 16 : _width,
+                          margin: isTabletMode ? EdgeInsets.all(8) : null,
+                          decoration: BoxDecoration(
+                            color: Constants.currentOrderDividerColor,
+                            borderRadius:
+                                isTabletMode ? BorderRadius.circular(20) : null,
+                          ),
+                          child: Center(
+                            child: ListTile(
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: RichText(
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      text: TextSpan(text: "", children: [
+                                        TextSpan(
+                                          text: "[${e["id"]}]",
+                                          style: textStyle.copyWith(
+                                              color: Constants.successColor),
+                                        ),
+                                        TextSpan(
+                                            text: e["name"], style: textStyle),
+                                      ]),
                                     ),
-                                    Text("${e["price"]} Ks".toString(),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      ProductUntiDialog.productUnitWidget(
+                                          context,
+                                          object: e);
+                                    },
+                                    child: Text("${e["price"]} Ks".toString(),
                                         style: textStyle.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color: Constants.primaryColor,
-                                        ))
-                                  ],
-                                ),
-                                subtitle: Row(
-                                  children: [
-                                    Expanded(
+                                        )),
+                                  )
+                                ],
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                        "1 Unit at 900.00 Ks/Unit with a 0.00 % discount"),
+                                  ),
+                                  Container(
+                                    width: 35,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Constants.primaryColor),
+                                    child: Center(
                                       child: Text(
-                                          "1 Unit at 900.00 Ks/Unit with a 0.00 % discount"),
-                                    ),
-                                    Container(
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          color: Constants.primaryColor),
-                                      child: Center(
-                                        child: Text(
-                                          "%",
-                                          style: TextStyle(
-                                            color: Constants.accentColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
+                                        "%",
+                                        style: TextStyle(
+                                          color: Constants.accentColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
                                       ),
-                                    )
-                                  ],
-                                ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ),

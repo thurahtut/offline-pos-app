@@ -7,11 +7,17 @@ class BorderContainer extends StatelessWidget {
     required this.text,
     this.padding,
     this.textColor,
+    this.containerColor,
     this.onTap,
+    this.width,
+    this.textSize,
   });
   final String text;
   final EdgeInsetsGeometry? padding;
   final Color? textColor;
+  final Color? containerColor;
+  final double? width;
+  final double? textSize;
   final Function()? onTap;
 
   @override
@@ -19,18 +25,22 @@ class BorderContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: width,
         padding: padding ?? EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Constants.primaryColor,
+            color: containerColor ?? Constants.primaryColor,
           ),
           borderRadius: BorderRadius.circular(12),
+          color: containerColor,
         ),
         child: Text(
           text,
+          textAlign: TextAlign.center,
           style: TextStyle(
             color: textColor ?? Constants.primaryColor,
             fontWeight: FontWeight.w600,
+            fontSize: textSize,
           ),
         ),
       ),

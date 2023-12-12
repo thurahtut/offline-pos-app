@@ -17,5 +17,7 @@ export '/components/routers.dart';
 export '../../controller/current_order_controller.dart';
 export '../../controller/item_view_controller.dart';
 export '../view/current_order/current_order_screen.dart';
+export '../view/password/password_dialog.dart';
+export '../view/cashier/choose_cashier_dialog.dart';
 
 

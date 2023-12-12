@@ -13,12 +13,14 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _MyAppBarState extends State<MyAppBar> {
   final TextEditingController _searchProductTextController =
       TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();
   final spacer = Expanded(flex: 1, child: SizedBox());
   final ValueNotifier<bool> _showSearchBox = ValueNotifier(false);
 
   @override
   void dispose() {
     _searchProductTextController.dispose();
+    _passwordTextController.dispose();
     _showSearchBox.dispose();
     super.dispose();
   }
@@ -80,11 +82,14 @@ class _MyAppBarState extends State<MyAppBar> {
                     child: _searchProductWidget(),
                   ),
                   spacer,
-                  _appBarActionButtonWithText(
-                    'assets/svg/account_circle.svg',
-                    'Easy 3 A - Store Leader',
-                    fontSize: 16,
-                  ),
+                  _appBarActionButtonWithText('assets/svg/account_circle.svg',
+                      'Easy 3 A - Store Leader',
+                      fontSize: 16, onPressed: () {
+                    return ChooseCashierDialog.chooseCashierDialogWidget(
+                      context,
+                      _passwordTextController,
+                    );
+                  }),
                   spacer,
                   CommonUtils.svgIconActionButton(
                     'assets/svg/network_wifi.svg',
@@ -175,24 +180,27 @@ class _MyAppBarState extends State<MyAppBar> {
     double? fontSize,
     Function()? onPressed,
   }) {
-    return Row(
-      children: [
-        CommonUtils.svgIconActionButton(
-          svg,
-          width: width,
-          height: height,
-          iconColor: iconColor,
-          onPressed: onPressed,
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            color: textColor ?? Colors.black,
-            fontWeight: FontWeight.w500,
-            fontSize: fontSize,
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        children: [
+          CommonUtils.svgIconActionButton(
+            svg,
+            width: width,
+            height: height,
+            iconColor: iconColor,
+            onPressed: onPressed,
           ),
-        ),
-      ],
+          Text(
+            text,
+            style: TextStyle(
+              color: textColor ?? Colors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: fontSize,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

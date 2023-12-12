@@ -1,0 +1,215 @@
+import 'package:offline_pos/components/export_files.dart';
+
+class PasswordDialog {
+  static Future<dynamic> enterPasswordWidget(
+    BuildContext context,
+    TextEditingController passwordTextController,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext bContext) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          content: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width / 4,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 4,
+                    height: 70,
+                    decoration: BoxDecoration(
+                        color: Constants.primaryColor,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        )),
+                    child: Center(
+                      child: Text(
+                        'Password ?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 70,
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Constants.greyColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TextField(
+                      controller: passwordTextController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelStyle: TextStyle(
+                          color: Constants.primaryColor,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  _passwordKeyboardWidget(),
+                  SizedBox(height: 16),
+                  CommonUtils.okCancelWidget(
+                    okCallback: () {
+                      Navigator.pop(context);
+                    },
+                    cancelCallback: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  SizedBox(height: 26),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Widget _passwordKeyboardWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _eachKeyboardRowWidget(
+          [
+            CommonUtils.eachCalculateButtonWidget(
+              text: "1",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "2",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "3",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+          ],
+        ),
+        SizedBox(height: 4),
+        _eachKeyboardRowWidget(
+          [
+            CommonUtils.eachCalculateButtonWidget(
+              text: "4",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "5",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "6",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+          ],
+        ),
+        SizedBox(height: 4),
+        _eachKeyboardRowWidget(
+          [
+            CommonUtils.eachCalculateButtonWidget(
+              text: "7",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "8",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "9",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+          ],
+        ),
+        SizedBox(height: 4),
+        _eachKeyboardRowWidget(
+          [
+            CommonUtils.eachCalculateButtonWidget(
+              text: "C",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "0",
+              width: 70,
+              height: 70,
+              textSize: 20,
+              onPressed: () {},
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              width: 70,
+              height: 70,
+              iconSize: 28,
+              icon: Icons.backspace_outlined,
+              iconColor: Constants.alertColor,
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  static Widget _eachKeyboardRowWidget(List<Widget> widgets) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: widgets
+          .map((e) => Row(
+                children: [
+                  e,
+                  SizedBox(
+                    width: 4,
+                  )
+                ],
+              ))
+          .toList(),
+    );
+  }
+}

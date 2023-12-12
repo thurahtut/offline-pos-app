@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
     "Water",
     "Tissue",
     "Electronic"
-  ];
+  ]; 
 
   @override
   void dispose() {

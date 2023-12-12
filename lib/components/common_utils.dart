@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/payment/payment_screen.dart';
 
 class CommonUtils {
   static bool isTabletMode(BuildContext context) {
@@ -110,7 +111,14 @@ class CommonUtils {
     {
       "svgPicture": 'assets/svg/credit_card.svg',
       "text": 'Payments',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          Navigator.pushNamed(
+            NavigationService.navigatorKey.currentContext!,
+            PaymentScreen.routeName,
+          );
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/link.svg',
@@ -228,78 +236,96 @@ class CommonUtils {
     },
   ];
 
-  static Widget _eachCalculateButtonWidget({
+  static Widget eachCalculateButtonWidget({
     String? text,
     IconData? icon,
+    String? prefixSvg,
     Color? iconColor,
     Color? containerColor,
     Color? textColor,
-    double? size,
+    Color? svgColor,
+    double? width,
+    double? height,
     double? iconSize,
+    double? textSize,
     Function()? onPressed,
   }) {
     return InkWell(
       onTap: onPressed,
       child: Container(
-        width: size ?? 50,
-        height: 50,
+        width: width ?? 50,
+        height: height ?? 50,
         padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color:
               containerColor ?? Constants.calculatorBgColor.withOpacity(0.77),
         ),
-        child: Center(
-          child: icon != null
-              ? Icon(
-                  icon,
-                  size: iconSize ?? 24,
-                  color: iconColor ?? Constants.primaryColor,
-                )
-              : Text(
-                  text ?? '',
-                  style: TextStyle(
-                    color: textColor ?? Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+        child: Row(
+          mainAxisAlignment: prefixSvg != null
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (prefixSvg != null) SizedBox(width: 4),
+            if (prefixSvg != null)
+              svgIconActionButton(
+                prefixSvg,
+                iconColor: svgColor,
+              ),
+            if (prefixSvg != null) SizedBox(width: 4),
+            icon != null
+                ? Icon(
+                    icon,
+                    size: iconSize ?? 24,
+                    color: iconColor ?? Constants.primaryColor,
+                  )
+                : Text(
+                    text ?? '',
+                    style: TextStyle(
+                      color: textColor ?? Constants.textColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: textSize ?? 16,
+                    ),
                   ),
-                ),
+          ],
         ),
       ),
     );
   }
 
   static List<Widget> calculatorActionWidgetList = [
-    _eachCalculateButtonWidget(text: "1", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "2", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "3", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "Qty", onPressed: () {}),
-    _eachCalculateButtonWidget(
+    eachCalculateButtonWidget(text: "1", onPressed: () {}),
+    eachCalculateButtonWidget(text: "2", onPressed: () {}),
+    eachCalculateButtonWidget(text: "3", onPressed: () {}),
+    eachCalculateButtonWidget(text: "Qty", onPressed: () {}),
+    eachCalculateButtonWidget(
         icon: Icons.keyboard_arrow_down_rounded,
         iconSize: 32,
         onPressed: () {}),
-    _eachCalculateButtonWidget(text: "4", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "5", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "6", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "Disc", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "Price", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "7", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "8", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "9", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "+/-", onPressed: () {}),
-    _eachCalculateButtonWidget(
+    eachCalculateButtonWidget(text: "4", onPressed: () {}),
+    eachCalculateButtonWidget(text: "5", onPressed: () {}),
+    eachCalculateButtonWidget(text: "6", onPressed: () {}),
+    eachCalculateButtonWidget(text: "Disc", onPressed: () {}),
+    eachCalculateButtonWidget(text: "Price", onPressed: () {}),
+    eachCalculateButtonWidget(text: "7", onPressed: () {}),
+    eachCalculateButtonWidget(text: "8", onPressed: () {}),
+    eachCalculateButtonWidget(text: "9", onPressed: () {}),
+    eachCalculateButtonWidget(text: "+/-", onPressed: () {}),
+    eachCalculateButtonWidget(
         icon: Icons.arrow_forward_ios, iconSize: 21, onPressed: () {}),
-    _eachCalculateButtonWidget(text: ".", onPressed: () {}),
-    _eachCalculateButtonWidget(text: "0", onPressed: () {}),
-    _eachCalculateButtonWidget(
+    eachCalculateButtonWidget(text: ".", onPressed: () {}),
+    eachCalculateButtonWidget(text: "0", onPressed: () {}),
+    eachCalculateButtonWidget(
         icon: Icons.backspace_outlined,
         iconColor: Constants.alertColor,
         onPressed: () {}),
-    _eachCalculateButtonWidget(
+    eachCalculateButtonWidget(
       text: "Customer",
       containerColor: Constants.primaryColor,
       textColor: Colors.white,
-      size: 100,
+      width: 100,
       onPressed: () {},
     ),
   ];
@@ -342,6 +368,33 @@ class CommonUtils {
 
     return Column(
       children: list,
+    );
+  }
+
+
+  static Widget okCancelWidget({
+    Function()? okCallback,
+    Function()? cancelCallback,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        BorderContainer(
+          text: 'OK',
+          containerColor: Constants.primaryColor,
+          textColor: Colors.white,
+          width: 150,
+          textSize: 20,
+          onTap: okCallback,
+        ),
+        SizedBox(width: 4),
+        BorderContainer(
+          text: 'Cancel',
+          width: 150,
+          textSize: 20,
+          onTap: cancelCallback,
+        ),
+      ],
     );
   }
 
