@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import '/components/export_files.dart';
 
 class MainScreen extends StatefulWidget {
@@ -11,7 +9,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  ValueNotifier<bool> _showSideBar = ValueNotifier(true);
+  final ValueNotifier<bool> _showSideBar = ValueNotifier(true);
   List<String> categoryList = [
     "Dry Grocery",
     "Food To Go",
@@ -66,12 +64,12 @@ class _MainScreenState extends State<MainScreen> {
                         visible: showSidebar, child: _sideBarWidget());
                   }),
               if (!isTabletMode) _itemListWidget(),
-              if (!isTabletMode) _currentOrderWidget(),
+              if (!isTabletMode) CurrentOrderScreen(),
               if (isTabletMode)
                 Column(
                   children: [
                     Expanded(child: _itemListWidget()),
-                    Expanded(child: _currentOrderWidget()),
+                    Expanded(child: CurrentOrderScreen()),
                   ],
                 )
             ],
@@ -99,22 +97,40 @@ class _MainScreenState extends State<MainScreen> {
               CommonUtils.svgIconActionButton(
                 'assets/svg/grid_view.svg',
                 withContianer: true,
-                containerColor: Constants.unselectedColor,
-                iconColor: Constants.primaryColor,
+                containerColor: !context.watch<ItemViewController>().isList
+                    ? Constants.primaryColor
+                    : Constants.unselectedColor,
+                iconColor: !context.watch<ItemViewController>().isList
+                    ? Colors.white
+                    : Constants.primaryColor,
+                onPressed: () {
+                  context.read<ItemViewController>().isList = false;
+                },
               ),
               spacer,
               CommonUtils.iconActionButton(
                 Icons.view_list_outlined,
                 withContianer: true,
-                containerColor: Constants.unselectedColor,
-                iconColor: Constants.primaryColor,
+                containerColor: context.watch<ItemViewController>().isList
+                    ? Constants.primaryColor
+                    : Constants.unselectedColor,
+                iconColor: context.watch<ItemViewController>().isList
+                    ? Colors.white
+                    : Constants.primaryColor,
+                onPressed: () {
+                  context.read<ItemViewController>().isList = true;
+                },
               ),
               spacer,
               CommonUtils.svgIconActionButton(
                 'assets/svg/home.svg',
                 withContianer: true,
-                containerColor: Constants.unselectedColor,
-                iconColor: Constants.primaryColor,
+                containerColor: context.watch<ItemViewController>().isHome
+                    ? Constants.primaryColor
+                    : Constants.unselectedColor,
+                iconColor: context.watch<ItemViewController>().isHome
+                    ? Colors.white
+                    : Constants.primaryColor,
               ),
               spacer,
               ...categoryList
@@ -216,57 +232,156 @@ class _MainScreenState extends State<MainScreen> {
                 : ((MediaQuery.of(context).size.width / 5.3) * 3) +
                     (showSidebar ? 0 : MediaQuery.of(context).size.width / 5.5),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.watch<ItemViewController>().isList
+                  ? Colors.white
+                  : null,
             ),
-            child: Column(
-              children: [
-                _itemListHeaderWidget(),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+            child: context.watch<ItemViewController>().isList
+                ? _itemListWithListViewWidget(showSidebar)
+                : _itemListWithGridViewWidget(showSidebar),
+          );
+        });
+  }
+
+  Widget _itemListWithListViewWidget(bool showSidebar) {
+    return Column(
+      children: [
+        _itemListHeaderWidget(),
+        Expanded(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                child: CommonUtils.svgIconActionButton(
+                  "assets/svg/${showSidebar ? "close_sidebar.svg" : "open_sidebar.svg"}",
+                  height: 40,
+                  onPressed: () {
+                    _showSideBar.value = !_showSideBar.value;
+                  },
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                        child: CommonUtils.svgIconActionButton(
-                          "assets/svg/${showSidebar ? "close_sidebar.svg" : "open_sidebar.svg"}",
-                          height: 40,
-                          onPressed: () {
-                            _showSideBar.value = !_showSideBar.value;
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              ...CommonUtils.itemList
-                                  .map((e) => Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          _eachItemWidget(e),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 14.0),
-                                            child: Divider(
-                                              thickness: 1.3,
-                                              color: Constants.disableColor
-                                                  .withOpacity(0.96),
-                                            ),
-                                          )
-                                        ],
-                                      ))
-                                  .toList()
-                            ],
-                          ),
-                        ),
-                      ),
+                      ...CommonUtils.itemList
+                          .map((e) => Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _eachItemWidget(e),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14.0),
+                                    child: Divider(
+                                      thickness: 1.3,
+                                      color: Constants.disableColor
+                                          .withOpacity(0.96),
+                                    ),
+                                  )
+                                ],
+                              ))
+                          .toList()
                     ],
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _itemListWithGridViewWidget(bool showSidebar) {
+    TextStyle textStyle = TextStyle(
+      color: Constants.textColor,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    );
+    bool isTabletMode = CommonUtils.isTabletMode(context);
+    return SizedBox(
+      width: isTabletMode
+          ? (MediaQuery.of(context).size.width / 10) * 9
+          : ((MediaQuery.of(context).size.width / 5.3) * 3) +
+              (showSidebar ? 0 : MediaQuery.of(context).size.width / 5.5),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3.0),
+            child: CommonUtils.svgIconActionButton(
+              "assets/svg/${showSidebar ? "close_sidebar.svg" : "open_sidebar.svg"}",
+              height: 40,
+              onPressed: () {
+                _showSideBar.value = !_showSideBar.value;
+              },
             ),
-          );
-        });
+          ),
+          Expanded(
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: isTabletMode ? 5 : 6,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+              ),
+              children: CommonUtils.itemList
+                  .map((e) => InkWell(
+                        onTap: () => _addItemToList(e),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              side: BorderSide(
+                                  color:
+                                      Constants.greyColor2.withOpacity(0.2))),
+                          color: Constants.unselectedColor.withOpacity(0.8),
+                          shadowColor: Colors.white,
+                          elevation: 7,
+                          child: Container(
+                            padding: EdgeInsets.only(left: 8),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                        child: Text(
+                                            "${e["price"]} Ks".toString(),
+                                            style: textStyle)),
+                                    CommonUtils.svgIconActionButton(
+                                      'assets/svg/Info.svg',
+                                    ),
+                                  ],
+                                ),
+                                CommonUtils.svgIconActionButton(
+                                  'assets/svg/broken_image.svg',
+                                  iconColor: Constants.disableColor,
+                                  width: 35,
+                                  height: 35,
+                                ),
+                                RichText(
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  text: TextSpan(text: "", children: [
+                                    TextSpan(
+                                      text: "[${e["id"]}]",
+                                      style: textStyle.copyWith(
+                                          color: Constants.successColor),
+                                    ),
+                                    TextSpan(text: e["name"], style: textStyle),
+                                  ]),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Container _itemListHeaderWidget() {
@@ -299,118 +414,40 @@ class _MainScreenState extends State<MainScreen> {
       fontSize: 16,
       fontWeight: FontWeight.w500,
     );
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),
-      height: 52,
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: RichText(
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(text: "", children: [
-                TextSpan(
-                  text: "[${object["id"]}]",
-                  style: textStyle.copyWith(color: Constants.successColor),
-                ),
-                TextSpan(text: object["name"], style: textStyle),
-              ]),
-            ),
-          ),
-          Expanded(child: Text(object["on_hand"].toString(), style: textStyle)),
-          Expanded(child: Text(object["unit"], style: textStyle)),
-          Expanded(child: Text(object["price"].toString(), style: textStyle)),
-        ],
-      ),
-    );
-  }
-
-  Widget _currentOrderWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: _noOrderWidget()),
-        _calculatorWidget(),
-      ],
-    );
-  }
-
-  Widget _noOrderWidget() {
-    bool isTabletMode = CommonUtils.isTabletMode(context);
-    return SizedBox(
-      width: isTabletMode
-          ? (MediaQuery.of(context).size.width / 10) * 9
-          : MediaQuery.of(context).size.width -
-              (MediaQuery.of(context).size.width / 5.5) -
-              ((MediaQuery.of(context).size.width / 5.3) * 3),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CommonUtils.svgIconActionButton("assets/svg/no_order.svg",
-              height: 60,
-              onPressed: null,
-              iconColor: Constants.disableColor.withOpacity(
-                0.77,
-              )),
-          Center(
-            child: Text(
-              'This Order is Empty',
-              style: TextStyle(
-                color: Constants.disableColor.withOpacity(
-                  0.87,
-                ),
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _calculatorWidget() {
-    bool isTabletMode = CommonUtils.isTabletMode(context);
-    List<Widget> list = [];
-    List<Widget> rowList = [];
-
-    for (var i = 0;
-        i < CommonUtils.calculatorActionWidgetList.length;
-        i += (isTabletMode ? 10 : 5)) {
-      int start = (list.length * (isTabletMode ? 10 : 5));
-      int end =
-          (isTabletMode ? 10 : 5) + (list.length * (isTabletMode ? 10 : 5));
-      rowList.addAll(CommonUtils.calculatorActionWidgetList.getRange(
-          start, min(end, CommonUtils.calculatorActionWidgetList.length)));
-
-      // if (end > CommonUtils.calculatorActionWidgetList.length - 1) break;
-      list.add(SizedBox(
-        width: isTabletMode
-            ? (MediaQuery.of(context).size.width / 10) * 9
-            : MediaQuery.of(context).size.width -
-                (MediaQuery.of(context).size.width / 5.5) -
-                ((MediaQuery.of(context).size.width / 5.3) * 3),
+    return InkWell(
+      onTap: () => _addItemToList(object),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),
+        height: 52,
         child: Row(
-          children: rowList.map((e) {
-            // var child = e.toString();
-            return Expanded(
-              //UnconstrainedBox
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
-                child: e,
+          children: [
+            Expanded(
+              flex: 3,
+              child: RichText(
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(text: "", children: [
+                  TextSpan(
+                    text: "[${object["id"]}]",
+                    style: textStyle.copyWith(color: Constants.successColor),
+                  ),
+                  TextSpan(text: object["name"], style: textStyle),
+                ]),
               ),
-            );
-          }).toList(),
+            ),
+            Expanded(
+                child: Text(object["on_hand"].toString(), style: textStyle)),
+            Expanded(child: Text(object["unit"], style: textStyle)),
+            Expanded(child: Text(object["price"].toString(), style: textStyle)),
+          ],
         ),
-      ));
-      rowList = [];
-    }
-
-    return Column(
-      children: list,
+      ),
     );
+  }
+
+  void _addItemToList(dynamic object) {
+    object["qty"] = 1;
+    context.read<CurrentOrderController>().currentOrderList.add(object);
+    context.read<CurrentOrderController>().notify();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:offline_pos/components/export_files.dart';
 
 class CommonUtils {
@@ -230,7 +232,10 @@ class CommonUtils {
     String? text,
     IconData? icon,
     Color? iconColor,
+    Color? containerColor,
+    Color? textColor,
     double? size,
+    double? iconSize,
     Function()? onPressed,
   }) {
     return InkWell(
@@ -241,19 +246,20 @@ class CommonUtils {
         padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: Constants.calculatorBgColor.withOpacity(0.77),
+          color:
+              containerColor ?? Constants.calculatorBgColor.withOpacity(0.77),
         ),
         child: Center(
           child: icon != null
               ? Icon(
                   icon,
-                  size: 24,
+                  size: iconSize ?? 24,
                   color: iconColor ?? Constants.primaryColor,
                 )
               : Text(
                   text ?? '',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: textColor ?? Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -269,7 +275,9 @@ class CommonUtils {
     _eachCalculateButtonWidget(text: "3", onPressed: () {}),
     _eachCalculateButtonWidget(text: "Qty", onPressed: () {}),
     _eachCalculateButtonWidget(
-        icon: Icons.keyboard_arrow_down_rounded, onPressed: () {}),
+        icon: Icons.keyboard_arrow_down_rounded,
+        iconSize: 32,
+        onPressed: () {}),
     _eachCalculateButtonWidget(text: "4", onPressed: () {}),
     _eachCalculateButtonWidget(text: "5", onPressed: () {}),
     _eachCalculateButtonWidget(text: "6", onPressed: () {}),
@@ -279,13 +287,62 @@ class CommonUtils {
     _eachCalculateButtonWidget(text: "8", onPressed: () {}),
     _eachCalculateButtonWidget(text: "9", onPressed: () {}),
     _eachCalculateButtonWidget(text: "+/-", onPressed: () {}),
-    _eachCalculateButtonWidget(icon: Icons.arrow_forward_ios, onPressed: () {}),
+    _eachCalculateButtonWidget(
+        icon: Icons.arrow_forward_ios, iconSize: 21, onPressed: () {}),
     _eachCalculateButtonWidget(text: ".", onPressed: () {}),
     _eachCalculateButtonWidget(text: "0", onPressed: () {}),
     _eachCalculateButtonWidget(
         icon: Icons.backspace_outlined,
         iconColor: Constants.alertColor,
         onPressed: () {}),
-    _eachCalculateButtonWidget(text: "Customer", size: 100, onPressed: () {}),
+    _eachCalculateButtonWidget(
+      text: "Customer",
+      containerColor: Constants.primaryColor,
+      textColor: Colors.white,
+      size: 100,
+      onPressed: () {},
+    ),
   ];
+
+  static Widget orderCalculatorWidget(BuildContext context) {
+    bool isTabletMode = CommonUtils.isTabletMode(context);
+    List<Widget> list = [];
+    List<Widget> rowList = [];
+
+    for (var i = 0;
+        i < CommonUtils.calculatorActionWidgetList.length;
+        i += (isTabletMode ? 10 : 5)) {
+      int start = (list.length * (isTabletMode ? 10 : 5));
+      int end =
+          (isTabletMode ? 10 : 5) + (list.length * (isTabletMode ? 10 : 5));
+      rowList.addAll(CommonUtils.calculatorActionWidgetList.getRange(
+          start, min(end, CommonUtils.calculatorActionWidgetList.length)));
+      list.add(SizedBox(
+        width: isTabletMode
+            ? (MediaQuery.of(context).size.width / 10) * 9
+            : MediaQuery.of(context).size.width -
+                (MediaQuery.of(context).size.width / 5.5) -
+                ((MediaQuery.of(context).size.width / 5.3) * 3),
+        child: Row(
+          children: rowList.map((e) {
+            // var child = e.toString();
+            return Expanded(
+              //UnconstrainedBox
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                child: e,
+              ),
+            );
+          }).toList(),
+        ),
+      ));
+      rowList = [];
+    }
+
+    return Column(
+      children: list,
+    );
+  }
+
 }

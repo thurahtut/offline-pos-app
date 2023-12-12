@@ -14,12 +14,18 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Offline POS',
-      navigatorKey: NavigationService.navigatorKey,
-      initialRoute: MainScreen.routeName,
-      onGenerateRoute: Routers.generateRoute,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ItemViewController()),
+        ChangeNotifierProvider(create: (_) => CurrentOrderController()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Offline POS',
+        navigatorKey: NavigationService.navigatorKey,
+        initialRoute: MainScreen.routeName,
+        onGenerateRoute: Routers.generateRoute,
+      ),
     );
   }
 }
