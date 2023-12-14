@@ -1,5 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/product_uom/product_unit_dialog.dart';
+import 'package:offline_pos/view/product/product_unit_dialog.dart';
 
 class CurrentOrderScreen extends StatefulWidget {
   const CurrentOrderScreen({super.key});
@@ -32,25 +32,34 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       children: [
         (context.watch<CurrentOrderController>().currentOrderList.isEmpty)
             ? Expanded(
+                flex: 2,
                 child: _noOrderWidget(),
               )
             : Expanded(
+                flex: 2,
                 child: _currentOrderListWidget(),
               ),
-        Expanded(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            (context
-                    .watch<CurrentOrderController>()
-                    .currentOrderList
-                    .isNotEmpty)
-                ? _totalWidget()
-                : SizedBox(),
-            CommonUtils.orderCalculatorWidget(context),
-          ],
-        )),
-        isTabletMode ? Expanded(child: SizedBox()) : SizedBox(height: 8),
+        isTabletMode
+            ? _keyboardAndSummaryWidget()
+            : Expanded(
+                flex: 3,
+                child: _keyboardAndSummaryWidget(),
+              ),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _keyboardAndSummaryWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        (context.watch<CurrentOrderController>().currentOrderList.isNotEmpty)
+            ? _totalWidget()
+            : SizedBox(),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: CommonUtils.orderCalculatorWidget(context)),
       ],
     );
   }
@@ -71,7 +80,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          height: isTabletMode ? 80 : 100,
+                          height: isTabletMode ? 70 : 100,
                           width: isTabletMode ? (_width ?? 100) - 16 : _width,
                           margin: isTabletMode ? EdgeInsets.all(8) : null,
                           decoration: BoxDecoration(

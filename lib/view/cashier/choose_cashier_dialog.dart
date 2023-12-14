@@ -9,9 +9,10 @@ class ChooseCashierDialog {
       thickness: 1.3,
       color: Constants.disableColor.withOpacity(0.96),
     );
-    return showDialog(
-      context: mainContext,
-      builder: (BuildContext bContext) {
+
+    return CommonUtils.showGeneralDialogWidget(
+      mainContext,
+      (bContext, anim1, anim2) {
         return AlertDialog(
           title: const Text(
             'Change Cashier',
@@ -56,8 +57,10 @@ class ChooseCashierDialog {
                   width: MediaQuery.of(mainContext).size.width / 4,
                   child: UnconstrainedBox(
                     child: BorderContainer(
-                      width: 100,
+                      radius: 14,
                       text: 'Cancel',
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                       onTap: () {
                         Navigator.of(mainContext).pop();
                       },

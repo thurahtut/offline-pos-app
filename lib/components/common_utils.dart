@@ -1,7 +1,9 @@
 import 'dart:math';
-
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/payment/payment_screen.dart';
+import 'package:offline_pos/view/coupon_or_promotion/enter_coupon_code_dialog.dart';
+import 'package:offline_pos/view/customer/create_customer_dialog.dart';
+import 'package:offline_pos/view/print/print_statement_dialog.dart';
+import 'package:offline_pos/view/product/product_discount_dialog.dart';
 
 class CommonUtils {
   static bool isTabletMode(BuildContext context) {
@@ -76,12 +78,22 @@ class CommonUtils {
     {
       "svgPicture": 'assets/svg/refresh.svg',
       "text": 'Refund',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          ProductDiscountDialog.productDiscountDialogWidget(
+              NavigationService.navigatorKey.currentContext!);
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/barcode_scanner.svg',
       "text": 'Enter Code',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          EnterCouponCodeDialog.enterCouponCodeDialogWidget(
+              NavigationService.navigatorKey.currentContext!);
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/kid_star.svg',
@@ -106,17 +118,25 @@ class CommonUtils {
     {
       "svgPicture": 'assets/svg/payments.svg',
       "text": 'Cash In/Out Statement',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          PrintStatementDialog.printStatementDialogWidget(
+              NavigationService.navigatorKey.currentContext!);
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/credit_card.svg',
       "text": 'Payments',
       "onTap": () {
         if (NavigationService.navigatorKey.currentContext != null) {
-          Navigator.pushNamed(
-            NavigationService.navigatorKey.currentContext!,
-            PaymentScreen.routeName,
-          );
+          // Navigator.pushNamed(
+          //   NavigationService.navigatorKey.currentContext!,
+          //   OrderPaymentScreen.routeName,
+          // );
+
+          PaymentDialog.paymentDialogWidget(
+              NavigationService.navigatorKey.currentContext!);
         }
       },
     },
@@ -326,7 +346,12 @@ class CommonUtils {
       containerColor: Constants.primaryColor,
       textColor: Colors.white,
       width: 100,
-      onPressed: () {},
+      onPressed: () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          CreateCustomerDialog.createCustomerDialogWidget(
+              NavigationService.navigatorKey.currentContext!);
+        }
+      },
     ),
   ];
 
@@ -356,7 +381,10 @@ class CommonUtils {
               //UnconstrainedBox
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3),
+                     EdgeInsets.symmetric(
+                  horizontal: (isTabletMode ? 4 : 8.0),
+                  vertical: (isTabletMode ? 1.2 : 3),
+                ),
                 child: e,
               ),
             );
@@ -373,28 +401,67 @@ class CommonUtils {
 
 
   static Widget okCancelWidget({
+    String? okLabel,
+    String? cancelLabel,
+    bool? switchBtns,
+    double? width,
     Function()? okCallback,
     Function()? cancelCallback,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        BorderContainer(
-          text: 'OK',
+    List<Widget> list = [
+      Expanded(
+        child: BorderContainer(
+          text: okLabel ?? 'OK',
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
           containerColor: Constants.primaryColor,
           textColor: Colors.white,
-          width: 150,
+          width: width ?? 140,
           textSize: 20,
+          radius: 16,
           onTap: okCallback,
         ),
-        SizedBox(width: 4),
-        BorderContainer(
-          text: 'Cancel',
-          width: 150,
+      ),
+      SizedBox(width: 8),
+      Expanded(
+        child: BorderContainer(
+          text: cancelLabel ?? 'Cancel',
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+          width: width ?? 140,
           textSize: 20,
+          radius: 16,
           onTap: cancelCallback,
         ),
-      ],
+      ),
+    ];
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        ...(switchBtns == true) ? list.reversed : list,
+      ]),
+    );
+  }
+
+  static Future<void> showGeneralDialogWidget(
+    BuildContext mainContext,
+    Widget Function(
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+    ) pageBuilder,
+  ) {
+    return showGeneralDialog(
+      context: mainContext,
+      barrierDismissible: true,
+      barrierLabel: "Label",
+      transitionDuration: Duration(milliseconds: 300),
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position:
+              Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(anim1),
+          child: child,
+        );
+      },
+      pageBuilder: pageBuilder,
     );
   }
 

@@ -5,9 +5,9 @@ class PasswordDialog {
     BuildContext context,
     TextEditingController passwordTextController,
   ) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext bContext) {
+    return CommonUtils.showGeneralDialogWidget(
+      context,
+      (bContext, anim1, anim2) {
         return AlertDialog(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -52,6 +52,7 @@ class PasswordDialog {
                     ),
                     child: TextField(
                       controller: passwordTextController,
+                      keyboardType: TextInputType.visiblePassword, //to check
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         labelStyle: TextStyle(

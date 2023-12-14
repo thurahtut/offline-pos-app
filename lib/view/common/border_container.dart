@@ -11,6 +11,7 @@ class BorderContainer extends StatelessWidget {
     this.onTap,
     this.width,
     this.textSize,
+    this.radius,
   });
   final String text;
   final EdgeInsetsGeometry? padding;
@@ -18,6 +19,7 @@ class BorderContainer extends StatelessWidget {
   final Color? containerColor;
   final double? width;
   final double? textSize;
+  final double? radius;
   final Function()? onTap;
 
   @override
@@ -31,16 +33,19 @@ class BorderContainer extends StatelessWidget {
           border: Border.all(
             color: containerColor ?? Constants.primaryColor,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(radius ?? 12),
           color: containerColor,
         ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: textColor ?? Constants.primaryColor,
-            fontWeight: FontWeight.w600,
-            fontSize: textSize,
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: textColor ?? Constants.primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: textSize,
+            ),
           ),
         ),
       ),

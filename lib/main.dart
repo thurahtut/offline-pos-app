@@ -1,3 +1,4 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:offline_pos/components/export_files.dart';
 
 void main() {
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
         navigatorKey: NavigationService.navigatorKey,
         initialRoute: MainScreen.routeName,
         onGenerateRoute: Routers.generateRoute,
+        theme: ThemeData(
+            textTheme:
+                GoogleFonts.outfitTextTheme(Theme.of(context).textTheme)),
       ),
     );
   }

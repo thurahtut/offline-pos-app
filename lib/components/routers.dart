@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/customer/customer_list_screen.dart';
 import 'package:offline_pos/view/login/login_screen.dart';
 import 'package:offline_pos/view/main_screen.dart';
-import 'package:offline_pos/view/payment/payment_screen.dart';
+import 'package:offline_pos/view/payment/order_payment_screen.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -16,9 +18,13 @@ class Routers {
           // settings: RouteSettings(name: 'Home'),
           builder: (_) => MainScreen(),
         );
-      case PaymentScreen.routeName:
+      case OrderPaymentScreen.routeName:
         return MaterialPageRoute(
-          builder: (_) => PaymentScreen(),
+          builder: (_) => OrderPaymentScreen(),
+        );
+      case CustomerListScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => CustomerListScreen(),
         );
       default:
         {

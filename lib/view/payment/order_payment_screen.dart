@@ -1,14 +1,14 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class PaymentScreen extends StatefulWidget {
-  static const String routeName = "/payment_screen";
-  const PaymentScreen({super.key});
+class OrderPaymentScreen extends StatefulWidget {
+  static const String routeName = "/order_payment_screen";
+  const OrderPaymentScreen({super.key});
 
   @override
-  State<PaymentScreen> createState() => _PaymentScreenState();
+  State<OrderPaymentScreen> createState() => _OrderPaymentScreenState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   final TextEditingController _amountController = TextEditingController();
 
   @override

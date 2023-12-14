@@ -47,6 +47,9 @@ class _MyAppBarState extends State<MyAppBar> {
             'assets/svg/Cash.svg',
             'Cash In/Out',
             fontSize: 16,
+            onPressed: () {
+              CashInOutDialog.cashInOutDialogWidget(context);
+            },
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,
           _appBarActionButtonWithText(
@@ -101,6 +104,12 @@ class _MyAppBarState extends State<MyAppBar> {
                   spacer,
                   CommonUtils.svgIconActionButton(
                     'assets/svg/lock_open_right.svg',
+                    onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        ModalRoute.withName("/Home"));
+                  }
                   ),
                   spacer,
                   _appBarActionButtonWithText(

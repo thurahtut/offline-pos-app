@@ -12,9 +12,9 @@ class ProductUntiDialog {
         color: Constants.disableColor.withOpacity(0.96),
       ),
     );
-    return showDialog(
-      context: context,
-      builder: (BuildContext bContext) {
+    return CommonUtils.showGeneralDialogWidget(
+      context,
+      (bContext, anim1, anim2) {
         return AlertDialog(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -42,12 +42,12 @@ class ProductUntiDialog {
                       child: Text(
                         'Product Packages [${object["id"]}] \n ${object["name"]}',
                         textAlign: TextAlign.center,
-                        maxLines: 2,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 22,
+                          fontSize: 20,
                         ),
                       ),
                     ),
@@ -57,6 +57,7 @@ class ProductUntiDialog {
                   spacer,
                   SizedBox(height: 16),
                   CommonUtils.okCancelWidget(
+                    okLabel: "Add",
                     okCallback: () {
                       Navigator.pop(context);
                     },
@@ -145,6 +146,7 @@ class ProductUntiDialog {
             ],
           ),
         ),
+        SizedBox(height: 8),
         Text(
           '[${object["id"]}]',
           textAlign: TextAlign.center,
@@ -153,7 +155,6 @@ class ProductUntiDialog {
           style: TextStyle(
             color: Constants.textColor,
             fontWeight: FontWeight.w500,
-            fontSize: 16,
           ),
         ),
         Text(
@@ -164,9 +165,9 @@ class ProductUntiDialog {
           style: TextStyle(
             color: Constants.textColor,
             fontWeight: FontWeight.w500,
-            fontSize: 16,
           ),
-        )
+        ),
+        SizedBox(height: 8),
       ],
     );
   }
