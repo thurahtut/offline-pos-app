@@ -17,14 +17,18 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ItemViewController()),
+        ChangeNotifierProvider(create: (_) => ViewController()),
         ChangeNotifierProvider(create: (_) => CurrentOrderController()),
+        ChangeNotifierProvider(create: (_) => CustomerListController()),
+        ChangeNotifierProvider(create: (_) => OrderHistoryListController()),
+        ChangeNotifierProvider(create: (_) => QuotationOrderListController()),
+        ChangeNotifierProvider(create: (_) => OrderListController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: MainScreen.routeName,
+        initialRoute: OrderHistoryListScreen.routeName,
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

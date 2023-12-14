@@ -25,11 +25,12 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 : ((MediaQuery.of(context).size.width / 5.3) * 3) +
                     (showSidebar ? 0 : MediaQuery.of(context).size.width / 5.5),
             decoration: BoxDecoration(
-              color: context.watch<ItemViewController>().isList
+              color:
+                  context.watch<ViewController>().isList
                   ? Colors.white
                   : null,
             ),
-            child: context.watch<ItemViewController>().isList
+            child: context.watch<ViewController>().isList
                 ? _itemListWithListViewWidget(showSidebar)
                 : _itemListWithGridViewWidget(showSidebar),
           );

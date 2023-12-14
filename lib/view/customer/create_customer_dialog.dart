@@ -233,19 +233,28 @@ class CreateCustomerDialog {
                         mainAxisSpacing: 2.0,
                         crossAxisSpacing: 2.0,
                         children: [
-                          _dropDownWidget(countryList),
+                          _dropDownWidget(
+                            mainContext,
+                            countryList,
+                          ),
                           _textFieldWidget(
                             mainContext,
                             zipTextController,
                             hintText: "Zip (Optional)",
                           ),
-                          _dropDownWidget(regionList),
+                          _dropDownWidget(
+                            mainContext,
+                            regionList,
+                          ),
                           _textFieldWidget(
                             mainContext,
                             mobileTextController,
                             hintText: "Mobile",
                           ),
-                          _dropDownWidget(cityList),
+                          _dropDownWidget(
+                            mainContext,
+                            cityList,
+                          ),
                           _textFieldWidget(
                             mainContext,
                             streetTextController,
@@ -329,17 +338,38 @@ class CreateCustomerDialog {
     );
   }
 
-  static _dropDownWidget(List<String> list) {
-    return DropdownButton(
-      value: list.first,
-      icon: const Icon(Icons.keyboard_arrow_down),
-      items: list.map((String items) {
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {},
+  static _dropDownWidget(
+    BuildContext mainContext,
+    List<String> list,
+  ) {
+    return Container(
+      height: 60,
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      width: MediaQuery.of(mainContext).size.width / 4.8,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+          color: Constants.greyColor.withOpacity(0.6),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Constants.primaryColor, width: 1.7)),
+      child: Row(
+        children: [
+          Expanded(
+            child: DropdownButton(
+              value: list.first,
+              icon: SizedBox(),
+              underline: Container(),
+              items: list.map((String items) {
+                return DropdownMenuItem(
+                  value: items,
+                  child: Text(items),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {},
+            ),
+          ),
+          Icon(Icons.keyboard_arrow_down),
+        ],
+      ),
     );
   }
 }

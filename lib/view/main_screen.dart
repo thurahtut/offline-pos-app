@@ -30,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     "Water",
     "Tissue",
     "Electronic"
-  ]; 
+  ];
 
   @override
   void dispose() {
@@ -43,7 +43,9 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Constants.greyColor,
       appBar: MyAppBar(),
-      body: _bodyWidget(),
+      body: Visibility(
+          visible: !context.watch<ViewController>().isCustomerView,
+          child: _bodyWidget()),
     );
   }
 
@@ -99,38 +101,38 @@ class _MainScreenState extends State<MainScreen> {
               CommonUtils.svgIconActionButton(
                 'assets/svg/grid_view.svg',
                 withContianer: true,
-                containerColor: !context.watch<ItemViewController>().isList
+                containerColor: !context.watch<ViewController>().isList
                     ? Constants.primaryColor
                     : Constants.unselectedColor,
-                iconColor: !context.watch<ItemViewController>().isList
+                iconColor: !context.watch<ViewController>().isList
                     ? Colors.white
                     : Constants.primaryColor,
                 onPressed: () {
-                  context.read<ItemViewController>().isList = false;
+                  context.read<ViewController>().isList = false;
                 },
               ),
               spacer,
               CommonUtils.iconActionButton(
                 Icons.view_list_outlined,
                 withContianer: true,
-                containerColor: context.watch<ItemViewController>().isList
+                containerColor: context.watch<ViewController>().isList
                     ? Constants.primaryColor
                     : Constants.unselectedColor,
-                iconColor: context.watch<ItemViewController>().isList
+                iconColor: context.watch<ViewController>().isList
                     ? Colors.white
                     : Constants.primaryColor,
                 onPressed: () {
-                  context.read<ItemViewController>().isList = true;
+                  context.read<ViewController>().isList = true;
                 },
               ),
               spacer,
               CommonUtils.svgIconActionButton(
                 'assets/svg/home.svg',
                 withContianer: true,
-                containerColor: context.watch<ItemViewController>().isHome
+                containerColor: context.watch<ViewController>().isHome
                     ? Constants.primaryColor
                     : Constants.unselectedColor,
-                iconColor: context.watch<ItemViewController>().isHome
+                iconColor: context.watch<ViewController>().isHome
                     ? Colors.white
                     : Constants.primaryColor,
               ),

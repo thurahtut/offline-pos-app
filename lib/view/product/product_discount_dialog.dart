@@ -100,6 +100,7 @@ class ProductDiscountDialog {
                 ),
                 Expanded(
                   child: Scrollbar(
+                    
                     thumbVisibility: true,
                     child: SingleChildScrollView(
                       child: SizedBox(

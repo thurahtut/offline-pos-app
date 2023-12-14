@@ -56,6 +56,12 @@ class _MyAppBarState extends State<MyAppBar> {
             'assets/svg/order_approve.svg',
             'Order',
             fontSize: 16,
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                OrderListScreen.routeName,
+              );
+            },
           ),
           ...isTabletMode
               ? [

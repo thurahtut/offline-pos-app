@@ -1,6 +1,6 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class ItemViewController with ChangeNotifier {
+class ViewController with ChangeNotifier {
   bool _isList = true;
   bool get isList => _isList;
 
@@ -16,6 +16,14 @@ class ItemViewController with ChangeNotifier {
   set isHome(bool isHome) {
     if (_isHome == isHome) return;
     _isHome = isHome;
+    notifyListeners();
+  }
+
+  bool _isCustomerView = false;
+  bool get isCustomerView => _isCustomerView;
+  set isCustomerView(bool isCustomerView) {
+    if (_isCustomerView == isCustomerView) return;
+    _isCustomerView = isCustomerView;
     notifyListeners();
   }
 }

@@ -1,9 +1,6 @@
 import 'dart:math';
+
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/coupon_or_promotion/enter_coupon_code_dialog.dart';
-import 'package:offline_pos/view/customer/create_customer_dialog.dart';
-import 'package:offline_pos/view/print/print_statement_dialog.dart';
-import 'package:offline_pos/view/product/product_discount_dialog.dart';
 
 class CommonUtils {
   static bool isTabletMode(BuildContext context) {
@@ -18,6 +15,8 @@ class CommonUtils {
     Function()? onPressed,
     bool? withContianer,
     Color? containerColor,
+    bool? withBorder,
+    Color? borderWithPrimaryColor,
   }) {
     return InkWell(
       onTap: onPressed,
@@ -27,6 +26,13 @@ class CommonUtils {
             ? BoxDecoration(
                 borderRadius: BorderRadius.circular(((width ?? 27) / 2) + 10),
                 color: containerColor,
+                border: withBorder == true
+                    ? Border.all(
+                        color: borderWithPrimaryColor ??
+                            containerColor ??
+                            Colors.transparent,
+                      )
+                    : null,
               )
             : null,
         child: SvgPicture.asset(
@@ -113,7 +119,14 @@ class CommonUtils {
     {
       "svgPicture": 'assets/svg/history.svg',
       "text": 'Order History',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          Navigator.pushNamed(
+            NavigationService.navigatorKey.currentContext!,
+            OrderHistoryListScreen.routeName,
+          );
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/payments.svg',
@@ -143,7 +156,14 @@ class CommonUtils {
     {
       "svgPicture": 'assets/svg/link.svg',
       "text": 'Quotation / Order',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          Navigator.pushNamed(
+            NavigationService.navigatorKey.currentContext!,
+            QuotationOrderListScreen.routeName,
+          );
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/sell.svg',
@@ -348,7 +368,10 @@ class CommonUtils {
       width: 100,
       onPressed: () {
         if (NavigationService.navigatorKey.currentContext != null) {
-          CreateCustomerDialog.createCustomerDialogWidget(
+          NavigationService.navigatorKey.currentContext!
+              .read<ViewController>()
+              .isCustomerView = true;
+          CustomerListDialog.customerListDialogWidget(
               NavigationService.navigatorKey.currentContext!);
         }
       },
@@ -375,20 +398,23 @@ class CommonUtils {
                 (MediaQuery.of(context).size.width / 5.5) -
                 ((MediaQuery.of(context).size.width / 5.3) * 3),
         child: Row(
-          children: rowList.map((e) {
-            // var child = e.toString();
-            return Expanded(
-              //UnconstrainedBox
+          children: List.generate(
+            rowList.length,
+            (index) => Expanded(
+              flex: rowList.length == (isTabletMode ? 10 : 5)
+                  ? 1
+                  : index == (rowList.length - 1)
+                      ? 2
+                      : 1,
               child: Padding(
-                padding:
-                     EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: (isTabletMode ? 4 : 8.0),
                   vertical: (isTabletMode ? 1.2 : 3),
                 ),
-                child: e,
+                child: rowList[index],
               ),
-            );
-          }).toList(),
+            ),
+          ),
         ),
       ));
       rowList = [];
@@ -399,12 +425,12 @@ class CommonUtils {
     );
   }
 
-
   static Widget okCancelWidget({
     String? okLabel,
     String? cancelLabel,
     bool? switchBtns,
     double? width,
+    Color? cancelContainerColor,
     Function()? okCallback,
     Function()? cancelCallback,
   }) {
@@ -426,6 +452,8 @@ class CommonUtils {
         child: BorderContainer(
           text: cancelLabel ?? 'Cancel',
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+          containerColor: cancelContainerColor,
+          borderWithPrimaryColor: cancelContainerColor != null ? true : false,
           width: width ?? 140,
           textSize: 20,
           radius: 16,
@@ -465,4 +493,325 @@ class CommonUtils {
     );
   }
 
+  static List<CustomerDataModel> customerList = [
+    CustomerDataModel(
+      name: "Carina McCoy",
+      address: "605 Dog Hill Lane, Tapeka, KS 66603",
+      phone: "(214) 390-8650",
+      email: "j.jones@outlook.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Chris Glasser",
+      address: "4130 Butternut Lane, Alton, IL 62002",
+      phone: "(785) 712-6532",
+      email: "dennis416@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 1",
+      address: "customer 1",
+      phone: "(959) 123-456-789",
+      email: "customer1@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 2",
+      address: "customer 2",
+      phone: "(959) 123-456-789",
+      email: "customer2@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+    CustomerDataModel(
+      name: "Customer 3",
+      address: "customer 3",
+      phone: "(959) 123-456-789",
+      email: "customer3@gmail.com",
+      discount: 0,
+      credit: 0,
+      creditLimit: "N/A",
+      amountDue: "N/A",
+    ),
+  ];
+
+  static List<OrderHistoryDataModel> orderHistoryList = [
+    OrderHistoryDataModel(
+      name: "Easy 3 - POS 2/65358",
+      orderRef: "Order 14151-140-0042",
+      customer: "BG Bakery",
+      date: "12-12-2023 12:30 PM",
+      total: 467000,
+      state: "Paid",
+    ),
+  ];
+
+  static QuotationDataModel demoQuotationData = QuotationDataModel(
+    order: "S02034",
+    date: "12-12-2023 12:30 PM",
+    customer: "BG Bakery",
+    salePerson: "Admin",
+    total: 467000,
+    state: "Quotation",
+  );
+
+  static OrderDataModel demoOrderData = OrderDataModel(
+    receiptNumber: "Order 14151-136-00001",
+    date: "12-12-2023 12:30 PM",
+    customer: "May Pearl",
+    employee: "Easy 3-A Store Leader",
+    total: 467000,
+    state: "onGoing",
+  );
+
+  static DataColumn2 dataColumn({
+    required String text,
+    Function(int, bool)? onSort,
+    double? fixedWidth,
+    Color? textColor,
+  }) {
+    return DataColumn2(
+      fixedWidth: fixedWidth,
+      label: Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: textColor ?? Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      onSort: onSort,
+    );
+  }
 }
