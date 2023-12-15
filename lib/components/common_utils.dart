@@ -79,7 +79,12 @@ class CommonUtils {
     {
       "svgPicture": 'assets/svg/info.svg',
       "text": 'Info',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          ProductInfomationDialog.productInformationDialogWidget(
+              NavigationService.navigatorKey.currentContext!);
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/refresh.svg',
@@ -430,7 +435,9 @@ class CommonUtils {
     String? cancelLabel,
     bool? switchBtns,
     double? width,
+    double? textSize,
     Color? cancelContainerColor,
+    EdgeInsetsGeometry? padding,
     Function()? okCallback,
     Function()? cancelCallback,
   }) {
@@ -438,11 +445,12 @@ class CommonUtils {
       Expanded(
         child: BorderContainer(
           text: okLabel ?? 'OK',
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+          padding:
+              padding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 14),
           containerColor: Constants.primaryColor,
           textColor: Colors.white,
           width: width ?? 140,
-          textSize: 20,
+          textSize: textSize ?? 20,
           radius: 16,
           onTap: okCallback,
         ),
@@ -451,11 +459,12 @@ class CommonUtils {
       Expanded(
         child: BorderContainer(
           text: cancelLabel ?? 'Cancel',
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+          padding:
+              padding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 14),
           containerColor: cancelContainerColor,
           borderWithPrimaryColor: cancelContainerColor != null ? true : false,
           width: width ?? 140,
-          textSize: 20,
+          textSize: textSize ?? 20,
           radius: 16,
           onTap: cancelCallback,
         ),
@@ -808,6 +817,7 @@ class CommonUtils {
         style: TextStyle(
           fontWeight: FontWeight.w600,
           color: textColor ?? Colors.white,
+          fontSize: 16,
         ),
         textAlign: TextAlign.center,
       ),

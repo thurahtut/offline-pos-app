@@ -14,4 +14,5 @@ class Constants {
   static const unselectedColor = Color(0xFFDCDCDC);
   static const calculatorBgColor = Color(0xFFD9D9D9);
   static const currentOrderDividerColor = Color(0xFFF5F5F5);
+  static const selectedDayColor = Color(0xFF5865F2);
 }

@@ -1,7 +1,8 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
-// import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class OrderHistoryListScreen extends StatefulWidget {
   const OrderHistoryListScreen({super.key});
@@ -17,10 +18,15 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
+  String headerString = "";
+  DateTime selectedDate = DateTime.now();
+  final ValueNotifier<DateTime> _dateTimeNotifier =
+      ValueNotifier(DateTime.now());
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      headerString = DateFormat('MMMM yyyy').format(DateTime.now()).toString();
       isTabletMode = CommonUtils.isTabletMode(context);
       CommonUtils.orderHistoryList;
       for (var i = 0; i < 20; i++) {
@@ -71,7 +77,8 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
   Widget _tableWidget() {
     return Scrollbar(
       thumbVisibility: true,
-      child: SingleChildScrollView(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: AlwaysScrollableScrollPhysics(),
@@ -80,138 +87,289 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
               maxWidth: MediaQuery.of(context).size.width,
               maxHeight: MediaQuery.of(context).size.height - 200,
             ),
-            child: Container(
-                padding: EdgeInsets.all(8),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Constants.greyColor.withOpacity(0.85),
-                    borderRadius: BorderRadius.circular(22)),
-                child: context
-                            .watch<OrderHistoryListController>()
-                            .orderHistoryInfoDataSource !=
-                        null
-                    ? _orderHistoryListWidget()
-                    : SizedBox()),
+            child: context
+                        .watch<OrderHistoryListController>()
+                        .orderHistoryInfoDataSource !=
+                    null
+                ? _orderHistoryListWidget()
+                : SizedBox(),
           ),
         ),
       ),
     );
   }
 
-  SizedBox _headerActionWidget() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width - 100,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            flex: 2,
-            child: BorderContainer(
-              text: 'Discard',
-              containerColor: Colors.white,
-              width: 140,
-              borderWithPrimaryColor: true,
-              textColor: Constants.primaryColor,
-              onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainScreen()),
-                    ModalRoute.withName("/Home"));
-              },
+  Widget _headerActionWidget() {
+    var child = SizedBox(
+      width: MediaQuery.of(context).size.width -
+          (isTabletMode == true ? 15 : MediaQuery.of(context).size.width / 9),
+      child: Container(
+        constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width -
+                ((isTabletMode == true
+                        ? 15
+                        : MediaQuery.of(context).size.width / 9) *
+                    2)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              flex: 2,
+              child: BorderContainer(
+                text: 'Discard',
+                containerColor: Colors.white,
+                // width: 140,
+                borderWithPrimaryColor: true,
+                textColor: Constants.primaryColor,
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainScreen()),
+                      ModalRoute.withName("/Home"));
+                },
+              ),
             ),
-          ),
-          SizedBox(width: 5),
-          Expanded(
-            flex: 1,
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                width: 80,
-                padding: EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(13),
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Constants.primaryColor,
+            SizedBox(width: 5),
+            Expanded(
+              flex: 1,
+              child: InkWell(
+                onTap: () {},
+                child: Container(
+                  // width: 80,
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(13),
+                    color: Colors.white,
+                    border: Border.all(
+                      color: Constants.primaryColor,
+                    ),
                   ),
-                ),
-                child: CommonUtils.svgIconActionButton(
-                  'assets/svg/keyboard_return.svg',
-                  iconColor: Constants.primaryColor,
+                  child: CommonUtils.svgIconActionButton(
+                    'assets/svg/keyboard_return.svg',
+                    iconColor: Constants.primaryColor,
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(width: 5),
-          Expanded(
-            flex: 2,
-            child: BorderContainer(
-              text: 'Paid',
-              width: 140,
-              containerColor: Constants.primaryColor,
-              textColor: Colors.white,
+            SizedBox(width: 5),
+            Expanded(
+              flex: 2,
+              child: BorderContainer(
+                text: 'Paid',
+                // width: 140,
+                containerColor: Constants.primaryColor,
+                textColor: Colors.white,
+              ),
             ),
-          ),
-          SizedBox(width: 5),
-          Expanded(
-            flex: 2,
-            child: BorderContainer(
-              text: 'Posted',
-              containerColor: Colors.white,
-              width: 140,
-              borderWithPrimaryColor: true,
-              textColor: Constants.primaryColor,
+            SizedBox(width: 5),
+            Expanded(
+              flex: 2,
+              child: BorderContainer(
+                text: 'Posted',
+                containerColor: Colors.white,
+                // width: 140,
+                borderWithPrimaryColor: true,
+                textColor: Constants.primaryColor,
+              ),
             ),
-          ),
-          SizedBox(width: 5),
-          Expanded(
-            flex: 2,
-            child: BorderContainer(
-              text: 'Invoive',
-              containerColor: Colors.white,
-              width: 140,
-              borderWithPrimaryColor: true,
-              textColor: Constants.primaryColor,
+            SizedBox(width: 5),
+            Expanded(
+              flex: 2,
+              child: BorderContainer(
+                text: 'Invoive',
+                containerColor: Colors.white,
+                // width: 140,
+                borderWithPrimaryColor: true,
+                textColor: Constants.primaryColor,
+              ),
             ),
-          ),
-          SizedBox(width: 5),
-          Expanded(flex: 6, child: _searchCustomerWidget()),
-          SizedBox(width: 5),
-          Expanded(
-            flex: 2,
-            child: BorderContainer(
-              text: 'dd--yyyy',
-              suffixSvg: 'assets/svg/calendar_month.svg',
-              svgColor: Constants.primaryColor,
-              width: 140,
-              onTap: () {
-                // CommonUtils.showGeneralDialogWidget(
-                //     context,
-                //     (context, animation, secondaryAnimation) =>
-                //         _dateWidgetDialog());
+            SizedBox(width: 5),
+            Expanded(flex: 6, child: _searchCustomerWidget()),
+            SizedBox(width: 5),
+            Expanded(
+              flex: 2,
+              child: BorderContainer(
+                text: 'dd--yyyy',
+                suffixSvg: 'assets/svg/calendar_month.svg',
+                svgColor: Constants.primaryColor,
+                // width: 140,
+                onTap: () {
+                  _showDateTimePicker();
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return isTabletMode == true
+        ? SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: AlwaysScrollableScrollPhysics(),
+            child: child,
+          )
+        : child;
+  }
+
+  Future<void> _showDateTimePicker() {
+    return CommonUtils.showGeneralDialogWidget(
+        context,
+        (context, animation, secondaryAnimation) => Dialog(
+              insetPadding: EdgeInsets.zero,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              shadowColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                constraints: BoxConstraints(
+                  maxWidth: 500,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22),
+                  color: Colors.white,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        child: _buildTableCalendarWithBuilders(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Clear',
+                              style: TextStyle(
+                                color: Constants.primaryColor,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              _dateTimeNotifier.value = DateTime.now();
+                            },
+                            child: Text(
+                              'Today',
+                              style: TextStyle(
+                                color: Constants.primaryColor,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ));
+  }
+
+  Widget _buildTableCalendarWithBuilders() {
+    var textStyle = TextStyle(
+      color: Constants.primaryColor,
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+    );
+    return ValueListenableBuilder<DateTime>(
+        valueListenable: _dateTimeNotifier,
+        builder: (_, dateTime, __) {
+          return TableCalendar(
+            firstDay: DateTime.utc(2010, 10, 16),
+            lastDay: DateTime(DateTime.now().year + 100, 1),
+            focusedDay: dateTime,
+            pageJumpingEnabled: true,
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              leftChevronIcon: Icon(
+                Icons.chevron_left,
+                color: Constants.accentColor,
+                size: 28,
+              ),
+              rightChevronIcon: Icon(
+                Icons.chevron_right,
+                color: Constants.accentColor,
+                size: 28,
+              ),
+            ),
+            calendarBuilders: CalendarBuilders(
+              dowBuilder: (context, day) {
+                final text = DateFormat.E().format(day);
+                Color color = Colors.black;
+                if (day.weekday == DateTime.sunday ||
+                    day.weekday == DateTime.saturday) {
+                  color = Constants.accentColor;
+                }
+                return Center(
+                  child: Text(
+                    text,
+                    style: textStyle.copyWith(color: color),
+                  ),
+                );
+              },
+            ),
+            calendarStyle: CalendarStyle(
+              defaultTextStyle: textStyle.copyWith(
+                color: Constants.disableColor,
+              ),
+              weekendTextStyle:
+                  textStyle.copyWith(color: Constants.accentColor),
+              outsideDaysVisible: false,
+              todayTextStyle: textStyle.copyWith(
+                color: Constants.primaryColor,
+              ),
+              selectedTextStyle: textStyle.copyWith(
+                color: Colors.white,
+              ),
+              todayDecoration: BoxDecoration(),
+            ),
+            onHeaderTapped: (focusedDay) {
+              Navigator.pop(context);
+              _yearPicker();
+            },
+            onDaySelected: (date, events) {
+              _dateTimeNotifier.value = date;
+              Navigator.pop(context);
+            },
+            selectedDayPredicate: (day) => isSameDay(day, dateTime),
+          );
+        });
+  }
+
+  void _yearPicker() {
+    showDialog(
+      context: context,
+      builder: (BuildContext bContext) {
+        return AlertDialog(
+          title: Text("Select Year"),
+          content: SizedBox(
+            width: 300,
+            height: 300,
+            child: YearPicker(
+              firstDate: DateTime(DateTime.now().year - 100, 1),
+              lastDate: DateTime(DateTime.now().year + 100, 1),
+              selectedDate: _dateTimeNotifier.value,
+              onChanged: (DateTime dateTime) {
+                _dateTimeNotifier.value = DateTime(dateTime.year);
+                Navigator.pop(bContext);
+                _showDateTimePicker();
               },
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
-
-  // Widget _dateWidgetDialog() {
-  //   return AlertDialog(
-  //     insetPadding: EdgeInsets.zero,
-  //     contentPadding: EdgeInsets.symmetric(vertical: 20),
-  //     clipBehavior: Clip.antiAliasWithSaveLayer,
-  //     shadowColor: Colors.transparent,
-  //     backgroundColor: Colors.transparent,
-  //     content: SingleChildScrollView(
-  //         child: SfHijriDateRangePicker(
-  //       showTodayButton: true,
-  //     )),
-  //   );
-  // }
 
   Widget _searchCustomerWidget() {
     TextEditingController searchCustomerTextController =
@@ -221,14 +379,6 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Constants.greyColor.withOpacity(0.11),
-          //     blurRadius: 1,
-          //     spreadRadius: 1,
-          //     offset: Offset(0, 1),
-          //   ),
-          // ],
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -278,97 +428,85 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(22),
-          child: Container(
-            color: Colors.transparent,
-            margin: EdgeInsets.only(bottom: 70),
-            child: context
-                        .read<OrderHistoryListController>()
-                        .orderHistoryInfoDataSource ==
-                    null
-                ? SizedBox()
-                : Theme(
-                    data: Theme.of(context).copyWith(
-                      cardTheme: CardTheme(
-                        elevation: 2,
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                      ),
-                      cardColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      dividerColor: Colors.white,
-                    ),
-                    child: PaginatedDataTable2(
-                      // autoRowsToHeight: true,
-                      border: TableBorder(
-                          horizontalInside: BorderSide(
-                              color: Constants.disableColor.withOpacity(0.81))),
-                      rowsPerPage: min(
-                          _limit,
-                          context
-                              .read<OrderHistoryListController>()
-                              .orderHistoryList
-                              .length),
-                      minWidth: MediaQuery.of(context).size.width - 100,
-                      showCheckboxColumn: false,
-                      fit: FlexFit.tight,
-                      hidePaginator: true,
-                      sortColumnIndex: _sortColumnIndex,
-                      sortAscending: _sortAscending ?? false,
-                      headingRowColor: MaterialStateColor.resolveWith(
-                          (states) => Constants.primaryColor),
-                      columns: [
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 150 : 120,
-                          text: 'Name',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          fixedWidth: isTabletMode == true ? 300 : 300,
-                          text: 'Order Ref:',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 180,
-                          text: 'Customer',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 180 : null,
-                          text: 'Date',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Total',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'State',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Return Status',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: '',
-                        ),
-                        // CommonUtils.dataColumn(
-                        //   fixedWidth: 100,
-                        //   text: 'action'.tr(),
-                        // ),
-                      ],
-                      source: context
-                          .read<OrderHistoryListController>()
-                          .orderHistoryInfoDataSource!,
+        context.read<OrderHistoryListController>().orderHistoryInfoDataSource ==
+                null
+            ? SizedBox()
+            : Theme(
+                data: Theme.of(context).copyWith(
+                  cardTheme: CardTheme(
+                    elevation: 0,
+                    color: Constants.greyColor.withOpacity(0.85),
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-          ),
-        ),
+                ),
+                child: PaginatedDataTable2(
+                  dataRowHeight: 70,
+                  headingRowHeight: 70,
+                  dividerThickness: 0.0,
+                  rowsPerPage: min(
+                      _limit,
+                      context
+                          .read<OrderHistoryListController>()
+                          .orderHistoryList
+                          .length),
+                  minWidth: MediaQuery.of(context).size.width - 100,
+                  showCheckboxColumn: false,
+                  fit: FlexFit.tight,
+                  hidePaginator: true,
+                  sortColumnIndex: _sortColumnIndex,
+                  sortAscending: _sortAscending ?? false,
+                  headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Constants.primaryColor),
+                  columns: [
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 150 : 120,
+                      text: 'Name',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      fixedWidth: isTabletMode == true ? 300 : 300,
+                      text: 'Order Ref:',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 180,
+                      text: 'Customer',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 180 : null,
+                      text: 'Date',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Total',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'State',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Return Status',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: '',
+                    ),
+                    // CommonUtils.dataColumn(
+                    //   fixedWidth: 100,
+                    //   text: 'action'.tr(),
+                    // ),
+                  ],
+                  source: context
+                      .read<OrderHistoryListController>()
+                      .orderHistoryInfoDataSource!,
+                ),
+              ),
         // _paginationWidget(),
       ],
     );

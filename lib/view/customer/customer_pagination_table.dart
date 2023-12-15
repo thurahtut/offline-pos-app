@@ -39,19 +39,23 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
     // bool isTabletMode = CommonUtils.isTabletMode(context);
     return Scrollbar(
       thumbVisibility: true,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width,
+              maxHeight: MediaQuery.of(context).size.height,
+            ),
+            child: context
+                        .watch<CustomerListController>()
+                        .customerInfoDataSource !=
+                    null
+                ? _customerInfoWidget()
+                : SizedBox(),
           ),
-          child:
-              context.watch<CustomerListController>().customerInfoDataSource !=
-                      null
-                  ? _customerInfoWidget()
-                  : SizedBox(),
         ),
       ),
     );
@@ -61,97 +65,87 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(22),
-          child: Container(
-            color: Colors.transparent,
-            margin: EdgeInsets.only(bottom: 70),
-            child: context
-                        .read<CustomerListController>()
-                        .customerInfoDataSource ==
-                    null
-                ? SizedBox()
-                : Theme(
-                    data: Theme.of(context).copyWith(
-                      cardTheme: CardTheme(
-                        elevation: 2,
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                      ),
-                      cardColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      dividerColor: Colors.white,
-                    ),
-                    child: PaginatedDataTable2(
-                      // autoRowsToHeight: true,
-                      border: TableBorder(
-                          horizontalInside: BorderSide(
-                              color: Constants.disableColor.withOpacity(0.81))),
-                      rowsPerPage: min(
-                          _limit,
-                          context
-                              .read<CustomerListController>()
-                              .customerList
-                              .length),
-                      minWidth: MediaQuery.of(context).size.width - 100,
-                      showCheckboxColumn: false,
-                      fit: FlexFit.tight,
-                      hidePaginator: true,
-                      sortColumnIndex: _sortColumnIndex,
-                      sortAscending: _sortAscending ?? false,
-                      headingRowColor: MaterialStateColor.resolveWith(
-                          (states) => Constants.primaryColor),
-                      columns: [
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 150 : 120,
-                          text: 'Name',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          fixedWidth: isTabletMode == true ? 300 : 300,
-                          text: 'Address',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 180,
-                          text: 'Phone',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 180 : null,
-                          text: 'Email',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Discount',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Credit',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Credit Limit',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Amount Due',
-                        ),
-                        // CommonUtils.dataColumn(
-                        //   fixedWidth: 100,
-                        //   text: 'action'.tr(),
-                        // ),
-                      ],
-                      source: context
-                          .read<CustomerListController>()
-                          .customerInfoDataSource!,
+        context.read<CustomerListController>().customerInfoDataSource == null
+            ? SizedBox()
+            : Theme(
+                data: Theme.of(context).copyWith(
+                  cardTheme: CardTheme(
+                    elevation: 0,
+                    color: Colors.white,
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-          ),
-        ),
+                ),
+                child: PaginatedDataTable2(
+                  dataRowHeight: 65,
+                  headingRowHeight: 70,
+                  dividerThickness: 0.0,
+                  border: TableBorder(
+                      horizontalInside: BorderSide(
+                          color: Constants.disableColor.withOpacity(0.81))),
+                  rowsPerPage: min(
+                      _limit,
+                      context
+                          .read<CustomerListController>()
+                          .customerList
+                          .length),
+                  minWidth: MediaQuery.of(context).size.width - 100,
+                  showCheckboxColumn: false,
+                  fit: FlexFit.tight,
+                  hidePaginator: true,
+                  sortColumnIndex: _sortColumnIndex,
+                  sortAscending: _sortAscending ?? false,
+                  headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Constants.primaryColor),
+                  columns: [
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 150 : 120,
+                      text: 'Name',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      fixedWidth: isTabletMode == true ? 300 : 300,
+                      text: 'Address',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 180,
+                      text: 'Phone',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 180 : null,
+                      text: 'Email',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Discount',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Credit',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Credit Limit',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Amount Due',
+                    ),
+                    // CommonUtils.dataColumn(
+                    //   fixedWidth: 100,
+                    //   text: 'action'.tr(),
+                    // ),
+                  ],
+                  source: context
+                      .read<CustomerListController>()
+                      .customerInfoDataSource!,
+                ),
+              ),
         // _paginationWidget(),
       ],
     );

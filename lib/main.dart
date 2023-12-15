@@ -1,9 +1,11 @@
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
 
 void main() {
-  runApp(MyApp());
+  initializeDateFormatting().then((_) => runApp(MyApp()));
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: OrderHistoryListScreen.routeName,
+        initialRoute: MainScreen.routeName,
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

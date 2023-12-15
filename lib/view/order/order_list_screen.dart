@@ -69,7 +69,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
   Widget _tableWidget() {
     return Scrollbar(
       thumbVisibility: true,
-      child: SingleChildScrollView(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: AlwaysScrollableScrollPhysics(),
@@ -78,17 +79,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
               maxWidth: MediaQuery.of(context).size.width,
               maxHeight: MediaQuery.of(context).size.height - 200,
             ),
-            child: Container(
-                padding: EdgeInsets.all(8),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Constants.greyColor.withOpacity(0.85),
-                    borderRadius: BorderRadius.circular(22)),
-                child:
-                    context.watch<OrderListController>().orderInfoDataSource !=
-                            null
-                        ? _orderHistoryListWidget()
-                        : SizedBox()),
+            child:
+                context.watch<OrderListController>().orderInfoDataSource != null
+                    ? _orderHistoryListWidget()
+                    : SizedBox(),
           ),
         ),
       ),
@@ -223,83 +217,71 @@ class _OrderListScreenState extends State<OrderListScreen> {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(22),
-          child: Container(
-            color: Colors.transparent,
-            margin: EdgeInsets.only(bottom: 70),
-            child: context.read<OrderListController>().orderInfoDataSource ==
-                    null
-                ? SizedBox()
-                : Theme(
-                    data: Theme.of(context).copyWith(
-                      cardTheme: CardTheme(
-                        elevation: 2,
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                      ),
-                      cardColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      dividerColor: Colors.white,
-                    ),
-                    child: PaginatedDataTable2(
-                      // autoRowsToHeight: true,
-                      border: TableBorder(
-                          horizontalInside: BorderSide(
-                              color: Constants.disableColor.withOpacity(0.81))),
-                      rowsPerPage: min(_limit,
-                          context.read<OrderListController>().orderList.length),
-                      minWidth: MediaQuery.of(context).size.width - 100,
-                      showCheckboxColumn: false,
-                      fit: FlexFit.tight,
-                      hidePaginator: true,
-                      sortColumnIndex: _sortColumnIndex,
-                      sortAscending: _sortAscending ?? false,
-                      headingRowColor: MaterialStateColor.resolveWith(
-                          (states) => Constants.primaryColor),
-                      columns: [
-                        CommonUtils.dataColumn(
-                          fixedWidth: isTabletMode == true ? 300 : 300,
-                          text: 'Date',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 150 : 120,
-                          text: 'Receipt Number',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 180,
-                          text: 'Customer',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 180 : null,
-                          text: 'Employee',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Total',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'State',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: '',
-                        ),
-                      ],
-                      source: context
-                          .read<OrderListController>()
-                          .orderInfoDataSource!,
+        context.read<OrderListController>().orderInfoDataSource == null
+            ? SizedBox()
+            : Theme(
+                data: Theme.of(context).copyWith(
+                  cardTheme: CardTheme(
+                    elevation: 0,
+                    color: Constants.greyColor.withOpacity(0.85),
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-          ),
-        ),
+                ),
+                child: PaginatedDataTable2(
+                  dataRowHeight: 70,
+                  headingRowHeight: 70,
+                  dividerThickness: 0.0,
+                  rowsPerPage: min(_limit,
+                      context.read<OrderListController>().orderList.length),
+                  minWidth: MediaQuery.of(context).size.width - 100,
+                  showCheckboxColumn: false,
+                  fit: FlexFit.tight,
+                  hidePaginator: true,
+                  sortColumnIndex: _sortColumnIndex,
+                  sortAscending: _sortAscending ?? false,
+                  headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Constants.primaryColor),
+                  columns: [
+                    CommonUtils.dataColumn(
+                      fixedWidth: isTabletMode == true ? 300 : 300,
+                      text: 'Date',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 150 : 120,
+                      text: 'Receipt Number',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 180,
+                      text: 'Customer',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 180 : null,
+                      text: 'Employee',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Total',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'State',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: '',
+                    ),
+                  ],
+                  source:
+                      context.read<OrderListController>().orderInfoDataSource!,
+                ),
+              ),
         // _paginationWidget(),
       ],
     );

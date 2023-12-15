@@ -35,12 +35,15 @@ class CustomerListDialog {
                               BorderContainer(
                                 text: 'Load Customers',
                                 prefixSvg: 'assets/svg/account_circle.svg',
+                                svgSize: 30,
                                 svgColor: Colors.white,
                                 width: (MediaQuery.of(mainContext).size.width -
                                         100) /
                                     6,
                                 containerColor: Constants.primaryColor,
                                 textColor: Colors.white,
+                                textSize: 16,
+                                radius: 16,
                               ),
                             ],
                           ),
@@ -54,6 +57,9 @@ class CustomerListDialog {
                                   okLabel: 'Create',
                                   switchBtns: true,
                                   cancelContainerColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  textSize: 16,
                                   okCallback: () {
                                     Navigator.pop(bContext);
                                     CreateCustomerDialog
@@ -76,9 +82,6 @@ class CustomerListDialog {
                       padding: EdgeInsets.all(8),
                       height: MediaQuery.of(mainContext).size.height - 200,
                       width: MediaQuery.of(mainContext).size.width - 100,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(22)),
                       child: CustomerPaginationTable()),
                 ],
               ),
@@ -94,35 +97,29 @@ class CustomerListDialog {
     TextEditingController searchCustomerTextController =
         TextEditingController();
     return Center(
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: TextField(
-          controller: searchCustomerTextController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                width: 0,
-                style: BorderStyle.none,
-              ),
+      child: TextField(
+        controller: searchCustomerTextController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(
+              width: 0,
+              style: BorderStyle.none,
             ),
-            contentPadding: EdgeInsets.all(22),
-            hintText: 'Search Customers',
-            hintStyle: TextStyle(fontSize: 14, color: Constants.disableColor),
-            filled: true,
-            fillColor: Constants.greyColor,
-            prefixIcon: UnconstrainedBox(
-              child: SvgPicture.asset(
-                'assets/svg/search.svg',
-                width: 25,
-                height: 25,
-                colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
-                  BlendMode.srcIn,
-                ),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          hintText: 'Search Customers',
+          hintStyle: TextStyle(fontSize: 14, color: Constants.disableColor),
+          filled: true,
+          fillColor: Constants.greyColor,
+          prefixIcon: UnconstrainedBox(
+            child: SvgPicture.asset(
+              'assets/svg/search.svg',
+              width: 25,
+              height: 25,
+              colorFilter: ColorFilter.mode(
+                Constants.primaryColor,
+                BlendMode.srcIn,
               ),
             ),
           ),

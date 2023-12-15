@@ -8,8 +8,6 @@ export 'package:flutter_svg/svg.dart';
 export 'package:go_router/go_router.dart';
 export 'package:provider/provider.dart';
 
-export '/components/constant.dart';
-export '/components/routers.dart';
 export '../../controller/current_order_controller.dart';
 export '../../controller/customer_list_controller.dart';
 export '../../controller/order_history_list_controller.dart';
@@ -36,6 +34,9 @@ export '../view/payment/order_payment_screen.dart';
 export '../view/payment/payment_dialog.dart';
 export '../view/print/print_statement_dialog.dart';
 export '../view/product/product_discount_dialog.dart';
+export '../view/product/product_information_dialog.dart';
 export '../view/quotation/quotation_order_list_screen.dart';
+export '/components/constant.dart';
+export '/components/routers.dart';
 
 

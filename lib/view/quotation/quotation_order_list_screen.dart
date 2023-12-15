@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/quotation_order_list_controller.dart';
 
 class QuotationOrderListScreen extends StatefulWidget {
   const QuotationOrderListScreen({super.key});
@@ -72,7 +71,8 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
   Widget _tableWidget() {
     return Scrollbar(
       thumbVisibility: true,
-      child: SingleChildScrollView(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: AlwaysScrollableScrollPhysics(),
@@ -81,18 +81,12 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
               maxWidth: MediaQuery.of(context).size.width,
               maxHeight: MediaQuery.of(context).size.height - 200,
             ),
-            child: Container(
-                padding: EdgeInsets.all(8),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Constants.greyColor.withOpacity(0.85),
-                    borderRadius: BorderRadius.circular(22)),
-                child: context
-                            .watch<QuotationOrderListController>()
-                            .quotationInfoDataSource !=
-                        null
-                    ? _orderHistoryListWidget()
-                    : SizedBox()),
+            child: context
+                        .watch<QuotationOrderListController>()
+                        .quotationInfoDataSource !=
+                    null
+                ? _quotationListWidget()
+                : SizedBox(),
           ),
         ),
       ),
@@ -183,89 +177,77 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
     );
   }
 
-  Widget _orderHistoryListWidget() {
+  Widget _quotationListWidget() {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(22),
-          child: Container(
-            color: Colors.transparent,
-            margin: EdgeInsets.only(bottom: 70),
-            child: context
-                        .read<QuotationOrderListController>()
-                        .quotationInfoDataSource ==
-                    null
-                ? SizedBox()
-                : Theme(
-                    data: Theme.of(context).copyWith(
-                      cardTheme: CardTheme(
-                        elevation: 2,
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                      ),
-                      cardColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      dividerColor: Colors.white,
-                    ),
-                    child: PaginatedDataTable2(
-                      // autoRowsToHeight: true,
-                      border: TableBorder(
-                          horizontalInside: BorderSide(
-                              color: Constants.disableColor.withOpacity(0.81))),
-                      rowsPerPage: min(
-                          _limit,
-                          context
-                              .read<QuotationOrderListController>()
-                              .quotationList
-                              .length),
-                      minWidth: MediaQuery.of(context).size.width - 100,
-                      showCheckboxColumn: false,
-                      fit: FlexFit.tight,
-                      hidePaginator: true,
-                      sortColumnIndex: _sortColumnIndex,
-                      sortAscending: _sortAscending ?? false,
-                      headingRowColor: MaterialStateColor.resolveWith(
-                          (states) => Constants.primaryColor),
-                      columns: [
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 150 : 120,
-                          text: 'Order',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          fixedWidth: isTabletMode == true ? 300 : 300,
-                          text: 'Date',
-                          // onSort: (columnIndex, ascending) =>
-                          //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 180,
-                          text: 'Customer',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: isTabletMode ? 180 : null,
-                          text: 'Sale Person',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'Total',
-                        ),
-                        CommonUtils.dataColumn(
-                          // fixedWidth: 188,
-                          text: 'State',
-                        ),
-                      ],
-                      source: context
-                          .read<QuotationOrderListController>()
-                          .quotationInfoDataSource!,
+        context.read<QuotationOrderListController>().quotationInfoDataSource ==
+                null
+            ? SizedBox()
+            : Theme(
+                data: Theme.of(context).copyWith(
+                  cardTheme: CardTheme(
+                    elevation: 0,
+                    color: Constants.greyColor.withOpacity(0.85),
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-          ),
-        ),
+                ),
+                child: PaginatedDataTable2(
+                  dataRowHeight: 70,
+                  headingRowHeight: 70,
+                  dividerThickness: 0.0,
+                  rowsPerPage: min(
+                      _limit,
+                      context
+                          .read<QuotationOrderListController>()
+                          .quotationList
+                          .length),
+                  minWidth: MediaQuery.of(context).size.width - 100,
+                  showCheckboxColumn: false,
+                  fit: FlexFit.tight,
+                  hidePaginator: true,
+                  sortColumnIndex: _sortColumnIndex,
+                  sortAscending: _sortAscending ?? false,
+                  headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Constants.primaryColor),
+                  columns: [
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 150 : 120,
+                      text: 'Order',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      fixedWidth: isTabletMode == true ? 300 : 300,
+                      text: 'Date',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 180,
+                      text: 'Customer',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 180 : null,
+                      text: 'Sale Person',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'Total',
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: 188,
+                      text: 'State',
+                    ),
+                  ],
+                  source: context
+                      .read<QuotationOrderListController>()
+                      .quotationInfoDataSource!,
+                ),
+              ),
         // _paginationWidget(),
       ],
     );
