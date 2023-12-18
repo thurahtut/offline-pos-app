@@ -63,70 +63,138 @@ class _MyAppBarState extends State<MyAppBar> {
               );
             },
           ),
-          ...isTabletMode
-              ? [
-                  Expanded(child: SizedBox()),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _showSearchBox,
-                    builder: (_, showSearchBox, __) {
-                      if (showSearchBox) {
-                        return Expanded(child: _searchProductWidget());
-                      }
-                      return CommonUtils.svgIconActionButton(
-                        'assets/svg/search.svg',
-                        onPressed: () {
-                          _showSearchBox.value = !_showSearchBox.value;
-                        },
-                      );
-                    },
-                  ),
-                  CommonUtils.svgIconActionButton(
-                    'assets/svg/menu.svg',
-                  ),
-                ]
-              : [
-                  spacer,
-                  Expanded(
-                    flex: 25,
-                    child: _searchProductWidget(),
-                  ),
-                  spacer,
-                  _appBarActionButtonWithText('assets/svg/account_circle.svg',
-                      'Easy 3 A - Store Leader',
-                      fontSize: 16, onPressed: () {
-                    return ChooseCashierDialog.chooseCashierDialogWidget(
-                      context,
-                      _passwordTextController,
-                    );
-                  }),
-                  spacer,
-                  CommonUtils.svgIconActionButton(
-                    'assets/svg/network_wifi.svg',
-                  ),
-                  spacer,
-                  CommonUtils.svgIconActionButton(
-                    'assets/svg/credit_card.svg',
-                  ),
-                  spacer,
-                  CommonUtils.svgIconActionButton(
-                    'assets/svg/lock_open_right.svg',
-                    onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                        ModalRoute.withName("/Home"));
-                  }
-                  ),
-                  spacer,
-                  _appBarActionButtonWithText(
-                    'assets/svg/move_item.svg',
-                    'Close',
-                    fontSize: 16,
-                  ),
-                ],
+          ...isTabletMode ? _forTabletView : _forWindowView,
         ],
       ),
     );
+  }
+
+  List<Widget> get _forTabletView {
+    return [
+      Expanded(child: SizedBox()),
+      ValueListenableBuilder<bool>(
+        valueListenable: _showSearchBox,
+        builder: (_, showSearchBox, __) {
+          if (showSearchBox) {
+            return Expanded(child: _searchProductWidget());
+          }
+          return CommonUtils.svgIconActionButton(
+            'assets/svg/search.svg',
+            onPressed: () {
+              _showSearchBox.value = !_showSearchBox.value;
+            },
+          );
+        },
+      ),
+      SizedBox(width: 4),
+      PopupMenuButton(
+        tooltip: "",
+        itemBuilder: (bContext) {
+          return [
+            PopupMenuItem<int>(
+              value: 0,
+              child: _appBarActionButtonWithText(
+                  'assets/svg/account_circle.svg', 'Easy 3 A - Store Leader',
+                  fontSize: 16, onPressed: () {
+                Navigator.pop(bContext);
+                return ChooseCashierDialog.chooseCashierDialogWidget(
+                  context,
+                  _passwordTextController,
+                );
+              }),
+            ),
+            PopupMenuItem<int>(
+              value: 1,
+              child: _appBarActionButtonWithText(
+                  'assets/svg/network_wifi.svg', 'Wifi Address Name',
+                  fontSize: 16, onPressed: () {
+                return ChooseCashierDialog.chooseCashierDialogWidget(
+                  context,
+                  _passwordTextController,
+                );
+              }),
+            ),
+            PopupMenuItem<int>(
+              value: 2,
+              child: _appBarActionButtonWithText(
+                  'assets/svg/credit_card.svg', 'Customer\'s Screen',
+                  fontSize: 16, onPressed: () {
+                return ChooseCashierDialog.chooseCashierDialogWidget(
+                  context,
+                  _passwordTextController,
+                );
+              }),
+            ),
+            PopupMenuItem<int>(
+              value: 3,
+              child: _appBarActionButtonWithText(
+                  'assets/svg/lock_open_right.svg', 'Lock / Unlock',
+                  fontSize: 16, onPressed: () {
+                return ChooseCashierDialog.chooseCashierDialogWidget(
+                  context,
+                  _passwordTextController,
+                );
+              }),
+            ),
+            PopupMenuItem<int>(
+              value: 4,
+              child: _appBarActionButtonWithText(
+                  'assets/svg/move_item.svg', 'Close', fontSize: 16,
+                  onPressed: () {
+                return ChooseCashierDialog.chooseCashierDialogWidget(
+                  context,
+                  _passwordTextController,
+                );
+              }),
+            ),
+          ];
+        },
+        child: CommonUtils.svgIconActionButton(
+          'assets/svg/menu.svg',
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> get _forWindowView {
+    return [
+      spacer,
+      Expanded(
+        flex: 25,
+        child: _searchProductWidget(),
+      ),
+      spacer,
+      _appBarActionButtonWithText(
+          'assets/svg/account_circle.svg', 'Easy 3 A - Store Leader',
+          fontSize: 16, onPressed: () {
+        return ChooseCashierDialog.chooseCashierDialogWidget(
+          context,
+          _passwordTextController,
+        );
+      }),
+      spacer,
+      CommonUtils.svgIconActionButton(
+        'assets/svg/network_wifi.svg',
+      ),
+      spacer,
+      CommonUtils.svgIconActionButton(
+        'assets/svg/credit_card.svg',
+      ),
+      spacer,
+      CommonUtils.svgIconActionButton('assets/svg/lock_open_right.svg',
+          onPressed: () {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            ModalRoute.withName("/Home"));
+      }),
+      spacer,
+      _appBarActionButtonWithText(
+        'assets/svg/move_item.svg',
+        'Close',
+        fontSize: 16,
+      ),
+    ];
   }
 
   Center _searchProductWidget() {
@@ -198,6 +266,7 @@ class _MyAppBarState extends State<MyAppBar> {
     return InkWell(
       onTap: onPressed,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           CommonUtils.svgIconActionButton(
             svg,
@@ -206,6 +275,7 @@ class _MyAppBarState extends State<MyAppBar> {
             iconColor: iconColor,
             onPressed: onPressed,
           ),
+          SizedBox(width: 4),
           Text(
             text,
             style: TextStyle(

@@ -93,7 +93,11 @@ class ChooseCashierDialog {
           spacer,
           SizedBox(height: 10),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(dialogContext);
+              PasswordDialog.enterPasswordWidget(
+                  mainContext, passwordTextController);
+            },
             child: Text(
               text,
               style: TextStyle(

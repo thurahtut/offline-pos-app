@@ -75,32 +75,46 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   }
 
   Widget _paymentTypeAndAmountWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: _paymentTypeWidget()),
-        Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _editAmountWidget(),
-                SizedBox(height: 10),
-                _paymentCalculatorWidget(),
-              ],
-            ))
-      ],
-    );
+    bool isTabletMode = CommonUtils.isTabletMode(context);
+    return isTabletMode
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _paymentTypeWidget(),
+              SizedBox(height: 10),
+              _editAmountWidget(),
+              SizedBox(height: 10),
+              _paymentCalculatorWidget(),
+            ],
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _paymentTypeWidget()),
+              Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _editAmountWidget(),
+                      SizedBox(height: 10),
+                      _paymentCalculatorWidget(),
+                    ],
+                  ))
+            ],
+          );
   }
 
   Widget _paymentTypeWidget() {
+    bool isTabletMode = CommonUtils.isTabletMode(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BorderContainer(
           text: 'Cash (Easy 3)',
-          width: MediaQuery.of(context).size.width / 6,
+          width: MediaQuery.of(context).size.width / (isTabletMode ? 2 : 6),
           onTap: () {
             Navigator.pop(context);
           },
@@ -108,7 +122,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         SizedBox(height: 10),
         BorderContainer(
           text: 'Credit/Debit Cards (Easy 3)',
-          width: MediaQuery.of(context).size.width / 6,
+          width: MediaQuery.of(context).size.width / (isTabletMode ? 2 : 6),
           onTap: () {
             Navigator.pop(context);
           },
@@ -116,7 +130,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         SizedBox(height: 10),
         BorderContainer(
           text: 'Near Me E-Payment (Easy 3)',
-          width: MediaQuery.of(context).size.width / 6,
+          width: MediaQuery.of(context).size.width / (isTabletMode ? 2 : 6),
           onTap: () {
             Navigator.pop(context);
           },

@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:offline_pos/components/export_files.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    log(settings.name.toString());
     switch (settings.name) {
       case LoginScreen.routeName:
         return MaterialPageRoute(

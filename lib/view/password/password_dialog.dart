@@ -5,6 +5,7 @@ class PasswordDialog {
     BuildContext context,
     TextEditingController passwordTextController,
   ) {
+    FocusNode? myFocusNode = FocusNode();
     return CommonUtils.showGeneralDialogWidget(
       context,
       (bContext, anim1, anim2) {
@@ -50,21 +51,26 @@ class PasswordDialog {
                       color: Constants.greyColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: TextField(
-                      controller: passwordTextController,
-                      keyboardType: TextInputType.visiblePassword, //to check
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        labelStyle: TextStyle(
-                          color: Constants.primaryColor,
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800,
+                    child: Center(
+                      child: TextField(
+                        autofocus: true,
+                        // focusNode: myFocusNode,
+                        controller: passwordTextController,
+                        keyboardType: TextInputType.visiblePassword, //to check
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                          border: InputBorder.none,
+                          labelStyle: TextStyle(
+                            color: Constants.primaryColor,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                     ),
                   ),
                   SizedBox(height: 8),
-                  _passwordKeyboardWidget(),
+                  _passwordKeyboardWidget(passwordTextController, myFocusNode),
                   SizedBox(height: 16),
                   CommonUtils.okCancelWidget(
                     okCallback: () {
@@ -81,10 +87,17 @@ class PasswordDialog {
           ),
         );
       },
-    );
+    ).then((value) {
+      if (myFocusNode != null) {
+        myFocusNode.dispose();
+      }
+    });
   }
 
-  static Widget _passwordKeyboardWidget() {
+  static Widget _passwordKeyboardWidget(
+    TextEditingController passwordTextController,
+    FocusNode? myFocusNode,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -97,21 +110,27 @@ class PasswordDialog {
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "1";
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               text: "2",
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "2";
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               text: "3",
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "3";
+              },
             ),
           ],
         ),
@@ -123,21 +142,27 @@ class PasswordDialog {
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "4";
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               text: "5",
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "5";
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               text: "6",
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "6";
+              },
             ),
           ],
         ),
@@ -149,21 +174,27 @@ class PasswordDialog {
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "7";
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               text: "8",
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "8";
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               text: "9",
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "9";
+              },
             ),
           ],
         ),
@@ -175,14 +206,19 @@ class PasswordDialog {
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.clear();
+                // myFocusNode?.requestFocus();
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               text: "0",
               width: 70,
               height: 70,
               textSize: 20,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text += "0";
+              },
             ),
             CommonUtils.eachCalculateButtonWidget(
               width: 70,
@@ -190,7 +226,10 @@ class PasswordDialog {
               iconSize: 28,
               icon: Icons.backspace_outlined,
               iconColor: Constants.alertColor,
-              onPressed: () {},
+              onPressed: () {
+                passwordTextController.text = passwordTextController.text
+                    .substring(0, passwordTextController.text.length - 1);
+              },
             ),
           ],
         ),
