@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:offline_pos/controller/payment_method_list_controller.dart';
-
 import '../../components/export_files.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
@@ -64,98 +62,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.backgroundColor.withOpacity(0.74),
-      appBar: _appBarWidget(),
+      appBar: InventoryAppBar(),
       body: _bodyWidget(),
-    );
-  }
-
-  _appBarWidget() {
-    TextStyle textStyle = TextStyle(
-      color: Constants.primaryColor,
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-    );
-    return AppBar(
-      backgroundColor: Colors.white,
-      shadowColor: Constants.greyColor.withOpacity(0.7),
-      elevation: 12,
-      automaticallyImplyLeading: false,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CommonUtils.svgIconActionButton(
-                'assets/svg/grid_outlined.svg',
-                width: 28,
-                height: 28,
-              ),
-              SizedBox(width: 8),
-              Text(
-                'Point of Sale',
-                style: TextStyle(
-                  color: Constants.primaryColor,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            'Dashboard',
-            style: textStyle,
-          ),
-          Text(
-            'Orders',
-            style: textStyle,
-          ),
-          Text(
-            'Product',
-            style: textStyle,
-          ),
-          Text(
-            'Wallet Management',
-            style: textStyle,
-          ),
-          Text(
-            'Point Management',
-            style: textStyle,
-          ),
-          Text(
-            'Reporting',
-            style: textStyle,
-          ),
-          Text(
-            'Configuration',
-            style: textStyle,
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: Text(
-            'SSS Int Co,Ltd.',
-            style: TextStyle(
-              color: Constants.textColor,
-              // fontSize: 13,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: CommonUtils.appBarActionButtonWithText(
-            'assets/svg/account_circle.svg',
-            'Username',
-            textColor: Constants.textColor,
-            // fontSize: 13,
-            onPressed: () {},
-          ),
-        ),
-        SizedBox(width: 4),
-      ],
     );
   }
 
@@ -187,7 +95,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Expanded(flex: 2, child: SizedBox()),
+            Expanded(flex: isTabletMode == true ? 1 : 2, child: SizedBox()),
             if (!context.watch<PaymentMethodListController>().isDetail &&
                 !context.watch<PaymentMethodListController>().isNew)
               Expanded(child: _searchProductWidget()),
@@ -282,6 +190,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   textSize: 16,
                   okLabel: 'Save',
                   cancelLabel: 'Discard',
+                  cancelCallback: () {
+                    context.read<PaymentMethodListController>().isNew = false;
+                  },
                 ),
               ),
               Expanded(flex: isTabletMode == true ? 2 : 3, child: SizedBox()),
@@ -332,7 +243,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Expanded(child: SizedBox()),
+                          if (isTabletMode != true) Expanded(child: SizedBox()),
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -376,23 +287,28 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   }
 
   Widget _tableWidget() {
+    var singleChildScrollView = SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: AlwaysScrollableScrollPhysics(),
+      child: Container(
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
+        child: context
+                    .watch<PaymentMethodListController>()
+                    .paymentMethodInfoDataSource !=
+                null
+            ? _paginationTable()
+            : SizedBox(),
+      ),
+    );
     return Scrollbar(
       thumbVisibility: true,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-          ),
-          child: context
-                      .watch<PaymentMethodListController>()
-                      .paymentMethodInfoDataSource !=
-                  null
-              ? _paginationTable()
-              : SizedBox(),
-        ),
-      ),
+      child: isTabletMode == true
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(22),
+              child: singleChildScrollView,
+            )
+          : singleChildScrollView,
     );
   }
 

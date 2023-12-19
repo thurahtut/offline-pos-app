@@ -42,7 +42,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.currentOrderDividerColor,
-      appBar: MyAppBar(),
+      appBar: SaleAppBar(),
       body: _bodyWidget(),
     );
   }

@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.greyColor,
-      appBar: MyAppBar(),
+      appBar: SaleAppBar(),
       body: Visibility(
           visible: !context.watch<ViewController>().isCustomerView,
           child: _bodyWidget()),

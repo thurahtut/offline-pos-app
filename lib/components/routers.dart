@@ -6,6 +6,11 @@ class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     log(settings.name.toString());
     switch (settings.name) {
+      case WelcomeScreen.routeName:
+        return MaterialPageRoute(
+          // settings: RouteSettings(name: 'Login'),
+          builder: (_) => WelcomeScreen(),
+        );
       case LoginScreen.routeName:
         return MaterialPageRoute(
           // settings: RouteSettings(name: 'Login'),
@@ -35,6 +40,22 @@ class Routers {
       case PaymentMethodScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => PaymentMethodScreen(),
+        );
+      case InventoryListScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => InventoryListScreen(),
+        );
+      case ProductPackagingScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => ProductPackagingScreen(),
+        );
+      case ProductListScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => ProductListScreen(),
+        );
+      case PriceRulesListScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => PriceRulesListScreen(),
         );
       default:
         {

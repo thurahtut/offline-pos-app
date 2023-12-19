@@ -12,10 +12,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp,
-    ]);
 
     return MultiProvider(
       providers: [
@@ -26,12 +22,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => QuotationOrderListController()),
         ChangeNotifierProvider(create: (_) => OrderListController()),
         ChangeNotifierProvider(create: (_) => PaymentMethodListController()),
+        ChangeNotifierProvider(create: (_) => ProductPackagingController()),
+        ChangeNotifierProvider(create: (_) => ProductListController()),
+        ChangeNotifierProvider(create: (_) => PriceRulesListController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: MainScreen.routeName,
+        initialRoute: PriceRulesListScreen.routeName,
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

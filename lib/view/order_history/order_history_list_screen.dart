@@ -50,7 +50,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.currentOrderDividerColor,
-      appBar: MyAppBar(),
+      appBar: SaleAppBar(),
       body: _bodyWidget(),
     );
   }

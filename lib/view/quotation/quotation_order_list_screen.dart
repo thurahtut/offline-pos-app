@@ -44,7 +44,7 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.currentOrderDividerColor,
-      appBar: MyAppBar(),
+      appBar: SaleAppBar(),
       body: _bodyWidget(),
     );
   }

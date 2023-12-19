@@ -1,16 +1,16 @@
 import '../../components/export_files.dart';
 
-class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const MyAppBar({super.key});
+class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
+  const SaleAppBar({super.key});
 
   @override
-  State<MyAppBar> createState() => _MyAppBarState();
+  State<SaleAppBar> createState() => _SaleAppBarState();
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
 }
 
-class _MyAppBarState extends State<MyAppBar> {
+class _SaleAppBarState extends State<SaleAppBar> {
   final TextEditingController _searchProductTextController =
       TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
@@ -252,5 +252,4 @@ class _MyAppBarState extends State<MyAppBar> {
       ),
     );
   }
-
 }

@@ -21,7 +21,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: MyAppBar(),
+      appBar: SaleAppBar(),
       body: _bodyWidget(),
     ));
   }

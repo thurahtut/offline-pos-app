@@ -6,25 +6,31 @@ class CommonUtils {
   static bool isTabletMode(BuildContext context) {
     return MediaQuery.of(context).size.width < 1080;
   }
+  static bool isMobileMode(BuildContext context) {
+    return MediaQuery.of(context).size.width < 500;
+  }
 
   static Widget svgIconActionButton(
     String svg, {
     double? width,
     double? height,
+    double? radius,
     Color? iconColor,
     Function()? onPressed,
     bool? withContianer,
     Color? containerColor,
     bool? withBorder,
     Color? borderWithPrimaryColor,
+    double? padding,
   }) {
     return InkWell(
       onTap: onPressed,
       child: Container(
-        padding: withContianer != null ? EdgeInsets.all(3) : null,
+        padding: withContianer != null ? EdgeInsets.all(padding ?? 3) : null,
         decoration: withContianer != null
             ? BoxDecoration(
-                borderRadius: BorderRadius.circular(((width ?? 27) / 2) + 10),
+                borderRadius:
+                    BorderRadius.circular(radius ?? (((width ?? 27) / 2) + 10)),
                 color: containerColor,
                 border: withBorder == true
                     ? Border.all(
@@ -852,6 +858,36 @@ class CommonUtils {
       intermediaryAccount: "202610 POS Accounts Receivable (MT)",
       allowPaymentViaWallet: true,
       shortCode: "1234567");
+
+  static ProductPackaging demoProductPackaging = ProductPackaging(
+    product: "100 Pipers whisky 175ML",
+    containedQuantity: 49,
+    barcode: "0101234567890128TEC-IT",
+    routes: false,
+    purchase: true,
+    sale: true,
+    company: true,
+  );
+
+  static Product demoProduct = Product(
+      productName: "100 Pipers whisky 175ML",
+      package: "[8836000017357] ",
+      price: 4000,
+      barcode: "EAN13ITF14",
+      salePrice: 4000,
+      latestPrice: 4200,
+      productCategory: "Beverage",
+      productType: "Alcohol");
+
+  static PriceRules demoPriceRule = PriceRules(
+      priceList: "Horeca/Wholesale MOQ...",
+      appliedOn: "[8850418000992] ...",
+      applyOn: "Product",
+      product: "100 Pipers whisky 175ML",
+      price: 4200,
+      quantity: 430,
+      startDate: "12.12.2023",
+      endDate: "01.04.2024");
 
   static DataColumn2 dataColumn({
     required String text,
