@@ -32,6 +32,10 @@ class Routers {
         return MaterialPageRoute(
           builder: (_) => OrderListScreen(),
         );
+      case PaymentMethodScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => PaymentMethodScreen(),
+        );
       default:
         {
           return MaterialPageRoute(

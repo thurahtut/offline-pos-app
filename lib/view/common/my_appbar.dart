@@ -43,7 +43,7 @@ class _MyAppBarState extends State<MyAppBar> {
             'assets/svg/border_color.svg',
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,
-          _appBarActionButtonWithText(
+          CommonUtils.appBarActionButtonWithText(
             'assets/svg/Cash.svg',
             'Cash In/Out',
             fontSize: 16,
@@ -52,7 +52,7 @@ class _MyAppBarState extends State<MyAppBar> {
             },
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,
-          _appBarActionButtonWithText(
+          CommonUtils.appBarActionButtonWithText(
             'assets/svg/order_approve.svg',
             'Order',
             fontSize: 16,
@@ -93,7 +93,7 @@ class _MyAppBarState extends State<MyAppBar> {
           return [
             PopupMenuItem<int>(
               value: 0,
-              child: _appBarActionButtonWithText(
+              child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/account_circle.svg', 'Easy 3 A - Store Leader',
                   fontSize: 16, onPressed: () {
                 Navigator.pop(bContext);
@@ -105,7 +105,7 @@ class _MyAppBarState extends State<MyAppBar> {
             ),
             PopupMenuItem<int>(
               value: 1,
-              child: _appBarActionButtonWithText(
+              child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/network_wifi.svg', 'Wifi Address Name',
                   fontSize: 16, onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
@@ -116,7 +116,7 @@ class _MyAppBarState extends State<MyAppBar> {
             ),
             PopupMenuItem<int>(
               value: 2,
-              child: _appBarActionButtonWithText(
+              child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/credit_card.svg', 'Customer\'s Screen',
                   fontSize: 16, onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
@@ -127,7 +127,7 @@ class _MyAppBarState extends State<MyAppBar> {
             ),
             PopupMenuItem<int>(
               value: 3,
-              child: _appBarActionButtonWithText(
+              child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/lock_open_right.svg', 'Lock / Unlock',
                   fontSize: 16, onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
@@ -138,7 +138,7 @@ class _MyAppBarState extends State<MyAppBar> {
             ),
             PopupMenuItem<int>(
               value: 4,
-              child: _appBarActionButtonWithText(
+              child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/move_item.svg', 'Close', fontSize: 16,
                   onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
@@ -164,7 +164,7 @@ class _MyAppBarState extends State<MyAppBar> {
         child: _searchProductWidget(),
       ),
       spacer,
-      _appBarActionButtonWithText(
+      CommonUtils.appBarActionButtonWithText(
           'assets/svg/account_circle.svg', 'Easy 3 A - Store Leader',
           fontSize: 16, onPressed: () {
         return ChooseCashierDialog.chooseCashierDialogWidget(
@@ -189,7 +189,7 @@ class _MyAppBarState extends State<MyAppBar> {
             ModalRoute.withName("/Home"));
       }),
       spacer,
-      _appBarActionButtonWithText(
+      CommonUtils.appBarActionButtonWithText(
         'assets/svg/move_item.svg',
         'Close',
         fontSize: 16,
@@ -253,39 +253,4 @@ class _MyAppBarState extends State<MyAppBar> {
     );
   }
 
-  Widget _appBarActionButtonWithText(
-    String svg,
-    String text, {
-    double? width,
-    double? height,
-    Color? iconColor,
-    Color? textColor,
-    double? fontSize,
-    Function()? onPressed,
-  }) {
-    return InkWell(
-      onTap: onPressed,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CommonUtils.svgIconActionButton(
-            svg,
-            width: width,
-            height: height,
-            iconColor: iconColor,
-            onPressed: onPressed,
-          ),
-          SizedBox(width: 4),
-          Text(
-            text,
-            style: TextStyle(
-              color: textColor ?? Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: fontSize,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

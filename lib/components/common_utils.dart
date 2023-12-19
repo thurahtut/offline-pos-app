@@ -75,6 +75,43 @@ class CommonUtils {
     );
   }
 
+  static Widget appBarActionButtonWithText(
+    String svg,
+    String text, {
+    double? width,
+    double? height,
+    Color? iconColor,
+    Color? textColor,
+    double? fontSize,
+    Function()? onPressed,
+  }) {
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CommonUtils.svgIconActionButton(
+            svg,
+            width: width,
+            height: height,
+            iconColor: iconColor,
+            onPressed: onPressed,
+          ),
+          SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(
+              color: textColor ?? Colors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: fontSize,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   static List sideBarList = [
     {
       "svgPicture": 'assets/svg/info.svg',
@@ -148,13 +185,13 @@ class CommonUtils {
       "text": 'Payments',
       "onTap": () {
         if (NavigationService.navigatorKey.currentContext != null) {
-          // Navigator.pushNamed(
-          //   NavigationService.navigatorKey.currentContext!,
-          //   OrderPaymentScreen.routeName,
-          // );
+          Navigator.pushNamed(
+            NavigationService.navigatorKey.currentContext!,
+            PaymentMethodScreen.routeName,
+          );
 
-          PaymentDialog.paymentDialogWidget(
-              NavigationService.navigatorKey.currentContext!);
+          // PaymentDialog.paymentDialogWidget(
+          //     NavigationService.navigatorKey.currentContext!);
         }
       },
     },
@@ -438,6 +475,7 @@ class CommonUtils {
     double? textSize,
     Color? cancelContainerColor,
     EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? outsidePadding,
     Function()? okCallback,
     Function()? cancelCallback,
   }) {
@@ -471,7 +509,7 @@ class CommonUtils {
       ),
     ];
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: outsidePadding ?? EdgeInsets.all(16.0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         ...(switchBtns == true) ? list.reversed : list,
       ]),
@@ -803,6 +841,17 @@ class CommonUtils {
     total: 467000,
     state: "onGoing",
   );
+
+  static PaymentMethods demoPaymentMethod = PaymentMethods(
+      method: "American Express Settlement(Easy 1)",
+      journal: "American Express Settlement Easy 1",
+      company: "SSS International Co.,Ltd",
+      forPoint: false,
+      identifyCustomer: false,
+      outstandingAccount: "201397 POS Clearing Account_Bank (TD_Easy/Maxi)",
+      intermediaryAccount: "202610 POS Accounts Receivable (MT)",
+      allowPaymentViaWallet: true,
+      shortCode: "1234567");
 
   static DataColumn2 dataColumn({
     required String text,

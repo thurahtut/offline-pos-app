@@ -88,9 +88,7 @@ class PasswordDialog {
         );
       },
     ).then((value) {
-      if (myFocusNode != null) {
-        myFocusNode.dispose();
-      }
+      myFocusNode.dispose();
     });
   }
 

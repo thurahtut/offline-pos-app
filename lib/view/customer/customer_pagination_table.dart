@@ -125,7 +125,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                       text: 'Discount',
                     ),
                     CommonUtils.dataColumn(
-                      // fixedWidth: 188,
+                      fixedWidth: 250,
                       text: 'Credit',
                     ),
                     CommonUtils.dataColumn(
@@ -227,7 +227,13 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
             children: [
               Text('${customerInfo.credit?.toStringAsFixed(2) ?? '0.00'} Ks'),
               SizedBox(width: 4),
-              CommonUtils.svgIconActionButton('assets/svg/shopping_cart.svg'),
+              CommonUtils.svgIconActionButton('assets/svg/shopping_cart.svg',
+                  onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  OrderPaymentScreen.routeName,
+                );
+              }),
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/share_windows.svg'),
             ],

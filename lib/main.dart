@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderHistoryListController()),
         ChangeNotifierProvider(create: (_) => QuotationOrderListController()),
         ChangeNotifierProvider(create: (_) => OrderListController()),
+        ChangeNotifierProvider(create: (_) => PaymentMethodListController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
