@@ -106,6 +106,7 @@ class CommonUtils {
           SizedBox(width: 4),
           Text(
             text,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: textColor ?? Colors.black,
               fontWeight: FontWeight.w500,
@@ -113,6 +114,44 @@ class CommonUtils {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  static Widget iconActionButtonWithText(
+    IconData icon,
+    String text, {
+    double? size,
+    Color? iconColor,
+    Color? textColor,
+    double? fontSize,
+    Function()? onPressed,
+    bool? switchChild,
+    FontWeight? fontWeight,
+  }) {
+    List<Widget> list = [
+      CommonUtils.iconActionButton(
+        icon,
+        size: size,
+        iconColor: iconColor,
+        onPressed: onPressed,
+      ),
+      SizedBox(width: 6),
+      Text(
+        text,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: textColor ?? Colors.black,
+          fontWeight: fontWeight ?? FontWeight.w500,
+          fontSize: fontSize,
+        ),
+      ),
+    ];
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [...switchChild == true ? list.reversed : list],
       ),
     );
   }

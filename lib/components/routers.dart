@@ -57,6 +57,10 @@ class Routers {
         return MaterialPageRoute(
           builder: (_) => PriceRulesListScreen(),
         );
+      case ProductDetailScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => ProductDetailScreen(),
+        );
       default:
         {
           return MaterialPageRoute(

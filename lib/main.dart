@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: PriceRulesListScreen.routeName,
+        initialRoute: ProductDetailScreen.routeName,
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

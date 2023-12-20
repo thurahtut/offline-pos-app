@@ -31,7 +31,6 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
-      context.read<PriceRulesListController>().isDetail = true;
       for (var i = 0; i < 20; i++) {
         context
             .read<PriceRulesListController>()
@@ -142,67 +141,95 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
   }
 
   Widget _filtersWidget() {
-    return Row(
-      children: [
-        SizedBox(width: 16),
-        Expanded(
-          child: Row(
+    return context.watch<PriceRulesListController>().isDetail
+        ? Row(
             children: [
-              BorderContainer(
-                text: 'Create',
-                containerColor: Constants.primaryColor,
-                textColor: Colors.white,
-                width: 150,
-                onTap: () {
-                  // context.read<PriceRulesListController>().isDetail = false;
-                  // context.read<PriceRulesListController>().isNew = true;
-                },
+              SizedBox(width: 16),
+              Expanded(
+                child: _textForDetailInfo(
+                    'Product : [${context.read<PriceRulesListController>().editingPriceRule?.appliedOn ?? ''}]'
+                    '${context.read<PriceRulesListController>().editingPriceRule?.product ?? ''}'),
               ),
-              SizedBox(width: 4),
-              CommonUtils.svgIconActionButton('assets/svg/export_notes.svg'),
-              (isTabletMode != true && isMobileMode != true)
-                  ? Expanded(child: SizedBox())
-                  : SizedBox(),
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    if (isTabletMode != true && isMobileMode != true)
+                      Expanded(child: SizedBox()),
+                    CommonUtils.appBarActionButtonWithText(
+                        'assets/svg/filter_alt.svg', 'Print',
+                        width: 35, height: 35),
+                    SizedBox(width: 4),
+                    CommonUtils.appBarActionButtonWithText(
+                      'assets/svg/ad_group.svg',
+                      'Action',
+                      // width: 25,
+                    ),
+                    SizedBox(width: 4),
+                  ],
+                ),
+              ),
+              SizedBox(width: 16),
             ],
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          )
+        : Row(
             children: [
-              if (isTabletMode != true && isMobileMode != true)
-                Expanded(child: SizedBox()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  CommonUtils.appBarActionButtonWithText(
-                      'assets/svg/filter_alt.svg', 'Filters',
-                      width: 35, height: 35),
-                  SizedBox(width: 4),
-                  CommonUtils.appBarActionButtonWithText(
-                    'assets/svg/ad_group.svg',
-                    'Group By',
-                    // width: 25,
-                  ),
-                  SizedBox(width: 4),
-                  CommonUtils.appBarActionButtonWithText(
-                    'assets/svg/favorite.svg',
-                    'Favorites',
-                    // width: 25,
-                  ),
-                  // SizedBox(width: 4),
-                  // CommonUtils.svgIconActionButton('assets/svg/view_list.svg'),
-                  // SizedBox(width: 4),
-                  // CommonUtils.svgIconActionButton('assets/svg/grid_view.svg'),
-                ],
+              SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  children: [
+                    BorderContainer(
+                      text: 'Create',
+                      containerColor: Constants.primaryColor,
+                      textColor: Colors.white,
+                      width: 150,
+                      onTap: () {
+                        // context.read<PriceRulesListController>().isDetail = false;
+                        // context.read<PriceRulesListController>().isNew = true;
+                      },
+                    ),
+                    SizedBox(width: 4),
+                    CommonUtils.svgIconActionButton(
+                        'assets/svg/export_notes.svg'),
+                    (isTabletMode != true && isMobileMode != true)
+                        ? Expanded(child: SizedBox())
+                        : SizedBox(),
+                  ],
+                ),
               ),
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    if (isTabletMode != true && isMobileMode != true)
+                      Expanded(child: SizedBox()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        CommonUtils.appBarActionButtonWithText(
+                            'assets/svg/filter_alt.svg', 'Filters',
+                            width: 35, height: 35),
+                        SizedBox(width: 4),
+                        CommonUtils.appBarActionButtonWithText(
+                          'assets/svg/ad_group.svg',
+                          'Group By',
+                          // width: 25,
+                        ),
+                        SizedBox(width: 4),
+                        CommonUtils.appBarActionButtonWithText(
+                          'assets/svg/favorite.svg',
+                          'Favorites',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 16),
             ],
-          ),
-        ),
-        SizedBox(width: 16),
-      ],
-    );
+          );
   }
 
   Widget _tableWidget() {
@@ -611,9 +638,21 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
+          ),
+        ],
+      ),
+      spacer,
+      Row(
+        children: [
+          Expanded(child: _textForDetailInfo("Product")),
+          Expanded(
+            flex: 2,
+            child: _textForDetailInfo(
+                '[${context.read<PriceRulesListController>().editingPriceRule?.appliedOn ?? ''}]'
+                '${context.read<PriceRulesListController>().editingPriceRule?.product ?? ''}'),
           ),
         ],
       ),
@@ -650,6 +689,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
   Widget _textForDetailInfo(String text) {
     return Text(
       text,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: Constants.textColor,
         fontSize: 17,

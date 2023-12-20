@@ -42,6 +42,7 @@ export '../view/payment/payment_dialog.dart';
 export '../view/payment/payment_method_screen.dart';
 export '../view/price/price_rules_list_screen.dart';
 export '../view/print/print_statement_dialog.dart';
+export '../view/product/product_detail_screen.dart';
 export '../view/product/product_discount_dialog.dart';
 export '../view/product/product_information_dialog.dart';
 export '../view/product/product_list_screen.dart';
