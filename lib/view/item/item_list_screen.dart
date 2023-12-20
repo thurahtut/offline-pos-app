@@ -43,16 +43,20 @@ class _ItemListScreenState extends State<ItemListScreen> {
         _itemListHeaderWidget(),
         Expanded(
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                child: CommonUtils.svgIconActionButton(
-                  "assets/svg/${showSidebar ? "close_sidebar.svg" : "open_sidebar.svg"}",
-                  height: 40,
-                  onPressed: () {
-                    widget.showSideBar.value = !widget.showSideBar.value;
-                  },
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                  child: CommonUtils.svgIconActionButton(
+                    "assets/svg/${showSidebar ? "close_sidebar.svg" : "open_sidebar.svg"}",
+                    height: 40,
+                    onPressed: () {
+                      widget.showSideBar.value = !widget.showSideBar.value;
+                    },
+                  ),
                 ),
               ),
               Expanded(
