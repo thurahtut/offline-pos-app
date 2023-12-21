@@ -165,6 +165,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               border: InputBorder.none,
               labelStyle: textStyle,
             ),
+              inputFormatters: [
+                // FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
+                FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)'))
+              ]
           ),
           Text(
             'Please select a payment method',
@@ -183,45 +187,117 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
       children: [
         _eachCalculatorRowWidget(
           [
-            CommonUtils.eachCalculateButtonWidget(text: "1", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: "2", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: "3", onPressed: () {}),
             CommonUtils.eachCalculateButtonWidget(
-                text: "+10", onPressed: () {}),
+              text: "1",
+              onPressed: () {
+                _amountController.text += "1";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "2",
+              onPressed: () {
+                _amountController.text += "2";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "3",
+              onPressed: () {
+                _amountController.text += "3";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "+10",
+              onPressed: () {
+                _amountController.text =
+                    (parseValueAmount(_amountController.text) + 10).toString();
+                setState(() {});
+              },
+            ),
             CommonUtils.eachCalculateButtonWidget(
               text: "BG Bakerys",
               width: 150,
               prefixSvg: "assets/svg/account_circle.svg",
-              onPressed: () {},
               svgColor: Constants.primaryColor,
+              onPressed: () {},
             ),
           ],
         ),
         SizedBox(height: 4),
         _eachCalculatorRowWidget(
           [
-            CommonUtils.eachCalculateButtonWidget(text: "4", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: "5", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: "6", onPressed: () {}),
             CommonUtils.eachCalculateButtonWidget(
-                text: "+20", onPressed: () {}),
+              text: "4",
+              onPressed: () {
+                _amountController.text += "4";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "5",
+              onPressed: () {
+                _amountController.text += "5";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "6",
+              onPressed: () {
+                _amountController.text += "6";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+                text: "+20",
+                onPressed: () {
+                  _amountController.text =
+                      (parseValueAmount(_amountController.text) + 20)
+                          .toString();
+                  setState(() {});
+                }),
             CommonUtils.eachCalculateButtonWidget(
               text: "Invoice",
               width: 150,
               prefixSvg: "assets/svg/receipt_long.svg",
-              onPressed: () {},
               svgColor: Constants.primaryColor,
+              onPressed: () {},
             ),
           ],
         ),
         SizedBox(height: 4),
         _eachCalculatorRowWidget(
           [
-            CommonUtils.eachCalculateButtonWidget(text: "7", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: "8", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: "9", onPressed: () {}),
             CommonUtils.eachCalculateButtonWidget(
-                text: "+50", onPressed: () {}),
+              text: "7",
+              onPressed: () {
+                _amountController.text += "7";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "8",
+              onPressed: () {
+                _amountController.text += "8";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "9",
+              onPressed: () {
+                _amountController.text += "9";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "+50",
+              onPressed: () {
+                _amountController.text =
+                    (parseValueAmount(_amountController.text) + 50).toString();
+                setState(() {});
+              },
+            ),
           ],
         ),
         SizedBox(height: 4),
@@ -229,12 +305,32 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           [
             CommonUtils.eachCalculateButtonWidget(
                 text: "+/-", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: "0", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(text: ".", onPressed: () {}),
+            CommonUtils.eachCalculateButtonWidget(
+              text: "0",
+              onPressed: () {
+                _amountController.text += "0";
+                setState(() {});
+              },
+            ),
+            CommonUtils.eachCalculateButtonWidget(
+              text: ".",
+              onPressed: () {
+                double d = parseValueAmount(_amountController.text);
+                if (d is! int) {
+                  return;
+                }
+                _amountController.text += ".";
+                setState(() {});
+              },
+            ),
             CommonUtils.eachCalculateButtonWidget(
                 icon: Icons.backspace_outlined,
                 iconColor: Constants.alertColor,
-                onPressed: () {}),
+              onPressed: () {
+                _amountController.text = _amountController.text
+                    .substring(0, _amountController.text.length - 1);
+              },
+            ),
           ],
         ),
       ],
@@ -254,5 +350,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               ))
           .toList(),
     );
+  }
+
+  double parseValueAmount(String str) {
+    double value = double.tryParse(str) ?? 0;
+    return value;
   }
 }

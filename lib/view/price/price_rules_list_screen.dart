@@ -79,7 +79,7 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
         _filtersWidget(),
         Expanded(
             child: context.read<PriceRulesListController>().isDetail
-                ? _priceRuleDetailWidget()
+                ? SingleChildScrollView(child: _priceRuleDetailWidget())
                 : _tableWidget()),
       ],
     );

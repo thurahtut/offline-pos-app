@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:offline_pos/components/export_files.dart';
 
 class CommonUtils {
@@ -419,96 +417,6 @@ class CommonUtils {
           ],
         ),
       ),
-    );
-  }
-
-  static List<Widget> calculatorActionWidgetList = [
-    eachCalculateButtonWidget(text: "1", onPressed: () {}),
-    eachCalculateButtonWidget(text: "2", onPressed: () {}),
-    eachCalculateButtonWidget(text: "3", onPressed: () {}),
-    eachCalculateButtonWidget(text: "Qty", onPressed: () {}),
-    eachCalculateButtonWidget(
-        icon: Icons.keyboard_arrow_down_rounded,
-        iconSize: 32,
-        onPressed: () {}),
-    eachCalculateButtonWidget(text: "4", onPressed: () {}),
-    eachCalculateButtonWidget(text: "5", onPressed: () {}),
-    eachCalculateButtonWidget(text: "6", onPressed: () {}),
-    eachCalculateButtonWidget(text: "Disc", onPressed: () {}),
-    eachCalculateButtonWidget(text: "Price", onPressed: () {}),
-    eachCalculateButtonWidget(text: "7", onPressed: () {}),
-    eachCalculateButtonWidget(text: "8", onPressed: () {}),
-    eachCalculateButtonWidget(text: "9", onPressed: () {}),
-    eachCalculateButtonWidget(text: "+/-", onPressed: () {}),
-    eachCalculateButtonWidget(
-        icon: Icons.arrow_forward_ios, iconSize: 21, onPressed: () {}),
-    eachCalculateButtonWidget(text: ".", onPressed: () {}),
-    eachCalculateButtonWidget(text: "0", onPressed: () {}),
-    eachCalculateButtonWidget(
-        icon: Icons.backspace_outlined,
-        iconColor: Constants.alertColor,
-        onPressed: () {}),
-    eachCalculateButtonWidget(
-      text: "Customer",
-      containerColor: Constants.primaryColor,
-      textColor: Colors.white,
-      width: 100,
-      onPressed: () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          NavigationService.navigatorKey.currentContext!
-              .read<ViewController>()
-              .isCustomerView = true;
-          CustomerListDialog.customerListDialogWidget(
-              NavigationService.navigatorKey.currentContext!);
-        }
-      },
-    ),
-  ];
-
-  static Widget orderCalculatorWidget(BuildContext context) {
-    bool isTabletMode = CommonUtils.isTabletMode(context);
-    List<Widget> list = [];
-    List<Widget> rowList = [];
-
-    for (var i = 0;
-        i < CommonUtils.calculatorActionWidgetList.length;
-        i += (isTabletMode ? 10 : 5)) {
-      int start = (list.length * (isTabletMode ? 10 : 5));
-      int end =
-          (isTabletMode ? 10 : 5) + (list.length * (isTabletMode ? 10 : 5));
-      rowList.addAll(CommonUtils.calculatorActionWidgetList.getRange(
-          start, min(end, CommonUtils.calculatorActionWidgetList.length)));
-      list.add(SizedBox(
-        width: isTabletMode
-            ? (MediaQuery.of(context).size.width / 10) * 9
-            : MediaQuery.of(context).size.width -
-                (MediaQuery.of(context).size.width / 5.5) -
-                ((MediaQuery.of(context).size.width / 5.3) * 3),
-        child: Row(
-          children: List.generate(
-            rowList.length,
-            (index) => Expanded(
-              flex: rowList.length == (isTabletMode ? 10 : 5)
-                  ? 1
-                  : index == (rowList.length - 1)
-                      ? 2
-                      : 1,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: (isTabletMode ? 4 : 8.0),
-                  vertical: (isTabletMode ? 1.2 : 3),
-                ),
-                child: rowList[index],
-              ),
-            ),
-          ),
-        ),
-      ));
-      rowList = [];
-    }
-
-    return Column(
-      children: list,
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/product/product_unit_dialog.dart';
 
@@ -59,7 +61,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             : SizedBox(),
         Align(
             alignment: Alignment.bottomCenter,
-            child: CommonUtils.orderCalculatorWidget(context)),
+            child: _orderCalculatorWidget(context)),
       ],
     );
   }
@@ -247,6 +249,145 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           ),
         ],
       ),
+    );
+  }
+  
+  final List<Widget> _calculatorActionWidgetList = [
+    CommonUtils.eachCalculateButtonWidget(
+      text: "1",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "2",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "3",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "Qty",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      icon: Icons.keyboard_arrow_down_rounded,
+      iconSize: 32,
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "4",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "5",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "6",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "Disc",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "Price",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "7",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "8",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "9",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "+/-",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      icon: Icons.arrow_forward_ios,
+      iconSize: 21,
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: ".",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "0",
+      onPressed: () {},
+    ),
+    CommonUtils.eachCalculateButtonWidget(
+        icon: Icons.backspace_outlined,
+        iconColor: Constants.alertColor,
+        onPressed: () {}),
+    CommonUtils.eachCalculateButtonWidget(
+      text: "Customer",
+      containerColor: Constants.primaryColor,
+      textColor: Colors.white,
+      width: 100,
+      onPressed: () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          NavigationService.navigatorKey.currentContext!
+              .read<ViewController>()
+              .isCustomerView = true;
+          CustomerListDialog.customerListDialogWidget(
+              NavigationService.navigatorKey.currentContext!);
+        }
+      },
+    ),
+  ];
+
+  Widget _orderCalculatorWidget(BuildContext context) {
+    bool isTabletMode = CommonUtils.isTabletMode(context);
+    List<Widget> list = [];
+    List<Widget> rowList = [];
+
+    for (var i = 0;
+        i < _calculatorActionWidgetList.length;
+        i += (isTabletMode ? 10 : 5)) {
+      int start = (list.length * (isTabletMode ? 10 : 5));
+      int end =
+          (isTabletMode ? 10 : 5) + (list.length * (isTabletMode ? 10 : 5));
+      rowList.addAll(_calculatorActionWidgetList.getRange(
+          start, min(end, _calculatorActionWidgetList.length)));
+      list.add(SizedBox(
+        width: isTabletMode
+            ? (MediaQuery.of(context).size.width / 10) * 9
+            : MediaQuery.of(context).size.width -
+                (MediaQuery.of(context).size.width / 5.5) -
+                ((MediaQuery.of(context).size.width / 5.3) * 3),
+        child: Row(
+          children: List.generate(
+            rowList.length,
+            (index) => Expanded(
+              flex: rowList.length == (isTabletMode ? 10 : 5)
+                  ? 1
+                  : index == (rowList.length - 1)
+                      ? 2
+                      : 1,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: (isTabletMode ? 4 : 8.0),
+                  vertical: (isTabletMode ? 1.2 : 3),
+                ),
+                child: rowList[index],
+              ),
+            ),
+          ),
+        ),
+      ));
+      rowList = [];
+    }
+
+    return Column(
+      children: list,
     );
   }
 }

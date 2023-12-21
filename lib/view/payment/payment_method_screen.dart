@@ -110,9 +110,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         _filtersWidget(),
         Expanded(
             child: context.watch<PaymentMethodListController>().isDetail
-                ? _paymentDetailWidget()
+                ? SingleChildScrollView(child: _paymentDetailWidget())
                 : context.watch<PaymentMethodListController>().isNew
-                    ? _createNewPaymentMethodWidget()
+                    ? SingleChildScrollView(
+                        child: _createNewPaymentMethodWidget())
                     : _tableWidget()),
       ],
     );
@@ -480,7 +481,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       padding: EdgeInsets.all(20),
       child: Row(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
