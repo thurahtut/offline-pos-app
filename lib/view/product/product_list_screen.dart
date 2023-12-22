@@ -523,6 +523,10 @@ class DataSourceForProductListScreen extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
+  onTap() {
+    Navigator.pushNamed(context, ProductDetailScreen.routeName);
+  }
+
   DataRow _createRow(int index) {
     Product product = productList[index];
     return DataRow(
@@ -532,11 +536,11 @@ class DataSourceForProductListScreen extends DataTableSource {
           Text('${index + 1}'),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(product.productName ?? ''),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(
             product.package ?? '',
             style: TextStyle(
@@ -545,7 +549,7 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(
             '${product.price ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
@@ -553,11 +557,11 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(product.barcode ?? ''),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(
             '${product.salePrice ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
@@ -565,7 +569,7 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(
             '${product.latestPrice ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
@@ -573,63 +577,18 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(product.productCategory ?? ''),
         ),
         DataCell(
-          onTap: () {},
-          Text(product.productType ?? ''),
+          onTap: onTap,
+          Text(product.productType.toString()),
         ),
         DataCell(
-          onTap: () {},
+          onTap: onTap,
           Text(''),
         ),
       ],
     );
-  }
-}
-
-class Product {
-  String? productName;
-  String? package;
-  int? price;
-  String? barcode;
-  int? salePrice;
-  int? latestPrice;
-  String? productCategory;
-  String? productType;
-
-  Product(
-      {this.productName,
-      this.package,
-      this.price,
-      this.barcode,
-      this.salePrice,
-      this.latestPrice,
-      this.productCategory,
-      this.productType});
-
-  Product.fromJson(Map<String, dynamic> json) {
-    productName = json['product_name'];
-    package = json['package'];
-    price = json['price'];
-    barcode = json['barcode'];
-    salePrice = json['sale_price'];
-    latestPrice = json['latest_price'];
-    productCategory = json['product_category'];
-    productType = json['product_type'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['product_name'] = productName;
-    data['package'] = package;
-    data['price'] = price;
-    data['barcode'] = barcode;
-    data['sale_price'] = salePrice;
-    data['latest_price'] = latestPrice;
-    data['product_category'] = productCategory;
-    data['product_type'] = productType;
-    return data;
   }
 }

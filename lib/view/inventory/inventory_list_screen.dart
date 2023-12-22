@@ -122,112 +122,117 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
           );
   }
 
-  Container _inventoryWidget(Inventory e) {
-    return Container(
-      margin: EdgeInsets.all(8),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: Constants.greyColor2.withOpacity(0.3),
-            blurRadius: 4,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(
-                  e.shopName ?? '',
-                  style: TextStyle(
-                    color: Constants.textColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  e.warehouseName ?? '',
-                  style: TextStyle(
-                    color: Constants.textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                BorderContainer(
-                  text: '${e.process ?? 0} To Process',
-                  containerColor: Constants.primaryColor,
-                  textColor: Colors.white,
-                  textSize: 18,
-                  width: 150,
-                ),
-              ],
+  Widget _inventoryWidget(Inventory e) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, ProductPackagingScreen.routeName);
+      },
+      child: Container(
+        margin: EdgeInsets.all(8),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Constants.greyColor2.withOpacity(0.3),
+              blurRadius: 4,
+              offset: Offset(0, 3),
             ),
-          ),
-          FittedBox(
-            child: Expanded(
-              flex: 2,
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CommonUtils.iconActionButton(
-                        Icons.more_horiz_rounded,
-                        iconColor: Constants.accentColor,
-                      ),
-                    ],
+                  Text(
+                    e.shopName ?? '',
+                    style: TextStyle(
+                      color: Constants.textColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '${e.waiting ?? 0} Waiting',
+                    e.warehouseName ?? '',
                     style: TextStyle(
                       color: Constants.textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    '${e.late ?? 0} Late',
-                    style: TextStyle(
-                      color: Constants.textColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '${e.backOrder ?? 0} Back Order',
-                    style: TextStyle(
-                      color: Constants.textColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '${e.batch ?? 0} Batches',
-                    style: TextStyle(
-                      color: Constants.textColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  BorderContainer(
+                    text: '${e.process ?? 0} To Process',
+                    containerColor: Constants.primaryColor,
+                    textColor: Colors.white,
+                    textSize: 18,
+                    width: 150,
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            FittedBox(
+              child: Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CommonUtils.iconActionButton(
+                          Icons.more_horiz_rounded,
+                          iconColor: Constants.accentColor,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '${e.waiting ?? 0} Waiting',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '${e.late ?? 0} Late',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '${e.backOrder ?? 0} Back Order',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '${e.batch ?? 0} Batches',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

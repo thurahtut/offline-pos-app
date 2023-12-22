@@ -824,7 +824,7 @@ class CommonUtils {
       salePrice: 4000,
       latestPrice: 4200,
       productCategory: "Beverage",
-      productType: "Alcohol");
+      productType: ProductType.storableProduct);
 
   static PriceRules demoPriceRule = PriceRules(
       priceList: "Horeca/Wholesale MOQ...",
@@ -856,4 +856,47 @@ class CommonUtils {
       onSort: onSort,
     );
   }
+  static List<String> categoryList = [
+    "Dry Grocery",
+    "Food To Go",
+    "Men Wears",
+    "Women Wears",
+    "B.W.S , Wine, Accessories and Tabacco",
+    "Basic Grocery",
+    "Beverage",
+    "Bakery",
+    "Butchery",
+    "Cosmetic",
+    "Kitchen Accessories",
+    "Drink",
+    "Alcohol",
+    "Juice",
+    "Water",
+    "Tissue",
+    "Electronic"
+  ];
+
+  static List<String> unitList = [
+    "mm",
+    "cm",
+    "in3",
+    "inches",
+    "ozs",
+    "fl oz",
+    "ft2",
+  ];
+
+  static List<String> brandList = [
+    "Flee",
+    "Evenline",
+    "OK",
+    "OKAMOTO",
+    "APPETON",
+  ];
+
+  static List<String> companyList = [
+    "MZ Company",
+    "Super Global Co., Ltd.",
+    "SSS International Co.,ltd",
+  ];
 }

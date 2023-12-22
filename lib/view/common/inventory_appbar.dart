@@ -125,17 +125,30 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
     bool isMobileMode = CommonUtils.isMobileMode(context);
     return [
       if (isMobileMode) ..._actionButtonsWidget(),
-      Text(
-        'Dashboard',
-        style: textStyle,
+      GestureDetector(
+        onTap: () {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              ModalRoute.withName("/Home"));
+        },
+        child: Text(
+          'Dashboard',
+          style: textStyle,
+        ),
       ),
       Text(
         'Orders',
         style: textStyle,
       ),
-      Text(
-        'Product',
-        style: textStyle,
+GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, ProductListScreen.routeName);
+        },
+        child: Text(
+          'Product',
+          style: textStyle,
+        ),
       ),
       Text(
         'Wallet Management',

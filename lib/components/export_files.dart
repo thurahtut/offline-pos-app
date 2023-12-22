@@ -7,6 +7,8 @@ export 'package:flutter/services.dart';
 export 'package:flutter_svg/svg.dart';
 export 'package:go_router/go_router.dart';
 export 'package:provider/provider.dart';
+export 'package:sqflite/sqflite.dart';
+export 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 export '../../controller/current_order_controller.dart';
 export '../../controller/customer_list_controller.dart';
@@ -50,4 +52,12 @@ export '../view/product/product_packaging_screen.dart';
 export '../view/quotation/quotation_order_list_screen.dart';
 export '/components/constant.dart';
 export '/components/routers.dart';
-
+export '../view/product/product_detail_filter.dart';
+export '../../controller/product_detail_controller.dart';
+export '../view/product/product_common_action_title.dart';
+export '../view/product/product_create_or_edit_screen.dart';
+export '../view/product/product_info_view.dart';
+export '../view/product/product_general_info_title.dart';
+export '../../model/product.dart';
+export '../service/enums.dart';
+export '../view/product/product_detail_permission_title.dart';

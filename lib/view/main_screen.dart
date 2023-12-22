@@ -12,25 +12,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ValueNotifier<bool> _showSideBar = ValueNotifier(true);
-  List<String> categoryList = [
-    "Dry Grocery",
-    "Food To Go",
-    "Men Wears",
-    "Women Wears",
-    "B.W.S , Wine, Accessories and Tabacco",
-    "Basic Grocery",
-    "Beverage",
-    "Bakery",
-    "Butchery",
-    "Cosmetic",
-    "Kitchen Accessories",
-    "Drink",
-    "Alcohol",
-    "Juice",
-    "Water",
-    "Tissue",
-    "Electronic"
-  ];
 
   @override
   void dispose() {
@@ -137,7 +118,7 @@ class _MainScreenState extends State<MainScreen> {
                     : Constants.primaryColor,
               ),
               spacer,
-              ...categoryList
+              ...CommonUtils.categoryList
                   .map((e) => Row(
                         children: [
                           Container(

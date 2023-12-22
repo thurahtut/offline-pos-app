@@ -1,6 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/controller/product_detail_controller.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
@@ -25,12 +26,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductPackagingController()),
         ChangeNotifierProvider(create: (_) => ProductListController()),
         ChangeNotifierProvider(create: (_) => PriceRulesListController()),
+        ChangeNotifierProvider(create: (_) => ProductDetailController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: MainScreen.routeName,
+        initialRoute: ProductDetailScreen.routeName,
+        home: ProductDetailScreen(),
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:
