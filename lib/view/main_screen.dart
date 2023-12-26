@@ -1,5 +1,3 @@
-import 'package:offline_pos/view/item/item_list_screen.dart';
-
 import '/components/export_files.dart';
 
 class MainScreen extends StatefulWidget {

@@ -150,8 +150,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 textColor: Colors.white,
                 width: 150,
                 onTap: () {
-                  // context.read<ProductListController>().isDetail = false;
-                  // context.read<ProductListController>().isNew = true;
+                  Navigator.pushNamed(context, ProductDetailScreen.routeName);
+                  context.read<ProductDetailController>().mode =
+                      ProductDetailMode.create;
                 },
               ),
               SizedBox(width: 4),

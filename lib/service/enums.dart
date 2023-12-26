@@ -22,3 +22,4 @@ enum ItemType {
   const ItemType(this.text);
   final String text;
 }
+

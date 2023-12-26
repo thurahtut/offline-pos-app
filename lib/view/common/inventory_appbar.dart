@@ -15,6 +15,65 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
   final ValueNotifier<bool> _showSearchBox = ValueNotifier(false);
   int index = 0;
 
+  final List _productMenuList = [
+    {
+      "title": "Products",
+      "onTap": (context) {
+        Navigator.pushNamed(context, ProductListScreen.routeName);
+      }
+    },
+    {"title": "Product Variants", "onTap": (context) {}},
+    {"title": "Product Tags", "onTap": (context) {}},
+    {"title": "Custom Product Template", "onTap": (context) {}},
+    {"title": "Pricelists", "onTap": (context) {}},
+    {"title": "Product Multi UOM", "onTap": (context) {}},
+    {
+      "title": "Product Packagings",
+      "onTap": (context) {
+        Navigator.pushNamed(context, ProductPackagingScreen.routeName);
+      }
+    },
+    {
+      "title": "Pricelist Item",
+      "onTap": (context) {
+        Navigator.pushNamed(context, PriceRulesListScreen.routeName);
+      }
+    },
+    {"title": "Weight Barcode", "onTap": (context) {}},
+    {"title": "Loyalty Programs", "onTap": (context) {}},
+    {"title": "Coupon Programs", "onTap": (context) {}},
+    {"title": "Notification", "onTap": (context) {}},
+  ];
+
+  final List _configurationMenuList = [
+    {"title": "Settings", "onTap": () {}},
+    {"title": "Point of Sale", "onTap": () {}},
+    {"title": "POS Theme Settings", "onTap": () {}},
+    {"title": "Shop Information", "onTap": () {}},
+    {"title": "POS Discount", "onTap": () {}},
+    {"title": "Login Popup", "onTap": () {}},
+    {"title": "Coins/Bills", "onTap": () {}},
+    {"title": "Special Terms", "onTap": () {}},
+    {"title": "Multi Banners", "onTap": () {}},
+    {"title": "Member Config", "onTap": () {}},
+    {"title": "Gift Card", "onTap": () {}},
+    {"title": "Order Note", "onTap": () {}},
+    {"title": "POS Cash In/Out", "onTap": () {}},
+    {"title": "POS Product Delete History", "onTap": () {}},
+    {
+      "title": "Products",
+      "children": [
+        {"title": "POS Product Categories", "onTap": () {}},
+        {"title": "Attributes", "onTap": () {}},
+      ],
+      "onTap": () {}
+    },
+    {"title": "Advanced Loyalty Programme", "onTap": () {}},
+    {"title": "All Advanced Coupon", "onTap": () {}},
+    {"title": "Merge POS Category", "onTap": () {}},
+    {"title": "Log Track", "onTap": () {}},
+  ];
+
   @override
   void dispose() {
     _showSearchBox.dispose();
@@ -141,13 +200,31 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
         'Orders',
         style: textStyle,
       ),
-GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, ProductListScreen.routeName);
+      PopupMenuButton(
+        tooltip: "",
+        itemBuilder: (bContext) {
+          return [
+            ..._productMenuList.map(
+              (e) {
+                return PopupMenuItem<int>(
+                  value: 0,
+                  onTap: () {
+                    e["onTap"]?.call(context);
+                  },
+                  child: Text(e['title']),
+                );
+              },
+            ).toList()
+          ];
         },
-        child: Text(
+        child: CommonUtils.iconActionButtonWithText(
+          Icons.keyboard_arrow_down_rounded,
           'Product',
-          style: textStyle,
+          iconColor: Constants.accentColor,
+          switchChild: true,
+          textColor: textStyle.color,
+          fontWeight: textStyle.fontWeight,
+          fontSize: textStyle.fontSize,
         ),
       ),
       Text(
@@ -162,9 +239,63 @@ GestureDetector(
         'Reporting',
         style: textStyle,
       ),
-      Text(
-        'Configuration',
-        style: textStyle,
+      PopupMenuButton(
+        tooltip: "",
+        itemBuilder: (bContext) {
+          return [
+            ..._configurationMenuList.map(
+              (e) {
+                return PopupMenuItem<int>(
+                  value: 0,
+                  onTap: e["children"] != null ? null : e["onTap"],
+                  child: e["children"] != null
+                      ? TreeView(
+                          treeController:
+                              TreeController(allNodesExpanded: true),
+                          indent: 1,
+                          nodes: [
+                            TreeNode(
+                              content: Text(
+                                e['title'],
+                                style: textStyle.copyWith(
+                                  fontSize: 13,
+                                  color: Constants.textColor,
+                                ),
+                              ),
+                              children: [
+                                ...(e["children"] is List)
+                                    ? e["children"]
+                                        .map(
+                                          (value) => TreeNode(
+                                            content: Text(
+                                              value['title'],
+                                              style: textStyle.copyWith(
+                                                color: Constants.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList()
+                                    : []
+                              ],
+                            ),
+                          ],
+                        )
+                      : Text(e['title']),
+                );
+              },
+            ).toList()
+          ];
+        },
+        child: CommonUtils.iconActionButtonWithText(
+          Icons.keyboard_arrow_down_rounded,
+          'Configuration',
+          iconColor: Constants.accentColor,
+          switchChild: true,
+          textColor: textStyle.color,
+          fontWeight: textStyle.fontWeight,
+          fontSize: textStyle.fontSize,
+        ),
       ),
     ];
   }

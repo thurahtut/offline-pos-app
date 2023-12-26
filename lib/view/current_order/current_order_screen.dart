@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/product/product_unit_dialog.dart';
 
 class CurrentOrderScreen extends StatefulWidget {
   const CurrentOrderScreen({super.key});
@@ -29,25 +28,52 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Stack(
+      alignment: Alignment.centerRight,
       children: [
-        (context.watch<CurrentOrderController>().currentOrderList.isEmpty)
-            ? Expanded(
-                flex: 2,
-                child: _noOrderWidget(),
-              )
-            : Expanded(
-                flex: 2,
-                child: _currentOrderListWidget(),
-              ),
-        isTabletMode
-            ? _keyboardAndSummaryWidget()
-            : Expanded(
-                flex: 3,
-                child: _keyboardAndSummaryWidget(),
-              ),
-        SizedBox(height: 8),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            (context.watch<CurrentOrderController>().currentOrderList.isEmpty)
+                ? Expanded(
+                    // flex: 2,
+                    child: _noOrderWidget(),
+                  )
+                : Expanded(
+                    // flex: 2,
+                    child: _currentOrderListWidget(),
+                  ),
+            if (!context.watch<ViewController>().isKeyboardHide)
+              isTabletMode
+                  ? _keyboardAndSummaryWidget()
+                  : _keyboardAndSummaryWidget(),
+            SizedBox(height: 8),
+          ],
+        ),
+        InkWell(
+            onTap: () {
+              context.read<ViewController>().isKeyboardHide =
+                  !context.read<ViewController>().isKeyboardHide;
+            },
+            child: Container(
+                padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Constants.greyColor2.withOpacity(0.6),
+                      blurRadius: 4,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Icon(context.watch<ViewController>().isKeyboardHide
+                    ? Icons.arrow_forward_ios
+                    : Icons.arrow_back_ios))),
       ],
     );
   }

@@ -40,4 +40,14 @@ class PriceRulesListController with ChangeNotifier {
     _editingPriceRule = editingPriceRule;
     notifyListeners();
   }
+
+
+  resetPriceRulesListController() {
+    _priceRulesList = [];
+    _priceRulesDataSource = null;
+    _isDetail = false;
+    _isNew = false;
+    _editingPriceRule = null;
+    notifyListeners();
+  }
 }

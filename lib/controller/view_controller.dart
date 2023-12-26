@@ -26,4 +26,12 @@ class ViewController with ChangeNotifier {
     _isCustomerView = isCustomerView;
     notifyListeners();
   }
+  
+  bool _isKeyboardHide = false;
+  bool get isKeyboardHide => _isKeyboardHide;
+  set isKeyboardHide(bool isKeyboardHide) {
+    if (_isKeyboardHide == isKeyboardHide) return;
+    _isKeyboardHide = isKeyboardHide;
+    notifyListeners();
+  }
 }

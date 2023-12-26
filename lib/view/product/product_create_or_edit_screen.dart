@@ -328,11 +328,17 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                           flex: 2,
                           child: _dropDownWidget(
                             context
+                                        .watch<ProductDetailController>()
+                                        .creatingProduct
+                                        .productType !=
+                                    null
+                                ? context
                                     .read<ProductDetailController>()
                                     .creatingProduct
                                     .productType
                                     ?.name ??
-                                ProductType.consumable.name,
+                                    ProductType.consumable.name
+                                : ProductType.consumable.name,
                             ProductType.values
                                 .map((e) => DropdownMenuItem(
                                       value: e.name,
@@ -342,6 +348,20 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                           )),
                                     ))
                                 .toList(),
+                            onChanged: (p0) {
+                              int index = ProductType.values
+                                  .indexWhere((element) => element.name == p0);
+                              if (index != -1) {
+                                context
+                                        .read<ProductDetailController>()
+                                        .creatingProduct
+                                        .productType =
+                                    ProductType.values.elementAt(index);
+                                context
+                                    .read<ProductDetailController>()
+                                    .notify();
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -354,11 +374,17 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                           flex: 2,
                           child: _dropDownWidget(
                             context
+                                        .watch<ProductDetailController>()
+                                        .creatingProduct
+                                        .invoicingPolicy !=
+                                    null
+                                ? context
                                     .read<ProductDetailController>()
                                     .creatingProduct
                                     .invoicingPolicy
                                     ?.name ??
-                                InvoicingPolicy.orderedQuantities.name,
+                                    InvoicingPolicy.orderedQuantities.name
+                                : InvoicingPolicy.orderedQuantities.name,
                             InvoicingPolicy.values
                                 .map((e) => DropdownMenuItem(
                                       value: e.name,
@@ -368,6 +394,20 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                           )),
                                     ))
                                 .toList(),
+                            onChanged: (p0) {
+                              int index = InvoicingPolicy.values
+                                  .indexWhere((element) => element.name == p0);
+                              if (index != -1) {
+                                context
+                                        .read<ProductDetailController>()
+                                        .creatingProduct
+                                        .invoicingPolicy =
+                                    InvoicingPolicy.values.elementAt(index);
+                                context
+                                    .read<ProductDetailController>()
+                                    .notify();
+                              }
+                            },
                           ),
                         ),
                       ],
@@ -393,7 +433,7 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                             '') ==
                                         e
                                     ? e.index
-                                    : 0,
+                                    : -1,
                                 onChanged: (value) {
                                   if (value != null) {
                                     context
@@ -420,26 +460,33 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            CommonUtils.unitList.indexWhere((element) =>
+                            context
+                                            .watch<ProductDetailController>()
+                                            .creatingProduct
+                                            .unitOfMeasure !=
+                                        null &&
+                                    CommonUtils.unitList.indexWhere((element) =>
+                                            element ==
+                                            context
+                                                .read<ProductDetailController>()
+                                                .creatingProduct
+                                                .unitOfMeasure) !=
+                                        -1
+                                ? CommonUtils.unitList
+                                    .indexWhere((element) =>
                                         element ==
                                         context
                                             .read<ProductDetailController>()
                                             .creatingProduct
-                                            .unitOfMeasure) !=
-                                    -1
-                                ? CommonUtils.unitList.indexWhere((element) =>
-                                    element ==
-                                    context
-                                        .read<ProductDetailController>()
-                                        .creatingProduct
-                                        .unitOfMeasure)
-                                : 0,
+                                            .unitOfMeasure)
+                                    .toString()
+                                : '0',
                             CommonUtils.unitList
                                 .asMap()
                                 .map((i, e) => MapEntry(
                                     i,
                                     DropdownMenuItem(
-                                      value: i,
+                                      value: i.toString(),
                                       child: Text(e,
                                           style: TextStyle(
                                             color: Colors.black,
@@ -447,6 +494,15 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                     )))
                                 .values
                                 .toList(),
+                            onChanged: (p0) {
+                              context
+                                      .read<ProductDetailController>()
+                                      .creatingProduct
+                                      .unitOfMeasure =
+                                  CommonUtils.unitList
+                                      .elementAt(int.tryParse(p0) ?? 0);
+                              context.read<ProductDetailController>().notify();
+                            },
                           ),
                         ),
                       ],
@@ -522,26 +578,33 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            CommonUtils.unitList.indexWhere((element) =>
+                            context
+                                            .watch<ProductDetailController>()
+                                            .creatingProduct
+                                            .purchaseUOM !=
+                                        null &&
+                                    CommonUtils.unitList.indexWhere((element) =>
+                                            element ==
+                                            context
+                                                .read<ProductDetailController>()
+                                                .creatingProduct
+                                                .purchaseUOM) !=
+                                        -1
+                                ? CommonUtils.unitList
+                                    .indexWhere((element) =>
                                         element ==
                                         context
                                             .read<ProductDetailController>()
                                             .creatingProduct
-                                            .purchaseUOM) !=
-                                    -1
-                                ? CommonUtils.unitList.indexWhere((element) =>
-                                    element ==
-                                    context
-                                        .read<ProductDetailController>()
-                                        .creatingProduct
-                                        .purchaseUOM)
-                                : 0,
+                                            .purchaseUOM)
+                                    .toString()
+                                : '0',
                             CommonUtils.unitList
                                 .asMap()
                                 .map((i, e) => MapEntry(
                                     i,
                                     DropdownMenuItem(
-                                      value: i,
+                                      value: i.toString(),
                                       child: Text(e,
                                           style: TextStyle(
                                             color: Colors.black,
@@ -549,6 +612,15 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                     )))
                                 .values
                                 .toList(),
+                            onChanged: (p0) {
+                              context
+                                      .read<ProductDetailController>()
+                                      .creatingProduct
+                                      .purchaseUOM =
+                                  CommonUtils.unitList
+                                      .elementAt(int.tryParse(p0) ?? 0);
+                              context.read<ProductDetailController>().notify();
+                            },
                           ),
                         ),
                       ],
@@ -709,17 +781,17 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            0,
+                            '0',
                             [
                               DropdownMenuItem(
-                                value: 0,
+                                value: 0.toString(),
                                 child: Text('AA',
                                     style: TextStyle(
                                       color: Colors.black,
                                     )),
                               ),
                               DropdownMenuItem(
-                                value: 1,
+                                value: 1.toString(),
                                 child: Text('BB',
                                     style: TextStyle(
                                       color: Colors.black,
@@ -746,27 +818,35 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            CommonUtils.categoryList.indexWhere((element) =>
-                                        element ==
-                                        context
-                                            .read<ProductDetailController>()
+                            context
+                                            .watch<ProductDetailController>()
                                             .creatingProduct
-                                            .productCategory) !=
-                                    -1
-                                ? CommonUtils.categoryList.indexWhere(
-                                    (element) =>
+                                            .productCategory !=
+                                        null &&
+                                    CommonUtils.categoryList.indexWhere(
+                                            (element) =>
+                                                element ==
+                                                context
+                                                    .read<
+                                                        ProductDetailController>()
+                                                    .creatingProduct
+                                                    .productCategory) !=
+                                        -1
+                                ? CommonUtils.categoryList
+                                    .indexWhere((element) =>
                                         element ==
                                         context
                                             .read<ProductDetailController>()
                                             .creatingProduct
                                             .productCategory)
-                                : 0,
+                                    .toString()
+                                : '0',
                             CommonUtils.categoryList
                                 .asMap()
                                 .map((i, e) => MapEntry(
                                     i,
                                     DropdownMenuItem(
-                                      value: i,
+                                      value: i.toString(),
                                       child: Text(e,
                                           style: TextStyle(
                                             color: Colors.black,
@@ -774,6 +854,15 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                     )))
                                 .values
                                 .toList(),
+                            onChanged: (p0) {
+                              context
+                                      .read<ProductDetailController>()
+                                      .creatingProduct
+                                      .productCategory =
+                                  CommonUtils.categoryList
+                                      .elementAt(int.tryParse(p0) ?? 0);
+                              context.read<ProductDetailController>().notify();
+                            },
                           ),
                         ),
                       ],
@@ -785,26 +874,33 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            CommonUtils.brandList.indexWhere((element) =>
+                            context
+                                            .watch<ProductDetailController>()
+                                            .creatingProduct
+                                            .productBrand !=
+                                        null &&
+                                    CommonUtils.brandList.indexWhere((element) =>
+                                            element ==
+                                            context
+                                                .read<ProductDetailController>()
+                                                .creatingProduct
+                                                .productBrand) !=
+                                        -1
+                                ? CommonUtils.brandList
+                                    .indexWhere((element) =>
                                         element ==
                                         context
                                             .read<ProductDetailController>()
                                             .creatingProduct
-                                            .productBrand) !=
-                                    -1
-                                ? CommonUtils.brandList.indexWhere((element) =>
-                                    element ==
-                                    context
-                                        .read<ProductDetailController>()
-                                        .creatingProduct
-                                        .productBrand)
-                                : 0,
+                                            .productBrand)
+                                    .toString()
+                                : '0',
                             CommonUtils.brandList
                                 .asMap()
                                 .map((i, e) => MapEntry(
                                     i,
                                     DropdownMenuItem(
-                                      value: i,
+                                      value: i.toString(),
                                       child: Text(e,
                                           style: TextStyle(
                                             color: Colors.black,
@@ -812,6 +908,15 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                     )))
                                 .values
                                 .toList(),
+                            onChanged: (p0) {
+                              context
+                                      .read<ProductDetailController>()
+                                      .creatingProduct
+                                      .productBrand =
+                                  CommonUtils.brandList
+                                      .elementAt(int.tryParse(p0) ?? 0);
+                              context.read<ProductDetailController>().notify();
+                            },
                           ),
                         ),
                       ],
@@ -994,29 +1099,47 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            ItemType.values.indexWhere((element) =>
+                            context
+                                            .watch<ProductDetailController>()
+                                            .creatingProduct
+                                            .itemType !=
+                                        null &&
+                                    ItemType.values.indexWhere((element) =>
+                                            element.text ==
+                                            context
+                                                .read<ProductDetailController>()
+                                                .creatingProduct
+                                                .itemType!
+                                                .text) !=
+                                        -1
+                                ? ItemType.values
+                                    .indexWhere((element) =>
                                         element.text ==
                                         context
                                             .read<ProductDetailController>()
                                             .creatingProduct
-                                            .unitOfMeasure) !=
-                                    -1
-                                ? ItemType.values.indexWhere((element) =>
-                                    element.text ==
-                                    context
-                                        .read<ProductDetailController>()
-                                        .creatingProduct
-                                        .unitOfMeasure)
-                                : 0,
+                                            .itemType!
+                                            .text)
+                                    .toString()
+                                : '0',
                             ItemType.values
                                 .map((e) => DropdownMenuItem(
-                                      value: e.index,
+                                      value: e.index.toString(),
                                       child: Text(e.text,
                                           style: TextStyle(
                                             color: Colors.black,
                                           )),
                                     ))
                                 .toList(),
+                            onChanged: (p0) {
+                              context
+                                      .read<ProductDetailController>()
+                                      .creatingProduct
+                                      .itemType =
+                                  ItemType.values
+                                      .elementAt(int.tryParse(p0) ?? 0);
+                              context.read<ProductDetailController>().notify();
+                            },
                           ),
                         ),
                       ],
@@ -1086,27 +1209,35 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            CommonUtils.companyList.indexWhere((element) =>
+                            context
+                                            .watch<ProductDetailController>()
+                                            .creatingProduct
+                                            .company !=
+                                        null &&
+                                    CommonUtils.companyList.indexWhere(
+                                            (element) =>
+                                                element ==
+                                                context
+                                                    .read<
+                                                        ProductDetailController>()
+                                                    .creatingProduct
+                                                    .company) !=
+                                        -1
+                                ? CommonUtils.companyList
+                                    .indexWhere((element) =>
                                         element ==
                                         context
                                             .read<ProductDetailController>()
                                             .creatingProduct
-                                            .company) !=
-                                    -1
-                                ? CommonUtils.companyList.indexWhere(
-                                    (element) =>
-                                        element ==
-                                        context
-                                            .read<ProductDetailController>()
-                                            .creatingProduct
-                                            .productBrand)
-                                : 0,
+                                            .company)
+                                    .toString()
+                                : '0',
                             CommonUtils.companyList
                                 .asMap()
                                 .map((i, e) => MapEntry(
                                     i,
                                     DropdownMenuItem(
-                                      value: i,
+                                      value: i.toString(),
                                       child: Text(e,
                                           style: TextStyle(
                                             color: Colors.black,
@@ -1114,6 +1245,15 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                                     )))
                                 .values
                                 .toList(),
+                            onChanged: (p0) {
+                              context
+                                      .read<ProductDetailController>()
+                                      .creatingProduct
+                                      .company =
+                                  CommonUtils.companyList
+                                      .elementAt(int.tryParse(p0) ?? 0);
+                              context.read<ProductDetailController>().notify();
+                            },
                           ),
                         ),
                       ],
@@ -1125,17 +1265,17 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                         Expanded(
                           flex: 2,
                           child: _dropDownWidget(
-                            0,
+                            '0',
                             [
                               DropdownMenuItem(
-                                value: 0,
+                                value: 0.toString(),
                                 child: Text('3000.00 Ks per Unit',
                                     style: TextStyle(
                                       color: Colors.black,
                                     )),
                               ),
                               DropdownMenuItem(
-                                value: 1,
+                                value: 1.toString(),
                                 child: Text('3200.00 Ks per Unit',
                                     style: TextStyle(
                                       color: Colors.black,
@@ -1225,9 +1365,10 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
   }
 
   _dropDownWidget(
-    dynamic selectedValue,
-    List<DropdownMenuItem> list,
-  ) {
+    String selectedValue,
+    List<DropdownMenuItem> list, {
+    Function(dynamic)? onChanged,
+  }) {
     return Container(
       height: 60,
       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -1244,7 +1385,10 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
               icon: SizedBox(),
               underline: Container(),
               items: list,
-              onChanged: (v) {},
+              focusColor: Colors.transparent,
+              onChanged: (v) {
+                onChanged?.call(v);
+              },
             ),
           ),
           Icon(Icons.keyboard_arrow_down),

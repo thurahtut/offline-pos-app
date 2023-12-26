@@ -26,7 +26,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
-      context.read<ProductDetailController>().mode = ProductDetailMode.create;
       setState(() {});
     });
     super.initState();

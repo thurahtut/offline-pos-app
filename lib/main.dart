@@ -1,19 +1,16 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/product_detail_controller.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ViewController()),
@@ -32,8 +29,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: ProductDetailScreen.routeName,
-        home: ProductDetailScreen(),
+        initialRoute: InventoryListScreen.routeName,
+        home: InventoryListScreen(),
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

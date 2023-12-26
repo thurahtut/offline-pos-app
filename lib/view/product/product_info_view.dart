@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/product/product_general_info_title.dart';
 
 class ProductInfoView extends StatelessWidget {
   const ProductInfoView({super.key});
