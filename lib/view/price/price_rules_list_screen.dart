@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/price/price_rules_detail_create.dart';
 import 'package:offline_pos/view/price/price_rules_detail_view.dart';
 
 class PriceRulesListScreen extends StatefulWidget {
@@ -94,6 +95,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
         Expanded(
             child: context.read<PriceRulesListController>().isDetail
                 ? SingleChildScrollView(child: PriceRuleDetailView())
+                : context.read<PriceRulesListController>().isNew
+                    ? SingleChildScrollView(child: PriceRuleDetailNew())
                 : _tableWidget()),
       ],
     );
@@ -199,8 +202,10 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                       textColor: Colors.white,
                       width: 150,
                       onTap: () {
-                        // context.read<PriceRulesListController>().isDetail = false;
-                        // context.read<PriceRulesListController>().isNew = true;
+                        context.read<PriceRulesListController>().isDetail =
+                            false;
+                        context.read<PriceRulesListController>().isNew = true;
+                        
                       },
                     ),
                     SizedBox(width: 4),

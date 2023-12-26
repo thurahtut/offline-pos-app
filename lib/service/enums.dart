@@ -23,3 +23,11 @@ enum ItemType {
   final String text;
 }
 
+enum Computation {
+  fixedPrice("Fixed Price"),
+  discount("Discount"),
+  formula("Formula");
+
+  const Computation(this.text);
+  final String text;
+}
