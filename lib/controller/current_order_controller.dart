@@ -27,6 +27,14 @@ class CurrentOrderController with ChangeNotifier {
     return list;
   }
 
+  bool? _isContainCustomer = false;
+  bool? get isContainCustomer => _isContainCustomer;
+  set isContainCustomer(bool? isContainCustomer) {
+    if (_isContainCustomer == isContainCustomer) return;
+    _isContainCustomer = isContainCustomer;
+    notifyListeners();
+  }
+
   resetCurrentOrderController() {
     _currentOrderList = [];
     notifyListeners();

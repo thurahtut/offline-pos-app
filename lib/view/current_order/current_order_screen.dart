@@ -16,7 +16,6 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      isTabletMode = CommonUtils.isTabletMode(context);
       _width = isTabletMode
           ? (MediaQuery.of(context).size.width / 10) * 9
           : MediaQuery.of(context).size.width -
@@ -28,52 +27,21 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.centerRight,
+    isTabletMode = CommonUtils.isTabletMode(context);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            (context.watch<CurrentOrderController>().currentOrderList.isEmpty)
-                ? Expanded(
-                    // flex: 2,
-                    child: _noOrderWidget(),
-                  )
-                : Expanded(
-                    // flex: 2,
-                    child: _currentOrderListWidget(),
-                  ),
-            if (!context.watch<ViewController>().isKeyboardHide)
-              isTabletMode
-                  ? _keyboardAndSummaryWidget()
-                  : _keyboardAndSummaryWidget(),
-            SizedBox(height: 8),
-          ],
-        ),
-        InkWell(
-            onTap: () {
-              context.read<ViewController>().isKeyboardHide =
-                  !context.read<ViewController>().isKeyboardHide;
-            },
-            child: Container(
-                padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    bottomLeft: Radius.circular(8),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Constants.greyColor2.withOpacity(0.6),
-                      blurRadius: 4,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Icon(context.watch<ViewController>().isKeyboardHide
-                    ? Icons.arrow_forward_ios
-                    : Icons.arrow_back_ios))),
+        (context.watch<CurrentOrderController>().currentOrderList.isEmpty)
+            ? Expanded(
+                // flex: 2,
+                child: _noOrderWidget(),
+              )
+            : Expanded(
+                // flex: 2,
+                child: _currentOrderListWidget(),
+              ),
+        _keyboardAndSummaryWidget(),
+        SizedBox(height: 8),
       ],
     );
   }
@@ -87,7 +55,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             : SizedBox(),
         Align(
             alignment: Alignment.bottomCenter,
-            child: _orderCalculatorWidget(context)),
+            child: Consumer<ViewController>(builder: (_, controller, __) {
+              return _orderCalculatorWidget(context);
+            })),
       ],
     );
   }
@@ -277,8 +247,14 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       ),
     );
   }
-  
-  final List<Widget> _calculatorActionWidgetList = [
+
+  Widget _orderCalculatorWidget(BuildContext context) {
+    bool isTabletMode = CommonUtils.isTabletMode(context);
+    List<Widget> list = [];
+    List<Widget> rowList = [];
+    int itemCount = isTabletMode ? 10 : 5;
+
+    List<Widget> calculatorActionWidgetList = [
     CommonUtils.eachCalculateButtonWidget(
       text: "1",
       onPressed: () {},
@@ -296,9 +272,17 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       onPressed: () {},
     ),
     CommonUtils.eachCalculateButtonWidget(
-      icon: Icons.keyboard_arrow_down_rounded,
+        icon: NavigationService.navigatorKey.currentContext != null &&
+                NavigationService.navigatorKey.currentContext!
+                    .watch<ViewController>()
+                    .isKeyboardHide
+            ? Icons.keyboard_arrow_up_rounded
+            : Icons.keyboard_arrow_down_rounded,
       iconSize: 32,
-      onPressed: () {},
+        onPressed: () {
+          context.read<ViewController>().isKeyboardHide =
+              !context.read<ViewController>().isKeyboardHide;
+        },
     ),
     CommonUtils.eachCalculateButtonWidget(
       text: "4",
@@ -339,7 +323,10 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     CommonUtils.eachCalculateButtonWidget(
       icon: Icons.arrow_forward_ios,
       iconSize: 21,
-      onPressed: () {},
+        onPressed: () {
+          context.read<CurrentOrderController>().isContainCustomer = false;
+          Navigator.pushNamed(context, OrderPaymentScreen.routeName);
+        },
     ),
     CommonUtils.eachCalculateButtonWidget(
       text: ".",
@@ -359,30 +346,22 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       textColor: Colors.white,
       width: 100,
       onPressed: () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          NavigationService.navigatorKey.currentContext!
+          context
               .read<ViewController>()
               .isCustomerView = true;
           CustomerListDialog.customerListDialogWidget(
-              NavigationService.navigatorKey.currentContext!);
-        }
+              context);
       },
     ),
   ];
 
-  Widget _orderCalculatorWidget(BuildContext context) {
-    bool isTabletMode = CommonUtils.isTabletMode(context);
-    List<Widget> list = [];
-    List<Widget> rowList = [];
-
     for (var i = 0;
-        i < _calculatorActionWidgetList.length;
-        i += (isTabletMode ? 10 : 5)) {
-      int start = (list.length * (isTabletMode ? 10 : 5));
+        i < calculatorActionWidgetList.length; i += (itemCount)) {
+      int start = (list.length * (itemCount));
       int end =
-          (isTabletMode ? 10 : 5) + (list.length * (isTabletMode ? 10 : 5));
-      rowList.addAll(_calculatorActionWidgetList.getRange(
-          start, min(end, _calculatorActionWidgetList.length)));
+          (itemCount) + (list.length * (itemCount));
+      rowList.addAll(calculatorActionWidgetList.getRange(
+          start, min(end, calculatorActionWidgetList.length)));
       list.add(SizedBox(
         width: isTabletMode
             ? (MediaQuery.of(context).size.width / 10) * 9
@@ -393,7 +372,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           children: List.generate(
             rowList.length,
             (index) => Expanded(
-              flex: rowList.length == (isTabletMode ? 10 : 5)
+              flex: rowList.length == (itemCount)
                   ? 1
                   : index == (rowList.length - 1)
                       ? 2
@@ -410,6 +389,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         ),
       ));
       rowList = [];
+      if (context.read<ViewController>().isKeyboardHide) {
+        break;
+      }
     }
 
     return Column(

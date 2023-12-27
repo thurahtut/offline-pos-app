@@ -13,10 +13,39 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget bodyWidget(BuildContext context) {
+    var children2 = [
+      Column(
+        children: [
+          BarcodeWidget(
+            data: 'Offline_POS',
+            drawText: false,
+            barcode: Barcode.code128(),
+            width: MediaQuery.of(context).size.width /
+                (MediaQuery.of(context).size.width < 700 ? 4 : 8),
+            height: MediaQuery.of(context).size.height / 10,
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Scan Your Badge',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+      Text('Or'),
+      BorderContainer(
+        text: 'Select Cashier',
+        onTap: () {
+          Navigator.pushNamed(context, MainScreen.routeName);
+        },
+      ),
+    ];
     return Center(
       child: Container(
         padding: EdgeInsets.all(20),
-        width: MediaQuery.of(context).size.width / 3,
+        width: MediaQuery.of(context).size.width /
+            (MediaQuery.of(context).size.width < 840 ? 1.5 : 3),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -33,35 +62,20 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  children: [
-                    BarcodeWidget(
-                      data: 'Offline_POS',
-                      drawText: false,
-                      barcode: Barcode.code128(),
-                      width: MediaQuery.of(context).size.width / 8,
-                      height: MediaQuery.of(context).size.height / 10,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Scan Your Badge',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-                Text('Or'),
-                BorderContainer(
-                  text: 'Select Cashier',
-                  onTap: () {
-                    Navigator.pushNamed(context, MainScreen.routeName);
-                  },
-                ),
-              ],
+            MediaQuery.of(context).size.width < 600
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: children2
+                        .map((e) => Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: e,
+                            ))
+                        .toList(),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: children2,
             ),
           ],
         ),

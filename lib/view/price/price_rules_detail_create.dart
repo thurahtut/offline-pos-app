@@ -8,64 +8,83 @@ class PriceRuleDetailNew extends StatefulWidget {
 }
 
 class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _fixedPriceTextController =
+      TextEditingController();
+  final TextEditingController _productTextController = TextEditingController();
+  final TextEditingController _quantityTextController = TextEditingController();
+  final TextEditingController _validityTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    _fixedPriceTextController.dispose();
+    _productTextController.dispose();
+    _quantityTextController.dispose();
+    _validityTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height / 2,
-          minWidth: (MediaQuery.of(context).size.width / 2) -
-              MediaQuery.of(context).size.width / 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Constants.greyColor2.withOpacity(0.3),
-            blurRadius: 4,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width / 30, vertical: 10),
-      padding: EdgeInsets.all(20),
-      child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 1,
-              // width:( MediaQuery.of(context).size.width/2) -MediaQuery.of(context).size.width / 15,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Product Computation',
-                    style: TextStyle(
-                      color: Constants.textColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ..._infoWidget(),
-                ],
-              ),
+    return Form(
+      key: _formKey,
+      child: Container(
+        constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height / 2,
+            minWidth: (MediaQuery.of(context).size.width / 2) -
+                MediaQuery.of(context).size.width / 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Constants.greyColor2.withOpacity(0.3),
+              blurRadius: 4,
+              offset: Offset(0, 3),
             ),
-            Expanded(
-              flex: 1,
-              child: Text(
-                'The computed price is expressed in the default Unit of Measure of the product.',
-                style: TextStyle(
-                  color: Constants.textColor.withOpacity(0.7),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
+          ],
+        ),
+        margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width / 30, vertical: 10),
+        padding: EdgeInsets.all(20),
+        child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 1,
+                // width:( MediaQuery.of(context).size.width/2) -MediaQuery.of(context).size.width / 15,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Product Computation',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    ..._infoWidget(),
+                  ],
                 ),
               ),
-            ),
-          ]),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'The computed price is expressed in the default Unit of Measure of the product.',
+                  style: TextStyle(
+                    color: Constants.textColor.withOpacity(0.7),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            ]),
+      ),
     );
   }
 
@@ -81,26 +100,29 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
           Expanded(
             flex: 2,
             child: Column(
-              children: [
-                _eachRadioWidget(
-                  text: 'Fixed Price',
-                  value: 0,
-                  selected: true,
-                  groupValue: 0,
-                ),
-                _eachRadioWidget(
-                  text: 'Discount',
-                  value: 1,
-                  selected: false,
-                  groupValue: 0,
-                ),
-                _eachRadioWidget(
-                  text: 'Formula',
-                  value: 2,
-                  selected: false,
-                  groupValue: 0,
-                ),
-              ],
+              children: Computation.values.map((e) {
+                return _eachRadioWidget(
+                  text: e.text,
+                  value: e.index,
+                  groupValue: (context
+                                  .watch<PriceRulesListController>()
+                                  .creatingPriceRule
+                                  ?.computation ??
+                              '') ==
+                          e
+                      ? e.index
+                      : -1,
+                  onChanged: (value) {
+                    if (value != null) {
+                      context
+                          .read<PriceRulesListController>()
+                          .creatingPriceRule
+                          ?.computation = Computation.values.elementAt(value);
+                      context.read<PriceRulesListController>().notify();
+                    }
+                  },
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -110,9 +132,21 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
         children: [
           Expanded(child: _textForDetailInfo("Fixed Price")),
           Expanded(
-              flex: 2,
-              child: _textForDetailInfo(
-                  '${context.read<PriceRulesListController>().editingPriceRule?.price ?? 0} Ks')),
+            flex: 2,
+            child: TextFormField(
+              controller: _fixedPriceTextController,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                  labelStyle: TextStyle(
+                    color: Constants.primaryColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  border: UnderlineInputBorder(),
+                  contentPadding: EdgeInsets.all(16),
+                  suffixIcon: Text(' Ks')),
+            ),
+          ),
         ],
       ),
       spacer,
@@ -129,38 +163,29 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
               children: [
                 Expanded(
                   child: Column(
-                    children: [
-                      _eachRadioWidget(
-                        text: 'All Product',
-                        value: 0,
-                        selected: true,
-                        groupValue: 1,
-                      ),
-                      _eachRadioWidget(
-                        text: 'Product Category',
-                        value: 1,
-                        selected: false,
-                        groupValue: 1,
-                      ),
-                      _eachRadioWidget(
-                        text: 'Product',
-                        value: 2,
-                        selected: false,
-                        groupValue: 1,
-                      ),
-                      _eachRadioWidget(
-                        text: 'Product Varient',
-                        value: 3,
-                        selected: false,
-                        groupValue: 1,
-                      ),
-                      _eachRadioWidget(
-                        text: 'Product Package',
-                        value: 4,
-                        selected: false,
-                        groupValue: 1,
-                      ),
-                    ],
+                    children: Condition.values.map((e) {
+                      return _eachRadioWidget(
+                        text: e.text,
+                        value: e.index,
+                        groupValue: (context
+                                        .watch<PriceRulesListController>()
+                                        .creatingPriceRule
+                                        ?.applyOn ??
+                                    '') ==
+                                e
+                            ? e.index
+                            : -1,
+                        onChanged: (value) {
+                          if (value != null) {
+                            context
+                                .read<PriceRulesListController>()
+                                .creatingPriceRule
+                                ?.applyOn = Condition.values.elementAt(value);
+                            context.read<PriceRulesListController>().notify();
+                          }
+                        },
+                      );
+                    }).toList(),
                   ),
                 ),
                 Expanded(
@@ -170,9 +195,27 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
                         children: [
                           Expanded(child: _textForDetailInfo("Quantity")),
                           Expanded(
-                              flex: 2,
-                              child: _textForDetailInfo(
-                                  '${context.read<PriceRulesListController>().editingPriceRule?.quantity ?? 0}')),
+                            flex: 2,
+                            child: TextFormField(
+                              controller: _quantityTextController,
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: InputDecoration(
+                                // hintText: "e.g. Cheese Burger",
+                                // hintStyle: TextStyle(
+                                //   color: Constants.disableColor.withOpacity(0.9),
+                                //   fontSize: 15,
+                                //   fontWeight: FontWeight.w800,
+                                // ),
+                                labelStyle: TextStyle(
+                                  color: Constants.primaryColor,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                                border: UnderlineInputBorder(),
+                                contentPadding: EdgeInsets.all(16),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       spacer,
@@ -180,8 +223,27 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
                         children: [
                           Expanded(child: _textForDetailInfo("Validity")),
                           Expanded(
-                              flex: 2,
-                              child: _textForDetailInfo('12.07.2024 12:00:00')),
+                            flex: 2,
+                            child: TextFormField(
+                              controller: _validityTextController,
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: InputDecoration(
+                                // hintText: "e.g. Cheese Burger",
+                                // hintStyle: TextStyle(
+                                //   color: Constants.disableColor.withOpacity(0.9),
+                                //   fontSize: 15,
+                                //   fontWeight: FontWeight.w800,
+                                // ),
+                                labelStyle: TextStyle(
+                                  color: Constants.primaryColor,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                                border: UnderlineInputBorder(),
+                                contentPadding: EdgeInsets.all(16),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       spacer,
@@ -215,9 +277,25 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
           Expanded(child: _textForDetailInfo("Product")),
           Expanded(
             flex: 2,
-            child: _textForDetailInfo(
-                '[${context.read<PriceRulesListController>().editingPriceRule?.appliedOn ?? ''}]'
-                '${context.read<PriceRulesListController>().editingPriceRule?.product ?? ''}'),
+            child: TextFormField(
+              controller: _productTextController,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                hintText: "Enter Product",
+                hintStyle: TextStyle(
+                  color: Constants.disableColor.withOpacity(0.9),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                ),
+                labelStyle: TextStyle(
+                  color: Constants.primaryColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                ),
+                border: UnderlineInputBorder(),
+                contentPadding: EdgeInsets.all(16),
+              ),
+            ),
           ),
         ],
       ),
@@ -226,20 +304,19 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
 
   RadioListTile<int> _eachRadioWidget({
     required int value,
-    required bool selected,
     required int groupValue,
     required String text,
+    Function(int? value)? onChanged,
   }) {
     return RadioListTile(
       value: value,
-      selected: selected,
       activeColor: Constants.primaryColor,
       fillColor:
           MaterialStateColor.resolveWith((states) => Constants.primaryColor),
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       groupValue: groupValue,
-      onChanged: (Object? value) {},
+      onChanged: onChanged,
       title: Text(
         text,
         style: TextStyle(

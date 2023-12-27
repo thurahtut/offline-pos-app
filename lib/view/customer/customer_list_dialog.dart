@@ -4,6 +4,8 @@ class CustomerListDialog {
   static Future<dynamic> customerListDialogWidget(
     BuildContext mainContext,
   ) {
+    bool isTabletMode = CommonUtils.isTabletMode(mainContext);
+    bool isMobileMode = CommonUtils.isMobileMode(mainContext);
     return CommonUtils.showGeneralDialogWidget(
       mainContext,
       (bContext, anim1, anim2) {
@@ -39,10 +41,18 @@ class CustomerListDialog {
                                 svgColor: Colors.white,
                                 width: (MediaQuery.of(mainContext).size.width -
                                         100) /
-                                    6,
+                                    (isMobileMode
+                                        ? 3
+                                        : isTabletMode
+                                            ? 4
+                                            : 6),
                                 containerColor: Constants.primaryColor,
                                 textColor: Colors.white,
-                                textSize: 16,
+                                textSize: (isMobileMode
+                                    ? 13
+                                    : isTabletMode
+                                        ? 14
+                                        : 16),
                                 radius: 16,
                               ),
                             ],

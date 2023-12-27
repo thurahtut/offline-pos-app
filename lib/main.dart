@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: InventoryListScreen.routeName,
-        home: InventoryListScreen(),
+        initialRoute: WelcomeScreen.routeName,
+        home: WelcomeScreen(),
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

@@ -158,18 +158,17 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-            controller: _amountController,
-            decoration: InputDecoration(
-              hintText: '0.00 Ks',
-              hintStyle: textStyle,
-              border: InputBorder.none,
-              labelStyle: textStyle,
-            ),
+              controller: _amountController,
+              decoration: InputDecoration(
+                hintText: '0.00 Ks',
+                hintStyle: textStyle,
+                border: InputBorder.none,
+                labelStyle: textStyle,
+              ),
               inputFormatters: [
                 // FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
                 FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)'))
-              ]
-          ),
+              ]),
           Text(
             'Please select a payment method',
             style: TextStyle(
@@ -216,12 +215,20 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 setState(() {});
               },
             ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "BG Bakerys",
-              width: 150,
-              prefixSvg: "assets/svg/account_circle.svg",
-              svgColor: Constants.primaryColor,
-              onPressed: () {},
+            context.watch<CurrentOrderController>().isContainCustomer == true
+                ? CommonUtils.eachCalculateButtonWidget(
+                    text: "BG Bakerys",
+                    width: 150,
+                    prefixSvg: "assets/svg/account_circle.svg",
+                    svgColor: Constants.primaryColor,
+                    onPressed: () {},
+                  )
+                : CommonUtils.eachCalculateButtonWidget(
+                    text: "Invoice",
+                    width: 150,
+                    prefixSvg: "assets/svg/receipt_long.svg",
+                    svgColor: Constants.primaryColor,
+                    onPressed: () {},
             ),
           ],
         ),
@@ -257,13 +264,15 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                           .toString();
                   setState(() {});
                 }),
-            CommonUtils.eachCalculateButtonWidget(
+            context.watch<CurrentOrderController>().isContainCustomer == true
+                ? CommonUtils.eachCalculateButtonWidget(
               text: "Invoice",
               width: 150,
               prefixSvg: "assets/svg/receipt_long.svg",
               svgColor: Constants.primaryColor,
               onPressed: () {},
-            ),
+                  )
+                : SizedBox(),
           ],
         ),
         SizedBox(height: 4),
@@ -324,8 +333,8 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               },
             ),
             CommonUtils.eachCalculateButtonWidget(
-                icon: Icons.backspace_outlined,
-                iconColor: Constants.alertColor,
+              icon: Icons.backspace_outlined,
+              iconColor: Constants.alertColor,
               onPressed: () {
                 _amountController.text = _amountController.text
                     .substring(0, _amountController.text.length - 1);

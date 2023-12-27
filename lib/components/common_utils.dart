@@ -469,7 +469,7 @@ class CommonUtils {
     );
   }
 
-  static Future<void> showGeneralDialogWidget(
+  static Future<Object?> showGeneralDialogWidget(
     BuildContext mainContext,
     Widget Function(
       BuildContext context,
@@ -829,7 +829,7 @@ class CommonUtils {
   static PriceRules demoPriceRule = PriceRules(
       priceList: "Horeca/Wholesale MOQ...",
       appliedOn: "[8850418000992] ...",
-      applyOn: "Product",
+      applyOn: Condition.product,
       product: "100 Pipers whisky 175ML",
       price: 4200,
       quantity: 430,

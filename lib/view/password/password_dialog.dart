@@ -1,7 +1,7 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class PasswordDialog {
-  static Future<dynamic> enterPasswordWidget(
+  static Future<Object?> enterPasswordWidget(
     BuildContext context,
     TextEditingController passwordTextController,
   ) {
@@ -74,10 +74,10 @@ class PasswordDialog {
                   SizedBox(height: 16),
                   CommonUtils.okCancelWidget(
                     okCallback: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     },
                     cancelCallback: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context, false);
                     },
                   ),
                   SizedBox(height: 26),
@@ -89,6 +89,7 @@ class PasswordDialog {
       },
     ).then((value) {
       myFocusNode.dispose();
+      return value;
     });
   }
 

@@ -31,3 +31,14 @@ enum Computation {
   const Computation(this.text);
   final String text;
 }
+
+enum Condition {
+  allProduct("All Products"),
+  productCategory("Product Category"),
+  product("Product"),
+  productVarient("Product Varient"),
+  productPackage("Product Package");
+
+  const Condition(this.text);
+  final String text;
+}

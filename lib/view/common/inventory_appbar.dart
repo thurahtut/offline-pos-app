@@ -50,6 +50,15 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
     {"title": "Point of Sale", "onTap": () {}},
     {"title": "POS Theme Settings", "onTap": () {}},
     {"title": "Shop Information", "onTap": () {}},
+    {
+      "title": "Payment Methods",
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+              PaymentMethodScreen.routeName);
+        }
+      }
+    },
     {"title": "POS Discount", "onTap": () {}},
     {"title": "Login Popup", "onTap": () {}},
     {"title": "Coins/Bills", "onTap": () {}},
@@ -186,10 +195,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
       if (isMobileMode) ..._actionButtonsWidget(),
       GestureDetector(
         onTap: () {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainScreen()),
-              ModalRoute.withName("/Home"));
+          Navigator.pushNamed(context, MainScreen.routeName);
         },
         child: Text(
           'Dashboard',

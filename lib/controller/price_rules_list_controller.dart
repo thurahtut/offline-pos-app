@@ -41,6 +41,17 @@ class PriceRulesListController with ChangeNotifier {
     notifyListeners();
   }
 
+  PriceRules? _creatingPriceRule;
+  PriceRules? get creatingPriceRule => _creatingPriceRule;
+  set creatingPriceRule(PriceRules? creatingPriceRule) {
+    if (_creatingPriceRule == creatingPriceRule) return;
+    _creatingPriceRule = creatingPriceRule;
+    notifyListeners();
+  }
+
+  notify() {
+    notifyListeners();
+  }
 
   resetPriceRulesListController() {
     _priceRulesList = [];
@@ -48,6 +59,7 @@ class PriceRulesListController with ChangeNotifier {
     _isDetail = false;
     _isNew = false;
     _editingPriceRule = null;
+    _creatingPriceRule = null;
     notifyListeners();
   }
 }

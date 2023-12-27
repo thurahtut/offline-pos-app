@@ -40,7 +40,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      isTabletMode = CommonUtils.isTabletMode(context);
+      context
+          .read<PaymentMethodListController>()
+          .resetPaymentMethodListController();
       for (var i = 0; i < 20; i++) {
         context
             .read<PaymentMethodListController>()
@@ -60,10 +62,17 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Constants.backgroundColor.withOpacity(0.74),
-      appBar: InventoryAppBar(),
-      body: _bodyWidget(),
+    isTabletMode = CommonUtils.isTabletMode(context);
+    return PopScope(
+      canPop: !context.read<PaymentMethodListController>().isDetail,
+      onPopInvoked: (didPop) {
+        context.read<PaymentMethodListController>().isDetail = false;
+      },
+      child: Scaffold(
+        backgroundColor: Constants.backgroundColor.withOpacity(0.74),
+        appBar: InventoryAppBar(),
+        body: _bodyWidget(),
+      ),
     );
   }
 

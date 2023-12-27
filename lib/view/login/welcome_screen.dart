@@ -73,7 +73,7 @@ class WelcomeScreen extends StatelessWidget {
                 SizedBox(width: 8),
                 _buttonContainer(
                   context,
-                  'Inventory',
+                  'Settings',
                   "assets/svg/settings.svg",
                   () {},
                 ),

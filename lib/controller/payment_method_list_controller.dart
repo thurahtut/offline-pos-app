@@ -40,4 +40,12 @@ class PaymentMethodListController with ChangeNotifier {
     _editingPaymentMethod = editingPaymentMethod;
     notifyListeners();
   }
+
+  resetPaymentMethodListController() {
+    _paymentMethodList = [];
+    _paymentMethodInfoDataSource = null;
+    _isDetail = false;
+    _isNew = false;
+    _editingPaymentMethod = null;
+  }
 }

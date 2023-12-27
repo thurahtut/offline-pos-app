@@ -53,14 +53,10 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (context.read<PriceRulesListController>().isDetail) {
-          context.read<PriceRulesListController>().isDetail = false;
-          return false;
-        } else {
-          return true;
-        }
+    return PopScope(
+      canPop: !context.read<PriceRulesListController>().isDetail,
+      onPopInvoked: (didPop) {
+        context.read<PriceRulesListController>().isDetail = false;
       },
       child: Scaffold(
         appBar: InventoryAppBar(),
@@ -540,7 +536,7 @@ class DataSourceForPriceRulesListScreen extends DataTableSource {
         DataCell(
           onTap: onTap,
           Text(
-            priceRules.applyOn ?? '',
+            priceRules.applyOn?.text ?? '',
           ),
         ),
         DataCell(
@@ -585,12 +581,16 @@ class DataSourceForPriceRulesListScreen extends DataTableSource {
 class PriceRules {
   String? priceList;
   String? appliedOn;
-  String? applyOn;
+  Condition? applyOn;
   String? product;
-  int? price;
-  int? quantity;
+  double? price;
+  double? quantity;
   String? startDate;
   String? endDate;
+  Computation? computation;
+  double? fixedPrice;
+  String? currency;
+  String? company;
   
 
   PriceRules(
@@ -601,7 +601,12 @@ class PriceRules {
       this.price,
       this.quantity,
       this.startDate,
-      this.endDate});
+    this.endDate,
+    this.computation,
+    this.fixedPrice,
+    this.currency,
+    this.company,
+  });
 
   PriceRules.fromJson(Map<String, dynamic> json) {
     priceList = json['price_list'];

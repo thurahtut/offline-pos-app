@@ -16,6 +16,13 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
+  TextEditingController passwordTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    passwordTextController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -25,10 +32,25 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
           CommonUtils.customerList;
       context.read<CustomerListController>().customerInfoDataSource =
           CustomerInfoDataSourceForCustomerListScreen(
-              context,
-              context.read<CustomerListController>().customerList,
-              _offset,
-              () {});
+        context,
+        context.read<CustomerListController>().customerList,
+        _offset,
+        passwordTextController,
+        () {},
+        () {
+          context.read<CurrentOrderController>().isContainCustomer = true;
+          PasswordDialog.enterPasswordWidget(context, passwordTextController)
+              .then((value) {
+            if (value == true) {
+              Navigator.pushNamed(
+                context,
+                OrderPaymentScreen.routeName,
+              );
+              passwordTextController.clear();
+            }
+          });
+        },
+      );
       setState(() {});
     });
     super.initState();
@@ -156,13 +178,17 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   BuildContext context;
   late List<CustomerDataModel> customerInfoList;
   int offset;
+  TextEditingController passwordTextController;
   Function() reloadDataCallback;
+  Function() cartCallback;
 
   CustomerInfoDataSourceForCustomerListScreen(
     this.context,
     this.customerInfoList,
     this.offset,
+    this.passwordTextController,
     this.reloadDataCallback,
+    this.cartCallback,
   );
   @override
   DataRow? getRow(int index) {
@@ -228,12 +254,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
               Text('${customerInfo.credit?.toStringAsFixed(2) ?? '0.00'} Ks'),
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/shopping_cart.svg',
-                  onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  OrderPaymentScreen.routeName,
-                );
-              }),
+                  onPressed: cartCallback),
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/share_windows.svg'),
             ],
