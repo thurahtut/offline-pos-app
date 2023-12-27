@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/payment/order_payment_receipt_screen.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -60,6 +61,10 @@ class Routers {
       case ProductDetailScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => ProductDetailScreen(),
+        );
+      case OrderPaymentReceiptScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => OrderPaymentReceiptScreen(),
         );
       default:
         {

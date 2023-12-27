@@ -35,6 +35,14 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  double? _paymentAmount;
+  double? get paymentAmount => _paymentAmount;
+  set paymentAmount(double? paymentAmount) {
+    if (_paymentAmount == paymentAmount) return;
+    _paymentAmount = paymentAmount;
+    notifyListeners();
+  }
+
   resetCurrentOrderController() {
     _currentOrderList = [];
     notifyListeners();

@@ -38,6 +38,9 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+  <script>
+    var dartPdfJsVersion = "3.2.146";
+  </script>
 </head>
 <body>
   <script>
@@ -54,6 +57,10 @@
         }
       });
     });
+  </script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+  <script type="text/javascript">
+        fjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
   </script>
 </body>
 </html>

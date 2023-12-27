@@ -1,6 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/payment/order_payment_receipt_screen.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
@@ -29,8 +30,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: WelcomeScreen.routeName,
-        home: WelcomeScreen(),
+        initialRoute: OrderPaymentReceiptScreen.routeName,
+        home: OrderPaymentReceiptScreen(),
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

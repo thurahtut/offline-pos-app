@@ -74,89 +74,90 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ...controller.currentOrderList
-                .map((e) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          height: isTabletMode ? 70 : 100,
-                          width: isTabletMode ? (_width ?? 100) - 16 : _width,
-                          margin: isTabletMode ? EdgeInsets.all(8) : null,
-                          decoration: BoxDecoration(
-                            color: Constants.currentOrderDividerColor,
-                            borderRadius:
-                                isTabletMode ? BorderRadius.circular(20) : null,
-                          ),
-                          child: Center(
-                            child: ListTile(
-                              title: Row(
-                                children: [
-                                  Expanded(
-                                    child: RichText(
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      text: TextSpan(text: "", children: [
-                                        TextSpan(
-                                          text: "[${e["id"]}]",
-                                          style: textStyle.copyWith(
-                                              color: Constants.successColor),
-                                        ),
-                                        TextSpan(
-                                            text: e["name"], style: textStyle),
-                                      ]),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      ProductUntiDialog.productUnitWidget(
-                                          context,
-                                          object: e);
-                                    },
-                                    child: Text("${e["price"]} Ks".toString(),
+                .map(
+                  (e) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        height: isTabletMode ? 70 : 100,
+                        width: isTabletMode ? (_width ?? 100) - 16 : _width,
+                        margin: isTabletMode ? EdgeInsets.all(8) : null,
+                        decoration: BoxDecoration(
+                          color: Constants.currentOrderDividerColor,
+                          borderRadius:
+                              isTabletMode ? BorderRadius.circular(20) : null,
+                        ),
+                        child: Center(
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: RichText(
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    text: TextSpan(text: "", children: [
+                                      TextSpan(
+                                        text: "[${e["id"]}]",
                                         style: textStyle.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Constants.primaryColor,
-                                        )),
-                                  )
-                                ],
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                        "1 Unit at 900.00 Ks/Unit with a 0.00 % discount"),
+                                            color: Constants.successColor),
+                                      ),
+                                      TextSpan(
+                                          text: e["name"], style: textStyle),
+                                    ]),
                                   ),
-                                  Container(
-                                    width: 35,
-                                    height: 35,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Constants.primaryColor),
-                                    child: Center(
-                                      child: Text(
-                                        "%",
-                                        style: TextStyle(
-                                          color: Constants.accentColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    ProductUntiDialog.productUnitWidget(context,
+                                        object: e);
+                                  },
+                                  child: Text("${e["price"]} Ks".toString(),
+                                      style: textStyle.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Constants.primaryColor,
+                                      )),
+                                )
+                              ],
+                            ),
+                            subtitle: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                      "1 Unit at 900.00 Ks/Unit with a 0.00 % discount"),
+                                ),
+                                Container(
+                                  width: 35,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Constants.primaryColor),
+                                  child: Center(
+                                    child: Text(
+                                      "%",
+                                      style: TextStyle(
+                                        color: Constants.accentColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
                                       ),
                                     ),
-                                  )
-                                ],
-                              ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                          child: Divider(
-                            thickness: 0.6,
-                            height: 6,
-                            color: Constants.disableColor.withOpacity(0.96),
-                          ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                        child: Divider(
+                          thickness: 0.6,
+                          height: 6,
+                          color: Constants.disableColor.withOpacity(0.96),
                         ),
-                      ],
-                    ))
+                      ),
+                    ],
+                  ),
+                )
                 .toList(),
           ],
         );
@@ -255,111 +256,106 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     int itemCount = isTabletMode ? 10 : 5;
 
     List<Widget> calculatorActionWidgetList = [
-    CommonUtils.eachCalculateButtonWidget(
-      text: "1",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "2",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "3",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "Qty",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
+      CommonUtils.eachCalculateButtonWidget(
+        text: "1",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "2",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "3",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "Qty",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
         icon: NavigationService.navigatorKey.currentContext != null &&
                 NavigationService.navigatorKey.currentContext!
                     .watch<ViewController>()
                     .isKeyboardHide
             ? Icons.keyboard_arrow_up_rounded
             : Icons.keyboard_arrow_down_rounded,
-      iconSize: 32,
+        iconSize: 32,
         onPressed: () {
           context.read<ViewController>().isKeyboardHide =
               !context.read<ViewController>().isKeyboardHide;
         },
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "4",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "5",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "6",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "Disc",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "Price",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "7",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "8",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "9",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "+/-",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      icon: Icons.arrow_forward_ios,
-      iconSize: 21,
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "4",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "5",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "6",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "Disc",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "Price",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "7",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "8",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "9",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "+/-",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        icon: Icons.arrow_forward_ios,
+        iconSize: 21,
         onPressed: () {
           context.read<CurrentOrderController>().isContainCustomer = false;
           Navigator.pushNamed(context, OrderPaymentScreen.routeName);
         },
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: ".",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "0",
-      onPressed: () {},
-    ),
-    CommonUtils.eachCalculateButtonWidget(
-        icon: Icons.backspace_outlined,
-        iconColor: Constants.alertColor,
-        onPressed: () {}),
-    CommonUtils.eachCalculateButtonWidget(
-      text: "Customer",
-      containerColor: Constants.primaryColor,
-      textColor: Colors.white,
-      width: 100,
-      onPressed: () {
-          context
-              .read<ViewController>()
-              .isCustomerView = true;
-          CustomerListDialog.customerListDialogWidget(
-              context);
-      },
-    ),
-  ];
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: ".",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "0",
+        onPressed: () {},
+      ),
+      CommonUtils.eachCalculateButtonWidget(
+          icon: Icons.backspace_outlined,
+          iconColor: Constants.alertColor,
+          onPressed: () {}),
+      CommonUtils.eachCalculateButtonWidget(
+        text: "Customer",
+        containerColor: Constants.primaryColor,
+        textColor: Colors.white,
+        width: 100,
+        onPressed: () {
+          context.read<ViewController>().isCustomerView = true;
+          CustomerListDialog.customerListDialogWidget(context);
+        },
+      ),
+    ];
 
-    for (var i = 0;
-        i < calculatorActionWidgetList.length; i += (itemCount)) {
+    for (var i = 0; i < calculatorActionWidgetList.length; i += (itemCount)) {
       int start = (list.length * (itemCount));
-      int end =
-          (itemCount) + (list.length * (itemCount));
+      int end = (itemCount) + (list.length * (itemCount));
       rowList.addAll(calculatorActionWidgetList.getRange(
           start, min(end, calculatorActionWidgetList.length)));
       list.add(SizedBox(

@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/payment/order_payment_receipt_screen.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   static const String routeName = "/order_payment_screen";
@@ -67,7 +68,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           containerColor: Constants.primaryColor,
           textColor: Colors.white,
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pushNamed(context, OrderPaymentReceiptScreen.routeName);
           },
         ),
       ],
