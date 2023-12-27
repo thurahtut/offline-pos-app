@@ -107,25 +107,19 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
         mainAxisSize:
             isMobileMode || isTabletMode ? MainAxisSize.min : MainAxisSize.max,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CommonUtils.svgIconActionButton(
-                'assets/svg/grid_outlined.svg',
-                width: 28,
-                height: 28,
-              ),
-              SizedBox(width: 8),
-              Text(
-                'Point of Sale',
-                style: TextStyle(
-                  color: Constants.primaryColor,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+          IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                    ModalRoute.withName("/Home"));
+              },
+              icon: Icon(
+                Icons.home_filled,
+                color: Constants.primaryColor,
+                size: 35,
+              )),
           if (!isTabletMode) ..._titleList(),
         ],
       ),

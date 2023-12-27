@@ -41,10 +41,10 @@ class Routers {
         return MaterialPageRoute(
           builder: (_) => PaymentMethodScreen(),
         );
-      case InventoryListScreen.routeName:
-        return MaterialPageRoute(
-          builder: (_) => InventoryListScreen(),
-        );
+      // case InventoryListScreen.routeName:
+      //   return MaterialPageRoute(
+      //     builder: (_) => InventoryListScreen(),
+      //   );
       case ProductPackagingScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => ProductPackagingScreen(),

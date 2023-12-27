@@ -55,7 +55,7 @@ class WelcomeScreen extends StatelessWidget {
                   'Inventory',
                   "assets/svg/inventory_2.svg",
                   () {
-                    Navigator.pushNamed(context, InventoryListScreen.routeName);
+                    Navigator.pushNamed(context, ProductListScreen.routeName);
                   },
                 ),
               ],

@@ -100,7 +100,10 @@ class CustomerListDialog {
         );
       },
     ).then(
-        (value) => mainContext.read<ViewController>().isCustomerView = false);
+        (value) {
+      mainContext.read<ViewController>().isCustomerView = false;
+      return value;
+    });
   }
 
   static Widget _searchCustomerWidget() {
