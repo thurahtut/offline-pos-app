@@ -1,7 +1,9 @@
-import 'package:offline_pos/components/export_files.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:offline_pos/components/export_files.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 class DatabaseHelper {
   static Database? _db;
@@ -16,8 +18,6 @@ class DatabaseHelper {
 
   Future<Database> _initDb() async {
     // Get a location using getDatabasesPath
-
-    var databaseFactory = databaseFactoryFfi;
     String path;
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       var dir = await getApplicationDocumentsDirectory();
@@ -34,6 +34,7 @@ class DatabaseHelper {
       );
     } else {
       var databasesPath = await getDatabasesPath();
+      var databaseFactory = kIsWeb ? databaseFactoryFfiWeb : databaseFactoryFfi;
       path = join(databasesPath, _databaseName);
       return await databaseFactory.openDatabase(path,
           options: OpenDatabaseOptions(
@@ -50,12 +51,14 @@ class DatabaseHelper {
     // Open the database
   }
 
-  void _onCreate(Database db, int version) async {}
+  void _onCreate(Database db, int version) async {
+    await ProductTable.onCreate(db, version);
+  }
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {}
 
-  // static Future<void> clear() async {
-  //   final db = await DatabaseHelper().db;
-  //   //  await db.delete(tableName);
-  // }
+  static Future<void> clear() async {
+    final db = await DatabaseHelper().db;
+    await db.delete(PRODUCT_TABLE_NAME);
+  }
 }

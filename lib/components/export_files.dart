@@ -8,8 +8,6 @@ export 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 export 'package:flutter_svg/svg.dart';
 export 'package:go_router/go_router.dart';
 export 'package:provider/provider.dart';
-export 'package:sqflite/sqflite.dart';
-export 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 export '../../controller/current_order_controller.dart';
 export '../../controller/customer_list_controller.dart';
@@ -24,6 +22,7 @@ export '../../controller/quotation_order_list_controller.dart';
 export '../../model/product.dart';
 export '../components/common_utils.dart';
 export '../controller/view_controller.dart';
+export '../database/table/product_table.dart';
 export '../service/enums.dart';
 export '../service/navigation_service.dart';
 export '../view/cash_in_out/cash_in_out_dialog.dart';

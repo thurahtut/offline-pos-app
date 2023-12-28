@@ -16,6 +16,9 @@ class ProductDetailController with ChangeNotifier {
     notifyListeners();
   }
 
+
+  final formKey = GlobalKey<FormState>();
+
   notify() {
     notifyListeners();
   }

@@ -4610,6 +4610,7 @@ o.i(0,"sqlite3_value_bytes").toString
 o.i(0,"sqlite3_value_text").toString
 o.i(0,"sqlite3_value_blob").toString
 o.i(0,"sqlite3_aggregate_context").toString
+o.i(0,"sqlite3_get_autocommit").toString
 o=o.i(0,"dart_sqlite3_db_config_int")
 p.b.i(0,"sqlite3_temp_directory").toString
 q=b9.a=new A.hC(c0,b9.d,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a4,a5,a6,a7,a9,a8,b0,b1,b2,b3,b4,b5,a3,b6,b7,b8,o)
@@ -9775,7 +9776,7 @@ A.no.prototype={
 $1(a){t.m.a(a).X()},
 $S:55}
 A.l1.prototype={
-hm(a,b,c){var s,r,q,p,o,n,m,l,k
+hm(a,b,c){var s,r,q,p,o,n,m,l,k,j
 switch(c){case B.J:s=1
 break
 case B.a2:s=2
@@ -9793,13 +9794,14 @@ l=q.e
 l.$1(p)
 l.$1(0)
 l=new A.hD(q,m)
-if(n!==0){A.h(q.ch.$1(m))
-throw A.b(A.oC(r,l,n,"opening the database",null,null))}A.h(q.db.$2(m,1))
+if(n!==0){k=A.oC(r,l,n,"opening the database",null,null)
+A.h(q.ch.$1(m))
+throw A.b(k)}A.h(q.db.$2(m,1))
 q=A.u([],t.jP)
-k=new A.fw(r,l,A.u([],t.eY))
-q=new A.fn(r,l,k,q)
+j=new A.fw(r,l,A.u([],t.eY))
+q=new A.fn(r,l,j,q)
 l=$.je()
-l.a.register(q,l.$ti.c.a(k),q)
+l.a.register(q,l.$ti.c.a(j),q)
 return q}}
 A.cI.prototype={
 X(){var s,r=this

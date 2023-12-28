@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/product_table.dart';
 
 class ProductDetailFilter extends StatelessWidget {
   const ProductDetailFilter({
@@ -28,14 +29,38 @@ class ProductDetailFilter extends StatelessWidget {
                 width: 150,
                 textSize: 20,
                 radius: 16,
-                onTap: () {
+                onTap: () async {
                   if (context.read<ProductDetailController>().mode ==
                           ProductDetailMode.create ||
                       context.read<ProductDetailController>().mode ==
                           ProductDetailMode.edit) {
-                    context.read<ProductDetailController>().mode =
-                        ProductDetailMode.view;
-                    return;
+                    if (context
+                            .read<ProductDetailController>()
+                            .formKey
+                            .currentState
+                            ?.validate() ??
+                        false) {
+                      context
+                          .read<ProductDetailController>()
+                          .formKey
+                          .currentState
+                          ?.save();
+                      await ProductTable.insert(context
+                              .read<ProductDetailController>()
+                              .creatingProduct)
+                          .then((value) {
+                        if (value == 1) {
+                          context.read<ProductDetailController>().mode =
+                              ProductDetailMode.view;
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Creating '
+                                  '"${context.read<ProductDetailController>().creatingProduct.productName}"'
+                                  ' is failed!')));
+                        }
+                      });
+                      return;
+                    }
                   }
                   context.read<ProductDetailController>().mode =
                       ProductDetailMode.edit;
