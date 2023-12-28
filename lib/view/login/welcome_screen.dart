@@ -14,29 +14,11 @@ class WelcomeScreen extends StatelessWidget {
   Widget _bodyWidget(BuildContext context) {
     return Container(
       color: Constants.primaryColor,
-      child:
-          // GridView(
-          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //     mainAxisSpacing: 0,
-          //     crossAxisCount: 2,
-          //     crossAxisSpacing: 1,
-          //     childAspectRatio: 2.9,
-          //   ),
-          //   children: [
-          //     _buttonContainer(context, 'Sale (POS)', "assets/svg/sell.svg"),
-          //     _buttonContainer(
-          //         context, 'Inventory', "assets/svg/inventory_2.svg"),
-          //     _buttonContainer(
-          //         context, 'Finance', "assets/svg/account_balance.svg"),
-          //     _buttonContainer(context, 'Inventory', "assets/svg/settings.svg"),
-          //   ],
-          // )
-
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              // mainAxisSize: MainAxisSize.min,
-              children: [
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisSize: MainAxisSize.min,
+          children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,

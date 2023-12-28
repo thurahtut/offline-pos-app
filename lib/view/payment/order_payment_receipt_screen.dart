@@ -19,12 +19,12 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      for (int i = 0; i < 2; i++) {
-        context
-            .read<CurrentOrderController>()
-            .currentOrderList
-            .add(CommonUtils.itemList.first);
-      }
+      // for (int i = 0; i < 2; i++) {
+      //   context
+      //       .read<CurrentOrderController>()
+      //       .currentOrderList
+      //       .add(CommonUtils.itemList.first);
+      // }
       // myTheme = pw.ThemeData.withFont(
       //   base: pw.Font.ttf(
       //       await rootBundle.load("assets/font/Outfit-Regular.ttf")),
@@ -60,6 +60,19 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   Widget _receiptWidget() {
+    return PdfPreview(
+      initialPageFormat: PdfPageFormat.roll80,
+      allowSharing: false,
+      allowPrinting: false,
+      canChangeOrientation: false,
+      canChangePageFormat: false,
+      maxPageWidth: PdfPageFormat.roll80.width * 2,
+      pdfPreviewPageDecoration: BoxDecoration(boxShadow: []),
+      build: (format) => _generatePdf(),
+    );
+  }
+
+  Future<Uint8List> _generatePdf() async {
     final doc = pw.Document(
       theme: myTheme,
     );
@@ -129,16 +142,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       ),
     );
 
-    return PdfPreview(
-      initialPageFormat: PdfPageFormat.roll80,
-      allowSharing: false,
-      allowPrinting: false,
-      canChangeOrientation: false,
-      canChangePageFormat: false,
-      maxPageWidth: PdfPageFormat.roll80.width * 2,
-      pdfPreviewPageDecoration: BoxDecoration(boxShadow: []),
-      build: (format) => doc.save(),
-    );
+    return doc.save();
   }
 
   List<pw.Widget> getOrderItem(pw.Document doc) {
@@ -305,6 +309,37 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           text: 'Print',
           textColor: Colors.white,
           containerColor: Constants.primaryColor,
+          onTap: () async {
+            // List<int> d = await _generatePdf();
+            // Uint8List byte = Uint8List.fromList(d);
+            // // Get temporary directory
+            // final dir = await getTemporaryDirectory();
+
+            // // for download receipt image
+            // await for (var page in Printing.raster(byte, pages: [0])) {
+            //   var file =
+            //       File('${dir.path}/order_id_${DateTime.now().toString()}.png');
+            //   final byteData = await page.toPng();
+            //   await file.writeAsBytes(byteData, flush: true);
+            //   final result = await ImageGallerySaver.saveImage(
+            //       byteData.buffer.asUint8List());
+            //   print(result);
+            //   // final image = page.toImage(); // ...or page.toPng()
+            //   // print(image);
+            // }
+            // if (Platform.isAndroid || Platform.isIOS) {
+            //   Printer? pri = await Printing.pickPrinter(context: context);
+            //   await Printing.directPrintPdf(
+            //       printer: pri!,
+            //       onLayout: (PdfPageFormat format) async => _generatePdf());
+            // } else {
+            await Printing.directPrintPdf(
+              onLayout: (PdfPageFormat format) async => _generatePdf(),
+              printer: Printer(url: "Printer-80"),
+              format: PdfPageFormat.roll80,
+            );
+            // }
+          },
         ),
         SizedBox(height: 20),
         BorderContainer(

@@ -18,18 +18,31 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<ViewController>().isCustomerView = false;
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.greyColor,
       appBar: SaleAppBar(),
-      body: Visibility(
-          visible: !context.watch<ViewController>().isCustomerView,
+      body: Opacity(
+          opacity: context.watch<ViewController>().isCustomerView ? 0 : 1,
           child: _bodyWidget()),
     );
   }
 
   Widget _bodyWidget() {
     bool isTabletMode = CommonUtils.isTabletMode(context);
+    double currentOrderWidth = isTabletMode
+        ? (MediaQuery.of(context).size.width / 10) * 9
+        : MediaQuery.of(context).size.width -
+            (MediaQuery.of(context).size.width / 5.5) -
+            ((MediaQuery.of(context).size.width / 5.3) * 3);
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -47,12 +60,13 @@ class _MainScreenState extends State<MainScreen> {
                         visible: showSidebar, child: _sideBarWidget());
                   }),
               if (!isTabletMode) ItemListScreen(showSideBar: _showSideBar),
-              if (!isTabletMode) CurrentOrderScreen(),
+              if (!isTabletMode) CurrentOrderScreen(width: currentOrderWidth),
               if (isTabletMode)
                 Column(
                   children: [
                     Expanded(child: ItemListScreen(showSideBar: _showSideBar)),
-                    Expanded(child: CurrentOrderScreen()),
+                    Expanded(
+                        child: CurrentOrderScreen(width: currentOrderWidth)),
                   ],
                 )
             ],

@@ -1,11 +1,13 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class CustomerListDialog {
-  static Future<dynamic> customerListDialogWidget(
+  static Future<Object?> customerListDialogWidget(
     BuildContext mainContext,
   ) {
     bool isTabletMode = CommonUtils.isTabletMode(mainContext);
     bool isMobileMode = CommonUtils.isMobileMode(mainContext);
+    double width = MediaQuery.of(mainContext).size.width;
+    double height = MediaQuery.of(mainContext).size.height;
     return CommonUtils.showGeneralDialogWidget(
       mainContext,
       (bContext, anim1, anim2) {
@@ -20,14 +22,13 @@ class CustomerListDialog {
           content: SingleChildScrollView(
             child: Container(
               constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(mainContext).size.height - 100,
-                  maxWidth: MediaQuery.of(mainContext).size.width - 100),
+                  maxHeight: height - 100, maxWidth: width - 100),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(mainContext).size.width - 100,
+                    width: width - 100,
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -39,7 +40,7 @@ class CustomerListDialog {
                                 prefixSvg: 'assets/svg/account_circle.svg',
                                 svgSize: 30,
                                 svgColor: Colors.white,
-                                width: (MediaQuery.of(mainContext).size.width -
+                                width: (width -
                                         100) /
                                     (isMobileMode
                                         ? 3
@@ -71,14 +72,14 @@ class CustomerListDialog {
                                       horizontal: 10, vertical: 10),
                                   textSize: 16,
                                   okCallback: () {
-                                    Navigator.pop(bContext);
+                                    Navigator.pop(bContext, true);
                                     CreateCustomerDialog
                                         .createCustomerDialogWidget(
                                             mainContext);
                                   },
                                   cancelLabel: 'Discard',
                                   cancelCallback: () {
-                                    Navigator.pop(bContext);
+                                    Navigator.pop(bContext, false);
                                   },
                                 ),
                               ),
@@ -90,8 +91,8 @@ class CustomerListDialog {
                   ),
                   Container(
                       padding: EdgeInsets.all(8),
-                      height: MediaQuery.of(mainContext).size.height - 200,
-                      width: MediaQuery.of(mainContext).size.width - 100,
+                      height: height - 200,
+                      width: width - 100,
                       child: CustomerPaginationTable()),
                 ],
               ),
@@ -99,11 +100,7 @@ class CustomerListDialog {
           ),
         );
       },
-    ).then(
-        (value) {
-      mainContext.read<ViewController>().isCustomerView = false;
-      return value;
-    });
+    );
   }
 
   static Widget _searchCustomerWidget() {

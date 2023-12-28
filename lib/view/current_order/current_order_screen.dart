@@ -3,27 +3,15 @@ import 'dart:math';
 import 'package:offline_pos/components/export_files.dart';
 
 class CurrentOrderScreen extends StatefulWidget {
-  const CurrentOrderScreen({super.key});
+  const CurrentOrderScreen({super.key, required this.width});
+  final double width;
 
   @override
   State<CurrentOrderScreen> createState() => _CurrentOrderScreenState();
 }
 
 class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
-  double? _width;
   bool isTabletMode = false;
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _width = isTabletMode
-          ? (MediaQuery.of(context).size.width / 10) * 9
-          : MediaQuery.of(context).size.width -
-              (MediaQuery.of(context).size.width / 5.5) -
-              ((MediaQuery.of(context).size.width / 5.3) * 3);
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +68,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                     children: [
                       Container(
                         height: isTabletMode ? 70 : 100,
-                        width: isTabletMode ? (_width ?? 100) - 16 : _width,
+                        width: isTabletMode ? widget.width - 16 : widget.width,
                         margin: isTabletMode ? EdgeInsets.all(8) : null,
                         decoration: BoxDecoration(
                           color: Constants.currentOrderDividerColor,
@@ -89,6 +77,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                         ),
                         child: Center(
                           child: ListTile(
+                            dense: true,
                             title: Row(
                               children: [
                                 Expanded(
@@ -169,7 +158,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     return Consumer<CurrentOrderController>(builder: (_, controller, __) {
       List list = controller.getTotalQty(controller.currentOrderList);
       return Container(
-        width: _width,
+        width: widget.width,
         padding: const EdgeInsets.symmetric(horizontal: 14.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -221,7 +210,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
 
   Widget _noOrderWidget() {
     return SizedBox(
-      width: _width,
+      width: widget.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -346,9 +335,15 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         containerColor: Constants.primaryColor,
         textColor: Colors.white,
         width: 100,
-        onPressed: () {
+        onPressed: () async {
           context.read<ViewController>().isCustomerView = true;
-          CustomerListDialog.customerListDialogWidget(context);
+          CustomerListDialog.customerListDialogWidget(context).then((value) {
+            if (NavigationService.navigatorKey.currentContext != null) {
+              NavigationService.navigatorKey.currentContext!
+                  .read<ViewController>()
+                  .isCustomerView = false;
+            }
+          });
         },
       ),
     ];
