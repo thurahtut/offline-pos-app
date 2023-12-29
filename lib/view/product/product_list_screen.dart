@@ -528,7 +528,9 @@ class DataSourceForProductListScreen extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
-  onTap() {
+  onTap(Product product) {
+    context.read<ProductDetailController>().mode == ProductDetailMode.view;
+    context.read<ProductDetailController>().creatingProduct = product;
     Navigator.pushNamed(context, ProductDetailScreen.routeName);
   }
 
@@ -541,11 +543,15 @@ class DataSourceForProductListScreen extends DataTableSource {
           Text('${index + 1}'),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(product.productName ?? ''),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(
             product.package ?? '',
             style: TextStyle(
@@ -554,7 +560,9 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(
             '${product.price ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
@@ -562,11 +570,15 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(product.barcode ?? ''),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(
             '${product.salePrice ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
@@ -574,7 +586,9 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(
             '${product.latestPrice ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
@@ -582,15 +596,21 @@ class DataSourceForProductListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(product.productCategory ?? ''),
         ),
         DataCell(
-          onTap: onTap,
-          Text(product.productType.toString()),
+          onTap: () {
+            onTap(product);
+          },
+          Text((product.productType?.name ?? '').toUpperCase()),
         ),
         DataCell(
-          onTap: onTap,
+          onTap: () {
+            onTap(product);
+          },
           Text(''),
         ),
       ],

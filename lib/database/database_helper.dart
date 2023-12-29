@@ -65,6 +65,7 @@ class DatabaseHelper {
 
   void _onCreate(Database db, int version) async {
     await ProductTable.onCreate(db, version);
+    await OrderHistoryTable.onCreate(db, version);
   }
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {}
@@ -72,5 +73,6 @@ class DatabaseHelper {
   static Future<void> clear() async {
     final db = await DatabaseHelper().db;
     await db.delete(PRODUCT_TABLE_NAME);
+    await db.delete(ORDER_HISTORY_TABLE_NAME);
   }
 }

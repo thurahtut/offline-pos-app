@@ -68,6 +68,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           containerColor: Constants.primaryColor,
           textColor: Colors.white,
           onTap: () {
+            context.read<CurrentOrderController>().currentOrderList = [];
+            var count = 0;
+            Navigator.popUntil(context, (route) {
+              return count++ == 1;
+            });
             Navigator.pushNamed(context, OrderPaymentReceiptScreen.routeName);
           },
         ),

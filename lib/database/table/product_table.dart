@@ -1,6 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:offline_pos/database/database_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../components/export_files.dart';
@@ -120,7 +119,7 @@ class ProductTable {
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
     return List.generate(maps.length, (i) {
-      return _parseProduct(maps[i]);
+      return Product.fromJson(maps[i]);
     });
   }
 
@@ -136,7 +135,7 @@ class ProductTable {
       limit: 1,
     );
 
-    return _parseProduct(maps.first);
+    return Product.fromJson(maps.first);
   }
 
   static Future<Product?> getLastProduct() async {
@@ -154,59 +153,59 @@ class ProductTable {
         db.rawQuery(
             "select * from $PRODUCT_TABLE_NAME where id=(select max(id) from $PRODUCT_TABLE_NAME, []");
 
-    return _parseProduct(maps.first);
+    return Product.fromJson(maps.first);
   }
 
-  static Product _parseProduct(Map<String, dynamic> json) {
-    Product product = Product();
-    product.productId = json[PRODUCT_ID];
-    product.productName = json[PRODUCT_NAME];
-    product.package = json[PACKAGE];
-    product.productType = json[PRODUCT_TYPE] != "null"
-        ? ProductType.values.firstWhere((e) => e.name == json[PRODUCT_TYPE])
-        : ProductType.consumable;
-    product.isBundled = bool.tryParse(json[IS_BUNDLED]);
-    product.canBeSold = bool.tryParse(json[CAN_BE_SOLD]);
-    product.canBePurchased = bool.tryParse(json[CAN_BE_PURCHASED]);
-    product.canBeManufactured = bool.tryParse(json[CAN_BE_MANUFACTURED]);
-    product.reInvoiceExpenses = json[RE_INVOICE_EXPENSES] != "null"
-        ? ReInvoiceExpenses.values
-            .firstWhere((e) => e.text == json[RE_INVOICE_EXPENSES])
-        : ReInvoiceExpenses.no;
-    product.invoicingPolicy = json[INVOICE_POLICY] != "null"
-        ? InvoicingPolicy.values
-            .firstWhere((e) => e.name == json[INVOICE_POLICY])
-        : InvoicingPolicy.orderedQuantities;
-    product.unitOfMeasure = json[UNIT_OF_MEASURE];
-    product.baseUnitCount = double.tryParse(json[BASE_UNIT_COUNT].toString());
-    product.isSecondaryUnit = bool.tryParse(json[IS_SECONDARY_UNIT]);
-    product.purchaseUOM = json[PURCHASE_UOM];
-    product.isCommissionBasedServices =
-        bool.tryParse(json[IS_COMMISSION_BASED_SERVICES]);
-    product.isThirdUnit = bool.tryParse(json[IS_THIRD_UNIT]);
-    product.rebatePercentage =
-        double.tryParse(json[REBATE_PERCENTAGE].toString());
-    product.price = double.tryParse(json[PRICE].toString());
-    product.salePrice = double.tryParse(json[SALE_PRICE].toString());
-    product.latestPrice = double.tryParse(json[LATEST_PRICE].toString());
-    product.productCategory = json[PRODUCT_CATEGORY];
-    product.productBrand = json[PRODUCT_BRAND];
-    product.qtyInBags = double.tryParse(json[QTY_IN_BAGS].toString());
-    product.multipleOfQty = double.tryParse(json[MULTIPLE_OF_QTY].toString());
-    product.oldInternalRef = json[OLD_INTERNAL_REF];
-    product.internalRef = json[INTERNAL_REF];
-    product.barcode = json[BARCODE];
-    product.isClearance = bool.tryParse(json[IS_CLEARANCE]);
-    product.itemType = json[ITEM_TYPE] != "null"
-        ? ItemType.values.firstWhere((e) => e.text == json[ITEM_TYPE])
-        : ItemType.none;
-    product.countryCode = json[COUNTRY_CODE];
-    product.allowNegativeStock = bool.tryParse(json[ALLOW_NEGATIVE_STOCK]);
-    product.company = json[COMPANY];
-    product.tags = json[TAGS];
-    product.internalNotes = json[INTERNAL_NOTES];
-    return product;
-  }
+  // static Product _parseProduct(Map<String, dynamic> json) {
+  //   Product product = Product();
+  //   product.productId = json[PRODUCT_ID];
+  //   product.productName = json[PRODUCT_NAME];
+  //   product.package = json[PACKAGE];
+  //   product.productType = json[PRODUCT_TYPE] != "null"
+  //       ? ProductType.values.firstWhere((e) => e.name == json[PRODUCT_TYPE])
+  //       : ProductType.consumable;
+  //   product.isBundled = bool.tryParse(json[IS_BUNDLED]);
+  //   product.canBeSold = bool.tryParse(json[CAN_BE_SOLD]);
+  //   product.canBePurchased = bool.tryParse(json[CAN_BE_PURCHASED]);
+  //   product.canBeManufactured = bool.tryParse(json[CAN_BE_MANUFACTURED]);
+  //   product.reInvoiceExpenses = json[RE_INVOICE_EXPENSES] != "null"
+  //       ? ReInvoiceExpenses.values
+  //           .firstWhere((e) => e.text == json[RE_INVOICE_EXPENSES])
+  //       : ReInvoiceExpenses.no;
+  //   product.invoicingPolicy = json[INVOICE_POLICY] != "null"
+  //       ? InvoicingPolicy.values
+  //           .firstWhere((e) => e.name == json[INVOICE_POLICY])
+  //       : InvoicingPolicy.orderedQuantities;
+  //   product.unitOfMeasure = json[UNIT_OF_MEASURE];
+  //   product.baseUnitCount = double.tryParse(json[BASE_UNIT_COUNT].toString());
+  //   product.isSecondaryUnit = bool.tryParse(json[IS_SECONDARY_UNIT]);
+  //   product.purchaseUOM = json[PURCHASE_UOM];
+  //   product.isCommissionBasedServices =
+  //       bool.tryParse(json[IS_COMMISSION_BASED_SERVICES]);
+  //   product.isThirdUnit = bool.tryParse(json[IS_THIRD_UNIT]);
+  //   product.rebatePercentage =
+  //       double.tryParse(json[REBATE_PERCENTAGE].toString());
+  //   product.price = double.tryParse(json[PRICE].toString());
+  //   product.salePrice = double.tryParse(json[SALE_PRICE].toString());
+  //   product.latestPrice = double.tryParse(json[LATEST_PRICE].toString());
+  //   product.productCategory = json[PRODUCT_CATEGORY];
+  //   product.productBrand = json[PRODUCT_BRAND];
+  //   product.qtyInBags = double.tryParse(json[QTY_IN_BAGS].toString());
+  //   product.multipleOfQty = double.tryParse(json[MULTIPLE_OF_QTY].toString());
+  //   product.oldInternalRef = json[OLD_INTERNAL_REF];
+  //   product.internalRef = json[INTERNAL_REF];
+  //   product.barcode = json[BARCODE];
+  //   product.isClearance = bool.tryParse(json[IS_CLEARANCE]);
+  //   product.itemType = json[ITEM_TYPE] != "null"
+  //       ? ItemType.values.firstWhere((e) => e.text == json[ITEM_TYPE])
+  //       : ItemType.none;
+  //   product.countryCode = json[COUNTRY_CODE];
+  //   product.allowNegativeStock = bool.tryParse(json[ALLOW_NEGATIVE_STOCK]);
+  //   product.company = json[COMPANY];
+  //   product.tags = json[TAGS];
+  //   product.internalNotes = json[INTERNAL_NOTES];
+  //   return product;
+  // }
 
   static Future<int> delete(int productId) async {
     final Database db = await DatabaseHelper().db;

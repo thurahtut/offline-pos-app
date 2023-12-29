@@ -60,6 +60,69 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
+      _productNameTextController.text =
+          context.read<ProductDetailController>().creatingProduct.productName ??
+              '';
+      _baseUnitCountTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .baseUnitCount
+              ?.toString() ??
+          '';
+      _internalNoteTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .internalNotes ??
+          '';
+      _countryCodeTextController.text =
+          context.read<ProductDetailController>().creatingProduct.countryCode ??
+              '';
+      _barcodeTextController.text =
+          context.read<ProductDetailController>().creatingProduct.barcode ?? '';
+      _oldInternalReferenceTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .oldInternalRef ??
+          '';
+      _internalReferenceTextController.text =
+          context.read<ProductDetailController>().creatingProduct.internalRef ??
+              '';
+      _multipleOfQtyTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .multipleOfQty
+              ?.toString() ??
+          '';
+      _qtyInBagsTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .qtyInBags
+              ?.toString() ??
+          '';
+      _salePriceTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .salePrice
+              ?.toString() ??
+          '';
+      _latestPriceTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .latestPrice
+              ?.toString() ??
+          '';
+      _costTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .price
+              ?.toString() ??
+          '';
+      _rebatePercentageTextController.text = context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .rebatePercentage
+              ?.toString() ??
+          '';
       setState(() {});
     });
     super.initState();
@@ -796,7 +859,9 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value != null && value.isNotEmpty && value is! num) {
+        if (value != null &&
+            value.isNotEmpty &&
+            double.tryParse(value) == null) {
           return "Please enter the valid base unit count!";
         }
         return null;
@@ -949,7 +1014,9 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value != null && value.isNotEmpty && value is! num) {
+        if (value != null &&
+            value.isNotEmpty &&
+            double.tryParse(value) == null) {
           return "Please enter the valid rebate percentage!";
         }
         return null;
@@ -1180,7 +1247,9 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value != null && value.isNotEmpty && value is! num) {
+        if (value != null &&
+            value.isNotEmpty &&
+            double.tryParse(value) == null) {
           return "Please enter the valid qty in bags!";
         }
         return null;
@@ -1207,7 +1276,9 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value != null && value.isNotEmpty && value is! num) {
+        if (value != null &&
+            value.isNotEmpty &&
+            double.tryParse(value) == null) {
           return "Please enter the valid multiple of qty!";
         }
         return null;

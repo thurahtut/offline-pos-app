@@ -30,9 +30,7 @@ class ProductDetailFilter extends StatelessWidget {
                 radius: 16,
                 onTap: () async {
                   if (context.read<ProductDetailController>().mode ==
-                          ProductDetailMode.create ||
-                      context.read<ProductDetailController>().mode ==
-                          ProductDetailMode.edit) {
+                      ProductDetailMode.create) {
                     if (context
                             .read<ProductDetailController>()
                             .formKey
@@ -60,10 +58,21 @@ class ProductDetailFilter extends StatelessWidget {
                                       ' does not have! Something was wrong!')));
                               return;
                             }
-                            context
+                            int index = context
                                 .read<ProductListController>()
                                 .productList
-                                .add(product);
+                                .indexWhere((element) =>
+                                    element.productId == product.productId);
+                            if (index != -1) {
+                              context
+                                  .read<ProductListController>()
+                                  .productList[index] = product;
+                            } else {
+                              context
+                                  .read<ProductListController>()
+                                  .productList
+                                  .add(product);
+                            }
 
                             context.read<ProductListController>().notify();
                             context
@@ -84,8 +93,75 @@ class ProductDetailFilter extends StatelessWidget {
                                   ' is failed!')));
                         }
                       });
-                      return;
                     }
+                    return;
+                  }
+                  if (context.read<ProductDetailController>().mode ==
+                      ProductDetailMode.edit) {
+                    if (context
+                            .read<ProductDetailController>()
+                            .formKey
+                            .currentState
+                            ?.validate() ??
+                        false) {
+                      context
+                          .read<ProductDetailController>()
+                          .formKey
+                          .currentState
+                          ?.save();
+                      await ProductTable.update(context
+                              .read<ProductDetailController>()
+                              .creatingProduct)
+                          .then((value) {
+                        if (value > 0) {
+                          context.read<ProductDetailController>().mode =
+                              ProductDetailMode.view;
+                          ProductTable.getProductByProductId(value)
+                              .then((product) {
+                            if (product == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text('Updating '
+                                      '"${context.read<ProductDetailController>().creatingProduct.productName}"'
+                                      ' does not have! Something was wrong!')));
+                              return;
+                            }
+                            int index = context
+                                .read<ProductListController>()
+                                .productList
+                                .indexWhere((element) =>
+                                    element.productId == product.productId);
+                            if (index != -1) {
+                              context
+                                  .read<ProductListController>()
+                                  .productList[index] = product;
+                            } else {
+                              context
+                                  .read<ProductListController>()
+                                  .productList
+                                  .add(product);
+                            }
+
+                            context.read<ProductListController>().notify();
+                            context
+                                    .read<ProductListController>()
+                                    .productInfoDataSource =
+                                DataSourceForProductListScreen(
+                                    context,
+                                    context
+                                        .read<ProductListController>()
+                                        .productList,
+                                    0,
+                                    () {});
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Updating '
+                                  '"${context.read<ProductDetailController>().creatingProduct.productName}"'
+                                  ' is failed!')));
+                        }
+                      });
+                    }
+                    return;
                   }
                   context.read<ProductDetailController>().mode =
                       ProductDetailMode.edit;
@@ -110,8 +186,6 @@ class ProductDetailFilter extends StatelessWidget {
                           ProductDetailMode.edit) {
                     context.read<ProductDetailController>().mode =
                         ProductDetailMode.view;
-                    context.read<ProductDetailController>().creatingProduct =
-                        Product();
                     return;
                   }
                   context.read<ProductDetailController>().mode =

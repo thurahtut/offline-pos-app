@@ -50,8 +50,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: [
               SizedBox(width: 16),
               Text(
-                'Product/ [${CommonUtils.demoProduct.package ?? ''}]'
-                '${CommonUtils.demoProduct.productName ?? ''}',
+                'Product'
+                '${context.watch<ProductDetailController>().mode == ProductDetailMode.view || context.watch<ProductDetailController>().mode == ProductDetailMode.edit ? '/ [${context.read<ProductDetailController>().creatingProduct.productId ?? ''}]' '${context.read<ProductDetailController>().creatingProduct.productName ?? ''}' : ''}',
                 style: TextStyle(
                   color: Constants.textColor,
                   fontSize: 17,
