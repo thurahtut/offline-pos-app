@@ -22,4 +22,10 @@ class ProductDetailController with ChangeNotifier {
   notify() {
     notifyListeners();
   }
+
+  resetProductDetailController() {
+    _mode = ProductDetailMode.view;
+    _creatingProduct = Product();
+    notifyListeners();
+  }
 }

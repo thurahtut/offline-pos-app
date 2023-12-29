@@ -31,21 +31,24 @@ class _ProductListScreenState extends State<ProductListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
-      for (var i = 0; i < 20; i++) {
-        context
-            .read<ProductListController>()
-            .productList
-            .add(CommonUtils.demoProduct);
-      }
+      context.read<ProductDetailController>().resetProductDetailController();
+      getAllProduct();
+    });
+    super.initState();
+  }
+
+  Future<void> getAllProduct() async {
+    context.read<ProductListController>().productList = [];
+    ProductTable.getAll().then((list) {
+      context.read<ProductListController>().productList.addAll(list);
+      context.read<ProductListController>().notify();
       context.read<ProductListController>().productInfoDataSource =
           DataSourceForProductListScreen(
               context,
               context.read<ProductListController>().productList,
               _offset,
               () {});
-      setState(() {});
     });
-    super.initState();
   }
 
   @override
@@ -245,7 +248,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
           horizontalInside:
               BorderSide(color: Constants.disableColor.withOpacity(0.81))),
       rowsPerPage:
-          min(_limit, context.read<ProductListController>().productList.length),
+          min(_limit,
+          max(context.read<ProductListController>().productList.length, 1)),
       minWidth: MediaQuery.of(context).size.width,
       showCheckboxColumn: true,
       fit: FlexFit.tight,

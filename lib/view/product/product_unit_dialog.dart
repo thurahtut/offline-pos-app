@@ -3,7 +3,7 @@ import 'package:offline_pos/components/export_files.dart';
 class ProductUntiDialog {
   static Future<dynamic> productUnitWidget(
     BuildContext context, {
-    required dynamic object,
+    required Product product,
   }) {
     Widget spacer = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -40,7 +40,7 @@ class ProductUntiDialog {
                         )),
                     child: Center(
                       child: Text(
-                        'Product Packages [${object["id"]}] \n ${object["name"]}',
+                        'Product Packages [${product.productId}] \n ${product.productName}',
                         textAlign: TextAlign.center,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -53,7 +53,7 @@ class ProductUntiDialog {
                     ),
                   ),
                   SizedBox(height: 8),
-                  packagesWidget(object),
+                  packagesWidget(product),
                   spacer,
                   SizedBox(height: 16),
                   CommonUtils.okCancelWidget(
@@ -75,18 +75,18 @@ class ProductUntiDialog {
     );
   }
 
-  static Widget packagesWidget(dynamic object) {
+  static Widget packagesWidget(Product product) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _eachPackageWdget(object),
-        _eachPackageWdget(object),
+        _eachPackageWdget(product),
+        _eachPackageWdget(product),
       ],
     );
   }
 
-  static Widget _eachPackageWdget(dynamic object) {
+  static Widget _eachPackageWdget(Product product) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +117,7 @@ class ProductUntiDialog {
                     ],
                   ),
                   child: Text(
-                    '9000 Ks/ Unit',
+                    '${product.price} Ks/ Unit',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -136,7 +136,7 @@ class ProductUntiDialog {
               ),
               SizedBox(height: 8),
               Text(
-                'Quantity : 12',
+                'Quantity : ${product.qtyInBags}',
                 style: TextStyle(
                   color: Constants.textColor.withOpacity(0.9),
                   fontSize: 11,
@@ -148,7 +148,7 @@ class ProductUntiDialog {
         ),
         SizedBox(height: 8),
         Text(
-          '[${object["id"]}]',
+          '[${product.productId}]',
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -158,7 +158,7 @@ class ProductUntiDialog {
           ),
         ),
         Text(
-          object["name"],
+          product.productName ?? '',
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,

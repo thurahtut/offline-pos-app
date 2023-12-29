@@ -796,9 +796,7 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value == null ||
-            value.isEmpty ||
-            (double.tryParse(value) ?? 0) <= 0) {
+        if (value != null && value.isNotEmpty && value is! num) {
           return "Please enter the valid base unit count!";
         }
         return null;
@@ -951,9 +949,7 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value == null ||
-            value.isEmpty ||
-            (double.tryParse(value) ?? 0) <= 0) {
+        if (value != null && value.isNotEmpty && value is! num) {
           return "Please enter the valid rebate percentage!";
         }
         return null;
@@ -1184,9 +1180,7 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value == null ||
-            value.isEmpty ||
-            (double.tryParse(value) ?? 0) <= 0) {
+        if (value != null && value.isNotEmpty && value is! num) {
           return "Please enter the valid qty in bags!";
         }
         return null;
@@ -1213,9 +1207,7 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
         contentPadding: EdgeInsets.all(16),
       ),
       validator: (value) {
-        if (value == null ||
-            value.isEmpty ||
-            (double.tryParse(value) ?? 0) <= 0) {
+        if (value != null && value.isNotEmpty && value is! num) {
           return "Please enter the valid multiple of qty!";
         }
         return null;

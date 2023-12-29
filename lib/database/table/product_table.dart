@@ -85,7 +85,7 @@ class ProductTable {
     final Database db = await DatabaseHelper().db;
 
     String sql = "INSERT INTO $PRODUCT_TABLE_NAME("
-        "$PRODUCT_ID, $PRODUCT_NAME, $PACKAGE, $PRODUCT_TYPE, "
+        "$PRODUCT_NAME, $PACKAGE, $PRODUCT_TYPE, "
         "$IS_BUNDLED, $CAN_BE_SOLD, $CAN_BE_PURCHASED, $CAN_BE_MANUFACTURED, "
         "$RE_INVOICE_EXPENSES, $INVOICE_POLICY, $UNIT_OF_MEASURE, $BASE_UNIT_COUNT, "
         "$IS_SECONDARY_UNIT, $PURCHASE_UOM, $IS_COMMISSION_BASED_SERVICES, $IS_THIRD_UNIT, "
@@ -95,14 +95,14 @@ class ProductTable {
         "$ITEM_TYPE, $COUNTRY_CODE, $ALLOW_NEGATIVE_STOCK, $COMPANY, $TAGS, $INTERNAL_NOTES"
         ")"
         " VALUES("
-        "'', '${product.productName}', '${product.package}', '${product.productType}', "
-        "'${product.isBundled}', '${product.canBeSold}', '${product.canBePurchased}', '${product.canBeManufactured}', "
-        "'${product.reInvoiceExpenses}', '${product.invoicingPolicy}', '${product.unitOfMeasure}', '${product.baseUnitCount}', "
-        "'${product.isSecondaryUnit}', '${product.purchaseUOM}', '${product.isCommissionBasedServices}', '${product.isThirdUnit}', "
-        "'${product.rebatePercentage}', '${product.price}', '${product.salePrice}', '${product.latestPrice}', "
-        "'${product.productCategory}', '${product.productBrand}', '${product.qtyInBags}', '${product.multipleOfQty}', "
-        "'${product.oldInternalRef}', '${product.internalRef}', '${product.barcode}', '${product.isClearance}', "
-        "'${product.itemType}', '${product.countryCode}', '${product.allowNegativeStock}', '${product.company}', '${product.tags}', '${product.internalNotes}'"
+        "'${product.productName}', '${product.package}', '${product.productType?.name}', "
+        "'${product.isBundled == true}', '${product.canBeSold == true}', '${product.canBePurchased == true}', '${product.canBeManufactured == true}', "
+        "'${product.reInvoiceExpenses?.text}', '${product.invoicingPolicy?.name}', '${product.unitOfMeasure}', '${product.baseUnitCount ?? 0}', "
+        "'${product.isSecondaryUnit == true}', '${product.purchaseUOM}', '${product.isCommissionBasedServices == true}', '${product.isThirdUnit == true}', "
+        "'${product.rebatePercentage ?? 0}', '${product.price ?? 0}', '${product.salePrice ?? 0}', '${product.latestPrice ?? 0}', "
+        "'${product.productCategory}', '${product.productBrand}', '${product.qtyInBags ?? 0}', '${product.multipleOfQty ?? 0}', "
+        "'${product.oldInternalRef}', '${product.internalRef}', '${product.barcode}', '${product.isClearance == true}', "
+        "'${product.itemType?.text}', '${product.countryCode}', '${product.allowNegativeStock == true}', '${product.company}', '${product.tags}', '${product.internalNotes}'"
         ")";
 
     return db.rawInsert(sql);
@@ -124,40 +124,84 @@ class ProductTable {
     });
   }
 
+  static Future<Product?> getProductByProductId(int productId) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+
+    // Query the table for all The Categories.
+    final List<Map<String, dynamic>> maps = await db.query(
+      PRODUCT_TABLE_NAME,
+      where: "$PRODUCT_ID=?",
+      whereArgs: [productId],
+      limit: 1,
+    );
+
+    return _parseProduct(maps.first);
+  }
+
+  static Future<Product?> getLastProduct() async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+
+    // Query the table for all The Categories.
+    final List<Map<String, dynamic>> maps = await
+        //  db.query(
+        //   PRODUCT_TABLE_NAME,
+        //   orderBy: '$PRODUCT_ID DESC',
+        //   limit: 1,
+        // );
+
+        db.rawQuery(
+            "select * from $PRODUCT_TABLE_NAME where id=(select max(id) from $PRODUCT_TABLE_NAME, []");
+
+    return _parseProduct(maps.first);
+  }
+
   static Product _parseProduct(Map<String, dynamic> json) {
     Product product = Product();
     product.productId = json[PRODUCT_ID];
     product.productName = json[PRODUCT_NAME];
     product.package = json[PACKAGE];
-    product.productType = json[PRODUCT_TYPE];
+    product.productType = json[PRODUCT_TYPE] != "null"
+        ? ProductType.values.firstWhere((e) => e.name == json[PRODUCT_TYPE])
+        : ProductType.consumable;
     product.isBundled = bool.tryParse(json[IS_BUNDLED]);
     product.canBeSold = bool.tryParse(json[CAN_BE_SOLD]);
     product.canBePurchased = bool.tryParse(json[CAN_BE_PURCHASED]);
     product.canBeManufactured = bool.tryParse(json[CAN_BE_MANUFACTURED]);
-    product.reInvoiceExpenses = json[RE_INVOICE_EXPENSES];
-    product.invoicingPolicy = json[INVOICE_POLICY];
+    product.reInvoiceExpenses = json[RE_INVOICE_EXPENSES] != "null"
+        ? ReInvoiceExpenses.values
+            .firstWhere((e) => e.text == json[RE_INVOICE_EXPENSES])
+        : ReInvoiceExpenses.no;
+    product.invoicingPolicy = json[INVOICE_POLICY] != "null"
+        ? InvoicingPolicy.values
+            .firstWhere((e) => e.name == json[INVOICE_POLICY])
+        : InvoicingPolicy.orderedQuantities;
     product.unitOfMeasure = json[UNIT_OF_MEASURE];
-    product.baseUnitCount = json[BASE_UNIT_COUNT];
+    product.baseUnitCount = double.tryParse(json[BASE_UNIT_COUNT].toString());
     product.isSecondaryUnit = bool.tryParse(json[IS_SECONDARY_UNIT]);
     product.purchaseUOM = json[PURCHASE_UOM];
     product.isCommissionBasedServices =
         bool.tryParse(json[IS_COMMISSION_BASED_SERVICES]);
     product.isThirdUnit = bool.tryParse(json[IS_THIRD_UNIT]);
-    product.rebatePercentage = json[REBATE_PERCENTAGE];
-    product.price = json[PRICE];
-    product.salePrice = json[SALE_PRICE];
-    product.latestPrice = json[LATEST_PRICE];
+    product.rebatePercentage =
+        double.tryParse(json[REBATE_PERCENTAGE].toString());
+    product.price = double.tryParse(json[PRICE].toString());
+    product.salePrice = double.tryParse(json[SALE_PRICE].toString());
+    product.latestPrice = double.tryParse(json[LATEST_PRICE].toString());
     product.productCategory = json[PRODUCT_CATEGORY];
     product.productBrand = json[PRODUCT_BRAND];
-    product.qtyInBags = json[QTY_IN_BAGS];
-    product.multipleOfQty = json[MULTIPLE_OF_QTY];
+    product.qtyInBags = double.tryParse(json[QTY_IN_BAGS].toString());
+    product.multipleOfQty = double.tryParse(json[MULTIPLE_OF_QTY].toString());
     product.oldInternalRef = json[OLD_INTERNAL_REF];
     product.internalRef = json[INTERNAL_REF];
     product.barcode = json[BARCODE];
     product.isClearance = bool.tryParse(json[IS_CLEARANCE]);
-    product.itemType = json[ITEM_TYPE];
+    product.itemType = json[ITEM_TYPE] != "null"
+        ? ItemType.values.firstWhere((e) => e.text == json[ITEM_TYPE])
+        : ItemType.none;
     product.countryCode = json[COUNTRY_CODE];
-    product.allowNegativeStock = json[ALLOW_NEGATIVE_STOCK];
+    product.allowNegativeStock = bool.tryParse(json[ALLOW_NEGATIVE_STOCK]);
     product.company = json[COMPANY];
     product.tags = json[TAGS];
     product.internalNotes = json[INTERNAL_NOTES];

@@ -16,6 +16,7 @@ enum InvoicingPolicy { orderedQuantities, deliveredQuantities }
 enum CustomerTaxes { s5Good }
 
 enum ItemType {
+  none("None"),
   mDPrivateLabel("MD : Private label"),
   mNNationalBrand("MN : National brand");
 

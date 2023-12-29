@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/database/table/product_table.dart';
 
 class ProductDetailFilter extends StatelessWidget {
   const ProductDetailFilter({
@@ -49,9 +48,35 @@ class ProductDetailFilter extends StatelessWidget {
                               .read<ProductDetailController>()
                               .creatingProduct)
                           .then((value) {
-                        if (value == 1) {
+                        if (value > 0) {
                           context.read<ProductDetailController>().mode =
                               ProductDetailMode.view;
+                          ProductTable.getProductByProductId(value)
+                              .then((product) {
+                            if (product == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text('Inserting '
+                                      '"${context.read<ProductDetailController>().creatingProduct.productName}"'
+                                      ' does not have! Something was wrong!')));
+                              return;
+                            }
+                            context
+                                .read<ProductListController>()
+                                .productList
+                                .add(product);
+
+                            context.read<ProductListController>().notify();
+                            context
+                                    .read<ProductListController>()
+                                    .productInfoDataSource =
+                                DataSourceForProductListScreen(
+                                    context,
+                                    context
+                                        .read<ProductListController>()
+                                        .productList,
+                                    0,
+                                    () {});
+                          });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('Creating '
@@ -85,6 +110,8 @@ class ProductDetailFilter extends StatelessWidget {
                           ProductDetailMode.edit) {
                     context.read<ProductDetailController>().mode =
                         ProductDetailMode.view;
+                    context.read<ProductDetailController>().creatingProduct =
+                        Product();
                     return;
                   }
                   context.read<ProductDetailController>().mode =

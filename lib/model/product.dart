@@ -1,7 +1,7 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class Product {
-  String? productId;
+  int? productId;
   String? productName;
   String? package;
   ProductType? productType;
@@ -35,6 +35,7 @@ class Product {
   String? company;
   String? tags;
   String? internalNotes;
+  double? qty;
 
   Product({
     this.productId,
@@ -71,6 +72,7 @@ class Product {
     this.company,
     this.tags,
     this.internalNotes,
+    this.qty,
   });
 
   Product.fromJson(Map<String, dynamic> json) {

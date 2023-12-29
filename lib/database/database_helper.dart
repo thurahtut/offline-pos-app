@@ -26,16 +26,28 @@ class DatabaseHelper {
       }
       path = join(dir.path, _databaseName);
 
+      // await deleteDatabase(path);
       return await openDatabase(
         path,
         version: _databaseVersion,
         onCreate: _onCreate,
         onUpgrade: _onUpgrade,
       );
+    } else if (kIsWeb) {
+      var databaseFactory = databaseFactoryFfiWeb;
+      // await deleteDatabase(_databaseName);
+      // path = join(_databaseName, _databaseName);
+      return await databaseFactory.openDatabase(_databaseName,
+          options: OpenDatabaseOptions(
+            version: _databaseVersion,
+            onCreate: _onCreate,
+            onUpgrade: _onUpgrade,
+          ));
     } else {
       var databasesPath = await getDatabasesPath();
-      var databaseFactory = kIsWeb ? databaseFactoryFfiWeb : databaseFactoryFfi;
+      var databaseFactory = databaseFactoryFfi;
       path = join(databasesPath, _databaseName);
+      // await deleteDatabase(path);
       return await databaseFactory.openDatabase(path,
           options: OpenDatabaseOptions(
             version: _databaseVersion,

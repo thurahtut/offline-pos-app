@@ -1,10 +1,10 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class CurrentOrderController with ChangeNotifier {
-  List _currentOrderList = [];
-  List get currentOrderList => _currentOrderList;
+  List<Product> _currentOrderList = [];
+  List<Product> get currentOrderList => _currentOrderList;
 
-  set currentOrderList(List currentOrderList) {
+  set currentOrderList(List<Product> currentOrderList) {
     _currentOrderList = currentOrderList;
     notifyListeners();
   }
@@ -13,14 +13,14 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
-  List getTotalQty(List cOrderList) {
+  List getTotalQty(List<Product> cOrderList) {
     List list = [0, 0];
     int tQty = 0;
     int tTotal = 0;
     for (var i = 0; i < cOrderList.length; i++) {
-      tQty += int.tryParse(cOrderList[i]["qty"]?.toString() ?? "0") ?? 0;
-      tTotal += (int.tryParse(cOrderList[i]["qty"]?.toString() ?? "0") ?? 0) *
-          (int.tryParse(cOrderList[i]["price"]?.toString() ?? "0") ?? 0);
+      tQty += int.tryParse(cOrderList[i].qty?.toString() ?? "0") ?? 0;
+      tTotal += (int.tryParse(cOrderList[i].qty?.toString() ?? "0") ?? 0) *
+          (int.tryParse(cOrderList[i].price?.toString() ?? "0") ?? 0);
     }
     list.first = tQty;
     list.last = tTotal;

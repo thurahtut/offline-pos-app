@@ -156,7 +156,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     return widgets;
   }
 
-  pw.Widget _eachWidget(dynamic e) {
+  pw.Widget _eachWidget(Product e) {
     pw.TextStyle textStyle = pw.TextStyle(
       color: PdfColors.black,
       fontSize: 16,
@@ -186,11 +186,11 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                         //       color: PdfColor.fromInt(
                         //           Constants.successColor.value)),
                         // ),
-                        pw.TextSpan(text: e["name"], style: textStyle),
+                        pw.TextSpan(text: e.productName, style: textStyle),
                       ]),
                     ),
                   ),
-                  pw.Text("${e["price"]} Ks".toString(),
+                  pw.Text("${e.price} Ks".toString(),
                       style: textStyle.copyWith(
                         // fontWeight: FontWeight.bold,
                         color: PdfColor.fromInt(Constants.primaryColor.value),
@@ -198,7 +198,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 ],
               ),
               pw.Row(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
-                pw.Text("1 Unit at 900.00 Ks/Unit with a 0.00 % discount"),
+                pw.Text("1 Unit at ${e.price} Ks/Unit with a 0.00 % discount"),
               ]),
             ]),
           ),

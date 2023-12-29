@@ -16,4 +16,8 @@ class ProductListController with ChangeNotifier {
     _productInfoDataSource = productInfoDataSource;
     notifyListeners();
   }
+  
+  notify() {
+    notifyListeners();
+  }
 }

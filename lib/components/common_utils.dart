@@ -877,6 +877,7 @@ class CommonUtils {
   ];
 
   static List<String> unitList = [
+    "none",
     "mm",
     "cm",
     "in3",
@@ -887,6 +888,7 @@ class CommonUtils {
   ];
 
   static List<String> brandList = [
+    "None",
     "Flee",
     "Evenline",
     "OK",

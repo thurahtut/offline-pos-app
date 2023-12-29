@@ -86,21 +86,22 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     text: TextSpan(text: "", children: [
                                       TextSpan(
-                                        text: "[${e["id"]}]",
+                                        text: "[${e.productId}]",
                                         style: textStyle.copyWith(
                                             color: Constants.successColor),
                                       ),
                                       TextSpan(
-                                          text: e["name"], style: textStyle),
+                                          text: e.productName,
+                                          style: textStyle),
                                     ]),
                                   ),
                                 ),
                                 InkWell(
                                   onTap: () {
                                     ProductUntiDialog.productUnitWidget(context,
-                                        object: e);
+                                        product: e);
                                   },
-                                  child: Text("${e["price"]} Ks".toString(),
+                                  child: Text("${e.price} Ks".toString(),
                                       style: textStyle.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Constants.primaryColor,

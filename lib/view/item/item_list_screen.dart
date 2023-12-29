@@ -10,6 +10,22 @@ class ItemListScreen extends StatefulWidget {
 
 class _ItemListScreenState extends State<ItemListScreen> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getAllProduct();
+    });
+    super.initState();
+  }
+
+  Future<void> getAllProduct() async {
+    context.read<ProductListController>().productList = [];
+    ProductTable.getAll().then((list) {
+      context.read<ProductListController>().productList.addAll(list);
+      context.read<ProductListController>().notify();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _itemListWidget();
   }
@@ -26,9 +42,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     (showSidebar ? 0 : MediaQuery.of(context).size.width / 5.5),
             decoration: BoxDecoration(
               color:
-                  context.watch<ViewController>().isList
-                  ? Colors.white
-                  : null,
+                  context.watch<ViewController>().isList ? Colors.white : null,
             ),
             child: context.watch<ViewController>().isList
                 ? _itemListWithListViewWidget(showSidebar)
@@ -63,7 +77,13 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      ...CommonUtils.itemList
+                      if (context
+                          .watch<ProductListController>()
+                          .productList
+                          .isNotEmpty)
+                        ...context
+                            .read<ProductListController>()
+                            .productList
                           .map((e) => Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -116,13 +136,17 @@ class _ItemListScreenState extends State<ItemListScreen> {
             ),
           ),
           Expanded(
-            child: GridView(
+            child: (context.watch<ProductListController>().productList.isEmpty)
+                ? SizedBox()
+                : GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: isTabletMode ? 5 : 6,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
               ),
-              children: CommonUtils.itemList
+                    children: context
+                        .read<ProductListController>()
+                        .productList
                   .map((e) => InkWell(
                         onTap: () => _addItemToList(e),
                         child: Card(
@@ -143,8 +167,8 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Expanded(
-                                        child: Text(
-                                            "${e["price"]} Ks".toString(),
+                                              child: Text(
+                                                  "${e.price} Ks".toString(),
                                             style: textStyle)),
                                     CommonUtils.svgIconActionButton(
                                       'assets/svg/Info.svg',
@@ -162,11 +186,13 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   overflow: TextOverflow.ellipsis,
                                   text: TextSpan(text: "", children: [
                                     TextSpan(
-                                      text: "[${e["id"]}]",
+                                            text: "[${e.productId}]",
                                       style: textStyle.copyWith(
                                           color: Constants.successColor),
                                     ),
-                                    TextSpan(text: e["name"], style: textStyle),
+                                          TextSpan(
+                                              text: e.productName,
+                                              style: textStyle),
                                   ]),
                                 ),
                               ],
@@ -206,7 +232,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
     );
   }
 
-  Widget _eachItemWidget(dynamic object) {
+  Widget _eachItemWidget(Product product) {
     TextStyle textStyle = TextStyle(
       color: Colors.black,
       fontSize: 16,
@@ -214,7 +240,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
     );
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return InkWell(
-      onTap: () => _addItemToList(object),
+      onTap: () => _addItemToList(product),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),
         height: isTabletMode ? 46 : 52,
@@ -227,26 +253,27 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 overflow: TextOverflow.ellipsis,
                 text: TextSpan(text: "", children: [
                   TextSpan(
-                    text: "[${object["id"]}]",
+                    text: "[${product.productId}]",
                     style: textStyle.copyWith(color: Constants.successColor),
                   ),
-                  TextSpan(text: object["name"], style: textStyle),
+                  TextSpan(text: product.productName, style: textStyle),
                 ]),
               ),
             ),
             Expanded(
-                child: Text(object["on_hand"].toString(), style: textStyle)),
-            Expanded(child: Text(object["unit"], style: textStyle)),
-            Expanded(child: Text(object["price"].toString(), style: textStyle)),
+                child: Text(product.qtyInBags.toString(), style: textStyle)),
+            Expanded(
+                child: Text(product.unitOfMeasure ?? '', style: textStyle)),
+            Expanded(child: Text(product.price.toString(), style: textStyle)),
           ],
         ),
       ),
     );
   }
 
-  void _addItemToList(dynamic object) {
-    object["qty"] = 1;
-    context.read<CurrentOrderController>().currentOrderList.add(object);
+  void _addItemToList(Product product) {
+    product.qty = 1;
+    context.read<CurrentOrderController>().currentOrderList.add(product);
     context.read<CurrentOrderController>().notify();
   }
 }
