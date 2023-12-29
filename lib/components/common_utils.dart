@@ -267,100 +267,6 @@ class CommonUtils {
     },
   ];
 
-  static List itemList = [
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-    {
-      "id": 93420932095039,
-      "name": "100 Pipers Wisky 175ML",
-      "on_hand": 1163,
-      "unit": "Unit",
-      "price": 3950,
-    },
-  ];
-
   static Widget eachCalculateButtonWidget({
     String? text,
     IconData? icon,
@@ -815,16 +721,6 @@ class CommonUtils {
     sale: true,
     company: true,
   );
-
-  static Product demoProduct = Product(
-      productName: "100 Pipers whisky 175ML",
-      package: "[8836000017357] ",
-      price: 4000,
-      barcode: "EAN13ITF14",
-      salePrice: 4000,
-      latestPrice: 4200,
-      productCategory: "Beverage",
-      productType: ProductType.storableProduct);
 
   static PriceRules demoPriceRule = PriceRules(
       priceList: "Horeca/Wholesale MOQ...",

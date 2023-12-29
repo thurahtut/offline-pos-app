@@ -315,6 +315,14 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         icon: Icons.arrow_forward_ios,
         iconSize: 21,
         onPressed: () {
+          if (context.read<CurrentOrderController>().currentOrderList.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+              'There is no order items.',
+              textAlign: TextAlign.center,
+            )));
+            return;
+          }
           context.read<CurrentOrderController>().isContainCustomer = false;
           Navigator.pushNamed(context, OrderPaymentScreen.routeName);
         },

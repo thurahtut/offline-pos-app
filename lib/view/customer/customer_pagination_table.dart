@@ -38,6 +38,14 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
         passwordTextController,
         () {},
         () {
+          if (context.read<CurrentOrderController>().currentOrderList.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+              'There is no order items.',
+              textAlign: TextAlign.center,
+            )));
+            return;
+          }
           context.read<CurrentOrderController>().isContainCustomer = true;
           PasswordDialog.enterPasswordWidget(context, passwordTextController)
               .then((value) {
