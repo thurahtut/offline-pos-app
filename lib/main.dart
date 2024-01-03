@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/database/database_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -35,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductListController()),
         ChangeNotifierProvider(create: (_) => PriceRulesListController()),
         ChangeNotifierProvider(create: (_) => ProductDetailController()),
+        ChangeNotifierProvider(create: (_) => EmployeeListController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

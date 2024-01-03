@@ -111,7 +111,7 @@ class Product {
     multipleOfQty = double.tryParse(json[MULTIPLE_OF_QTY].toString());
     oldInternalRef = json[OLD_INTERNAL_REF];
     internalRef = json[INTERNAL_REF];
-    barcode = json[BARCODE];
+    barcode = json[BARCODE_IN_ET];
     isClearance = bool.tryParse(json[IS_CLEARANCE]);
     itemType = json[ITEM_TYPE] != "null"
         ? ItemType.values.firstWhere((e) => e.text == json[ITEM_TYPE])

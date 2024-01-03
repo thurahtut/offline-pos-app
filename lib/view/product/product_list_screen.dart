@@ -155,7 +155,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 onTap: () {
                   Navigator.pushNamed(context, ProductDetailScreen.routeName);
                   context.read<ProductDetailController>().mode =
-                      ProductDetailMode.create;
+                      ViewMode.create;
                 },
               ),
               SizedBox(width: 4),
@@ -529,7 +529,7 @@ class DataSourceForProductListScreen extends DataTableSource {
   int get selectedRowCount => 0;
 
   onTap(Product product) {
-    context.read<ProductDetailController>().mode == ProductDetailMode.view;
+    context.read<ProductDetailController>().mode == ViewMode.view;
     context.read<ProductDetailController>().creatingProduct = product;
     Navigator.pushNamed(context, ProductDetailScreen.routeName);
   }

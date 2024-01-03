@@ -17,9 +17,9 @@ class ProductDetailFilter extends StatelessWidget {
             children: [
               BorderContainer(
                 text: context.watch<ProductDetailController>().mode ==
-                            ProductDetailMode.create ||
+                            ViewMode.create ||
                         context.watch<ProductDetailController>().mode ==
-                            ProductDetailMode.edit
+                            ViewMode.edit
                     ? 'Save'
                     : 'Edit',
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -30,7 +30,7 @@ class ProductDetailFilter extends StatelessWidget {
                 radius: 16,
                 onTap: () async {
                   if (context.read<ProductDetailController>().mode ==
-                      ProductDetailMode.create) {
+                      ViewMode.create) {
                     if (context
                             .read<ProductDetailController>()
                             .formKey
@@ -48,7 +48,7 @@ class ProductDetailFilter extends StatelessWidget {
                           .then((value) {
                         if (value > 0) {
                           context.read<ProductDetailController>().mode =
-                              ProductDetailMode.view;
+                              ViewMode.view;
                           ProductTable.getProductByProductId(value)
                               .then((product) {
                             if (product == null) {
@@ -97,7 +97,7 @@ class ProductDetailFilter extends StatelessWidget {
                     return;
                   }
                   if (context.read<ProductDetailController>().mode ==
-                      ProductDetailMode.edit) {
+                      ViewMode.edit) {
                     if (context
                             .read<ProductDetailController>()
                             .formKey
@@ -115,7 +115,7 @@ class ProductDetailFilter extends StatelessWidget {
                           .then((value) {
                         if (value > 0) {
                           context.read<ProductDetailController>().mode =
-                              ProductDetailMode.view;
+                              ViewMode.view;
                           ProductTable.getProductByProductId(value)
                               .then((product) {
                             if (product == null) {
@@ -164,15 +164,15 @@ class ProductDetailFilter extends StatelessWidget {
                     return;
                   }
                   context.read<ProductDetailController>().mode =
-                      ProductDetailMode.edit;
+                      ViewMode.edit;
                 },
               ),
               SizedBox(width: 4),
               BorderContainer(
                 text: context.watch<ProductDetailController>().mode ==
-                            ProductDetailMode.create ||
+                            ViewMode.create ||
                         context.watch<ProductDetailController>().mode ==
-                            ProductDetailMode.edit
+                            ViewMode.edit
                     ? 'Discard'
                     : 'Create',
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -181,15 +181,15 @@ class ProductDetailFilter extends StatelessWidget {
                 radius: 16,
                 onTap: () {
                   if (context.read<ProductDetailController>().mode ==
-                          ProductDetailMode.create ||
+                          ViewMode.create ||
                       context.read<ProductDetailController>().mode ==
-                          ProductDetailMode.edit) {
+                          ViewMode.edit) {
                     context.read<ProductDetailController>().mode =
-                        ProductDetailMode.view;
+                        ViewMode.view;
                     return;
                   }
                   context.read<ProductDetailController>().mode =
-                      ProductDetailMode.create;
+                      ViewMode.create;
                 },
               ),
               SizedBox(width: 4),

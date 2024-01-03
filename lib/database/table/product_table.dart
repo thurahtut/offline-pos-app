@@ -31,7 +31,7 @@ const QTY_IN_BAGS = "qty_in_bags";
 const MULTIPLE_OF_QTY = "multiple_of_qty";
 const OLD_INTERNAL_REF = "old_internal_ref";
 const INTERNAL_REF = "internal_ref";
-const BARCODE = "barcode";
+const BARCODE_IN_PT = "barcode";
 const IS_CLEARANCE = "is_clearance";
 const ITEM_TYPE = "item_type";
 const COUNTRY_CODE = "country_code";
@@ -69,7 +69,7 @@ class ProductTable {
         "$MULTIPLE_OF_QTY REAL,"
         "$OLD_INTERNAL_REF TEXT NOT NULL,"
         "$INTERNAL_REF TEXT NOT NULL,"
-        "$BARCODE TEXT NOT NULL,"
+        "$BARCODE_IN_PT TEXT NOT NULL,"
         "$IS_CLEARANCE TEXT NOT NULL,"
         "$ITEM_TYPE TEXT NOT NULL,"
         "$COUNTRY_CODE TEXT NOT NULL,"
@@ -90,7 +90,7 @@ class ProductTable {
         "$IS_SECONDARY_UNIT, $PURCHASE_UOM, $IS_COMMISSION_BASED_SERVICES, $IS_THIRD_UNIT, "
         "$REBATE_PERCENTAGE, $PRICE, $SALE_PRICE, $LATEST_PRICE, "
         "$PRODUCT_CATEGORY, $PRODUCT_BRAND, $QTY_IN_BAGS, $MULTIPLE_OF_QTY, "
-        "$OLD_INTERNAL_REF, $INTERNAL_REF, $BARCODE, $IS_CLEARANCE, "
+        "$OLD_INTERNAL_REF, $INTERNAL_REF, $BARCODE_IN_PT, $IS_CLEARANCE, "
         "$ITEM_TYPE, $COUNTRY_CODE, $ALLOW_NEGATIVE_STOCK, $COMPANY, $TAGS, $INTERNAL_NOTES"
         ")"
         " VALUES("

@@ -13,14 +13,12 @@ class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _SaleAppBarState extends State<SaleAppBar> {
   final TextEditingController _searchProductTextController =
       TextEditingController();
-  final TextEditingController _passwordTextController = TextEditingController();
   final spacer = Expanded(flex: 1, child: SizedBox());
   final ValueNotifier<bool> _showSearchBox = ValueNotifier(false);
 
   @override
   void dispose() {
     _searchProductTextController.dispose();
-    _passwordTextController.dispose();
     _showSearchBox.dispose();
     super.dispose();
   }
@@ -99,7 +97,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
                 Navigator.pop(bContext);
                 return ChooseCashierDialog.chooseCashierDialogWidget(
                   context,
-                  _passwordTextController,
                 );
               }),
             ),
@@ -110,7 +107,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
                   fontSize: 16, onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
                   context,
-                  _passwordTextController,
                 );
               }),
             ),
@@ -121,7 +117,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
                   fontSize: 16, onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
                   context,
-                  _passwordTextController,
                 );
               }),
             ),
@@ -132,7 +127,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
                   fontSize: 16, onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
                   context,
-                  _passwordTextController,
                 );
               }),
             ),
@@ -143,7 +137,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
                   onPressed: () {
                 return ChooseCashierDialog.chooseCashierDialogWidget(
                   context,
-                  _passwordTextController,
                 );
               }),
             ),
@@ -169,7 +162,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
           fontSize: 16, onPressed: () {
         return ChooseCashierDialog.chooseCashierDialogWidget(
           context,
-          _passwordTextController,
         );
       }),
       spacer,

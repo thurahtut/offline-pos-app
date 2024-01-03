@@ -37,7 +37,13 @@ class LoginScreen extends StatelessWidget {
       BorderContainer(
         text: 'Select Cashier',
         onTap: () {
-          Navigator.pushNamed(context, MainScreen.routeName);
+          return ChooseCashierDialog.chooseCashierDialogWidget(
+            context,
+          ).then((value) {
+            if (value == true) {
+              Navigator.pushNamed(context, MainScreen.routeName);
+            }
+          });
         },
       ),
     ];
@@ -76,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: children2,
-            ),
+                  ),
           ],
         ),
       ),

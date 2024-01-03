@@ -1,4 +1,4 @@
-enum ProductDetailMode { view, create, edit }
+enum ViewMode { view, create, edit }
 
 enum ReInvoiceExpenses {
   no("No"),

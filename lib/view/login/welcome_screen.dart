@@ -26,19 +26,19 @@ class WelcomeScreen extends StatelessWidget {
                 _buttonContainer(
                   context,
                   'Sale (POS)',
-                  "assets/svg/sell.svg",
                   () {
                     Navigator.pushNamed(context, LoginScreen.routeName);
                   },
+                  svg: "assets/svg/sell.svg",
                 ),
                 SizedBox(width: 8),
                 _buttonContainer(
                   context,
                   'Inventory',
-                  "assets/svg/inventory_2.svg",
                   () {
                     Navigator.pushNamed(context, ProductListScreen.routeName);
                   },
+                  svg: "assets/svg/inventory_2.svg",
                 ),
               ],
             ),
@@ -49,16 +49,32 @@ class WelcomeScreen extends StatelessWidget {
                 _buttonContainer(
                   context,
                   'Finance',
-                  "assets/svg/account_balance.svg",
                   () {},
+                  svg: "assets/svg/account_balance.svg",
                 ),
                 SizedBox(width: 8),
                 _buttonContainer(
                   context,
                   'Settings',
-                  "assets/svg/settings.svg",
                   () {},
+                  svg: "assets/svg/settings.svg",
                 ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buttonContainer(
+                  context,
+                  'Employee',
+                  () {
+                    Navigator.pushNamed(context, EmployeeListScreen.routeName);
+                  },
+                  icon: Icons.people_alt_outlined,
+                ),
+                SizedBox(width: 8),
+                SizedBox(width: 8),
               ],
             ),
           ]),
@@ -66,13 +82,19 @@ class WelcomeScreen extends StatelessWidget {
   }
 
   Widget _buttonContainer(
-      BuildContext context, String text, String svg, Function() onPressed) {
+    BuildContext context,
+    String text,
+    Function() onPressed, {
+    String? svg,
+    IconData? icon,
+  }) {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return GestureDetector(
       onTap: onPressed,
       child: Column(
         children: [
-          CommonUtils.svgIconActionButton(
+          if (svg != null)
+            CommonUtils.svgIconActionButton(
             svg,
             width: MediaQuery.of(context).size.width / (isTabletMode ? 12 : 30),
             height:
@@ -83,6 +105,18 @@ class WelcomeScreen extends StatelessWidget {
                 MediaQuery.of(context).size.width / (isTabletMode ? 16 : 30),
             iconColor: Constants.primaryColor,
             containerColor: Colors.white,
+            ),
+          if (icon != null)
+            CommonUtils.iconActionButton(
+              icon,
+              size:
+                  MediaQuery.of(context).size.width / (isTabletMode ? 12 : 30),
+              withContianer: true,
+              radius: 12,
+              padding:
+                  MediaQuery.of(context).size.width / (isTabletMode ? 16 : 30),
+              iconColor: Constants.primaryColor,
+              containerColor: Colors.white,
           ),
           SizedBox(height: 8),
           Text(

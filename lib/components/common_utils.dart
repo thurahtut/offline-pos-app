@@ -59,14 +59,17 @@ class CommonUtils {
     Function()? onPressed,
     bool? withContianer,
     Color? containerColor,
+    double? padding,
+    double? radius,
   }) {
     return InkWell(
       onTap: onPressed,
       child: Container(
-        padding: withContianer != null ? EdgeInsets.all(3) : null,
+        padding: withContianer != null ? EdgeInsets.all(padding ?? 3) : null,
         decoration: withContianer != null
             ? BoxDecoration(
-                borderRadius: BorderRadius.circular((size ?? 50) / 2),
+                borderRadius:
+                    BorderRadius.circular(radius ?? ((size ?? 50) / 2)),
                 color: containerColor,
               )
             : null,

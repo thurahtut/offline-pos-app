@@ -4,6 +4,7 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/category/product_category_list_screen.dart';
 import 'package:offline_pos/view/payment/order_payment_receipt_screen.dart';
 
+
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     log(settings.name.toString());
@@ -70,6 +71,10 @@ class Routers {
       case ProductCategoryListScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => ProductCategoryListScreen(),
+        );
+      case EmployeeListScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => EmployeeListScreen(),
         );
       default:
         {

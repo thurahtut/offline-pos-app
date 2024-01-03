@@ -12,15 +12,15 @@ const AMOUNT_TOTAL = "amount_total";
 const AMOUNT_UNTAXED = "amount_untaxed";
 const APPLIED_PROGRAM_IDS = "applied_program_ids";
 const CASHIER = "cashier";
-const COMPANY_ID = "company_id";
+const COMPANY_ID_IN_OH = "company_id";
 const CONFIG_ID = "config_id";
-const CREATE_DATE = "create_date";
-const CREATE_UID = "create_uid";
+const CREATE_DATE_IN_OH = "create_date";
+const CREATE_UID_IN_OH = "create_uid";
 const CURRENCY_ID = "currency_id";
 const CURRENCY_RATE = "currency_rate";
 const DATE_ORDER = "date_order";
 const DISPLAY_NAME = "display_name";
-const EMPLOYEE_ID = "employee_id";
+const EMPLOYEE_ID_IN_OH = "employee_id";
 const FAILED_PICKINGS = "failed_pickings";
 const FISCAL_POSITION_ID = "fiscal_position_id";
 const GENERATED_COUPON_IDS = "generated_coupon_ids";
@@ -30,17 +30,17 @@ const IS_INVOICED = "is_invoiced";
 const IS_REFUNDED = "is_refunded";
 const IS_TIPPED = "is_tipped";
 const IS_TOTAL_COST_COMPUTED = "is_total_cost_computed";
-const LAST_UPDATE = "last_update";
+const LAST_UPDATE_IN_OH = "last_update";
 const LINES = "lines";
 const LOYALTY_POINTS = "loyalty_points";
 const MARGIN = "margin";
 const MARGIN_PERCENT = "margin_percent";
-const NAME = "name";
+const NAME_IN_OH = "name";
 const PARTNER_ID = "partner_id";
 const PAYMENT_IDS = "payment_ids";
 const PICKING_COUNT = "picking_count";
 const PICKING_IDS = "picking_ids";
-const PICKING_TYPE_ID = "picking_type_id";
+const PICKING_TYPE_ID_IN_OH = "picking_type_id";
 const POINTS_WON = "points_won";
 const POS_REFERENCE = "pos_reference";
 const PRICELIST_ID = "pricelist_id";
@@ -58,9 +58,9 @@ const TIP_AMOUNT = "tip_amount";
 const TO_INVOICE = "to_invoice";
 const TO_SHIP = "to_ship";
 const USED_COUPON_IDS = "used_coupon_ids";
-const USER_ID = "user_id";
-const WRITE_DATE = "write_date";
-const WRITE_UID = "write_uid";
+const USER_ID_IN_OH = "user_id";
+const WRITE_DATE_IN_OH = "write_date";
+const WRITE_UID_IN_OH = "write_uid";
 
 class OrderHistoryTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -74,15 +74,15 @@ class OrderHistoryTable {
         "$AMOUNT_UNTAXED TEXT NOT NULL,"
         "$APPLIED_PROGRAM_IDS TEXT NOT NULL,"
         "$CASHIER TEXT NOT NULL,"
-        "$COMPANY_ID INTEGER NOT NULL,"
+        "$COMPANY_ID_IN_OH INTEGER NOT NULL,"
         "$CONFIG_ID INTEGER NOT NULL,"
-        "$CREATE_DATE TEXT NOT NULL,"
-        "$CREATE_UID INTEGER NOT NULL,"
+        "$CREATE_DATE_IN_OH TEXT NOT NULL,"
+        "$CREATE_UID_IN_OH INTEGER NOT NULL,"
         "$CURRENCY_ID INTEGER NOT NULL,"
         "$CURRENCY_RATE REAL NOT NULL,"
         "$DATE_ORDER TEXT NOT NULL,"
         "$DISPLAY_NAME TEXT NOT NULL,"
-        "$EMPLOYEE_ID INTEGER NOT NULL,"
+        "$EMPLOYEE_ID_IN_OH INTEGER NOT NULL,"
         "$FAILED_PICKINGS TEXT NOT NULL,"
         "$FISCAL_POSITION_ID INTEGER NOT NULL,"
         "$GENERATED_COUPON_IDS TEXT NOT NULL,"
@@ -92,17 +92,17 @@ class OrderHistoryTable {
         "$IS_REFUNDED TEXT NOT NULL,"
         "$IS_TIPPED TEXT NOT NULL,"
         "$IS_TOTAL_COST_COMPUTED TEXT NOT NULL,"
-        "$LAST_UPDATE TEXT NOT NULL,"
+        "$LAST_UPDATE_IN_OH TEXT NOT NULL,"
         "$LINES TEXT NOT NULL,"
         "$LOYALTY_POINTS REAL NOT NULL,"
         "$MARGIN REAL NOT NULL,"
         "$MARGIN_PERCENT TEXT NOT NULL,"
-        "$NAME TEXT NOT NULL,"
+        "$NAME_IN_OH TEXT NOT NULL,"
         "$PARTNER_ID INTEGER NOT NULL,"
         "$PAYMENT_IDS TEXT NOT NULL,"
         "$PICKING_COUNT INTEGER NOT NULL,"
         "$PICKING_IDS TEXT NOT NULL,"
-        "$PICKING_TYPE_ID INTEGER NOT NULL,"
+        "$PICKING_TYPE_ID_IN_OH INTEGER NOT NULL,"
         "$POINTS_WON REAL NOT NULL,"
         "$POS_REFERENCE TEXT NOT NULL,"
         "$PRICELIST_ID INTEGER NOT NULL,"
@@ -120,9 +120,9 @@ class OrderHistoryTable {
         "$TO_INVOICE TEXT NOT NULL,"
         "$TO_SHIP TEXT NOT NULL,"
         "$USED_COUPON_IDS TEXT NOT NULL,"
-        "$USER_ID INTEGER NOT NULL,"
-        "$WRITE_DATE TEXT NOT NULL,"
-        "$WRITE_UID INTEGER NOT NULL"
+        "$USER_ID_IN_OH INTEGER NOT NULL,"
+        "$WRITE_DATE_IN_OH TEXT NOT NULL,"
+        "$WRITE_UID_IN_OH INTEGER NOT NULL"
         ")");
   }
 
@@ -131,18 +131,18 @@ class OrderHistoryTable {
     String sql = "INSERT INTO $ORDER_HISTORY_TABLE_NAME("
         "$ACCOUNT_MOVE, $AMOUNT_PAID, $AMOUNT_RETURN, $AMOUNT_TAX, "
         "$AMOUNT_TOTAL, $AMOUNT_UNTAXED, $APPLIED_PROGRAM_IDS, $CASHIER, "
-        "$COMPANY_ID, $CONFIG_ID, $CREATE_DATE, $CREATE_UID, "
+        "$COMPANY_ID_IN_OH, $CONFIG_ID, $CREATE_DATE_IN_OH, $CREATE_UID_IN_OH, "
         "$CURRENCY_ID, $CURRENCY_RATE, $DATE_ORDER, $DISPLAY_NAME, "
-        "$EMPLOYEE_ID, $FAILED_PICKINGS, $FISCAL_POSITION_ID, $GENERATED_COUPON_IDS, "
+        "$EMPLOYEE_ID_IN_OH, $FAILED_PICKINGS, $FISCAL_POSITION_ID, $GENERATED_COUPON_IDS, "
         "$HAS_REFUNDABLE_LINES, $INVOICE_GROUP, $IS_INVOICED, $IS_REFUNDED, "
-        "$IS_TIPPED, $IS_TOTAL_COST_COMPUTED, $LAST_UPDATE, $LINES, "
-        "$LOYALTY_POINTS, $MARGIN, $MARGIN_PERCENT, $NAME, "
+        "$IS_TIPPED, $IS_TOTAL_COST_COMPUTED, $LAST_UPDATE_IN_OH, $LINES, "
+        "$LOYALTY_POINTS, $MARGIN, $MARGIN_PERCENT, $NAME_IN_OH, "
         "$PARTNER_ID, $PAYMENT_IDS, $PICKING_COUNT, $PICKING_IDS, "
-        "$PICKING_TYPE_ID, $POINTS_WON, $POS_REFERENCE, $PRICELIST_ID, "
+        "$PICKING_TYPE_ID_IN_OH, $POINTS_WON, $POS_REFERENCE, $PRICELIST_ID, "
         "$PROCUREMENT_GROUP_ID, $RATING, $REFUNDED_ORDERS_COUNT, $REFUND_ORDERS_COUNT, "
         "$SALE_JOURNAL, $SEQUENCE_NUMBER, $SESSION_ID, $SESSION_MOVE_ID, "
         "$STATE, $TIP_AMOUNT, $TO_INVOICE, $TO_SHIP, $USED_COUPON_IDS, "
-        "$USER_ID, $WRITE_DATE, $WRITE_UID"
+        "$USER_ID_IN_OH, $WRITE_DATE_IN_OH, $WRITE_UID_IN_OH"
         ")"
         " VALUES("
         "'${orderHistory.accountMove}', '${orderHistory.amountPaid}', '${orderHistory.amountReturn}', '${orderHistory.amountTax}', "

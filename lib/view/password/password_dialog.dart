@@ -5,6 +5,8 @@ class PasswordDialog {
     BuildContext context,
     TextEditingController passwordTextController,
   ) {
+    ValueNotifier<bool> passwordVisibility = ValueNotifier(false);
+    final formKey = GlobalKey<FormState>();
     FocusNode? myFocusNode = FocusNode();
     return CommonUtils.showGeneralDialogWidget(
       context,
@@ -13,75 +15,102 @@ class PasswordDialog {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           content: SingleChildScrollView(
-            child: Container(
-              width: MediaQuery.of(context).size.width / 4,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width / 4,
-                    height: 70,
-                    decoration: BoxDecoration(
-                        color: Constants.primaryColor,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        )),
-                    child: Center(
-                      child: Text(
-                        'Password ?',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 70,
-                    margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Constants.greyColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: TextField(
-                        autofocus: true,
-                        // focusNode: myFocusNode,
-                        controller: passwordTextController,
-                        keyboardType: TextInputType.visiblePassword, //to check
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                          border: InputBorder.none,
-                          labelStyle: TextStyle(
-                            color: Constants.primaryColor,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w800,
+            child: Form(
+              key: formKey,
+              child: Container(
+                width: MediaQuery.of(context).size.width / 4,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 4,
+                      height: 70,
+                      decoration: BoxDecoration(
+                          color: Constants.primaryColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          )),
+                      child: Center(
+                        child: Text(
+                          'Password ?',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  _passwordKeyboardWidget(passwordTextController, myFocusNode),
-                  SizedBox(height: 16),
-                  CommonUtils.okCancelWidget(
-                    okCallback: () {
-                      Navigator.pop(context, true);
-                    },
-                    cancelCallback: () {
-                      Navigator.pop(context, false);
-                    },
-                  ),
-                  SizedBox(height: 26),
-                ],
+                    Container(
+                      height: 70,
+                      margin: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Constants.greyColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: passwordVisibility,
+                          builder: (_, passwordVisible, __) {
+                            return TextFormField(
+                              autofocus: true,
+                              // focusNode: myFocusNode,
+                              style: TextStyle(
+                                color: Constants.primaryColor,
+                                fontSize: 30,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              controller: passwordTextController,
+                              keyboardType:
+                                  TextInputType.visiblePassword, //to check
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 8),
+                                border: InputBorder.none,
+                                suffixIcon: InkWell(
+                                  onTap: () {
+                                    passwordVisibility.value =
+                                        !passwordVisibility.value;
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 15.0),
+                                    child: Icon(
+                                      passwordVisible
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Constants.alertColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              obscureText: !passwordVisible,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    _passwordKeyboardWidget(
+                        passwordTextController, myFocusNode),
+                    SizedBox(height: 16),
+                    CommonUtils.okCancelWidget(
+                      okCallback: () {
+                        Navigator.pop(context, true);
+                      },
+                      cancelCallback: () {
+                        Navigator.pop(context, false);
+                      },
+                    ),
+                    SizedBox(height: 26),
+                  ],
+                ),
               ),
             ),
           ),

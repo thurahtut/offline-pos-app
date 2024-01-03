@@ -51,7 +51,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               SizedBox(width: 16),
               Text(
                 'Product'
-                '${context.watch<ProductDetailController>().mode == ProductDetailMode.view || context.watch<ProductDetailController>().mode == ProductDetailMode.edit ? '/ [${context.read<ProductDetailController>().creatingProduct.productId ?? ''}]' '${context.read<ProductDetailController>().creatingProduct.productName ?? ''}' : ''}',
+                '${context.watch<ProductDetailController>().mode == ViewMode.view || context.watch<ProductDetailController>().mode == ViewMode.edit ? '/ [${context.read<ProductDetailController>().creatingProduct.productId ?? ''}]' '${context.read<ProductDetailController>().creatingProduct.productName ?? ''}' : ''}',
                 style: TextStyle(
                   color: Constants.textColor,
                   fontSize: 17,
@@ -68,9 +68,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ProductCommonActionTitle(),
           spacer,
           context.watch<ProductDetailController>().mode ==
-                      ProductDetailMode.create ||
+                      ViewMode.create ||
                   context.watch<ProductDetailController>().mode ==
-                      ProductDetailMode.edit
+                      ViewMode.edit
               ? ProductCreateOrEditScreen()
               : ProductInfoView(),
         ],

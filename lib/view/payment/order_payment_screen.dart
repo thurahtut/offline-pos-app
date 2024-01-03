@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/payment/order_payment_receipt_screen.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   static const String routeName = "/order_payment_screen";
@@ -165,11 +164,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         children: [
           TextField(
               controller: _amountController,
+              style: textStyle,
               decoration: InputDecoration(
                 hintText: '0.00 Ks',
                 hintStyle: textStyle,
                 border: InputBorder.none,
-                labelStyle: textStyle,
               ),
               inputFormatters: [
                 // FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
