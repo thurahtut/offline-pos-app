@@ -65,6 +65,7 @@ class DatabaseHelper {
 
   void _onCreate(Database db, int version) async {
     await EmployeeTable.onCreate(db, version);
+    await CustomerTable.onCreate(db, version);
     await ProductTable.onCreate(db, version);
     await OrderHistoryTable.onCreate(db, version);
   }
@@ -76,5 +77,6 @@ class DatabaseHelper {
     await db.delete(PRODUCT_TABLE_NAME);
     await db.delete(ORDER_HISTORY_TABLE_NAME);
     await db.delete(EMPLOYEE_TABLE_NAME);
+    await db.delete(CUSTOMER_TABLE_NAME);
   }
 }

@@ -1,9 +1,9 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class CustomerListController with ChangeNotifier {
-  List<CustomerDataModel> _customerList = [];
-  List<CustomerDataModel> get customerList => _customerList;
-  set customerList(List<CustomerDataModel> customerList) {
+  List<Customer> _customerList = [];
+  List<Customer> get customerList => _customerList;
+  set customerList(List<Customer> customerList) {
     _customerList = customerList;
     notifyListeners();
   }
@@ -14,6 +14,10 @@ class CustomerListController with ChangeNotifier {
   set customerInfoDataSource(
       CustomerInfoDataSourceForCustomerListScreen? customerInfoDataSource) {
     _customerInfoDataSource = customerInfoDataSource;
+    notifyListeners();
+  }
+
+  notify() {
     notifyListeners();
   }
 }

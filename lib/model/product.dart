@@ -116,7 +116,7 @@ class Product {
     itemType = json[ITEM_TYPE] != "null"
         ? ItemType.values.firstWhere((e) => e.text == json[ITEM_TYPE])
         : ItemType.none;
-    countryCode = json[COUNTRY_CODE];
+    countryCode = json[COUNTRY_CODE_IN_PT];
     allowNegativeStock = bool.tryParse(json[ALLOW_NEGATIVE_STOCK]);
     company = json[COMPANY];
     tags = json[TAGS];

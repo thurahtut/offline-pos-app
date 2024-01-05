@@ -16,7 +16,7 @@ const COMPANY_ID_IN_OH = "company_id";
 const CONFIG_ID = "config_id";
 const CREATE_DATE_IN_OH = "create_date";
 const CREATE_UID_IN_OH = "create_uid";
-const CURRENCY_ID = "currency_id";
+const CURRENCY_ID_IN_OH = "currency_id";
 const CURRENCY_RATE = "currency_rate";
 const DATE_ORDER = "date_order";
 const DISPLAY_NAME = "display_name";
@@ -32,7 +32,7 @@ const IS_TIPPED = "is_tipped";
 const IS_TOTAL_COST_COMPUTED = "is_total_cost_computed";
 const LAST_UPDATE_IN_OH = "last_update";
 const LINES = "lines";
-const LOYALTY_POINTS = "loyalty_points";
+const LOYALTY_POINTS_IN_OH = "loyalty_points";
 const MARGIN = "margin";
 const MARGIN_PERCENT = "margin_percent";
 const NAME_IN_OH = "name";
@@ -78,7 +78,7 @@ class OrderHistoryTable {
         "$CONFIG_ID INTEGER NOT NULL,"
         "$CREATE_DATE_IN_OH TEXT NOT NULL,"
         "$CREATE_UID_IN_OH INTEGER NOT NULL,"
-        "$CURRENCY_ID INTEGER NOT NULL,"
+        "$CURRENCY_ID_IN_OH INTEGER NOT NULL,"
         "$CURRENCY_RATE REAL NOT NULL,"
         "$DATE_ORDER TEXT NOT NULL,"
         "$DISPLAY_NAME TEXT NOT NULL,"
@@ -94,7 +94,7 @@ class OrderHistoryTable {
         "$IS_TOTAL_COST_COMPUTED TEXT NOT NULL,"
         "$LAST_UPDATE_IN_OH TEXT NOT NULL,"
         "$LINES TEXT NOT NULL,"
-        "$LOYALTY_POINTS REAL NOT NULL,"
+        "$LOYALTY_POINTS_IN_OH REAL NOT NULL,"
         "$MARGIN REAL NOT NULL,"
         "$MARGIN_PERCENT TEXT NOT NULL,"
         "$NAME_IN_OH TEXT NOT NULL,"
@@ -132,11 +132,11 @@ class OrderHistoryTable {
         "$ACCOUNT_MOVE, $AMOUNT_PAID, $AMOUNT_RETURN, $AMOUNT_TAX, "
         "$AMOUNT_TOTAL, $AMOUNT_UNTAXED, $APPLIED_PROGRAM_IDS, $CASHIER, "
         "$COMPANY_ID_IN_OH, $CONFIG_ID, $CREATE_DATE_IN_OH, $CREATE_UID_IN_OH, "
-        "$CURRENCY_ID, $CURRENCY_RATE, $DATE_ORDER, $DISPLAY_NAME, "
+        "$CURRENCY_ID_IN_OH, $CURRENCY_RATE, $DATE_ORDER, $DISPLAY_NAME, "
         "$EMPLOYEE_ID_IN_OH, $FAILED_PICKINGS, $FISCAL_POSITION_ID, $GENERATED_COUPON_IDS, "
         "$HAS_REFUNDABLE_LINES, $INVOICE_GROUP, $IS_INVOICED, $IS_REFUNDED, "
         "$IS_TIPPED, $IS_TOTAL_COST_COMPUTED, $LAST_UPDATE_IN_OH, $LINES, "
-        "$LOYALTY_POINTS, $MARGIN, $MARGIN_PERCENT, $NAME_IN_OH, "
+        "$LOYALTY_POINTS_IN_OH, $MARGIN, $MARGIN_PERCENT, $NAME_IN_OH, "
         "$PARTNER_ID, $PAYMENT_IDS, $PICKING_COUNT, $PICKING_IDS, "
         "$PICKING_TYPE_ID_IN_OH, $POINTS_WON, $POS_REFERENCE, $PRICELIST_ID, "
         "$PROCUREMENT_GROUP_ID, $RATING, $REFUNDED_ORDERS_COUNT, $REFUND_ORDERS_COUNT, "

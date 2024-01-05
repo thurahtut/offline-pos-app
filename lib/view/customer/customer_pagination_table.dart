@@ -28,8 +28,16 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
-      context.read<CustomerListController>().customerList =
-          CommonUtils.customerList;
+      getAllCustomer();
+    });
+    super.initState();
+  }
+
+  Future<void> getAllCustomer() async {
+    context.read<CustomerListController>().customerList = [];
+    CustomerTable.getAll().then((list) {
+      context.read<CustomerListController>().customerList.addAll(list);
+      context.read<CustomerListController>().notify();
       context.read<CustomerListController>().customerInfoDataSource =
           CustomerInfoDataSourceForCustomerListScreen(
         context,
@@ -59,9 +67,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
           });
         },
       );
-      setState(() {});
     });
-    super.initState();
   }
 
   @override
@@ -117,10 +123,12 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                           color: Constants.disableColor.withOpacity(0.81))),
                   rowsPerPage: min(
                       _limit,
-                      context
+                      max(
+                          context
                           .read<CustomerListController>()
                           .customerList
-                          .length),
+                              .length,
+                          1)),
                   minWidth: MediaQuery.of(context).size.width - 100,
                   showCheckboxColumn: false,
                   fit: FlexFit.tight,
@@ -184,7 +192,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
 
 class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   BuildContext context;
-  late List<CustomerDataModel> customerInfoList;
+  late List<Customer> customerInfoList;
   int offset;
   TextEditingController passwordTextController;
   Function() reloadDataCallback;
@@ -204,7 +212,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   }
 
   void sort<T>(
-      Comparable<T> Function(CustomerDataModel d) getField, bool ascending) {
+      Comparable<T> Function(Customer d) getField, bool ascending) {
     customerInfoList.sort((a, b) {
       final aValue = getField(a);
       final bValue = getField(b);
@@ -225,7 +233,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   int get selectedRowCount => 0;
 
   DataRow _createRow(int index) {
-    CustomerDataModel customerInfo = customerInfoList[index];
+    Customer customerInfo = customerInfoList[index];
     return DataRow(
       onSelectChanged: (value) {
         // (NavigationService.navigatorKey.currentContext ?? context).goNamed(
@@ -241,7 +249,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
         ),
         DataCell(
           Text(
-            customerInfo.address ?? '',
+            customerInfo.contactAddress ?? '',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -272,54 +280,9 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
           Text(customerInfo.creditLimit ?? ''),
         ),
         DataCell(
-          Text(customerInfo.amountDue ?? ''),
+          Text(customerInfo.dueAmount ?? ''),
         ),
       ],
     );
-  }
-}
-
-class CustomerDataModel {
-  String? name;
-  String? address;
-  String? phone;
-  String? email;
-  int? discount;
-  int? credit;
-  String? creditLimit;
-  String? amountDue;
-
-  CustomerDataModel(
-      {this.name,
-      this.address,
-      this.phone,
-      this.email,
-      this.discount,
-      this.credit,
-      this.creditLimit,
-      this.amountDue});
-
-  CustomerDataModel.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    address = json['address'];
-    phone = json['phone'];
-    email = json['email'];
-    discount = json['discount'];
-    credit = json['credit'];
-    creditLimit = json['credit_limit'];
-    amountDue = json['amount_due'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['address'] = address;
-    data['phone'] = phone;
-    data['email'] = email;
-    data['discount'] = discount;
-    data['credit'] = credit;
-    data['credit_limit'] = creditLimit;
-    data['amount_due'] = amountDue;
-    return data;
   }
 }

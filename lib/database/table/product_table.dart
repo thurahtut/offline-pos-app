@@ -34,7 +34,7 @@ const INTERNAL_REF = "internal_ref";
 const BARCODE_IN_PT = "barcode";
 const IS_CLEARANCE = "is_clearance";
 const ITEM_TYPE = "item_type";
-const COUNTRY_CODE = "country_code";
+const COUNTRY_CODE_IN_PT = "country_code";
 const ALLOW_NEGATIVE_STOCK = "allow_negative_stock";
 const COMPANY = "company";
 const TAGS = "tags";
@@ -72,7 +72,7 @@ class ProductTable {
         "$BARCODE_IN_PT TEXT NOT NULL,"
         "$IS_CLEARANCE TEXT NOT NULL,"
         "$ITEM_TYPE TEXT NOT NULL,"
-        "$COUNTRY_CODE TEXT NOT NULL,"
+        "$COUNTRY_CODE_IN_PT TEXT NOT NULL,"
         "$ALLOW_NEGATIVE_STOCK TEXT NOT NULL,"
         "$COMPANY TEXT NOT NULL,"
         "$TAGS TEXT NOT NULL,"
@@ -91,7 +91,7 @@ class ProductTable {
         "$REBATE_PERCENTAGE, $PRICE, $SALE_PRICE, $LATEST_PRICE, "
         "$PRODUCT_CATEGORY, $PRODUCT_BRAND, $QTY_IN_BAGS, $MULTIPLE_OF_QTY, "
         "$OLD_INTERNAL_REF, $INTERNAL_REF, $BARCODE_IN_PT, $IS_CLEARANCE, "
-        "$ITEM_TYPE, $COUNTRY_CODE, $ALLOW_NEGATIVE_STOCK, $COMPANY, $TAGS, $INTERNAL_NOTES"
+        "$ITEM_TYPE, $COUNTRY_CODE_IN_PT, $ALLOW_NEGATIVE_STOCK, $COMPANY, $TAGS, $INTERNAL_NOTES"
         ")"
         " VALUES("
         "'${product.productName}', '${product.package}', '${product.productType?.name}', "
