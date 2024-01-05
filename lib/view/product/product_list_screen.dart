@@ -145,7 +145,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
       children: [
         SizedBox(width: 16),
         Expanded(
-          child: Row(
+          child: //SizedBox(),
+              Row(
             children: [
               BorderContainer(
                 text: 'Create',
@@ -153,6 +154,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 textColor: Colors.white,
                 width: 150,
                 onTap: () {
+                  context.read<ProductDetailController>().creatingProduct =
+                      Product();
                   Navigator.pushNamed(context, ProductDetailScreen.routeName);
                   context.read<ProductDetailController>().mode =
                       ViewMode.create;

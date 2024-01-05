@@ -44,6 +44,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     var spacer = SizedBox(height: 15);
     return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

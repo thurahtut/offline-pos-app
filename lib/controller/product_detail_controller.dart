@@ -22,9 +22,17 @@ class ProductDetailController with ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isBarcodeView = false;
+  bool get isBarcodeView => _isBarcodeView;
+  set isBarcodeView(bool isBarcodeView) {
+    _isBarcodeView = isBarcodeView;
+    notifyListeners();
+  }
+  
   resetProductDetailController() {
     _mode = ViewMode.view;
     _creatingProduct = Product();
+    _isBarcodeView = false;
     notifyListeners();
   }
 }

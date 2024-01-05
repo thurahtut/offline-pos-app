@@ -147,8 +147,8 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          ProductDetailPermissionTitle(),
-          spacer,
+          // ProductDetailPermissionTitle(),
+          // spacer,
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -182,30 +182,30 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
                     ),
                     SizedBox(height: 8),
                     _isBundledWidget(context),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: _canBeSoldWidget(context),
-                              ),
-                              Expanded(
-                                child: _canBePurchasedWidget(context),
-                              ),
-                              Expanded(
-                                child: _canBeManufacturedWidget(context),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          // flex: 2,
-                          child: SizedBox(),
-                        )
-                      ],
-                    )
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: Row(
+                    //         mainAxisSize: MainAxisSize.min,
+                    //         children: [
+                    //           Expanded(
+                    //             child: _canBeSoldWidget(context),
+                    //           ),
+                    //           Expanded(
+                    //             child: _canBePurchasedWidget(context),
+                    //           ),
+                    //           Expanded(
+                    //             child: _canBeManufacturedWidget(context),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     Expanded(
+                    //       // flex: 2,
+                    //       child: SizedBox(),
+                    //     )
+                    //   ],
+                    // )
                   ],
                 ),
               ),
@@ -376,11 +376,29 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ProductGeneralInfoTitle(),
           spacer,
-          Row(
+          context.watch<ProductDetailController>().isBarcodeView
+              ? Center(
+                  child: Container(
+                    child: BarcodeWidget(
+                      data: context
+                              .read<ProductDetailController>()
+                              .creatingProduct
+                              .barcode ??
+                          'Offline_POS',
+                      drawText: false,
+                      barcode: Barcode.code128(),
+                      width: MediaQuery.of(context).size.width /
+                          (MediaQuery.of(context).size.width < 700 ? 4 : 8),
+                      height: MediaQuery.of(context).size.height / 10,
+                    ),
+                  ),
+                )
+              : Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
@@ -677,12 +695,14 @@ class _ProductCreateOrEditScreenState extends State<ProductCreateOrEditScreen> {
             ],
           ),
           spacer,
-          _textForDetailInfo(
+          if (!context.read<ProductDetailController>().isBarcodeView)
+            _textForDetailInfo(
             "Internal Notes",
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
-          _internalNoteWidget(),
+          if (!context.read<ProductDetailController>().isBarcodeView)
+            _internalNoteWidget(),
           // SizedBox(
           //   width: isMobileMode == true
           //       ? MediaQuery.of(context).size.width

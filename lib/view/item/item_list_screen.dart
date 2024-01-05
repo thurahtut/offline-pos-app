@@ -263,8 +263,14 @@ class _ItemListScreenState extends State<ItemListScreen> {
             Expanded(
                 child: Text(product.qtyInBags.toString(), style: textStyle)),
             Expanded(
-                child: Text(product.unitOfMeasure ?? '', style: textStyle)),
-            Expanded(child: Text(product.price.toString(), style: textStyle)),
+                child: Text(
+                    product.unitOfMeasure != null &&
+                            product.unitOfMeasure!.toLowerCase() != 'null'
+                        ? product.unitOfMeasure!
+                        : '-',
+                    style: textStyle)),
+            Expanded(
+                child: Text(product.salePrice.toString(), style: textStyle)),
           ],
         ),
       ),

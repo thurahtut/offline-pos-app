@@ -49,6 +49,10 @@ class ProductDetailFilter extends StatelessWidget {
                         if (value > 0) {
                           context.read<ProductDetailController>().mode =
                               ViewMode.view;
+                          context
+                              .read<ProductDetailController>()
+                              .creatingProduct = Product();
+                          Navigator.pop(context);
                           ProductTable.getProductByProductId(value)
                               .then((product) {
                             if (product == null) {
@@ -163,18 +167,16 @@ class ProductDetailFilter extends StatelessWidget {
                     }
                     return;
                   }
-                  context.read<ProductDetailController>().mode =
-                      ViewMode.edit;
+                  context.read<ProductDetailController>().mode = ViewMode.edit;
                 },
               ),
               SizedBox(width: 4),
-              BorderContainer(
-                text: context.watch<ProductDetailController>().mode ==
+              if (context.watch<ProductDetailController>().mode ==
                             ViewMode.create ||
                         context.watch<ProductDetailController>().mode ==
-                            ViewMode.edit
-                    ? 'Discard'
-                    : 'Create',
+                      ViewMode.edit)
+                BorderContainer(
+                  text: 'Discard',
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 width: 150,
                 textSize: 20,

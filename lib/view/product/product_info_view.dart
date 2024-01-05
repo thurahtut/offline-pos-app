@@ -20,8 +20,8 @@ class ProductInfoView extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          ProductDetailPermissionTitle(),
-          spacer,
+          // ProductDetailPermissionTitle(),
+          // spacer,
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -43,30 +43,30 @@ class ProductInfoView extends StatelessWidget {
                     _productNameWidget(context),
                     SizedBox(height: 8),
                     _isBundledWidget(context),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: _canBeSoldWidget(context),
-                              ),
-                              Expanded(
-                                child: _canBePurchasedWidget(context),
-                              ),
-                              Expanded(
-                                child: _canBeManufacturedWidget(context),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          // flex: 2,
-                          child: SizedBox(),
-                        )
-                      ],
-                    )
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: Row(
+                    //         mainAxisSize: MainAxisSize.min,
+                    //         children: [
+                    //           Expanded(
+                    //             child: _canBeSoldWidget(context),
+                    //           ),
+                    //           Expanded(
+                    //             child: _canBePurchasedWidget(context),
+                    //           ),
+                    //           Expanded(
+                    //             child: _canBeManufacturedWidget(context),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     Expanded(
+                    //       // flex: 2,
+                    //       child: SizedBox(),
+                    //     )
+                    //   ],
+                    // )
                   ],
                 ),
               ),
@@ -187,299 +187,381 @@ class ProductInfoView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ProductGeneralInfoTitle(),
           spacer,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
+          context.watch<ProductDetailController>().isBarcodeView
+              ? Center(
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(child: _textForDetailInfo("BarCode")),
+                            Expanded(
+                              flex: 2,
+                              child: _barcodeWidget(context),
+                            ),
+                          ],
+                        ),
+                        spacer,
+                        Row(
+                          children: [
+                            Expanded(child: _textForDetailInfo("BarCode")),
+                            Expanded(
+                              flex: 2,
+                              child: TextFormField(
+                                initialValue: '',
+                                enabled: false,
+                                textAlignVertical: TextAlignVertical.center,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelStyle: TextStyle(
+                                    color: Constants.primaryColor,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  border: UnderlineInputBorder(),
+                                  contentPadding: EdgeInsets.all(16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        spacer,
+                        Row(
+                          children: [
+                            Expanded(child: _textForDetailInfo("BarCode")),
+                            Expanded(
+                              flex: 2,
+                              child: TextFormField(
+                                initialValue: '',
+                                enabled: false,
+                                textAlignVertical: TextAlignVertical.center,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelStyle: TextStyle(
+                                    color: Constants.primaryColor,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  border: UnderlineInputBorder(),
+                                  contentPadding: EdgeInsets.all(16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Product Type")),
-                        Expanded(flex: 2, child: _productTypeWidget(context)),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Invoicing Policy")),
-                        Expanded(
-                            flex: 2, child: _invoicingPolicyWidget(context)),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            child: _textForDetailInfo("Re-Invoice Expenses")),
-                        Expanded(
-                          flex: 2,
-                          child: _reInvoiceExpensesWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Unit of Measure")),
-                        Expanded(flex: 2, child: _unitOfMeasureWidget(context)),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Base Unit Count")),
-                        Expanded(flex: 2, child: _baseUnitCountWidget(context)),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(
-                            child: _textForDetailInfo("Is secondary Unit?")),
-                        Expanded(
-                          flex: 2,
-                          child: _isSecondaryUnit(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Purchase UOM")),
-                        Expanded(flex: 2, child: _purchaseUOMWidget(context)),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(
-                            child: _textForDetailInfo(
-                                "is Commission Based Services ?")),
-                        Expanded(
-                          flex: 2,
-                          child: _isCommissionBasedServicesWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    _textForDetailInfo(
-                      "Commission Earning",
-                      textColor: Constants.disableColor,
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Is third Unit?")),
-                        Expanded(
-                          flex: 2,
-                          child: _isThirdUnitWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(
-                            child: _textForDetailInfo("Rebate Percentage")),
-                        Expanded(
-                          flex: 2,
-                          child: _rebatePercentageWidget(context),
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Product Type")),
+                          //     Expanded(flex: 2, child: _productTypeWidget(context)),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Invoicing Policy")),
+                          //     Expanded(
+                          //         flex: 2, child: _invoicingPolicyWidget(context)),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                          //   children: [
+                          //     Expanded(
+                          //         child: _textForDetailInfo("Re-Invoice Expenses")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _reInvoiceExpensesWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Unit of Measure")),
+                          //     Expanded(flex: 2, child: _unitOfMeasureWidget(context)),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Base Unit Count")),
+                          //     Expanded(flex: 2, child: _baseUnitCountWidget(context)),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //         child: _textForDetailInfo("Is secondary Unit?")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _isSecondaryUnit(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Purchase UOM")),
+                          //     Expanded(flex: 2, child: _purchaseUOMWidget(context)),
+                          //   ],
+                          // ),
+                          // spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(
+                          //               child: _textForDetailInfo(
+                          //                   "is Commission Based Services ?")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _isCommissionBasedServicesWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       _textForDetailInfo(
+                          //         "Commission Earning",
+                          //         textColor: Constants.disableColor,
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Is third Unit?")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _isThirdUnitWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(
+                          //               child: _textForDetailInfo("Rebate Percentage")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _rebatePercentageWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // Expanded(
+                          //   child: Column(
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     mainAxisAlignment: MainAxisAlignment.start,
+                          //     children: [
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Sale Price")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _salePriceWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Latest Price")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _latestPriceWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Cost")),
+                          //           Expanded(flex: 2, child: _costWidget(context)),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Product Category")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _productCategoryWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Product Brands")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _productBrandsWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Qty in Bags")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _qtyInBagsWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          //       Row(
+                          //         children: [
+                          //           Expanded(child: _textForDetailInfo("Multiple of Qty")),
+                          //           Expanded(
+                          //             flex: 2,
+                          //             child: _multipleOfQtyWidget(context),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //       spacer,
+                          Row(
+                            children: [
+                              Expanded(
+                                  child:
+                                      _textForDetailInfo("Old Internal Ref:")),
+                              Expanded(
+                                flex: 2,
+                                child: _oldInternalRefWidget(context),
+                              ),
+                            ],
+                          ),
+                          spacer,
+                          Row(
+                            children: [
+                              Expanded(
+                                  child:
+                                      _textForDetailInfo("Internal Reference")),
+                              Expanded(
+                                flex: 2,
+                                child: _internalReferenceWidget(context),
+                              ),
+                            ],
+                          ),
+                          spacer,
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: _textForDetailInfo("Odoo Product Id")),
+                              Expanded(
+                                flex: 2,
+                                child: _productIdWidget(context),
+                              ),
+                            ],
+                          ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("BarCode")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _barcodeWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Is Clearance?")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _isClearanceWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Item Type")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _itemTypeWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Country Code")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _countryCodeWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //         child: _textForDetailInfo("Allow Negative Stock")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _allowNegativeStockWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Company")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _companyWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(child: _textForDetailInfo("Tags")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _tagsWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
+                          // _textForDetailInfo(
+                          //   "Sale Person",
+                          //   textColor: Constants.disableColor,
+                          //   fontSize: 13,
+                          // ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Sale Price")),
-                        Expanded(
-                          flex: 2,
-                          child: _salePriceWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Latest Price")),
-                        Expanded(
-                          flex: 2,
-                          child: _latestPriceWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Cost")),
-                        Expanded(flex: 2, child: _costWidget(context)),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Product Category")),
-                        Expanded(
-                          flex: 2,
-                          child: _productCategoryWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Product Brands")),
-                        Expanded(
-                          flex: 2,
-                          child: _productBrandsWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Qty in Bags")),
-                        Expanded(
-                          flex: 2,
-                          child: _qtyInBagsWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Multiple of Qty")),
-                        Expanded(
-                          flex: 2,
-                          child: _multipleOfQtyWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(
-                            child: _textForDetailInfo("Old Internal Ref:")),
-                        Expanded(
-                          flex: 2,
-                          child: _oldInternalRefWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(
-                            child: _textForDetailInfo("Internal Reference")),
-                        Expanded(
-                          flex: 2,
-                          child: _internalReferenceWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("BarCode")),
-                        Expanded(
-                          flex: 2,
-                          child: _barcodeWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Is Clearance?")),
-                        Expanded(
-                          flex: 2,
-                          child: _isClearanceWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Item Type")),
-                        Expanded(
-                          flex: 2,
-                          child: _itemTypeWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Country Code")),
-                        Expanded(
-                          flex: 2,
-                          child: _countryCodeWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(
-                            child: _textForDetailInfo("Allow Negative Stock")),
-                        Expanded(
-                          flex: 2,
-                          child: _allowNegativeStockWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Company")),
-                        Expanded(
-                          flex: 2,
-                          child: _companyWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    Row(
-                      children: [
-                        Expanded(child: _textForDetailInfo("Tags")),
-                        Expanded(
-                          flex: 2,
-                          child: _tagsWidget(context),
-                        ),
-                      ],
-                    ),
-                    spacer,
-                    _textForDetailInfo(
-                      "Sale Person",
-                      textColor: Constants.disableColor,
-                      fontSize: 13,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
           spacer,
-          _textForDetailInfo(
-            "Internal Notes",
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-          _internalNotesWidget(context),
+          if (!context.read<ProductDetailController>().isBarcodeView)
+            _textForDetailInfo(
+              "Internal Notes",
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          if (!context.read<ProductDetailController>().isBarcodeView)
+            _internalNotesWidget(context),
           // SizedBox(
           //   width: isMobileMode == true
           //       ? MediaQuery.of(context).size.width
@@ -936,6 +1018,29 @@ class ProductInfoView extends StatelessWidget {
               .read<ProductDetailController>()
               .creatingProduct
               .oldInternalRef
+              ?.toString() ??
+          '',
+      enabled: false,
+      textAlignVertical: TextAlignVertical.center,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelStyle: TextStyle(
+          color: Constants.primaryColor,
+          fontSize: 13,
+          fontWeight: FontWeight.w800,
+        ),
+        border: UnderlineInputBorder(),
+        contentPadding: EdgeInsets.all(16),
+      ),
+    );
+  }
+
+  Widget _productIdWidget(BuildContext context) {
+    return TextFormField(
+      initialValue: context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .productId
               ?.toString() ??
           '',
       enabled: false,

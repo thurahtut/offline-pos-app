@@ -239,64 +239,65 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
         'Reporting',
         style: textStyle,
       ),
-      PopupMenuButton(
-        tooltip: "",
-        itemBuilder: (bContext) {
-          return [
-            ..._configurationMenuList.map(
-              (e) {
-                return PopupMenuItem<int>(
-                  value: 0,
-                  onTap: e["children"] != null ? null : e["onTap"],
-                  child: e["children"] != null
-                      ? TreeView(
-                          treeController:
-                              TreeController(allNodesExpanded: true),
-                          indent: 1,
-                          nodes: [
-                            TreeNode(
-                              content: Text(
-                                e['title'],
-                                style: textStyle.copyWith(
-                                  fontSize: 13,
-                                  color: Constants.textColor,
-                                ),
-                              ),
-                              children: [
-                                ...(e["children"] is List)
-                                    ? e["children"]
-                                        .map(
-                                          (value) => TreeNode(
-                                            content: Text(
-                                              value['title'],
-                                              style: textStyle.copyWith(
-                                                color: Constants.textColor,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                        .toList()
-                                    : []
-                              ],
-                            ),
-                          ],
-                        )
-                      : Text(e['title']),
-                );
-              },
-            ).toList()
-          ];
-        },
-        child: CommonUtils.iconActionButtonWithText(
-          Icons.keyboard_arrow_down_rounded,
-          'Configuration',
-          iconColor: Constants.accentColor,
-          switchChild: true,
-          textColor: textStyle.color,
-          fontWeight: textStyle.fontWeight,
-          fontSize: textStyle.fontSize,
-        ),
-      ),
+      // PopupMenuButton(
+      //   tooltip: "",
+      //   itemBuilder: (bContext) {
+      //     return [
+      //       ..._configurationMenuList.map(
+      //         (e) {
+      //           return PopupMenuItem<int>(
+      //             value: 0,
+      //             onTap: e["children"] != null ? null : e["onTap"],
+      //             child: e["children"] != null
+      //                 ? TreeView(
+      //                     treeController:
+      //                         TreeController(allNodesExpanded: true),
+      //                     indent: 1,
+      //                     nodes: [
+      //                       TreeNode(
+      //                         content: Text(
+      //                           e['title'],
+      //                           style: textStyle.copyWith(
+      //                             fontSize: 13,
+      //                             color: Constants.textColor,
+      //                           ),
+      //                         ),
+      //                         children: [
+      //                           ...(e["children"] is List)
+      //                               ? e["children"]
+      //                                   .map(
+      //                                     (value) => TreeNode(
+      //                                       content: Text(
+      //                                         value['title'],
+      //                                         style: textStyle.copyWith(
+      //                                           color: Constants.textColor,
+      //                                         ),
+      //                                       ),
+      //                                     ),
+      //                                   )
+      //                                   .toList()
+      //                               : []
+      //                         ],
+      //                       ),
+      //                     ],
+      //                   )
+      //                 : Text(e['title']),
+      //           );
+      //         },
+      //       ).toList()
+      //     ];
+      //   },
+      //   child: CommonUtils.iconActionButtonWithText(
+      //     Icons.keyboard_arrow_down_rounded,
+      //     'Configuration',
+      //     iconColor: Constants.accentColor,
+      //     switchChild: true,
+      //     textColor: textStyle.color,
+      //     fontWeight: textStyle.fontWeight,
+      //     fontSize: textStyle.fontSize,
+      //   ),
+      // ),
+   
     ];
   }
 }
