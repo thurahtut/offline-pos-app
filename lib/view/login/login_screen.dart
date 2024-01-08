@@ -1,3 +1,5 @@
+import 'package:offline_pos/view/user/user_login_dialog.dart';
+
 import '/components/export_files.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -37,7 +39,7 @@ class LoginScreen extends StatelessWidget {
       BorderContainer(
         text: 'Select Cashier',
         onTap: () {
-          return ChooseCashierDialog.chooseCashierDialogWidget(
+          return UserLoginDialog.loginUserDialogWidget(
             context,
           ).then((value) {
             if (value == true) {

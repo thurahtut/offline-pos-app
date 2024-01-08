@@ -8,6 +8,16 @@ class CommonUtils {
     return MediaQuery.of(context).size.width < 500;
   }
 
+  static showSnackBar({required String message, Duration? duration}) {
+    if (NavigationService.navigatorKey.currentContext != null) {
+      ScaffoldMessenger.of(NavigationService.navigatorKey.currentContext!)
+          .showSnackBar(SnackBar(
+        content: Text(message),
+        duration: duration ?? Duration(seconds: 2),
+      ));
+    }
+  }
+
   static Widget svgIconActionButton(
     String svg, {
     double? width,

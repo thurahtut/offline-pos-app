@@ -6,6 +6,7 @@ export 'package:flutter/material.dart';
 export 'package:flutter/services.dart';
 export 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 export 'package:flutter_svg/svg.dart';
+export 'package:getwidget/getwidget.dart';
 export 'package:go_router/go_router.dart';
 export 'package:provider/provider.dart';
 
@@ -24,6 +25,7 @@ export '../../model/customer.dart';
 export '../../model/employee.dart';
 export '../../model/order_history.dart';
 export '../../model/product.dart';
+export '../../service/api.dart';
 export '../components/common_utils.dart';
 export '../controller/view_controller.dart';
 export '../database/database_helper.dart';

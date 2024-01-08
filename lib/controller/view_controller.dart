@@ -26,12 +26,32 @@ class ViewController with ChangeNotifier {
     _isCustomerView = isCustomerView;
     notifyListeners();
   }
-  
+
   bool _isKeyboardHide = false;
   bool get isKeyboardHide => _isKeyboardHide;
   set isKeyboardHide(bool isKeyboardHide) {
     if (_isKeyboardHide == isKeyboardHide) return;
     _isKeyboardHide = isKeyboardHide;
+    notifyListeners();
+  }
+
+  int _userId = 0;
+  int get userId => _userId;
+  set userId(int userId) {
+    if (_userId == userId) return;
+    _userId = userId;
+    notifyListeners();
+  }
+
+  int _userPinCode = 0;
+  int get userPinCode => _userPinCode;
+  set userPinCode(int userPinCode) {
+    if (_userPinCode == userPinCode) return;
+    _userPinCode = userPinCode;
+    notifyListeners();
+  }
+
+  notify() {
     notifyListeners();
   }
 }

@@ -61,22 +61,22 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buttonContainer(
-                  context,
-                  'Employee',
-                  () {
-                    Navigator.pushNamed(context, EmployeeListScreen.routeName);
-                  },
-                  icon: Icons.people_alt_outlined,
-                ),
-                SizedBox(width: 8),
-                SizedBox(width: 8),
-              ],
-            ),
+            // Row(
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     _buttonContainer(
+            //       context,
+            //       'Employee',
+            //       () {
+            //         Navigator.pushNamed(context, EmployeeListScreen.routeName);
+            //       },
+            //       icon: Icons.people_alt_outlined,
+            //     ),
+            //     SizedBox(width: 8),
+            //     SizedBox(width: 8),
+            //   ],
+            // ),
           ]),
     );
   }

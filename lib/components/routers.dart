@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/category/product_category_list_screen.dart';
-import 'package:offline_pos/view/payment/order_payment_receipt_screen.dart';
+import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 
 
 class Routers {
@@ -75,6 +75,10 @@ class Routers {
       case EmployeeListScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => EmployeeListScreen(),
+        );
+      case MorningSyncScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => MorningSyncScreen(),
         );
       default:
         {

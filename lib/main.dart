@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/controller/morning_sync_controller.dart';
+import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -35,13 +37,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PriceRulesListController()),
         ChangeNotifierProvider(create: (_) => ProductDetailController()),
         ChangeNotifierProvider(create: (_) => EmployeeListController()),
+        ChangeNotifierProvider(create: (_) => MorningsyncController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: WelcomeScreen.routeName,
-        home: WelcomeScreen(),
+        initialRoute: MorningSyncScreen.routeName,
+        home: MorningSyncScreen(),
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

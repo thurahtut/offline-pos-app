@@ -85,7 +85,7 @@ class ProductGeneralInfoTitle extends StatelessWidget {
     return [
       _textForDetailInfo(
         'General Information',
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: FontWeight.bold,
         textColor: !context.watch<ProductDetailController>().isBarcodeView
             ? Constants.primaryColor
@@ -151,7 +151,7 @@ class ProductGeneralInfoTitle extends StatelessWidget {
       // SizedBox(width: 4),
       _textForDetailInfo(
         'Barcode',
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: FontWeight.bold,
         textColor: context.watch<ProductDetailController>().isBarcodeView
             ? Constants.primaryColor

@@ -53,7 +53,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               SizedBox(width: 16),
               Text(
                 'Product'
-                '${context.watch<ProductDetailController>().mode == ViewMode.view || context.watch<ProductDetailController>().mode == ViewMode.edit ? '/ [${context.read<ProductDetailController>().creatingProduct.productId ?? ''}]' '${context.read<ProductDetailController>().creatingProduct.productName ?? ''}' : ''}',
+                '${context.watch<ProductDetailController>().mode == ViewMode.view || context.watch<ProductDetailController>().mode == ViewMode.edit ? '/ [${context.read<ProductDetailController>().creatingProduct.productId ?? ''}]' '${context.read<ProductDetailController>().creatingProduct.productName ?? ''}' : ''}'
+                '${context.watch<ProductDetailController>().mode == ViewMode.create ? '/ New ' : ''}',
                 style: TextStyle(
                   color: Constants.textColor,
                   fontSize: 17,

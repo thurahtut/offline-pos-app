@@ -91,6 +91,9 @@ class PasswordDialog {
                                 ),
                               ),
                               obscureText: !passwordVisible,
+                              onFieldSubmitted: (value) {
+                                Navigator.pop(context, true);
+                              },
                             );
                           },
                         ),
