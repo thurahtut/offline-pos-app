@@ -375,9 +375,8 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
             ),
           ),
         ),
-        onEditingComplete: () {
-          mainContext.read<CustomerListController>().filterValue =
-              searchCustomerTextController.text;
+        onChanged: (value) {
+          mainContext.read<CustomerListController>().filterValue = value;
           mainContext.read<CustomerListController>().offset = 0;
           mainContext.read<CustomerListController>().currentIndex = 1;
           getAllCustomer();
