@@ -27,6 +27,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
+  final scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -34,6 +35,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     _paymentMethodNameTextController.dispose();
     _intermediaryAccountTextController.dispose();
     _shortCodeTextController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -312,6 +314,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       ),
     );
     return Scrollbar(
+      controller: scrollController,
       thumbVisibility: true,
       child: isTabletMode == true
           ? ClipRRect(

@@ -13,6 +13,7 @@ class _ProductDetailPermissionTitleState
   final TextEditingController _productNameTextController =
       TextEditingController();
   bool? isMobileMode;
+  final scrollController = ScrollController();
 
   @override
   void initState() {
@@ -26,12 +27,14 @@ class _ProductDetailPermissionTitleState
   @override
   void dispose() {
     _productNameTextController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
+      controller: scrollController,
       thickness: MediaQuery.of(context).size.width > 1080 ? 0 : 6,
       child: Container(
         width: MediaQuery.of(context).size.width,

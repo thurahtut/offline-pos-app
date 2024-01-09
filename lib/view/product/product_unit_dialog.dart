@@ -117,7 +117,7 @@ class ProductUntiDialog {
                     ],
                   ),
                   child: Text(
-                    '${product.price} Ks/ Unit',
+                    '${0} Ks/ Unit', //product.price
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -136,7 +136,7 @@ class ProductUntiDialog {
               ),
               SizedBox(height: 8),
               Text(
-                'Quantity : ${product.qtyInBags}',
+                'Quantity : ${0}', //product.qtyInBags
                 style: TextStyle(
                   color: Constants.textColor.withOpacity(0.9),
                   fontSize: 11,

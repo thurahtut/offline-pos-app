@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:offline_pos/components/export_files.dart';
 
 class CustomerPaginationTable extends StatefulWidget {
-  const CustomerPaginationTable({super.key});
+  const CustomerPaginationTable({super.key, required this.mainContext});
+  final BuildContext mainContext;
 
   @override
   State<CustomerPaginationTable> createState() =>
@@ -11,69 +12,95 @@ class CustomerPaginationTable extends StatefulWidget {
 }
 
 class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
-  int _limit = 20;
-  int _offset = 0;
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
   TextEditingController passwordTextController = TextEditingController();
+  final scrollController = ScrollController();
 
   @override
   void dispose() {
     passwordTextController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      isTabletMode = CommonUtils.isTabletMode(context);
+      isTabletMode = CommonUtils.isTabletMode(widget.mainContext);
+      widget.mainContext
+          .read<CustomerListController>()
+          .resetCustomerListController();
+
       getAllCustomer();
     });
     super.initState();
   }
 
-  Future<void> getAllCustomer() async {
-    context.read<CustomerListController>().customerList = [];
-    CustomerTable.getAll().then((list) {
-      context.read<CustomerListController>().customerList.addAll(list);
-      context.read<CustomerListController>().notify();
-      context.read<CustomerListController>().customerInfoDataSource =
+  void getAllCustomer() async {
+    context.read<CustomerListController>().loading = true;
+    widget.mainContext
+        .read<CustomerListController>()
+        .getAllCustomer()
+        .then((value) {
+      updateCustomerListToTable();
+      context.read<CustomerListController>().loading = false;
+    });
+  }
+
+  Future<void> updateCustomerListToTable() async {
+    widget.mainContext.read<CustomerListController>().customerInfoDataSource =
           CustomerInfoDataSourceForCustomerListScreen(
-        context,
-        context.read<CustomerListController>().customerList,
-        _offset,
+      widget.mainContext,
+      widget.mainContext.read<CustomerListController>().customerList,
         passwordTextController,
         () {},
         () {
-          if (context.read<CurrentOrderController>().currentOrderList.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        if (widget.mainContext
+            .read<CurrentOrderController>()
+            .currentOrderList
+            .isEmpty) {
+          ScaffoldMessenger.of(widget.mainContext).showSnackBar(SnackBar(
                 content: Text(
               'There is no order items.',
               textAlign: TextAlign.center,
             )));
             return;
           }
-          context.read<CurrentOrderController>().isContainCustomer = true;
-          PasswordDialog.enterPasswordWidget(context, passwordTextController)
+        widget.mainContext.read<CurrentOrderController>().isContainCustomer =
+            true;
+        PasswordDialog.enterPasswordWidget(
+                widget.mainContext, passwordTextController)
               .then((value) {
             if (value == true) {
               Navigator.pushNamed(
-                context,
+              widget.mainContext,
                 OrderPaymentScreen.routeName,
               );
               passwordTextController.clear();
             }
           });
         },
-      );
-    });
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // bool isTabletMode = CommonUtils.isTabletMode(context);
-    return Scrollbar(
+    // bool isTabletMode = CommonUtils.isTabletMode(widget.mainContext);
+    return Consumer<CustomerListController>(builder: (_, controller, __) {
+      return controller.loading
+          ? SizedBox(
+              width: 100,
+              height: 100,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            )
+          : controller.customerInfoDataSource == null
+              ? SizedBox()
+              : Scrollbar(
+                  controller: scrollController,
       thumbVisibility: true,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22),
@@ -82,29 +109,27 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width,
-              maxHeight: MediaQuery.of(context).size.height,
+                          maxWidth:
+                              MediaQuery.of(widget.mainContext).size.width,
+                          maxHeight:
+                              MediaQuery.of(widget.mainContext).size.height,
             ),
-            child: context
-                        .watch<CustomerListController>()
-                        .customerInfoDataSource !=
-                    null
-                ? _customerInfoWidget()
-                : SizedBox(),
+                        child: _customerInfoWidget(controller),
           ),
         ),
       ),
-    );
+                );
+    });
   }
 
-  Stack _customerInfoWidget() {
+  Stack _customerInfoWidget(CustomerListController controller) {
     return Stack(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.bottomLeft,
       children: [
-        context.read<CustomerListController>().customerInfoDataSource == null
-            ? SizedBox()
-            : Theme(
-                data: Theme.of(context).copyWith(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 70.0),
+          child: Theme(
+            data: Theme.of(widget.mainContext).copyWith(
                   cardTheme: CardTheme(
                     elevation: 0,
                     color: Colors.white,
@@ -122,14 +147,12 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                       horizontalInside: BorderSide(
                           color: Constants.disableColor.withOpacity(0.81))),
                   rowsPerPage: min(
-                      _limit,
+                    controller.limit,
                       max(
-                          context
-                          .read<CustomerListController>()
-                          .customerList
+                        controller.customerList
                               .length,
                           1)),
-                  minWidth: MediaQuery.of(context).size.width - 100,
+              minWidth: MediaQuery.of(widget.mainContext).size.width - 100,
                   showCheckboxColumn: false,
                   fit: FlexFit.tight,
                   hidePaginator: true,
@@ -179,21 +202,60 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                     //   text: 'action'.tr(),
                     // ),
                   ],
-                  source: context
-                      .read<CustomerListController>()
+              source: controller
                       .customerInfoDataSource!,
                 ),
               ),
-        // _paginationWidget(),
+        ),
+        _paginationWidget(controller),
       ],
     );
+  }
+
+  Widget _paginationWidget(CustomerListController controller) {
+    return Wrap(
+      alignment: WrapAlignment.start,
+      children: [
+        FlutterCustomPagination(
+          currentPage: controller.currentIndex,
+          limitPerPage: controller.limit,
+          totalDataCount: controller.total,
+          onPreviousPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllCustomer();
+          },
+          onBackToFirstPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllCustomer();
+          },
+          onNextPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllCustomer();
+          },
+          onGoToLastPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllCustomer();
+          },
+          backgroundColor: Theme.of(context).colorScheme.background,
+          previousPageIcon: Icons.keyboard_arrow_left,
+          backToFirstPageIcon: Icons.first_page,
+          nextPageIcon: Icons.keyboard_arrow_right,
+          goToLastPageIcon: Icons.last_page,
+          textStyle: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+      ],
+    );
+   
   }
 }
 
 class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   BuildContext context;
   late List<Customer> customerInfoList;
-  int offset;
   TextEditingController passwordTextController;
   Function() reloadDataCallback;
   Function() cartCallback;
@@ -201,7 +263,6 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   CustomerInfoDataSourceForCustomerListScreen(
     this.context,
     this.customerInfoList,
-    this.offset,
     this.passwordTextController,
     this.reloadDataCallback,
     this.cartCallback,
@@ -211,8 +272,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
     return _createRow(index);
   }
 
-  void sort<T>(
-      Comparable<T> Function(Customer d) getField, bool ascending) {
+  void sort<T>(Comparable<T> Function(Customer d) getField, bool ascending) {
     customerInfoList.sort((a, b) {
       final aValue = getField(a);
       final bValue = getField(b);
@@ -249,7 +309,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
         ),
         DataCell(
           Text(
-            customerInfo.contactAddress ?? '',
+            '${customerInfo.blockingStage ?? ''}/${customerInfo.street ?? ''}/${customerInfo.city ?? ''}',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -261,13 +321,14 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
           Text(customerInfo.email ?? ''),
         ),
         DataCell(
-          Text(customerInfo.discount.toString()),
+          Text('0'),
         ),
         DataCell(
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${customerInfo.credit?.toStringAsFixed(2) ?? '0.00'} Ks'),
+              Text(
+                  '0 Ks'), //${customerInfo.credit?.toStringAsFixed(2) ?? '0.00'}
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/shopping_cart.svg',
                   onPressed: cartCallback),
@@ -277,10 +338,10 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          Text(customerInfo.creditLimit ?? ''),
+          Text(''), //customerInfo.creditLimit ??
         ),
         DataCell(
-          Text(customerInfo.dueAmount ?? ''),
+          Text(''), //customerInfo.dueAmount ??
         ),
       ],
     );

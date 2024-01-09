@@ -70,12 +70,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           spacer,
           ProductCommonActionTitle(),
           spacer,
-          context.watch<ProductDetailController>().mode ==
-                      ViewMode.create ||
-                  context.watch<ProductDetailController>().mode ==
-                      ViewMode.edit
-              ? ProductCreateOrEditScreen()
-              : ProductInfoView(),
+          // context.watch<ProductDetailController>().mode ==
+          //             ViewMode.create ||
+          //         context.watch<ProductDetailController>().mode ==
+          //             ViewMode.edit
+          //     ? ProductCreateOrEditScreen()
+          //     :
+          ProductInfoView(),
         ],
       ),
     );

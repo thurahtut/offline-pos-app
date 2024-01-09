@@ -101,7 +101,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                     ProductUntiDialog.productUnitWidget(context,
                                         product: e);
                                   },
-                                  child: Text("${e.salePrice} Ks".toString(),
+                                  child: Text(
+                                      "${0} Ks".toString(), // product.salePrice
                                       style: textStyle.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Constants.primaryColor,

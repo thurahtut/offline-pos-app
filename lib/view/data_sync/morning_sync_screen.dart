@@ -13,12 +13,20 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getAllProductFromApi();
+      getAllProductFromApi(() {
+        getAllCustomerFromApi(() {
+          context.read<MorningsyncController>().currentTaskTitle = "";
+          Navigator.pop(context);
+          Navigator.pushNamed(context, MainScreen.routeName);
+        });
+      });
     });
     super.initState();
   }
 
-  void getAllProductFromApi() {
+  void getAllProductFromApi(Function() callback) {
+    context.read<MorningsyncController>().currentTaskTitle =
+        "Product List Sync....";
     Api.getAllProduct(
       onSendProgress: (sent, total) {
         double value = double.parse((sent / total).toStringAsFixed(2)) * 100;
@@ -28,7 +36,33 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
     ).then((response) {
       if (response != null &&
           response.statusCode == 200 &&
-          response.data != null) {}
+          response.data != null) {
+        if (response.data is List) {
+          ProductTable.insertOrUpdate(response.data)
+              .then((value) => callback());
+        }
+      }
+    });
+  }
+
+  void getAllCustomerFromApi(Function() callback) {
+    context.read<MorningsyncController>().currentTaskTitle =
+        "Customer List Sync....";
+    Api.getAllCustomer(
+      onSendProgress: (sent, total) {
+        double value = double.parse((sent / total).toStringAsFixed(2)) * 100;
+        context.read<MorningsyncController>().percentage =
+            value == 100 ? null : value;
+      },
+    ).then((response) {
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        if (response.data is List) {
+          CustomerTable.insertOrUpdate(response.data)
+              .then((value) => callback());
+        }
+      }
     });
   }
 

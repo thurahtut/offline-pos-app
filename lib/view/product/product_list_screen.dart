@@ -13,16 +13,16 @@ class ProductListScreen extends StatefulWidget {
 class _ProductListScreenState extends State<ProductListScreen> {
   final TextEditingController _searchProductTextController =
       TextEditingController();
-  int _limit = 20;
-  int _offset = 0;
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
   bool? isMobileMode;
+  final scrollController = ScrollController();
 
   @override
   void dispose() {
     _searchProductTextController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -32,23 +32,26 @@ class _ProductListScreenState extends State<ProductListScreen> {
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
       context.read<ProductDetailController>().resetProductDetailController();
+      context.read<ProductListController>().resetProductListController();
       getAllProduct();
     });
     super.initState();
   }
 
-  Future<void> getAllProduct() async {
-    context.read<ProductListController>().productList = [];
-    ProductTable.getAll().then((list) {
-      context.read<ProductListController>().productList.addAll(list);
-      context.read<ProductListController>().notify();
+  void getAllProduct() {
+    context.read<ProductListController>().loading = true;
+    context.read<ProductListController>().getAllProduct().then((value) {
+      updateProductListToTable();
+      context.read<ProductListController>().loading = false;
+    });
+  }
+
+  Future<void> updateProductListToTable() async {
       context.read<ProductListController>().productInfoDataSource =
           DataSourceForProductListScreen(
               context,
               context.read<ProductListController>().productList,
-              _offset,
               () {});
-    });
   }
 
   @override
@@ -80,7 +83,26 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ],
         ),
         _filtersWidget(),
-        Expanded(child: _tableWidget()),
+        context.watch<ProductListController>().loading
+            ? SizedBox(
+                width: 100,
+                height: 100,
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+              )
+            : Expanded(
+                child: Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 70.0),
+                      child: _tableWidget(),
+                    ),
+                    _paginationWidget(),
+                  ],
+                ),
+              ),
       ],
     );
   }
@@ -121,6 +143,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
             suffixIcon: InkWell(
               onTap: () {
                 _searchProductTextController.clear();
+                context.read<ProductListController>().filterValue = null;
+                context.read<ProductListController>().offset = 0;
+                context.read<ProductListController>().currentIndex = 1;
+                getAllProduct();
               },
               child: UnconstrainedBox(
                 child: SvgPicture.asset(
@@ -135,6 +161,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ),
             ),
           ),
+          onChanged: (value) {
+            context.read<ProductListController>().filterValue = value;
+            context.read<ProductListController>().offset = 0;
+            context.read<ProductListController>().currentIndex = 1;
+            getAllProduct();
+          },
         ),
       ),
     );
@@ -145,29 +177,29 @@ class _ProductListScreenState extends State<ProductListScreen> {
       children: [
         SizedBox(width: 16),
         Expanded(
-          child: //SizedBox(),
-              Row(
-            children: [
-              BorderContainer(
-                text: 'Create',
-                containerColor: Constants.primaryColor,
-                textColor: Colors.white,
-                width: 150,
-                onTap: () {
-                  context.read<ProductDetailController>().creatingProduct =
-                      Product();
-                  Navigator.pushNamed(context, ProductDetailScreen.routeName);
-                  context.read<ProductDetailController>().mode =
-                      ViewMode.create;
-                },
-              ),
-              SizedBox(width: 4),
-              CommonUtils.svgIconActionButton('assets/svg/export_notes.svg'),
-              (isTabletMode != true && isMobileMode != true)
-                  ? Expanded(child: SizedBox())
-                  : SizedBox(),
-            ],
-          ),
+          child: SizedBox(),
+          //     Row(
+          //   children: [
+          //     BorderContainer(
+          //       text: 'Create',
+          //       containerColor: Constants.primaryColor,
+          //       textColor: Colors.white,
+          //       width: 150,
+          //       onTap: () {
+          //         context.read<ProductDetailController>().creatingProduct =
+          //             Product();
+          //         Navigator.pushNamed(context, ProductDetailScreen.routeName);
+          //         context.read<ProductDetailController>().mode =
+          //             ViewMode.create;
+          //       },
+          //     ),
+          //     SizedBox(width: 4),
+          //     CommonUtils.svgIconActionButton('assets/svg/export_notes.svg'),
+          //     (isTabletMode != true && isMobileMode != true)
+          //         ? Expanded(child: SizedBox())
+          //         : SizedBox(),
+          //   ],
+          // ),
         ),
         Expanded(
           flex: 2,
@@ -210,18 +242,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget _tableWidget() {
     var singleChildScrollView = SingleChildScrollView(
+      primary: true,
       scrollDirection: Axis.horizontal,
       physics: AlwaysScrollableScrollPhysics(),
       child: Container(
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
-        child:
-            context.watch<ProductListController>().productInfoDataSource != null
-                ? _paginationTable()
-                : SizedBox(),
+        child: _paginationTable(),
       ),
     );
-    return Scrollbar(
+    return context.watch<ProductListController>().productInfoDataSource != null
+        ? Scrollbar(
+            controller: scrollController,
       thumbVisibility: true,
       child: isTabletMode == true
           ? ClipRRect(
@@ -229,7 +261,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
               child: singleChildScrollView,
             )
           : singleChildScrollView,
-    );
+          )
+        : SizedBox();
   }
 
   Widget _paginationTable() {
@@ -250,8 +283,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       border: TableBorder(
           horizontalInside:
               BorderSide(color: Constants.disableColor.withOpacity(0.81))),
-      rowsPerPage:
-          min(_limit,
+      rowsPerPage: min(context.read<ProductListController>().limit,
           max(context.read<ProductListController>().productList.length, 1)),
       minWidth: MediaQuery.of(context).size.width,
       showCheckboxColumn: true,
@@ -314,6 +346,50 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ],
       source: context.read<ProductListController>().productInfoDataSource!,
     );
+  }
+
+  Widget _paginationWidget() {
+    return Consumer<ProductListController>(builder: (_, controller, __) {
+      return Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          FlutterCustomPagination(
+            currentPage: controller.currentIndex,
+            limitPerPage: controller.limit,
+            totalDataCount: controller.total,
+            onPreviousPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllProduct();
+            },
+            onBackToFirstPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllProduct();
+            },
+            onNextPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllProduct();
+            },
+            onGoToLastPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllProduct();
+            },
+            backgroundColor: Theme.of(context).colorScheme.background,
+            previousPageIcon: Icons.keyboard_arrow_left,
+            backToFirstPageIcon: Icons.first_page,
+            nextPageIcon: Icons.keyboard_arrow_right,
+            goToLastPageIcon: Icons.last_page,
+          ),
+        ],
+      );
+    });
   }
 
   PopupMenuButton<int> _moreInfoWidget() {
@@ -497,13 +573,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
 class DataSourceForProductListScreen extends DataTableSource {
   BuildContext context;
   late List<Product> productList;
-  int offset;
   Function() reloadDataCallback;
 
   DataSourceForProductListScreen(
     this.context,
     this.productList,
-    this.offset,
     this.reloadDataCallback,
   );
   @override
@@ -543,7 +617,7 @@ class DataSourceForProductListScreen extends DataTableSource {
       onSelectChanged: (value) {},
       cells: [
         DataCell(
-          Text('${index + 1}'),
+          Text('${context.read<ProductListController>().offset + index + 1}'),
         ),
         DataCell(
           onTap: () {
@@ -556,7 +630,7 @@ class DataSourceForProductListScreen extends DataTableSource {
             onTap(product);
           },
           Text(
-            product.package ?? '',
+            '', //product.package ??
             style: TextStyle(
               color: Constants.successColor,
             ),
@@ -567,7 +641,7 @@ class DataSourceForProductListScreen extends DataTableSource {
             onTap(product);
           },
           Text(
-            '${product.price ?? 0} Ks',
+            '${0} Ks', //product.price ??
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -576,14 +650,14 @@ class DataSourceForProductListScreen extends DataTableSource {
           onTap: () {
             onTap(product);
           },
-          Text(product.barcode ?? ''),
+          Text(''), //product.barcode ??
         ),
         DataCell(
           onTap: () {
             onTap(product);
           },
           Text(
-            '${product.salePrice ?? 0} Ks',
+            '${0} Ks', //product.salePrice ??
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -593,7 +667,7 @@ class DataSourceForProductListScreen extends DataTableSource {
             onTap(product);
           },
           Text(
-            '${product.latestPrice ?? 0} Ks',
+            '${0} Ks', //product.latestPrice ??
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -602,13 +676,13 @@ class DataSourceForProductListScreen extends DataTableSource {
           onTap: () {
             onTap(product);
           },
-          Text(product.productCategory ?? ''),
+          Text(product.categoryId?.toString() ?? ''),
         ),
         DataCell(
           onTap: () {
             onTap(product);
           },
-          Text((product.productType?.name ?? '').toUpperCase()),
+          Text(('').toUpperCase()), //product.productType?.name ??
         ),
         DataCell(
           onTap: () {

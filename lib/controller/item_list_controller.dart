@@ -1,19 +1,10 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class CustomerListController with ChangeNotifier {
-  List<Customer> _customerList = [];
-  List<Customer> get customerList => _customerList;
-  set customerList(List<Customer> customerList) {
-    _customerList = customerList;
-    notifyListeners();
-  }
-
-  CustomerInfoDataSourceForCustomerListScreen? _customerInfoDataSource;
-  CustomerInfoDataSourceForCustomerListScreen? get customerInfoDataSource =>
-      _customerInfoDataSource;
-  set customerInfoDataSource(
-      CustomerInfoDataSourceForCustomerListScreen? customerInfoDataSource) {
-    _customerInfoDataSource = customerInfoDataSource;
+class ItemListController with ChangeNotifier {
+  List<Product> _productList = [];
+  List<Product> get productList => _productList;
+  set productList(List<Product> productList) {
+    _productList = productList;
     notifyListeners();
   }
 
@@ -69,30 +60,29 @@ class CustomerListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllCustomer() async {
-    customerList = [];
-    getTotalCustomerCount();
-    await CustomerTable.getCustomersFiltering(
+  Future<void> getAllProduct() async {
+    productList = [];
+    getTotalProductCount();
+    await ProductTable.getProductsFiltering(
       filter: filterValue,
       limit: limit,
       offset: offset,
     ).then((list) {
-      customerList.addAll(list);
+      productList.addAll(list);
       notifyListeners();
     });
   }
 
-  Future<void> getTotalCustomerCount() async {
-    CustomerTable.getAllCustomerCount(
+  Future<void> getTotalProductCount() async {
+    ProductTable.getAllProductCount(
       filter: filterValue,
     ).then((count) {
       total = count;
     });
   }
 
-  resetCustomerListController() {
-    _customerList = [];
-    _customerInfoDataSource = null;
+  resetItemListController() {
+    _productList = [];
     _currentIndex = 1;
     _total = 0;
     _offset = 0;

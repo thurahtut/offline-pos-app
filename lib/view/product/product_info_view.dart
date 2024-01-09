@@ -103,7 +103,7 @@ class ProductInfoView extends StatelessWidget {
   CheckboxListTile _isBundledWidget(BuildContext context) {
     return CheckboxListTile(
       value:
-          context.watch<ProductDetailController>().creatingProduct.isBundled ??
+          // context.watch<ProductDetailController>().creatingProduct.shIsBundle ??
               false,
       onChanged: (bool? value) {},
       contentPadding: EdgeInsets.zero,
@@ -119,66 +119,66 @@ class ProductInfoView extends StatelessWidget {
     );
   }
 
-  CheckboxListTile _canBeSoldWidget(BuildContext context) {
-    return CheckboxListTile(
-      value:
-          context.watch<ProductDetailController>().creatingProduct.canBeSold ??
-              false,
-      onChanged: (bool? value) {},
-      contentPadding: EdgeInsets.zero,
-      controlAffinity: ListTileControlAffinity.leading,
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      title: Text(
-        'Can be sold',
-        style: TextStyle(fontSize: 13),
-      ),
-    );
-  }
+  // CheckboxListTile _canBeSoldWidget(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value:
+  //         context.watch<ProductDetailController>().creatingProduct.canBeSold ??
+  //             false,
+  //     onChanged: (bool? value) {},
+  //     contentPadding: EdgeInsets.zero,
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     title: Text(
+  //       'Can be sold',
+  //       style: TextStyle(fontSize: 13),
+  //     ),
+  //   );
+  // }
 
-  CheckboxListTile _canBePurchasedWidget(BuildContext context) {
-    return CheckboxListTile(
-      value: context
-              .watch<ProductDetailController>()
-              .creatingProduct
-              .canBePurchased ??
-          false,
-      onChanged: (bool? value) {},
-      contentPadding: EdgeInsets.zero,
-      controlAffinity: ListTileControlAffinity.leading,
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      title: Text(
-        'Can be purchased',
-        style: TextStyle(fontSize: 13),
-      ),
-    );
-  }
+  // CheckboxListTile _canBePurchasedWidget(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value: context
+  //             .watch<ProductDetailController>()
+  //             .creatingProduct
+  //             .canBePurchased ??
+  //         false,
+  //     onChanged: (bool? value) {},
+  //     contentPadding: EdgeInsets.zero,
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     title: Text(
+  //       'Can be purchased',
+  //       style: TextStyle(fontSize: 13),
+  //     ),
+  //   );
+  // }
 
-  CheckboxListTile _canBeManufacturedWidget(BuildContext context) {
-    return CheckboxListTile(
-      value: context
-              .watch<ProductDetailController>()
-              .creatingProduct
-              .canBeManufactured ??
-          false,
-      onChanged: (bool? value) {},
-      contentPadding: EdgeInsets.zero,
-      controlAffinity: ListTileControlAffinity.leading,
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      title: Text(
-        'Can be manufactured',
-        style: TextStyle(fontSize: 13),
-      ),
-    );
-  }
+  // CheckboxListTile _canBeManufacturedWidget(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value: context
+  //             .watch<ProductDetailController>()
+  //             .creatingProduct
+  //             .canBeManufactured ??
+  //         false,
+  //     onChanged: (bool? value) {},
+  //     contentPadding: EdgeInsets.zero,
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     title: Text(
+  //       'Can be manufactured',
+  //       style: TextStyle(fontSize: 13),
+  //     ),
+  //   );
+  // }
 
   Widget _itemInfoWidget(BuildContext context) {
     // bool isTabletMode = CommonUtils.isTabletMode(context);
@@ -437,18 +437,18 @@ class ProductInfoView extends StatelessWidget {
                           //         ],
                           //       ),
                           //       spacer,
-                          Row(
-                            children: [
-                              Expanded(
-                                  child:
-                                      _textForDetailInfo("Old Internal Ref:")),
-                              Expanded(
-                                flex: 2,
-                                child: _oldInternalRefWidget(context),
-                              ),
-                            ],
-                          ),
-                          spacer,
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //         child:
+                          //             _textForDetailInfo("Old Internal Ref:")),
+                          //     Expanded(
+                          //       flex: 2,
+                          //       child: _oldInternalRefWidget(context),
+                          //     ),
+                          //   ],
+                          // ),
+                          // spacer,
                           Row(
                             children: [
                               Expanded(
@@ -578,462 +578,462 @@ class ProductInfoView extends StatelessWidget {
     );
   }
 
-  Widget _productTypeWidget(BuildContext context) {
-    return _dropDownWidget(
-      context.watch<ProductDetailController>().creatingProduct.productType !=
-              null
-          ? context
-                  .read<ProductDetailController>()
-                  .creatingProduct
-                  .productType
-                  ?.name ??
-              ProductType.consumable.name
-          : ProductType.consumable.name,
-      ProductType.values
-          .map((e) => DropdownMenuItem(
-                value: e.name,
-                child: Text(e.name,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              ))
-          .toList(),
-    );
-  }
+  // Widget _productTypeWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context.watch<ProductDetailController>().creatingProduct.productType !=
+  //             null
+  //         ? context
+  //                 .read<ProductDetailController>()
+  //                 .creatingProduct
+  //                 .productType
+  //                 ?.name ??
+  //             ProductType.consumable.name
+  //         : ProductType.consumable.name,
+  //     ProductType.values
+  //         .map((e) => DropdownMenuItem(
+  //               value: e.name,
+  //               child: Text(e.name,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             ))
+  //         .toList(),
+  //   );
+  // }
 
-  Widget _invoicingPolicyWidget(BuildContext context) {
-    return _dropDownWidget(
-      context
-                  .watch<ProductDetailController>()
-                  .creatingProduct
-                  .invoicingPolicy !=
-              null
-          ? context
-                  .read<ProductDetailController>()
-                  .creatingProduct
-                  .invoicingPolicy
-                  ?.name ??
-              InvoicingPolicy.orderedQuantities.name
-          : InvoicingPolicy.orderedQuantities.name,
-      InvoicingPolicy.values
-          .map((e) => DropdownMenuItem(
-                value: e.name,
-                child: Text(e.name,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              ))
-          .toList(),
-    );
-  }
+  // Widget _invoicingPolicyWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context
+  //                 .watch<ProductDetailController>()
+  //                 .creatingProduct
+  //                 .invoicingPolicy !=
+  //             null
+  //         ? context
+  //                 .read<ProductDetailController>()
+  //                 .creatingProduct
+  //                 .invoicingPolicy
+  //                 ?.name ??
+  //             InvoicingPolicy.orderedQuantities.name
+  //         : InvoicingPolicy.orderedQuantities.name,
+  //     InvoicingPolicy.values
+  //         .map((e) => DropdownMenuItem(
+  //               value: e.name,
+  //               child: Text(e.name,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             ))
+  //         .toList(),
+  //   );
+  // }
 
-  Column _reInvoiceExpensesWidget(BuildContext context) {
-    return Column(
-      children: ReInvoiceExpenses.values.map((e) {
-        return _eachRadioWidget(
-          text: e.text,
-          value: e.index,
-          groupValue: (context
-                          .watch<ProductDetailController>()
-                          .creatingProduct
-                          .reInvoiceExpenses ??
-                      '') ==
-                  e
-              ? e.index
-              : -1,
-        );
-      }).toList(),
-    );
-  }
+  // Column _reInvoiceExpensesWidget(BuildContext context) {
+  //   return Column(
+  //     children: ReInvoiceExpenses.values.map((e) {
+  //       return _eachRadioWidget(
+  //         text: e.text,
+  //         value: e.index,
+  //         groupValue: (context
+  //                         .watch<ProductDetailController>()
+  //                         .creatingProduct
+  //                         .reInvoiceExpenses ??
+  //                     '') ==
+  //                 e
+  //             ? e.index
+  //             : -1,
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
-  Widget _unitOfMeasureWidget(BuildContext context) {
-    return _dropDownWidget(
-      context.watch<ProductDetailController>().creatingProduct.unitOfMeasure !=
-                  null &&
-              CommonUtils.unitList.indexWhere((element) =>
-                      element ==
-                      context
-                          .read<ProductDetailController>()
-                          .creatingProduct
-                          .unitOfMeasure) !=
-                  -1
-          ? CommonUtils.unitList
-              .indexWhere((element) =>
-                  element ==
-                  context
-                      .read<ProductDetailController>()
-                      .creatingProduct
-                      .unitOfMeasure)
-              .toString()
-          : '0',
-      CommonUtils.unitList
-          .asMap()
-          .map((i, e) => MapEntry(
-              i,
-              DropdownMenuItem(
-                value: i.toString(),
-                child: Text(e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              )))
-          .values
-          .toList(),
-    );
-  }
+  // Widget _unitOfMeasureWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context.watch<ProductDetailController>().creatingProduct.unitOfMeasure !=
+  //                 null &&
+  //             CommonUtils.unitList.indexWhere((element) =>
+  //                     element ==
+  //                     context
+  //                         .read<ProductDetailController>()
+  //                         .creatingProduct
+  //                         .unitOfMeasure) !=
+  //                 -1
+  //         ? CommonUtils.unitList
+  //             .indexWhere((element) =>
+  //                 element ==
+  //                 context
+  //                     .read<ProductDetailController>()
+  //                     .creatingProduct
+  //                     .unitOfMeasure)
+  //             .toString()
+  //         : '0',
+  //     CommonUtils.unitList
+  //         .asMap()
+  //         .map((i, e) => MapEntry(
+  //             i,
+  //             DropdownMenuItem(
+  //               value: i.toString(),
+  //               child: Text(e,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             )))
+  //         .values
+  //         .toList(),
+  //   );
+  // }
 
-  Widget _baseUnitCountWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .baseUnitCount
-              ?.toString() ??
-          '',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        hintText: "0.00",
-        hintStyle: TextStyle(
-          color: Constants.disableColor.withOpacity(0.9),
-          fontSize: 15,
-          fontWeight: FontWeight.w800,
-        ),
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  // Widget _baseUnitCountWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .baseUnitCount
+  //             ?.toString() ??
+  //         '',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     keyboardType: TextInputType.number,
+  //     decoration: InputDecoration(
+  //       hintText: "0.00",
+  //       hintStyle: TextStyle(
+  //         color: Constants.disableColor.withOpacity(0.9),
+  //         fontSize: 15,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //     ),
+  //   );
+  // }
 
-  CheckboxListTile _isSecondaryUnit(BuildContext context) {
-    return CheckboxListTile(
-      value: context
-              .watch<ProductDetailController>()
-              .creatingProduct
-              .isSecondaryUnit ??
-          false,
-      onChanged: null,
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      controlAffinity: ListTileControlAffinity.leading,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
+  // CheckboxListTile _isSecondaryUnit(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value: context
+  //             .watch<ProductDetailController>()
+  //             .creatingProduct
+  //             .isSecondaryUnit ??
+  //         false,
+  //     onChanged: null,
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     contentPadding: EdgeInsets.zero,
+  //   );
+  // }
 
-  Widget _purchaseUOMWidget(BuildContext context) {
-    return _dropDownWidget(
-      context.watch<ProductDetailController>().creatingProduct.purchaseUOM !=
-                  null &&
-              CommonUtils.unitList.indexWhere((element) =>
-                      element ==
-                      context
-                          .read<ProductDetailController>()
-                          .creatingProduct
-                          .purchaseUOM) !=
-                  -1
-          ? CommonUtils.unitList
-              .indexWhere((element) =>
-                  element ==
-                  context
-                      .read<ProductDetailController>()
-                      .creatingProduct
-                      .purchaseUOM)
-              .toString()
-          : '0',
-      CommonUtils.unitList
-          .asMap()
-          .map((i, e) => MapEntry(
-              i,
-              DropdownMenuItem(
-                value: i.toString(),
-                child: Text(e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              )))
-          .values
-          .toList(),
-    );
-  }
+  // Widget _purchaseUOMWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context.watch<ProductDetailController>().creatingProduct.purchaseUOM !=
+  //                 null &&
+  //             CommonUtils.unitList.indexWhere((element) =>
+  //                     element ==
+  //                     context
+  //                         .read<ProductDetailController>()
+  //                         .creatingProduct
+  //                         .purchaseUOM) !=
+  //                 -1
+  //         ? CommonUtils.unitList
+  //             .indexWhere((element) =>
+  //                 element ==
+  //                 context
+  //                     .read<ProductDetailController>()
+  //                     .creatingProduct
+  //                     .purchaseUOM)
+  //             .toString()
+  //         : '0',
+  //     CommonUtils.unitList
+  //         .asMap()
+  //         .map((i, e) => MapEntry(
+  //             i,
+  //             DropdownMenuItem(
+  //               value: i.toString(),
+  //               child: Text(e,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             )))
+  //         .values
+  //         .toList(),
+  //   );
+  // }
 
-  CheckboxListTile _isCommissionBasedServicesWidget(BuildContext context) {
-    return CheckboxListTile(
-      value: context
-              .watch<ProductDetailController>()
-              .creatingProduct
-              .isCommissionBasedServices ??
-          false,
-      onChanged: null,
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      controlAffinity: ListTileControlAffinity.leading,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
+  // CheckboxListTile _isCommissionBasedServicesWidget(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value: context
+  //             .watch<ProductDetailController>()
+  //             .creatingProduct
+  //             .isCommissionBasedServices ??
+  //         false,
+  //     onChanged: null,
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     contentPadding: EdgeInsets.zero,
+  //   );
+  // }
 
-  CheckboxListTile _isThirdUnitWidget(BuildContext context) {
-    return CheckboxListTile(
-      value: context
-              .watch<ProductDetailController>()
-              .creatingProduct
-              .isThirdUnit ??
-          false,
-      onChanged: null,
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      controlAffinity: ListTileControlAffinity.leading,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
+  // CheckboxListTile _isThirdUnitWidget(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value: context
+  //             .watch<ProductDetailController>()
+  //             .creatingProduct
+  //             .isThirdUnit ??
+  //         false,
+  //     onChanged: null,
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     contentPadding: EdgeInsets.zero,
+  //   );
+  // }
 
-  Widget _rebatePercentageWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .rebatePercentage
-              ?.toString() ??
-          '',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  // Widget _rebatePercentageWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .rebatePercentage
+  //             ?.toString() ??
+  //         '',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //     ),
+  //   );
+  // }
 
-  Widget _salePriceWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .salePrice
-              ?.toString() ??
-          '0.00',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        suffixIcon: Text('Ks'),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  // Widget _salePriceWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .salePrice
+  //             ?.toString() ??
+  //         '0.00',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       suffixIcon: Text('Ks'),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //     ),
+  //   );
+  // }
 
-  Widget _latestPriceWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .latestPrice
-              ?.toString() ??
-          '0.00',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-        suffixIcon: Text('Ks'),
-      ),
-    );
-  }
+  // Widget _latestPriceWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .latestPrice
+  //             ?.toString() ??
+  //         '0.00',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     keyboardType: TextInputType.number,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //       suffixIcon: Text('Ks'),
+  //     ),
+  //   );
+  // }
 
-  Widget _costWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .price
-              ?.toString() ??
-          '0.00',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-        suffixIcon: Text('Ks'),
-      ),
-    );
-  }
+  // Widget _costWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .price
+  //             ?.toString() ??
+  //         '0.00',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     keyboardType: TextInputType.number,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //       suffixIcon: Text('Ks'),
+  //     ),
+  //   );
+  // }
 
-  Widget _productCategoryWidget(BuildContext context) {
-    return _dropDownWidget(
-      context
-                      .watch<ProductDetailController>()
-                      .creatingProduct
-                      .productCategory !=
-                  null &&
-              CommonUtils.categoryList.indexWhere((element) =>
-                      element ==
-                      context
-                          .read<ProductDetailController>()
-                          .creatingProduct
-                          .productCategory) !=
-                  -1
-          ? CommonUtils.categoryList
-              .indexWhere((element) =>
-                  element ==
-                  context
-                      .read<ProductDetailController>()
-                      .creatingProduct
-                      .productCategory)
-              .toString()
-          : '0',
-      CommonUtils.categoryList
-          .asMap()
-          .map((i, e) => MapEntry(
-              i,
-              DropdownMenuItem(
-                value: i.toString(),
-                child: Text(e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              )))
-          .values
-          .toList(),
-    );
-  }
+  // Widget _productCategoryWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context
+  //                     .watch<ProductDetailController>()
+  //                     .creatingProduct
+  //                     .productCategory !=
+  //                 null &&
+  //             CommonUtils.categoryList.indexWhere((element) =>
+  //                     element ==
+  //                     context
+  //                         .read<ProductDetailController>()
+  //                         .creatingProduct
+  //                         .productCategory) !=
+  //                 -1
+  //         ? CommonUtils.categoryList
+  //             .indexWhere((element) =>
+  //                 element ==
+  //                 context
+  //                     .read<ProductDetailController>()
+  //                     .creatingProduct
+  //                     .productCategory)
+  //             .toString()
+  //         : '0',
+  //     CommonUtils.categoryList
+  //         .asMap()
+  //         .map((i, e) => MapEntry(
+  //             i,
+  //             DropdownMenuItem(
+  //               value: i.toString(),
+  //               child: Text(e,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             )))
+  //         .values
+  //         .toList(),
+  //   );
+  // }
 
-  Widget _productBrandsWidget(BuildContext context) {
-    return _dropDownWidget(
-      context.watch<ProductDetailController>().creatingProduct.productBrand !=
-                  null &&
-              CommonUtils.brandList.indexWhere((element) =>
-                      element ==
-                      context
-                          .read<ProductDetailController>()
-                          .creatingProduct
-                          .productBrand) !=
-                  -1
-          ? CommonUtils.brandList
-              .indexWhere((element) =>
-                  element ==
-                  context
-                      .read<ProductDetailController>()
-                      .creatingProduct
-                      .productBrand)
-              .toString()
-          : '0',
-      CommonUtils.brandList
-          .asMap()
-          .map((i, e) => MapEntry(
-              i,
-              DropdownMenuItem(
-                value: i.toString(),
-                child: Text(e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              )))
-          .values
-          .toList(),
-    );
-  }
+  // Widget _productBrandsWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context.watch<ProductDetailController>().creatingProduct.productBrand !=
+  //                 null &&
+  //             CommonUtils.brandList.indexWhere((element) =>
+  //                     element ==
+  //                     context
+  //                         .read<ProductDetailController>()
+  //                         .creatingProduct
+  //                         .productBrand) !=
+  //                 -1
+  //         ? CommonUtils.brandList
+  //             .indexWhere((element) =>
+  //                 element ==
+  //                 context
+  //                     .read<ProductDetailController>()
+  //                     .creatingProduct
+  //                     .productBrand)
+  //             .toString()
+  //         : '0',
+  //     CommonUtils.brandList
+  //         .asMap()
+  //         .map((i, e) => MapEntry(
+  //             i,
+  //             DropdownMenuItem(
+  //               value: i.toString(),
+  //               child: Text(e,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             )))
+  //         .values
+  //         .toList(),
+  //   );
+  // }
 
-  Widget _qtyInBagsWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .qtyInBags
-              ?.toString() ??
-          '0.00',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  // Widget _qtyInBagsWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .qtyInBags
+  //             ?.toString() ??
+  //         '0.00',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     keyboardType: TextInputType.number,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //     ),
+  //   );
+  // }
 
-  Widget _multipleOfQtyWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .multipleOfQty
-              ?.toString() ??
-          '0.00',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  // Widget _multipleOfQtyWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .multipleOfQty
+  //             ?.toString() ??
+  //         '0.00',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     keyboardType: TextInputType.number,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //     ),
+  //   );
+  // }
 
-  Widget _oldInternalRefWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .oldInternalRef
-              ?.toString() ??
-          '',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  // Widget _oldInternalRefWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .oldInternalRef
+  //             ?.toString() ??
+  //         '',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     keyboardType: TextInputType.number,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //     ),
+  //   );
+  // }
 
   Widget _productIdWidget(BuildContext context) {
     return TextFormField(
@@ -1083,11 +1083,12 @@ class ProductInfoView extends StatelessWidget {
 
   Widget _barcodeWidget(BuildContext context) {
     return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .barcode
-              ?.toString() ??
+      initialValue:
+          // context
+          //         .read<ProductDetailController>()
+          //         .creatingProduct
+          //         .barcode
+          //         ?.toString() ??
           '',
       enabled: false,
       textAlignVertical: TextAlignVertical.center,
@@ -1104,162 +1105,163 @@ class ProductInfoView extends StatelessWidget {
     );
   }
 
-  CheckboxListTile _isClearanceWidget(BuildContext context) {
-    return CheckboxListTile(
-      value: context
-              .watch<ProductDetailController>()
-              .creatingProduct
-              .isClearance ??
-          false,
-      onChanged: (bool? value) {},
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      controlAffinity: ListTileControlAffinity.leading,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
+  // CheckboxListTile _isClearanceWidget(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value: context
+  //             .watch<ProductDetailController>()
+  //             .creatingProduct
+  //             .isClearance ??
+  //         false,
+  //     onChanged: (bool? value) {},
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     contentPadding: EdgeInsets.zero,
+  //   );
+  // }
 
-  Widget _itemTypeWidget(BuildContext context) {
-    return _dropDownWidget(
-      context.watch<ProductDetailController>().creatingProduct.itemType !=
-                  null &&
-              ItemType.values.indexWhere((element) =>
-                      element.text ==
-                      context
-                          .read<ProductDetailController>()
-                          .creatingProduct
-                          .itemType!
-                          .text) !=
-                  -1
-          ? ItemType.values
-              .indexWhere((element) =>
-                  element.text ==
-                  context
-                      .read<ProductDetailController>()
-                      .creatingProduct
-                      .itemType!
-                      .text)
-              .toString()
-          : '0',
-      ItemType.values
-          .map((e) => DropdownMenuItem(
-                value: e.index.toString(),
-                child: Text(e.text,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              ))
-          .toList(),
-    );
-  }
+  // Widget _itemTypeWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context.watch<ProductDetailController>().creatingProduct.itemType !=
+  //                 null &&
+  //             ItemType.values.indexWhere((element) =>
+  //                     element.text ==
+  //                     context
+  //                         .read<ProductDetailController>()
+  //                         .creatingProduct
+  //                         .itemType!
+  //                         .text) !=
+  //                 -1
+  //         ? ItemType.values
+  //             .indexWhere((element) =>
+  //                 element.text ==
+  //                 context
+  //                     .read<ProductDetailController>()
+  //                     .creatingProduct
+  //                     .itemType!
+  //                     .text)
+  //             .toString()
+  //         : '0',
+  //     ItemType.values
+  //         .map((e) => DropdownMenuItem(
+  //               value: e.index.toString(),
+  //               child: Text(e.text,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             ))
+  //         .toList(),
+  //   );
+  // }
 
-  Widget _countryCodeWidget(BuildContext context) {
-    return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .countryCode
-              ?.toString() ??
-          '',
-      enabled: false,
-      textAlignVertical: TextAlignVertical.center,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelStyle: TextStyle(
-          color: Constants.primaryColor,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-        ),
-        border: UnderlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  // Widget _countryCodeWidget(BuildContext context) {
+  //   return TextFormField(
+  //     initialValue: context
+  //             .read<ProductDetailController>()
+  //             .creatingProduct
+  //             .countryCode
+  //             ?.toString() ??
+  //         '',
+  //     enabled: false,
+  //     textAlignVertical: TextAlignVertical.center,
+  //     keyboardType: TextInputType.number,
+  //     decoration: InputDecoration(
+  //       labelStyle: TextStyle(
+  //         color: Constants.primaryColor,
+  //         fontSize: 13,
+  //         fontWeight: FontWeight.w800,
+  //       ),
+  //       border: UnderlineInputBorder(),
+  //       contentPadding: EdgeInsets.all(16),
+  //     ),
+  //   );
+  // }
 
-  CheckboxListTile _allowNegativeStockWidget(BuildContext context) {
-    return CheckboxListTile(
-      value: context
-              .watch<ProductDetailController>()
-              .creatingProduct
-              .allowNegativeStock ??
-          false,
-      onChanged: (bool? value) {},
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      controlAffinity: ListTileControlAffinity.leading,
-      contentPadding: EdgeInsets.zero,
-    );
-  }
+  // CheckboxListTile _allowNegativeStockWidget(BuildContext context) {
+  //   return CheckboxListTile(
+  //     value: context
+  //             .watch<ProductDetailController>()
+  //             .creatingProduct
+  //             .allowNegativeStock ??
+  //         false,
+  //     onChanged: (bool? value) {},
+  //     side: MaterialStateBorderSide.resolveWith(
+  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
+  //     checkColor: Constants.primaryColor,
+  //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     contentPadding: EdgeInsets.zero,
+  //   );
+  // }
 
-  Widget _companyWidget(BuildContext context) {
-    return _dropDownWidget(
-      context.watch<ProductDetailController>().creatingProduct.company !=
-                  null &&
-              CommonUtils.companyList.indexWhere((element) =>
-                      element ==
-                      context
-                          .read<ProductDetailController>()
-                          .creatingProduct
-                          .company) !=
-                  -1
-          ? CommonUtils.companyList
-              .indexWhere((element) =>
-                  element ==
-                  context
-                      .read<ProductDetailController>()
-                      .creatingProduct
-                      .company)
-              .toString()
-          : '0',
-      CommonUtils.companyList
-          .asMap()
-          .map((i, e) => MapEntry(
-              i,
-              DropdownMenuItem(
-                value: i.toString(),
-                child: Text(e,
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              )))
-          .values
-          .toList(),
-    );
-  }
+  // Widget _companyWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     context.watch<ProductDetailController>().creatingProduct.company !=
+  //                 null &&
+  //             CommonUtils.companyList.indexWhere((element) =>
+  //                     element ==
+  //                     context
+  //                         .read<ProductDetailController>()
+  //                         .creatingProduct
+  //                         .company) !=
+  //                 -1
+  //         ? CommonUtils.companyList
+  //             .indexWhere((element) =>
+  //                 element ==
+  //                 context
+  //                     .read<ProductDetailController>()
+  //                     .creatingProduct
+  //                     .company)
+  //             .toString()
+  //         : '0',
+  //     CommonUtils.companyList
+  //         .asMap()
+  //         .map((i, e) => MapEntry(
+  //             i,
+  //             DropdownMenuItem(
+  //               value: i.toString(),
+  //               child: Text(e,
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                   )),
+  //             )))
+  //         .values
+  //         .toList(),
+  //   );
+  // }
 
-  Widget _tagsWidget(BuildContext context) {
-    return _dropDownWidget(
-      '0',
-      [
-        DropdownMenuItem(
-          value: 0.toString(),
-          child: Text('3000.00 Ks per Unit',
-              style: TextStyle(
-                color: Colors.black,
-              )),
-        ),
-        DropdownMenuItem(
-          value: 1.toString(),
-          child: Text('3200.00 Ks per Unit',
-              style: TextStyle(
-                color: Colors.black,
-              )),
-        ),
-      ],
-    );
-  }
+  // Widget _tagsWidget(BuildContext context) {
+  //   return _dropDownWidget(
+  //     '0',
+  //     [
+  //       DropdownMenuItem(
+  //         value: 0.toString(),
+  //         child: Text('3000.00 Ks per Unit',
+  //             style: TextStyle(
+  //               color: Colors.black,
+  //             )),
+  //       ),
+  //       DropdownMenuItem(
+  //         value: 1.toString(),
+  //         child: Text('3200.00 Ks per Unit',
+  //             style: TextStyle(
+  //               color: Colors.black,
+  //             )),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _internalNotesWidget(BuildContext context) {
     return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .internalNotes
-              ?.toString() ??
+      initialValue:
+          // context
+          //         .read<ProductDetailController>()
+          //         .creatingProduct
+          //         .internalNotes
+          //         ?.toString() ??
           '',
       enabled: false,
       textAlignVertical: TextAlignVertical.center,

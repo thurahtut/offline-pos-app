@@ -1,3 +1,4 @@
+import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:offline_pos/view/user/user_login_dialog.dart';
 
 import '/components/export_files.dart';
@@ -43,7 +44,7 @@ class LoginScreen extends StatelessWidget {
             context,
           ).then((value) {
             if (value == true) {
-              Navigator.pushNamed(context, MainScreen.routeName);
+              Navigator.pushNamed(context, MorningSyncScreen.routeName);
             }
           });
         },

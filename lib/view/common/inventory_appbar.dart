@@ -187,7 +187,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
     bool isMobileMode = CommonUtils.isMobileMode(context);
     return [
       if (isMobileMode) ..._actionButtonsWidget(),
-      GestureDetector(
+      InkWell(
         onTap: () {
           Navigator.pushNamed(context, MainScreen.routeName);
         },

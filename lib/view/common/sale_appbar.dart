@@ -1,7 +1,8 @@
 import '../../components/export_files.dart';
 
 class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const SaleAppBar({super.key});
+  final ValueChanged<String>? onChanged;
+  const SaleAppBar({super.key, this.onChanged});
 
   @override
   State<SaleAppBar> createState() => _SaleAppBarState();
@@ -177,7 +178,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
           onPressed: () {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
+            MaterialPageRoute(builder: (context) => WelcomeScreen()),
             ModalRoute.withName("/Home"));
       }),
       spacer,
@@ -226,6 +227,10 @@ class _SaleAppBarState extends State<SaleAppBar> {
               onTap: () {
                 _searchProductTextController.clear();
                 _showSearchBox.value = false;
+                context.read<ItemListController>().filterValue = null;
+                context.read<ItemListController>().offset = 0;
+                context.read<ItemListController>().currentIndex = 1;
+                context.read<ItemListController>().getAllProduct();
               },
               child: UnconstrainedBox(
                 child: SvgPicture.asset(
@@ -240,6 +245,12 @@ class _SaleAppBarState extends State<SaleAppBar> {
               ),
             ),
           ),
+          onChanged: (value) {
+            context.read<ItemListController>().filterValue = value;
+            context.read<ItemListController>().offset = 0;
+            context.read<ItemListController>().currentIndex = 1;
+            context.read<ItemListController>().getAllProduct();
+          },
         ),
       ),
     );

@@ -190,7 +190,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                       ]),
                     ),
                   ),
-                  pw.Text("${e.price} Ks".toString(),
+                  pw.Text("${0} Ks".toString(), //e.price
                       style: textStyle.copyWith(
                         // fontWeight: FontWeight.bold,
                         color: PdfColor.fromInt(Constants.primaryColor.value),
@@ -198,7 +198,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 ],
               ),
               pw.Row(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
-                pw.Text("1 Unit at ${e.price} Ks/Unit with a 0.00 % discount"),
+                pw.Text(
+                    "1 Unit at ${0} Ks/Unit with a 0.00 % discount"), //e.price
               ]),
             ]),
           ),

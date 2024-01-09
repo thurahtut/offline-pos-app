@@ -16,8 +16,17 @@ class _OrderListScreenState extends State<OrderListScreen> {
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
+  final scrollController = ScrollController();
 
   static List<String> list = ["All Active Orders", "Quotation", "On Going"];
+
+  
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -68,6 +77,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   Widget _tableWidget() {
     return Scrollbar(
+      controller: scrollController,
       thumbVisibility: true,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22),

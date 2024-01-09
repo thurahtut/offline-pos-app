@@ -10,10 +10,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ValueNotifier<bool> _showSideBar = ValueNotifier(true);
+  final scrollController = ScrollController();
 
   @override
   void dispose() {
     _showSideBar.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -79,6 +81,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget _headerWidget() {
     Widget spacer = SizedBox(width: 14);
     return RawScrollbar(
+      controller: scrollController,
       thumbVisibility: true,
       trackVisibility: true,
       thumbColor: Constants.primaryColor,

@@ -22,6 +22,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
   DateTime selectedDate = DateTime.now();
   final ValueNotifier<DateTime> _dateTimeNotifier =
       ValueNotifier(DateTime.now());
+  final scrollController = ScrollController();
 
   @override
   void initState() {
@@ -44,6 +45,12 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
       setState(() {});
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,6 +83,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
 
   Widget _tableWidget() {
     return Scrollbar(
+      controller: scrollController,
       thumbVisibility: true,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22),

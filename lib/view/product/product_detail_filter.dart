@@ -87,7 +87,6 @@ class ProductDetailFilter extends StatelessWidget {
                                     context
                                         .read<ProductListController>()
                                         .productList,
-                                    0,
                                     () {});
                           });
                         } else {
@@ -154,7 +153,6 @@ class ProductDetailFilter extends StatelessWidget {
                                     context
                                         .read<ProductListController>()
                                         .productList,
-                                    0,
                                     () {});
                           });
                         } else {

@@ -24,6 +24,9 @@ class CustomerListDialog {
               constraints: BoxConstraints(
                   maxHeight: height - 100, maxWidth: width - 100),
               child: Column(
+                mainAxisSize: mainContext.read<CustomerListController>().loading
+                    ? MainAxisSize.min
+                    : MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -93,7 +96,9 @@ class CustomerListDialog {
                       padding: EdgeInsets.all(8),
                       height: height - 200,
                       width: width - 100,
-                      child: CustomerPaginationTable()),
+                      child: CustomerPaginationTable(
+                        mainContext: mainContext,
+                      )),
                 ],
               ),
             ),

@@ -242,4 +242,17 @@ class Api {
       method: Method.GET.name,
     );
   }
+
+  static Future<Response?> getAllCustomer({
+    void Function(int, int)? onSendProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/customers'.onEndPoint(),
+      method: Method.GET.name,
+      onSendProgress: onSendProgress,
+    );
+  }
 }

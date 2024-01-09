@@ -1,82 +1,28 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../../components/export_files.dart';
 
 const PRODUCT_TABLE_NAME = "product_table";
-const PRODUCT_ID = "product_id";
-const PRODUCT_NAME = "product_name";
-const PACKAGE = "package";
-const PRODUCT_TYPE = "product_type";
-const IS_BUNDLED = "is_bundled";
-const CAN_BE_SOLD = "can_be_sold";
-const CAN_BE_PURCHASED = "can_be_purchased";
-const CAN_BE_MANUFACTURED = "can_be_manufactured";
-const RE_INVOICE_EXPENSES = "re_invoice_expenses";
-const INVOICE_POLICY = "invoice_policy";
-const UNIT_OF_MEASURE = "unit_of_measure";
-const BASE_UNIT_COUNT = "base_unit_count";
-const IS_SECONDARY_UNIT = "is_secondary_count";
-const PURCHASE_UOM = "purchase_uom";
-const IS_COMMISSION_BASED_SERVICES = "is_commission_based_services";
-const IS_THIRD_UNIT = "is_third_unit";
-const REBATE_PERCENTAGE = "rebate_percentage";
-const PRICE = "price";
-const SALE_PRICE = "sale_price";
-const LATEST_PRICE = "latest_price";
-const PRODUCT_CATEGORY = "product_category";
-const PRODUCT_BRAND = "product_brand";
-const QTY_IN_BAGS = "qty_in_bags";
-const MULTIPLE_OF_QTY = "multiple_of_qty";
-const OLD_INTERNAL_REF = "old_internal_ref";
+const PRODUCT_ID = "id";
+const PRODUCT_NAME = "name";
+const CATEGORY_ID_IN_PT = "categ_id";
+const IS_ROUNDING_PRODUCT = "is_rounding_product";
+const SH_IS_BUNDLE = "sh_is_bundle";
+const SH_SECONDARY_UOM = "sh_secondary_uom";
 const INTERNAL_REF = "internal_ref";
-const BARCODE_IN_PT = "barcode";
-const IS_CLEARANCE = "is_clearance";
-const ITEM_TYPE = "item_type";
-const COUNTRY_CODE_IN_PT = "country_code";
-const ALLOW_NEGATIVE_STOCK = "allow_negative_stock";
-const COMPANY = "company";
-const TAGS = "tags";
-const INTERNAL_NOTES = "internal_notes";
 
 class ProductTable {
   static Future<void> onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE $PRODUCT_TABLE_NAME("
         "$PRODUCT_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
         "$PRODUCT_NAME TEXT NOT NULL,"
-        "$PACKAGE TEXT NOT NULL,"
-        "$PRODUCT_TYPE TEXT NOT NULL,"
-        "$IS_BUNDLED TEXT NOT NULL,"
-        "$CAN_BE_SOLD TEXT NOT NULL,"
-        "$CAN_BE_PURCHASED TEXT NOT NULL,"
-        "$CAN_BE_MANUFACTURED TEXT NOT NULL,"
-        "$RE_INVOICE_EXPENSES TEXT NOT NULL,"
-        "$INVOICE_POLICY TEXT NOT NULL,"
-        "$UNIT_OF_MEASURE TEXT NOT NULL,"
-        "$BASE_UNIT_COUNT INTEGER,"
-        "$IS_SECONDARY_UNIT TEXT NOT NULL,"
-        "$PURCHASE_UOM TEXT NOT NULL,"
-        "$IS_COMMISSION_BASED_SERVICES TEXT NOT NULL,"
-        "$IS_THIRD_UNIT TEXT NOT NULL,"
-        "$REBATE_PERCENTAGE REAL,"
-        "$PRICE REAL,"
-        "$SALE_PRICE REAL,"
-        "$LATEST_PRICE REAL,"
-        "$PRODUCT_CATEGORY TEXT NOT NULL,"
-        "$PRODUCT_BRAND TEXT NOT NULL,"
-        "$QTY_IN_BAGS REAL,"
-        "$MULTIPLE_OF_QTY REAL,"
-        "$OLD_INTERNAL_REF TEXT NOT NULL,"
-        "$INTERNAL_REF TEXT NOT NULL,"
-        "$BARCODE_IN_PT TEXT NOT NULL,"
-        "$IS_CLEARANCE TEXT NOT NULL,"
-        "$ITEM_TYPE TEXT NOT NULL,"
-        "$COUNTRY_CODE_IN_PT TEXT NOT NULL,"
-        "$ALLOW_NEGATIVE_STOCK TEXT NOT NULL,"
-        "$COMPANY TEXT NOT NULL,"
-        "$TAGS TEXT NOT NULL,"
-        "$INTERNAL_NOTES TEXT NOT NULL"
+        "$CATEGORY_ID_IN_PT INTEGER NOT NULL,"
+        "$IS_ROUNDING_PRODUCT BOOLEAN,"
+        "$SH_IS_BUNDLE BOOLEAN,"
+        "$SH_SECONDARY_UOM INTEGER,"
+        "$INTERNAL_REF TEXT"
         ")");
   }
 
@@ -84,30 +30,67 @@ class ProductTable {
     final Database db = await DatabaseHelper().db;
 
     String sql = "INSERT INTO $PRODUCT_TABLE_NAME("
-        "$PRODUCT_NAME, $PACKAGE, $PRODUCT_TYPE, "
-        "$IS_BUNDLED, $CAN_BE_SOLD, $CAN_BE_PURCHASED, $CAN_BE_MANUFACTURED, "
-        "$RE_INVOICE_EXPENSES, $INVOICE_POLICY, $UNIT_OF_MEASURE, $BASE_UNIT_COUNT, "
-        "$IS_SECONDARY_UNIT, $PURCHASE_UOM, $IS_COMMISSION_BASED_SERVICES, $IS_THIRD_UNIT, "
-        "$REBATE_PERCENTAGE, $PRICE, $SALE_PRICE, $LATEST_PRICE, "
-        "$PRODUCT_CATEGORY, $PRODUCT_BRAND, $QTY_IN_BAGS, $MULTIPLE_OF_QTY, "
-        "$OLD_INTERNAL_REF, $INTERNAL_REF, $BARCODE_IN_PT, $IS_CLEARANCE, "
-        "$ITEM_TYPE, $COUNTRY_CODE_IN_PT, $ALLOW_NEGATIVE_STOCK, $COMPANY, $TAGS, $INTERNAL_NOTES"
+        "$PRODUCT_NAME, $CATEGORY_ID_IN_PT, $IS_ROUNDING_PRODUCT, "
+        "$SH_IS_BUNDLE, "
+        "$SH_SECONDARY_UOM, $INTERNAL_REF"
         ")"
         " VALUES("
-        "'${product.productName}', '${product.package}', '${product.productType?.name}', "
-        "'${product.isBundled == true}', '${product.canBeSold == true}', '${product.canBePurchased == true}', '${product.canBeManufactured == true}', "
-        "'${product.reInvoiceExpenses?.text}', '${product.invoicingPolicy?.name}', '${product.unitOfMeasure}', '${product.baseUnitCount ?? 0}', "
-        "'${product.isSecondaryUnit == true}', '${product.purchaseUOM}', '${product.isCommissionBasedServices == true}', '${product.isThirdUnit == true}', "
-        "'${product.rebatePercentage ?? 0}', '${product.price ?? 0}', '${product.salePrice ?? 0}', '${product.latestPrice ?? 0}', "
-        "'${product.productCategory}', '${product.productBrand}', '${product.qtyInBags ?? 0}', '${product.multipleOfQty ?? 0}', "
-        "'${product.oldInternalRef}', '${product.internalRef}', '${product.barcode}', '${product.isClearance == true}', "
-        "'${product.itemType?.text}', '${product.countryCode}', '${product.allowNegativeStock == true}', '${product.company}', '${product.tags}', '${product.internalNotes}'"
+        "'${product.productName}', ${product.categoryId}, '${product.isRoundingProduct}', "
+        "'${product.shIsBundle}', "
+        "'${product.shSecondaryUom}', '${product.internalRef}'"
         ")";
 
     return db.rawInsert(sql);
   }
+  
+  static Future<void> insertOrUpdate(List<dynamic> data) async {
+    final Database db = await DatabaseHelper().db;
+    await deleteAll(db); // todo: to remove
+    Batch batch = db.batch();
+    // var time = DateTime.now();
+    int index = 0;
+    for (final element in data) {
+      Product product = Product.fromJson(element);
+      batch.insert(
+        PRODUCT_TABLE_NAME,
+        product.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (index % 1000 == 0) {
+        await batch.commit(noResult: true);
+        batch = db.batch();
+      }
+      index++;
+    }
 
-  static Future<List<Product>> getAll() async {
+    // var time2 = DateTime.now();
+    // var d = time2.difference(time);
+    // print("Finished ${data.length} in $d");
+    await batch.commit(noResult: true);
+  }
+
+  static Future<int> getAllProductCount({
+    String? filter,
+  }) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+    filter = filter?.toLowerCase();
+    // Query the table for all The Categories.
+    final result = await db.rawQuery(
+        'SELECT COUNT(*) FROM $PRODUCT_TABLE_NAME '
+        '${filter != null && filter.isNotEmpty ? 'Where $PRODUCT_ID Like ? or lower($PRODUCT_NAME) Like ?' : ''}',
+        filter != null && filter.isNotEmpty
+            ? ['%$filter%', '%${filter.toLowerCase()}%']
+            : null);
+    final count = Sqflite.firstIntValue(result);
+
+    return count ?? 0;
+  }
+
+  static Future<List<Product>> getAll({
+    int? limit,
+    int? offset,
+  }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
 
@@ -115,6 +98,8 @@ class ProductTable {
     final List<Map<String, dynamic>> maps = await db.query(
       PRODUCT_TABLE_NAME,
       orderBy: '$PRODUCT_ID DESC',
+      limit: limit,
+      offset: offset,
     );
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
@@ -136,6 +121,35 @@ class ProductTable {
     );
 
     return Product.fromJson(maps.first);
+  }
+
+  static Future<List<Product>> getProductsFiltering({
+    String? filter,
+    int? limit,
+    int? offset,
+  }) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+
+    // Query the table for all The Categories.
+    final List<Map<String, dynamic>> maps = await db.query(
+      PRODUCT_TABLE_NAME,
+      where: filter != null
+          ? "$PRODUCT_ID LIKE ? or lower($PRODUCT_NAME) LIKE ?"
+          : null,
+      whereArgs:
+          filter != null ? ['%$filter%', '%${filter.toLowerCase()}%'] : null,
+      // where: "$PRODUCT_NAME=?",
+      // whereArgs: [filter],
+      orderBy: '$PRODUCT_ID DESC',
+      limit: limit,
+      offset: offset,
+    );
+
+    // Convert the List<Map<String, dynamic> into a List<Category>.
+    return List.generate(maps.length, (i) {
+      return Product.fromJson(maps[i]);
+    });
   }
 
   static Future<Product?> getLastProduct() async {
@@ -215,6 +229,9 @@ class ProductTable {
       where: "$PRODUCT_ID=?",
       whereArgs: [productId],
     );
+  }
+  static Future<void> deleteAll(Database db) async {
+    db.rawQuery("delete from $PRODUCT_TABLE_NAME");
   }
 
   static Future<int> update(Product product) async {

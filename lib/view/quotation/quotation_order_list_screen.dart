@@ -17,6 +17,7 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
+  final scrollController = ScrollController();
 
   @override
   void initState() {
@@ -38,6 +39,11 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
       setState(() {});
     });
     super.initState();
+  }
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -70,6 +76,7 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
 
   Widget _tableWidget() {
     return Scrollbar(
+      controller: scrollController,
       thumbVisibility: true,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22),

@@ -19,10 +19,12 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
   int? _sortColumnIndex;
   bool? isTabletMode;
   bool? isMobileMode;
+  final scrollController = ScrollController();
 
   @override
   void dispose() {
     _searchProductTextController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -224,6 +226,7 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
       ),
     );
     return Scrollbar(
+      controller: scrollController,
       thumbVisibility: true,
       child: isTabletMode == true
           ? ClipRRect(

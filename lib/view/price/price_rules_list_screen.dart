@@ -21,10 +21,12 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
   int? _sortColumnIndex;
   bool? isTabletMode;
   bool? isMobileMode;
+  final scrollController = ScrollController();
 
   @override
   void dispose() {
     _searchProductTextController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -261,6 +263,7 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
       ),
     );
     return Scrollbar(
+      controller: scrollController,
       thumbVisibility: true,
       child: isTabletMode == true
           ? ClipRRect(

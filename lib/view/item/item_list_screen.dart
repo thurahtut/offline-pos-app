@@ -9,20 +9,15 @@ class ItemListScreen extends StatefulWidget {
 }
 
 class _ItemListScreenState extends State<ItemListScreen> {
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getAllProduct();
+      context.read<ItemListController>().resetItemListController();
+
+      context.read<ItemListController>().getAllProduct();
     });
     super.initState();
-  }
-
-  Future<void> getAllProduct() async {
-    context.read<ProductListController>().productList = [];
-    ProductTable.getAll().then((list) {
-      context.read<ProductListController>().productList.addAll(list);
-      context.read<ProductListController>().notify();
-    });
   }
 
   @override
@@ -52,61 +47,71 @@ class _ItemListScreenState extends State<ItemListScreen> {
   }
 
   Widget _itemListWithListViewWidget(bool showSidebar) {
-    return Column(
+    return Stack(
+      alignment: Alignment.bottomLeft,
       children: [
-        _itemListHeaderWidget(),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+        Padding(
+          padding: const EdgeInsets.only(bottom: 30.0),
+          child: Column(
             children: [
-              Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                  child: CommonUtils.svgIconActionButton(
-                    "assets/svg/${showSidebar ? "close_sidebar.svg" : "open_sidebar.svg"}",
-                    height: 40,
-                    onPressed: () {
-                      widget.showSideBar.value = !widget.showSideBar.value;
-                    },
-                  ),
-                ),
-              ),
+              _itemListHeaderWidget(),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      if (context
-                          .watch<ProductListController>()
-                          .productList
-                          .isNotEmpty)
-                        ...context
-                            .read<ProductListController>()
-                            .productList
-                          .map((e) => Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  _eachItemWidget(e),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 14.0),
-                                    child: Divider(
-                                      thickness: 1.3,
-                                      color: Constants.disableColor
-                                          .withOpacity(0.96),
-                                    ),
-                                  )
-                                ],
-                              ))
-                          .toList()
-                    ],
-                  ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                        child: CommonUtils.svgIconActionButton(
+                          "assets/svg/${showSidebar ? "close_sidebar.svg" : "open_sidebar.svg"}",
+                          height: 40,
+                          onPressed: () {
+                            widget.showSideBar.value =
+                                !widget.showSideBar.value;
+                          },
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            if (context
+                                .watch<ItemListController>()
+                                .productList
+                                .isNotEmpty)
+                              ...context
+                                  .read<ItemListController>()
+                                  .productList
+                                  .map((e) => Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          _eachItemWidget(e),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 14.0),
+                                            child: Divider(
+                                              thickness: 1.3,
+                                              color: Constants.disableColor
+                                                  .withOpacity(0.96),
+                                            ),
+                                          )
+                                        ],
+                                      ))
+                                  .toList()
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
+        _paginationWidget(),
       ],
     );
   }
@@ -136,7 +141,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
             ),
           ),
           Expanded(
-            child: (context.watch<ProductListController>().productList.isEmpty)
+            child: (context.watch<ItemListController>().productList.isEmpty)
                 ? SizedBox()
                 : GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -145,7 +150,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 crossAxisSpacing: 8,
               ),
                     children: context
-                        .read<ProductListController>()
+                        .read<ItemListController>()
                         .productList
                   .map((e) => InkWell(
                         onTap: () => _addItemToList(e),
@@ -168,7 +173,8 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   children: [
                                     Expanded(
                                               child: Text(
-                                                  "${e.price} Ks".toString(),
+                                                  "${0} Ks"
+                                                      .toString(), // product.price
                                             style: textStyle)),
                                     CommonUtils.svgIconActionButton(
                                       'assets/svg/Info.svg',
@@ -261,16 +267,19 @@ class _ItemListScreenState extends State<ItemListScreen> {
               ),
             ),
             Expanded(
-                child: Text(product.qtyInBags.toString(), style: textStyle)),
+                child:
+                    Text(0.toString(), style: textStyle)), //product.qtyInBags
             Expanded(
                 child: Text(
-                    product.unitOfMeasure != null &&
-                            product.unitOfMeasure!.toLowerCase() != 'null'
-                        ? product.unitOfMeasure!
-                        : '-',
+                    // product.unitOfMeasure != null &&
+                    //         product.unitOfMeasure!.toLowerCase() != 'null'
+                    //     ? product.unitOfMeasure!
+                    //     :
+                    '-',
                     style: textStyle)),
             Expanded(
-                child: Text(product.salePrice.toString(), style: textStyle)),
+                child:
+                    Text(0.toString(), style: textStyle)), //product.salePrice
           ],
         ),
       ),
@@ -282,4 +291,49 @@ class _ItemListScreenState extends State<ItemListScreen> {
     context.read<CurrentOrderController>().currentOrderList.add(product);
     context.read<CurrentOrderController>().notify();
   }
+
+  Widget _paginationWidget() {
+    return Consumer<ItemListController>(builder: (_, controller, __) {
+      return Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          FlutterCustomPagination(
+            currentPage: controller.currentIndex,
+            limitPerPage: controller.limit,
+            totalDataCount: controller.total,
+            onPreviousPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              controller.getAllProduct();
+            },
+            onBackToFirstPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              controller.getAllProduct();
+            },
+            onNextPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              controller.getAllProduct();
+            },
+            onGoToLastPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              controller.getAllProduct();
+            },
+            backgroundColor: Theme.of(context).colorScheme.background,
+            previousPageIcon: Icons.keyboard_arrow_left,
+            backToFirstPageIcon: Icons.first_page,
+            nextPageIcon: Icons.keyboard_arrow_right,
+            goToLastPageIcon: Icons.last_page,
+          ),
+        ],
+      );
+    });
+  }
+
 }
