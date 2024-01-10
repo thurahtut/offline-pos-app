@@ -68,9 +68,14 @@ class DatabaseHelper {
     await CustomerTable.onCreate(db, version);
     await ProductTable.onCreate(db, version);
     await OrderHistoryTable.onCreate(db, version);
+    await AppConfigTable.onCreate(db, version);
+
+    await DBUpgrade.uploadAppConfigForVersion1(db);
   }
 
-  void _onUpgrade(Database db, int oldVersion, int newVersion) async {}
+  void _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion == 1) {}
+  }
 
   static Future<void> clear() async {
     final db = await DatabaseHelper().db;

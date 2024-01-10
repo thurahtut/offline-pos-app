@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/category/product_category_list_screen.dart';
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
+import 'package:offline_pos/view/theme/theme_setting_screen.dart';
 
 
 class Routers {
@@ -79,6 +80,10 @@ class Routers {
       case MorningSyncScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => MorningSyncScreen(),
+        );
+      case ThemeSettingScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => ThemeSettingScreen(),
         );
       default:
         {

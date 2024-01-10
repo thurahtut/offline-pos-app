@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/theme/theme_setting_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -56,7 +57,9 @@ class WelcomeScreen extends StatelessWidget {
                 _buttonContainer(
                   context,
                   'Settings',
-                  () {},
+                  () {
+                    Navigator.pushNamed(context, ThemeSettingScreen.routeName);
+                  },
                   svg: "assets/svg/settings.svg",
                 ),
               ],

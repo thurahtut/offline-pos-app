@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/morning_sync_controller.dart';
+import 'package:offline_pos/controller/theme_setting_controller.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EmployeeListController()),
         ChangeNotifierProvider(create: (_) => MorningsyncController()),
         ChangeNotifierProvider(create: (_) => ItemListController()),
+        ChangeNotifierProvider(create: (_) => ThemeSettingController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
