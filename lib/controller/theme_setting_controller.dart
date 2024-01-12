@@ -1,9 +1,9 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class ThemeSettingController with ChangeNotifier {
-  ThemeSettingController() {
-    getThemeConfig();
-  }
+  // ThemeSettingController() {
+  //   getThemeConfig();
+  // }
 
   Uint8List? _imageBytes;
   Uint8List? get imageBytes => _imageBytes;
@@ -35,18 +35,19 @@ class ThemeSettingController with ChangeNotifier {
     notifyListeners();
   }
 
-  void getThemeConfig() {
+  Future<void> getThemeConfig() async {
     AppConfigTable.getAppConfig().then((value) {
       _appConfig = value;
       _themeColor = appConfig?.themeBodyColor != null &&
               appConfig!.themeBodyColor!.isNotEmpty
           ? appConfig!.themeBodyColor!
           : "007ACC";
+      primaryColor = Color(int.parse('0xff$_themeColor'));
 
       if (appConfig?.logo != null) {
         _imageBytes = appConfig!.logo;
       }
-      // Constants.primaryColor.value = Color(
+      // primaryColor.value = Color(
       //   int.parse('0xff$_themeColor'),
       // );
       notifyListeners();

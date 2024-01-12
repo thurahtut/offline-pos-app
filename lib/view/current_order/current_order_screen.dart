@@ -105,7 +105,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                       "${0} Ks".toString(), // product.salePrice
                                       style: textStyle.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        color: Constants.primaryColor,
+                                        color: primaryColor,
                                       )),
                                 )
                               ],
@@ -121,7 +121,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                   height: 35,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: Constants.primaryColor),
+                                      color: primaryColor),
                                   child: Center(
                                     child: Text(
                                       "%",
@@ -186,7 +186,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                     Text(
                       "Total : ${list.last} Ks",
                       style: TextStyle(
-                        color: Constants.primaryColor,
+                        color: primaryColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -342,7 +342,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           onPressed: () {}),
       CommonUtils.eachCalculateButtonWidget(
         text: "Customer",
-        containerColor: Constants.primaryColor,
+        containerColor: primaryColor,
         textColor: Colors.white,
         width: 100,
         onPressed: () async {

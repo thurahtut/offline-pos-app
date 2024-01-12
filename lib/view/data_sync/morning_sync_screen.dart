@@ -84,11 +84,11 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
             margin: EdgeInsets.all(12),
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Constants.primaryColor,
+              color: primaryColor,
               borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: Constants.primaryColor.withOpacity(0.3),
+                  color: primaryColor.withOpacity(0.3),
                   blurRadius: 4,
                   offset: Offset(0, 3),
                 ),

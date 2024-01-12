@@ -110,7 +110,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 width: 25,
                 height: 25,
                 colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
+                  primaryColor,
                   BlendMode.srcIn,
                 ),
               ),

@@ -88,7 +88,7 @@ class ProductDiscountDialog {
                 Container(
                   padding: EdgeInsets.all(12),
                   height: 70,
-                  decoration: BoxDecoration(color: Constants.primaryColor),
+                  decoration: BoxDecoration(color: primaryColor),
                   child: _eachDiscountRowWidget(
                     cell1: 'Name',
                     cell2: 'Code',
@@ -166,7 +166,7 @@ class ProductDiscountDialog {
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       labelStyle: TextStyle(
-                        color: Constants.primaryColor,
+                        color: primaryColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                       ),

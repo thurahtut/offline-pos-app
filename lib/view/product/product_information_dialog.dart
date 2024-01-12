@@ -33,7 +33,7 @@ class ProductInfomationDialog {
                       (isTabletMode ? 1 : 2),
                   height: 70,
                   decoration: BoxDecoration(
-                      color: Constants.primaryColor,
+                      color: primaryColor,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -62,7 +62,7 @@ class ProductInfomationDialog {
                     children: [
                       SizedBox(height: 8),
                       Row(
-                        children: const [
+                        children: [
                           Expanded(
                             child: Text(
                               '[8836000017357] 100 Plus Isotonic Drink Original 23007160 - 8349028809304',
@@ -79,7 +79,7 @@ class ProductInfomationDialog {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
-                              color: Constants.primaryColor,
+                              color: primaryColor,
                             ),
                           ),
                         ],
@@ -593,7 +593,7 @@ class ProductInfomationDialog {
                           text: 'Close',
                           width: 200,
                           textSize: 18,
-                          textColor: Constants.primaryColor,
+                          textColor: primaryColor,
                           onTap: () {
                             Navigator.pop(bContext);
                           },

@@ -124,7 +124,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                 width: 25,
                 height: 25,
                 colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
+                  primaryColor,
                   BlendMode.srcIn,
                 ),
               ),
@@ -159,7 +159,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
               BorderContainer(
                 text: 'Save',
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                containerColor: Constants.primaryColor,
+                containerColor: primaryColor,
                 textColor: Colors.white,
                 width: 150,
                 textSize: 20,
@@ -319,7 +319,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                   children: [
                     BorderContainer(
                       text: 'Create',
-                      containerColor: Constants.primaryColor,
+                      containerColor: primaryColor,
                       textColor: Colors.white,
                       width: 150,
                       onTap: () {

@@ -86,10 +86,10 @@ class _UserLoginFormState extends State<UserLoginForm> {
         labelStyle: textStyle,
         contentPadding: EdgeInsets.all(20),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: Constants.primaryColor),
+          borderSide: BorderSide(color: primaryColor),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Constants.primaryColor),
+          borderSide: BorderSide(color: primaryColor),
         ),
       ),
       inputFormatters: [
@@ -129,10 +129,10 @@ class _UserLoginFormState extends State<UserLoginForm> {
             labelStyle: textStyle,
             contentPadding: EdgeInsets.all(20),
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: Constants.primaryColor),
+              borderSide: BorderSide(color: primaryColor),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Constants.primaryColor),
+              borderSide: BorderSide(color: primaryColor),
             ),
             suffixIcon: InkWell(
               onTap: () {
@@ -142,7 +142,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
                 padding: EdgeInsets.only(top: 15.0),
                 child: Icon(
                   passwordVisible ? Icons.visibility_off : Icons.visibility,
-                  color: Constants.primaryColor,
+                  color: primaryColor,
                 ),
               ),
             ),
@@ -197,7 +197,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
     return BorderContainer(
       text: 'OK',
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-      containerColor: Constants.primaryColor.withOpacity(0.9),
+      containerColor: primaryColor.withOpacity(0.9),
       textColor: Colors.white,
       // width: MediaQuery.of(context).size.width /
       //     (isMobileMode

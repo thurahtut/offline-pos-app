@@ -93,7 +93,7 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
           'No User',
           style: TextStyle(
             fontSize: 16,
-            color: Constants.primaryColor.withOpacity(0.8),
+            color: primaryColor.withOpacity(0.8),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -130,7 +130,7 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
                 width: 25,
                 height: 25,
                 colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
+                  primaryColor,
                   BlendMode.srcIn,
                 ),
               ),

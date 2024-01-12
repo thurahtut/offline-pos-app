@@ -127,7 +127,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                                   : isTabletMode
                                       ? 4
                                       : 6),
-                          containerColor: Constants.primaryColor,
+                          containerColor: primaryColor,
                           textColor: Colors.white,
                           textSize: (isMobileMode
                               ? 13
@@ -253,7 +253,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
               sortColumnIndex: _sortColumnIndex,
               sortAscending: _sortAscending ?? false,
               headingRowColor: MaterialStateColor.resolveWith(
-                  (states) => Constants.primaryColor),
+                  (states) => primaryColor),
               columns: [
                 CommonUtils.dataColumn(
                   // fixedWidth: isTabletMode ? 150 : 120,
@@ -369,7 +369,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
               width: 25,
               height: 25,
               colorFilter: ColorFilter.mode(
-                Constants.primaryColor,
+                primaryColor,
                 BlendMode.srcIn,
               ),
             ),

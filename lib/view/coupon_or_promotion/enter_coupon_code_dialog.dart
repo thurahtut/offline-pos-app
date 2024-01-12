@@ -39,7 +39,7 @@ class EnterCouponCodeDialog {
                       color: Constants.greyColor.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                          color: Constants.primaryColor, width: 1.7)),
+                          color: primaryColor, width: 1.7)),
                   child: Center(
                     child: TextField(
                       controller: couponTextController,
@@ -52,7 +52,7 @@ class EnterCouponCodeDialog {
                           fontWeight: FontWeight.w800,
                         ),
                         labelStyle: TextStyle(
-                          color: Constants.primaryColor,
+                          color: primaryColor,
                           // fontSize: 22,
                           fontWeight: FontWeight.w800,
                         ),

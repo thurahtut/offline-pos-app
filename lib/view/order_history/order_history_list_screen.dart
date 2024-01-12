@@ -130,7 +130,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                 containerColor: Colors.white,
                 // width: 140,
                 borderWithPrimaryColor: true,
-                textColor: Constants.primaryColor,
+                textColor: primaryColor,
                 onTap: () {
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -151,12 +151,12 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                     borderRadius: BorderRadius.circular(13),
                     color: Colors.white,
                     border: Border.all(
-                      color: Constants.primaryColor,
+                      color: primaryColor,
                     ),
                   ),
                   child: CommonUtils.svgIconActionButton(
                     'assets/svg/keyboard_return.svg',
-                    iconColor: Constants.primaryColor,
+                    iconColor: primaryColor,
                   ),
                 ),
               ),
@@ -167,7 +167,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
               child: BorderContainer(
                 text: 'Paid',
                 // width: 140,
-                containerColor: Constants.primaryColor,
+                containerColor: primaryColor,
                 textColor: Colors.white,
               ),
             ),
@@ -179,7 +179,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                 containerColor: Colors.white,
                 // width: 140,
                 borderWithPrimaryColor: true,
-                textColor: Constants.primaryColor,
+                textColor: primaryColor,
               ),
             ),
             SizedBox(width: 5),
@@ -190,7 +190,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                 containerColor: Colors.white,
                 // width: 140,
                 borderWithPrimaryColor: true,
-                textColor: Constants.primaryColor,
+                textColor: primaryColor,
               ),
             ),
             SizedBox(width: 5),
@@ -201,7 +201,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
               child: BorderContainer(
                 text: 'dd--yyyy',
                 suffixSvg: 'assets/svg/calendar_month.svg',
-                svgColor: Constants.primaryColor,
+                svgColor: primaryColor,
                 // width: 140,
                 onTap: () {
                   _showDateTimePicker();
@@ -257,7 +257,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                             child: Text(
                               'Clear',
                               style: TextStyle(
-                                color: Constants.primaryColor,
+                                color: primaryColor,
                                 fontSize: 20,
                               ),
                             ),
@@ -269,7 +269,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                             child: Text(
                               'Today',
                               style: TextStyle(
-                                color: Constants.primaryColor,
+                                color: primaryColor,
                                 fontSize: 20,
                               ),
                             ),
@@ -285,7 +285,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
 
   Widget _buildTableCalendarWithBuilders() {
     var textStyle = TextStyle(
-      color: Constants.primaryColor,
+      color: primaryColor,
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
@@ -334,7 +334,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                   textStyle.copyWith(color: Constants.accentColor),
               outsideDaysVisible: false,
               todayTextStyle: textStyle.copyWith(
-                color: Constants.primaryColor,
+                color: primaryColor,
               ),
               selectedTextStyle: textStyle.copyWith(
                 color: Colors.white,
@@ -420,7 +420,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                   width: 25,
                   height: 25,
                   colorFilter: ColorFilter.mode(
-                    Constants.primaryColor,
+                    primaryColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -467,7 +467,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                   sortColumnIndex: _sortColumnIndex,
                   sortAscending: _sortAscending ?? false,
                   headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => Constants.primaryColor),
+                      (states) => primaryColor),
                   columns: [
                     CommonUtils.dataColumn(
                       // fixedWidth: isTabletMode ? 150 : 120,

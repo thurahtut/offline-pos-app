@@ -115,7 +115,7 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
               // containerColor: Colors.white,
               width: 140,
               borderWithPrimaryColor: true,
-              textColor: Constants.primaryColor,
+              textColor: primaryColor,
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                     context,
@@ -172,7 +172,7 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
                   width: 25,
                   height: 25,
                   colorFilter: ColorFilter.mode(
-                    Constants.primaryColor,
+                    primaryColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -219,7 +219,7 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
                   sortColumnIndex: _sortColumnIndex,
                   sortAscending: _sortAscending ?? false,
                   headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => Constants.primaryColor),
+                      (states) => primaryColor),
                   columns: [
                     CommonUtils.dataColumn(
                       // fixedWidth: isTabletMode ? 150 : 120,

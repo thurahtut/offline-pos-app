@@ -33,7 +33,7 @@ class PaymentDialog {
                   Container(
                     padding: EdgeInsets.all(12),
                     height: 70,
-                    decoration: BoxDecoration(color: Constants.primaryColor),
+                    decoration: BoxDecoration(color: primaryColor),
                     child: _eachPaymentRowWidget(
                       cell1: 'Order',
                       cell2: 'Payment Method',

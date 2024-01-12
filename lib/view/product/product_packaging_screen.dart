@@ -114,7 +114,7 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                 width: 25,
                 height: 25,
                 colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
+                  primaryColor,
                   BlendMode.srcIn,
                 ),
               ),
@@ -150,7 +150,7 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
             children: [
               BorderContainer(
                 text: 'Create',
-                containerColor: Constants.primaryColor,
+                containerColor: primaryColor,
                 textColor: Colors.white,
                 width: 150,
                 onTap: () {
@@ -249,8 +249,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
       ),
       datarowCheckboxTheme: CheckboxThemeData(
         side: MaterialStateBorderSide.resolveWith(
-            (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-        checkColor: MaterialStateProperty.all(Constants.primaryColor),
+            (_) => BorderSide(width: 2, color: primaryColor)),
+        checkColor: MaterialStateProperty.all(primaryColor),
       ),
       border: TableBorder(
           horizontalInside:
@@ -269,7 +269,7 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
       sortColumnIndex: _sortColumnIndex,
       sortAscending: _sortAscending ?? false,
       headingRowColor:
-          MaterialStateColor.resolveWith((states) => Constants.primaryColor),
+          MaterialStateColor.resolveWith((states) => primaryColor),
       columns: [
         CommonUtils.dataColumn(
           // fixedWidth: isTabletMode ? 150 : 120,
@@ -308,9 +308,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         title: Text('Routes'),
@@ -320,9 +319,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         title: Text('Purchase'),
@@ -332,9 +330,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         title: Text('Sale'),
@@ -344,9 +341,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         title: Text('Company'),

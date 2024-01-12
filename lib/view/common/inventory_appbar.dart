@@ -117,7 +117,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
               },
               icon: Icon(
                 Icons.home_filled,
-                color: Constants.primaryColor,
+                color: primaryColor,
                 size: 35,
               )),
           if (!isTabletMode) ..._titleList(),
@@ -179,7 +179,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
 
   List<Widget> _titleList() {
     TextStyle textStyle = TextStyle(
-      color: Constants.primaryColor,
+      color: primaryColor,
       fontSize: 16,
       fontWeight: FontWeight.w500,
     );

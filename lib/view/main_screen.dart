@@ -84,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
       controller: scrollController,
       thumbVisibility: true,
       trackVisibility: true,
-      thumbColor: Constants.primaryColor,
+      thumbColor: primaryColor,
       radius: Radius.circular(20),
       thickness: 6,
       child: Container(
@@ -98,11 +98,11 @@ class _MainScreenState extends State<MainScreen> {
                 'assets/svg/grid_view.svg',
                 withContianer: true,
                 containerColor: !context.watch<ViewController>().isList
-                    ? Constants.primaryColor
+                    ? primaryColor
                     : Constants.unselectedColor,
                 iconColor: !context.watch<ViewController>().isList
                     ? Colors.white
-                    : Constants.primaryColor,
+                    : primaryColor,
                 onPressed: () {
                   context.read<ViewController>().isList = false;
                 },
@@ -112,11 +112,11 @@ class _MainScreenState extends State<MainScreen> {
                 Icons.view_list_outlined,
                 withContianer: true,
                 containerColor: context.watch<ViewController>().isList
-                    ? Constants.primaryColor
+                    ? primaryColor
                     : Constants.unselectedColor,
                 iconColor: context.watch<ViewController>().isList
                     ? Colors.white
-                    : Constants.primaryColor,
+                    : primaryColor,
                 onPressed: () {
                   context.read<ViewController>().isList = true;
                 },
@@ -126,11 +126,11 @@ class _MainScreenState extends State<MainScreen> {
                 'assets/svg/home.svg',
                 withContianer: true,
                 containerColor: context.watch<ViewController>().isHome
-                    ? Constants.primaryColor
+                    ? primaryColor
                     : Constants.unselectedColor,
                 iconColor: context.watch<ViewController>().isHome
                     ? Colors.white
-                    : Constants.primaryColor,
+                    : primaryColor,
               ),
               spacer,
               ...CommonUtils.categoryList
@@ -141,7 +141,7 @@ class _MainScreenState extends State<MainScreen> {
                                 horizontal: 12, vertical: 12),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-                              color: Constants.primaryColor,
+                              color: primaryColor,
                             ),
                             child: Text(
                               e,

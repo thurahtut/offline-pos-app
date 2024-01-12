@@ -23,7 +23,7 @@ class ProductDetailFilter extends StatelessWidget {
                     ? 'Save'
                     : 'Edit',
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                containerColor: Constants.primaryColor,
+                containerColor: primaryColor,
                 textColor: Colors.white,
                 width: 150,
                 textSize: 20,

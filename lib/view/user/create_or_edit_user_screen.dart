@@ -85,7 +85,7 @@ class _CreateOrEditEmployeeScreenState
       controller: _employeeNameTextController,
       textAlignVertical: TextAlignVertical.center,
       style: TextStyle(
-        color: Constants.primaryColor,
+        color: primaryColor,
         fontSize: 18,
         fontWeight: FontWeight.w800,
       ),
@@ -116,7 +116,7 @@ class _CreateOrEditEmployeeScreenState
       controller: _jobPositionTextController,
       textAlignVertical: TextAlignVertical.center,
       style: TextStyle(
-        color: Constants.primaryColor,
+        color: primaryColor,
         fontSize: 13,
         fontWeight: FontWeight.w800,
       ),
@@ -160,7 +160,7 @@ class _CreateOrEditEmployeeScreenState
                 fontWeight: FontWeight.w800,
               ),
               labelStyle: TextStyle(
-                color: Constants.primaryColor,
+                color: primaryColor,
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
               ),
@@ -202,7 +202,7 @@ class _CreateOrEditEmployeeScreenState
                 fontWeight: FontWeight.w800,
               ),
               labelStyle: TextStyle(
-                color: Constants.primaryColor,
+                color: primaryColor,
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
               ),

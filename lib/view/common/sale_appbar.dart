@@ -222,7 +222,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
                 width: 25,
                 height: 25,
                 colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
+                  primaryColor,
                   BlendMode.srcIn,
                 ),
               ),

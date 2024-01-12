@@ -233,9 +233,9 @@ class _PriceRuleDetailViewState extends State<PriceRuleDetailView> {
     return RadioListTile(
       value: value,
       selected: selected,
-      activeColor: Constants.primaryColor,
+      activeColor: primaryColor,
       fillColor:
-          MaterialStateColor.resolveWith((states) => Constants.primaryColor),
+          MaterialStateColor.resolveWith((states) => primaryColor),
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       groupValue: groupValue,

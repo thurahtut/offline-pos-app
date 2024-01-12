@@ -224,7 +224,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
       padding: EdgeInsets.all(8),
       height: 60,
       decoration: BoxDecoration(
-        color: Constants.primaryColor,
+        color: primaryColor,
       ),
       child: Row(
         children: [

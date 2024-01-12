@@ -138,7 +138,7 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                   labelStyle: TextStyle(
-                    color: Constants.primaryColor,
+                    color: primaryColor,
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
                   ),
@@ -207,7 +207,7 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
                                 //   fontWeight: FontWeight.w800,
                                 // ),
                                 labelStyle: TextStyle(
-                                  color: Constants.primaryColor,
+                                  color: primaryColor,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -235,7 +235,7 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
                                 //   fontWeight: FontWeight.w800,
                                 // ),
                                 labelStyle: TextStyle(
-                                  color: Constants.primaryColor,
+                                  color: primaryColor,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -288,7 +288,7 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
                   fontWeight: FontWeight.w800,
                 ),
                 labelStyle: TextStyle(
-                  color: Constants.primaryColor,
+                  color: primaryColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
                 ),
@@ -310,9 +310,9 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
   }) {
     return RadioListTile(
       value: value,
-      activeColor: Constants.primaryColor,
+      activeColor: primaryColor,
       fillColor:
-          MaterialStateColor.resolveWith((states) => Constants.primaryColor),
+          MaterialStateColor.resolveWith((states) => primaryColor),
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       groupValue: groupValue,

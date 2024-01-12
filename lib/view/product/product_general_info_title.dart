@@ -88,7 +88,7 @@ class ProductGeneralInfoTitle extends StatelessWidget {
         fontSize: 16,
         fontWeight: FontWeight.bold,
         textColor: !context.watch<ProductDetailController>().isBarcodeView
-            ? Constants.primaryColor
+            ? primaryColor
             : Colors.black,
         onPressed: () {
           context.read<ProductDetailController>().isBarcodeView = false;
@@ -154,7 +154,7 @@ class ProductGeneralInfoTitle extends StatelessWidget {
         fontSize: 16,
         fontWeight: FontWeight.bold,
         textColor: context.watch<ProductDetailController>().isBarcodeView
-            ? Constants.primaryColor
+            ? primaryColor
             : Colors.black,
         onPressed: () {
           context.read<ProductDetailController>().isBarcodeView = true;

@@ -31,7 +31,7 @@ class PasswordDialog {
                       width: MediaQuery.of(context).size.width / 4,
                       height: 70,
                       decoration: BoxDecoration(
-                          color: Constants.primaryColor,
+                          color: primaryColor,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20),
@@ -63,7 +63,7 @@ class PasswordDialog {
                               autofocus: true,
                               // focusNode: myFocusNode,
                               style: TextStyle(
-                                color: Constants.primaryColor,
+                                color: primaryColor,
                                 fontSize: 30,
                                 fontWeight: FontWeight.w800,
                               ),

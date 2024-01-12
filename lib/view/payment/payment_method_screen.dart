@@ -158,7 +158,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 width: 25,
                 height: 25,
                 colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
+                  primaryColor,
                   BlendMode.srcIn,
                 ),
               ),
@@ -224,7 +224,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   children: [
                     BorderContainer(
                       text: 'Create',
-                      containerColor: Constants.primaryColor,
+                      containerColor: primaryColor,
                       textColor: Colors.white,
                       width: 150,
                       onTap: () {
@@ -337,8 +337,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       ),
       datarowCheckboxTheme: CheckboxThemeData(
         side: MaterialStateBorderSide.resolveWith(
-            (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-        checkColor: MaterialStateProperty.all(Constants.primaryColor),
+            (_) => BorderSide(width: 2, color: primaryColor)),
+        checkColor: MaterialStateProperty.all(primaryColor),
       ),
       border: TableBorder(
           horizontalInside:
@@ -353,7 +353,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       sortColumnIndex: _sortColumnIndex,
       sortAscending: _sortAscending ?? false,
       headingRowColor:
-          MaterialStateColor.resolveWith((states) => Constants.primaryColor),
+          MaterialStateColor.resolveWith((states) => primaryColor),
       columns: [
         CommonUtils.dataColumn(
           // fixedWidth: isTabletMode ? 150 : 120,
@@ -392,9 +392,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         title: Text('Identify Customer'),
@@ -404,9 +403,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         title: Text('Oustanding Account'),
@@ -416,9 +414,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         title: Text('Intermediary Account'),
@@ -607,7 +604,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         fontWeight: FontWeight.w800,
                       ),
                       labelStyle: TextStyle(
-                        color: Constants.primaryColor,
+                        color: primaryColor,
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
                       ),
@@ -626,9 +623,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         value: false,
                         onChanged: (bool? value) {},
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         controlAffinity: ListTileControlAffinity.leading,
@@ -659,9 +655,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         value: false,
                         onChanged: (bool? value) {},
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         controlAffinity: ListTileControlAffinity.leading,
@@ -680,7 +675,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
                           labelStyle: TextStyle(
-                            color: Constants.primaryColor,
+                            color: primaryColor,
                             fontSize: 13,
                             fontWeight: FontWeight.w800,
                           ),
@@ -716,9 +711,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         value: false,
                         onChanged: (bool? value) {},
                         side: MaterialStateBorderSide.resolveWith((_) =>
-                            const BorderSide(
-                                width: 2, color: Constants.primaryColor)),
-                        checkColor: Constants.primaryColor,
+                             BorderSide(width: 2, color: primaryColor)),
+                        checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
                         controlAffinity: ListTileControlAffinity.leading,
@@ -737,7 +731,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
                           labelStyle: TextStyle(
-                            color: Constants.primaryColor,
+                            color: primaryColor,
                             fontSize: 13,
                             fontWeight: FontWeight.w800,
                           ),
@@ -775,8 +769,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   true,
               onChanged: (bool? value) {},
               side: MaterialStateBorderSide.resolveWith((_) =>
-                  const BorderSide(width: 2, color: Constants.primaryColor)),
-              checkColor: Constants.primaryColor,
+                   BorderSide(width: 2, color: primaryColor)),
+              checkColor: primaryColor,
               fillColor:
                   MaterialStateColor.resolveWith((states) => Colors.white),
               controlAffinity: ListTileControlAffinity.leading,
@@ -813,8 +807,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   true,
               onChanged: (bool? value) {},
               side: MaterialStateBorderSide.resolveWith((_) =>
-                  const BorderSide(width: 2, color: Constants.primaryColor)),
-              checkColor: Constants.primaryColor,
+                   BorderSide(width: 2, color: primaryColor)),
+              checkColor: primaryColor,
               fillColor:
                   MaterialStateColor.resolveWith((states) => Colors.white),
               controlAffinity: ListTileControlAffinity.leading,
@@ -878,8 +872,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     true,
                 onChanged: (bool? value) {},
                 side: MaterialStateBorderSide.resolveWith((_) =>
-                    const BorderSide(width: 2, color: Constants.primaryColor)),
-                checkColor: Constants.primaryColor,
+                     BorderSide(width: 2, color: primaryColor)),
+                checkColor: primaryColor,
                 fillColor:
                     MaterialStateColor.resolveWith((states) => Colors.white),
                 controlAffinity: ListTileControlAffinity.leading,
@@ -931,7 +925,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
           // borderRadius: BorderRadius.circular(20),
           border: Border(
               bottom: BorderSide(color: Constants.textColor.withOpacity(0.7)))
-          // border: Border.only(color: Constants.primaryColor, width: 1.7),
+          // border: Border.only(color: primaryColor, width: 1.7),
           ),
       child: Row(
         children: [

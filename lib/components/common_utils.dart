@@ -1,5 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
-
+Color primaryColor = Color(0xFF007ACC);
 class CommonUtils {
   static bool isTabletMode(BuildContext context) {
     return MediaQuery.of(context).size.width < 1080;
@@ -54,7 +54,7 @@ class CommonUtils {
           width: width ?? 27,
           height: height ?? 27,
           colorFilter: ColorFilter.mode(
-            iconColor ?? Constants.primaryColor,
+            iconColor ?? primaryColor,
             BlendMode.srcIn,
           ),
         ),
@@ -86,7 +86,7 @@ class CommonUtils {
         child: Icon(
           icon,
           size: size ?? 27,
-          color: iconColor ?? Constants.primaryColor,
+          color: iconColor ?? primaryColor,
         ),
       ),
     );
@@ -323,7 +323,7 @@ class CommonUtils {
                 ? Icon(
                     icon,
                     size: iconSize ?? 24,
-                    color: iconColor ?? Constants.primaryColor,
+                    color: iconColor ?? primaryColor,
                   )
                 : Text(
                     text ?? '',
@@ -357,7 +357,7 @@ class CommonUtils {
           text: okLabel ?? 'OK',
           padding:
               padding ?? EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-          containerColor: Constants.primaryColor,
+          containerColor: primaryColor,
           textColor: Colors.white,
           width: width ?? 140,
           textSize: textSize ?? 20,

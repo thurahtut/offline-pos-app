@@ -193,7 +193,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   pw.Text("${0} Ks".toString(), //e.price
                       style: textStyle.copyWith(
                         // fontWeight: FontWeight.bold,
-                        color: PdfColor.fromInt(Constants.primaryColor.value),
+                        color: PdfColor.fromInt(primaryColor.value),
                       ))
                 ],
               ),
@@ -309,7 +309,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           width: MediaQuery.of(context).size.width / 4.5,
           text: 'Print',
           textColor: Colors.white,
-          containerColor: Constants.primaryColor,
+          containerColor: primaryColor,
           onTap: () async {
             // List<int> d = await _generatePdf();
             // Uint8List byte = Uint8List.fromList(d);
@@ -346,14 +346,14 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         BorderContainer(
           width: MediaQuery.of(context).size.width / 4.5,
           text: 'Mail',
-          textColor: Constants.primaryColor,
+          textColor: primaryColor,
         ),
         SizedBox(height: 20),
         BorderContainer(
           width: MediaQuery.of(context).size.width / 4.5,
           text: 'New Order',
           textColor: Colors.white,
-          containerColor: Constants.primaryColor,
+          containerColor: primaryColor,
           onTap: () {
             Navigator.pushAndRemoveUntil(
                 context,

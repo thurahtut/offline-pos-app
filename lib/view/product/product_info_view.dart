@@ -109,8 +109,8 @@ class ProductInfoView extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       controlAffinity: ListTileControlAffinity.leading,
       side: MaterialStateBorderSide.resolveWith(
-          (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-      checkColor: Constants.primaryColor,
+          (_) => BorderSide(width: 2, color: primaryColor)),
+      checkColor: primaryColor,
       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
       title: Text(
         'Is bundled?',
@@ -128,8 +128,8 @@ class ProductInfoView extends StatelessWidget {
   //     contentPadding: EdgeInsets.zero,
   //     controlAffinity: ListTileControlAffinity.leading,
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     title: Text(
   //       'Can be sold',
@@ -149,8 +149,8 @@ class ProductInfoView extends StatelessWidget {
   //     contentPadding: EdgeInsets.zero,
   //     controlAffinity: ListTileControlAffinity.leading,
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     title: Text(
   //       'Can be purchased',
@@ -170,8 +170,8 @@ class ProductInfoView extends StatelessWidget {
   //     contentPadding: EdgeInsets.zero,
   //     controlAffinity: ListTileControlAffinity.leading,
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     title: Text(
   //       'Can be manufactured',
@@ -219,7 +219,7 @@ class ProductInfoView extends StatelessWidget {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelStyle: TextStyle(
-                                    color: Constants.primaryColor,
+                                    color: primaryColor,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -243,7 +243,7 @@ class ProductInfoView extends StatelessWidget {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   labelStyle: TextStyle(
-                                    color: Constants.primaryColor,
+                                    color: primaryColor,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -701,7 +701,7 @@ class ProductInfoView extends StatelessWidget {
   //         fontWeight: FontWeight.w800,
   //       ),
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -720,8 +720,8 @@ class ProductInfoView extends StatelessWidget {
   //         false,
   //     onChanged: null,
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     controlAffinity: ListTileControlAffinity.leading,
   //     contentPadding: EdgeInsets.zero,
@@ -773,8 +773,8 @@ class ProductInfoView extends StatelessWidget {
   //         false,
   //     onChanged: null,
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     controlAffinity: ListTileControlAffinity.leading,
   //     contentPadding: EdgeInsets.zero,
@@ -790,8 +790,8 @@ class ProductInfoView extends StatelessWidget {
   //         false,
   //     onChanged: null,
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     controlAffinity: ListTileControlAffinity.leading,
   //     contentPadding: EdgeInsets.zero,
@@ -810,7 +810,7 @@ class ProductInfoView extends StatelessWidget {
   //     textAlignVertical: TextAlignVertical.center,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -832,7 +832,7 @@ class ProductInfoView extends StatelessWidget {
   //     textAlignVertical: TextAlignVertical.center,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -856,7 +856,7 @@ class ProductInfoView extends StatelessWidget {
   //     keyboardType: TextInputType.number,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -880,7 +880,7 @@ class ProductInfoView extends StatelessWidget {
   //     keyboardType: TextInputType.number,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -979,7 +979,7 @@ class ProductInfoView extends StatelessWidget {
   //     keyboardType: TextInputType.number,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -1002,7 +1002,7 @@ class ProductInfoView extends StatelessWidget {
   //     keyboardType: TextInputType.number,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -1025,7 +1025,7 @@ class ProductInfoView extends StatelessWidget {
   //     keyboardType: TextInputType.number,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -1048,7 +1048,7 @@ class ProductInfoView extends StatelessWidget {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelStyle: TextStyle(
-          color: Constants.primaryColor,
+          color: primaryColor,
           fontSize: 13,
           fontWeight: FontWeight.w800,
         ),
@@ -1071,7 +1071,7 @@ class ProductInfoView extends StatelessWidget {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelStyle: TextStyle(
-          color: Constants.primaryColor,
+          color: primaryColor,
           fontSize: 13,
           fontWeight: FontWeight.w800,
         ),
@@ -1095,7 +1095,7 @@ class ProductInfoView extends StatelessWidget {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelStyle: TextStyle(
-          color: Constants.primaryColor,
+          color: primaryColor,
           fontSize: 13,
           fontWeight: FontWeight.w800,
         ),
@@ -1114,8 +1114,8 @@ class ProductInfoView extends StatelessWidget {
   //         false,
   //     onChanged: (bool? value) {},
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     controlAffinity: ListTileControlAffinity.leading,
   //     contentPadding: EdgeInsets.zero,
@@ -1169,7 +1169,7 @@ class ProductInfoView extends StatelessWidget {
   //     keyboardType: TextInputType.number,
   //     decoration: InputDecoration(
   //       labelStyle: TextStyle(
-  //         color: Constants.primaryColor,
+  //         color: primaryColor,
   //         fontSize: 13,
   //         fontWeight: FontWeight.w800,
   //       ),
@@ -1188,8 +1188,8 @@ class ProductInfoView extends StatelessWidget {
   //         false,
   //     onChanged: (bool? value) {},
   //     side: MaterialStateBorderSide.resolveWith(
-  //         (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-  //     checkColor: Constants.primaryColor,
+  //         (_) => const BorderSide(width: 2, color: primaryColor)),
+  //     checkColor: primaryColor,
   //     fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
   //     controlAffinity: ListTileControlAffinity.leading,
   //     contentPadding: EdgeInsets.zero,
@@ -1268,7 +1268,7 @@ class ProductInfoView extends StatelessWidget {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelStyle: TextStyle(
-          color: Constants.primaryColor,
+          color: primaryColor,
           fontSize: 13,
           fontWeight: FontWeight.w800,
         ),
@@ -1285,9 +1285,9 @@ class ProductInfoView extends StatelessWidget {
   }) {
     return RadioListTile(
       value: value,
-      activeColor: Constants.primaryColor,
+      activeColor: primaryColor,
       fillColor:
-          MaterialStateColor.resolveWith((states) => Constants.primaryColor),
+          MaterialStateColor.resolveWith((states) => primaryColor),
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       groupValue: groupValue,

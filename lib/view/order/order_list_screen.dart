@@ -113,7 +113,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
               text: 'Back',
               width: 140,
               borderWithPrimaryColor: true,
-              textColor: Constants.primaryColor,
+              textColor: primaryColor,
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                     context,
@@ -128,7 +128,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
             child: BorderContainer(
               text: 'New Order',
               width: 140,
-              containerColor: Constants.primaryColor,
+              containerColor: primaryColor,
               textColor: Colors.white,
               onTap: () {
                 Navigator.pushAndRemoveUntil(
@@ -185,7 +185,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   width: 25,
                   height: 25,
                   colorFilter: ColorFilter.mode(
-                    Constants.primaryColor,
+                    primaryColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -199,7 +199,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     value: list.first,
                     icon: Icon(
                       Icons.keyboard_arrow_down,
-                      color: Constants.primaryColor,
+                      color: primaryColor,
                     ),
                     underline: Container(),
                     padding: EdgeInsets.symmetric(horizontal: 4),
@@ -253,7 +253,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   sortColumnIndex: _sortColumnIndex,
                   sortAscending: _sortAscending ?? false,
                   headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => Constants.primaryColor),
+                      (states) => primaryColor),
                   columns: [
                     CommonUtils.dataColumn(
                       fixedWidth: isTabletMode == true ? 300 : 300,

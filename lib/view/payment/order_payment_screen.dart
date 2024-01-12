@@ -64,7 +64,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         BorderContainer(
           text: 'Validate',
           width: MediaQuery.of(context).size.width / 8.5,
-          containerColor: Constants.primaryColor,
+          containerColor: primaryColor,
           textColor: Colors.white,
           onTap: () {
             context.read<CurrentOrderController>().currentOrderList = [];
@@ -147,7 +147,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   Widget _editAmountWidget() {
     TextStyle textStyle = TextStyle(
-      color: Constants.primaryColor,
+      color: primaryColor,
       fontSize: 30,
       fontWeight: FontWeight.w800,
     );
@@ -225,14 +225,14 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     text: "BG Bakerys",
                     width: 150,
                     prefixSvg: "assets/svg/account_circle.svg",
-                    svgColor: Constants.primaryColor,
+                    svgColor: primaryColor,
                     onPressed: () {},
                   )
                 : CommonUtils.eachCalculateButtonWidget(
                     text: "Invoice",
                     width: 150,
                     prefixSvg: "assets/svg/receipt_long.svg",
-                    svgColor: Constants.primaryColor,
+                    svgColor: primaryColor,
                     onPressed: () {},
             ),
           ],
@@ -274,7 +274,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               text: "Invoice",
               width: 150,
               prefixSvg: "assets/svg/receipt_long.svg",
-              svgColor: Constants.primaryColor,
+                    svgColor: primaryColor,
               onPressed: () {},
                   )
                 : SizedBox(),

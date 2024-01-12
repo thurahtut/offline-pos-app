@@ -116,8 +116,8 @@ class PrintStatementDialog {
       leading: Radio<int>(
         value: value,
         groupValue: selectedOption,
-        activeColor: Constants.primaryColor,
-        fillColor: MaterialStateProperty.all(Constants.primaryColor),
+        activeColor: primaryColor,
+        fillColor: MaterialStateProperty.all(primaryColor),
         splashRadius: 20,
         onChanged: onChanged,
       ),

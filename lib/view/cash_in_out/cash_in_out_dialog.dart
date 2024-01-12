@@ -30,7 +30,7 @@ class CashInOutDialog {
                     width: MediaQuery.of(context).size.width /
                         (isTabletMode ? 2 : 4.5),
                     decoration: BoxDecoration(
-                        color: Constants.primaryColor,
+                        color: primaryColor,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
@@ -43,7 +43,7 @@ class CashInOutDialog {
                           BorderContainer(
                             text: 'Cash In',
                             containerColor: Colors.white,
-                            textColor: Constants.primaryColor,
+                            textColor: primaryColor,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 14),
                             textSize: 18,
@@ -54,7 +54,7 @@ class CashInOutDialog {
                           BorderContainer(
                             text: 'Cash Out',
                             containerColor: Colors.white,
-                            textColor: Constants.primaryColor,
+                            textColor: primaryColor,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 14),
                             textSize: 18,
@@ -90,7 +90,7 @@ class CashInOutDialog {
                           fontWeight: FontWeight.w800,
                         ),
                         labelStyle: TextStyle(
-                          color: Constants.primaryColor,
+                          color: primaryColor,
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
                         ),
@@ -119,7 +119,7 @@ class CashInOutDialog {
                         ),
                         border: InputBorder.none,
                         labelStyle: TextStyle(
-                          color: Constants.primaryColor,
+                          color: primaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
                         ),

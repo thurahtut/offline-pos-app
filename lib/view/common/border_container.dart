@@ -41,8 +41,8 @@ class BorderContainer extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: borderWithPrimaryColor == true
-                ? Constants.primaryColor
-                : (containerColor ?? Constants.primaryColor),
+                ? primaryColor
+                : (containerColor ?? primaryColor),
           ),
           borderRadius: BorderRadius.circular(radius ?? 12),
           color: containerColor,
@@ -75,7 +75,7 @@ class BorderContainer extends StatelessWidget {
         text,
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: textColor ?? Constants.primaryColor,
+          color: textColor ?? primaryColor,
           fontWeight: FontWeight.w600,
           fontSize: textSize,
         ),

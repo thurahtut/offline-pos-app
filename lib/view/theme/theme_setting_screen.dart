@@ -76,7 +76,7 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
       switchBtns: true,
       okLabel: 'Save',
       cancelCallback: () {
-        Navigator.pushNamed(context, MainScreen.routeName);
+        context.read<ThemeSettingController>().getThemeConfig();
       },
       okCallback: () async {
         ThemeSettingController controller =
@@ -94,6 +94,9 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
         }
         // });
         controller.getThemeConfig();
+        if (mounted) {
+          Navigator.pop(context);
+        }
       },
     );
   }

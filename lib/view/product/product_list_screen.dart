@@ -135,7 +135,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 width: 25,
                 height: 25,
                 colorFilter: ColorFilter.mode(
-                  Constants.primaryColor,
+                  primaryColor,
                   BlendMode.srcIn,
                 ),
               ),
@@ -182,7 +182,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           //   children: [
           //     BorderContainer(
           //       text: 'Create',
-          //       containerColor: Constants.primaryColor,
+          //       containerColor: primaryColor,
           //       textColor: Colors.white,
           //       width: 150,
           //       onTap: () {
@@ -277,8 +277,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       datarowCheckboxTheme: CheckboxThemeData(
         side: MaterialStateBorderSide.resolveWith(
-            (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-        checkColor: MaterialStateProperty.all(Constants.primaryColor),
+            (_) => BorderSide(width: 2, color: primaryColor)),
+        checkColor: MaterialStateProperty.all(primaryColor),
       ),
       border: TableBorder(
           horizontalInside:
@@ -293,7 +293,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       sortColumnIndex: _sortColumnIndex,
       sortAscending: _sortAscending ?? false,
       headingRowColor:
-          MaterialStateColor.resolveWith((states) => Constants.primaryColor),
+          MaterialStateColor.resolveWith((states) => primaryColor),
       columns: [
         CommonUtils.dataColumn(
           // fixedWidth: isTabletMode ? 150 : 120,
@@ -406,9 +406,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Responsible'),
@@ -418,9 +417,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Favorite'),
@@ -430,9 +428,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Website'),
@@ -442,9 +439,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Company'),
@@ -454,9 +450,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Sales Price'),
@@ -466,9 +461,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Latest Price'),
@@ -478,9 +472,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Cost'),
@@ -490,9 +483,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('POS Product Category'),
@@ -502,9 +494,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Product Type'),
@@ -514,9 +505,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Forecasted Quantity'),
@@ -526,9 +516,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
                   side: MaterialStateBorderSide.resolveWith((_) =>
-                      const BorderSide(
-                          width: 2, color: Constants.primaryColor)),
-                  checkColor: Constants.primaryColor,
+                       BorderSide(width: 2, color: primaryColor)),
+                  checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
                   title: Text('Unit of Measure'),

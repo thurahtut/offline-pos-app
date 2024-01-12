@@ -110,7 +110,7 @@ class CreateCustomerDialog {
                                           child: Icon(
                                             Icons.camera_alt_outlined,
                                             size: 22,
-                                            color: Constants.primaryColor,
+                                            color: primaryColor,
                                           ),
                                         ),
                                       ),
@@ -134,7 +134,7 @@ class CreateCustomerDialog {
                                           fontWeight: FontWeight.w800,
                                         ),
                                         labelStyle: TextStyle(
-                                          color: Constants.primaryColor,
+                                          color: primaryColor,
                                           fontSize: 13,
                                           fontWeight: FontWeight.w800,
                                         ),
@@ -321,7 +321,7 @@ class CreateCustomerDialog {
       decoration: BoxDecoration(
           color: Constants.greyColor.withOpacity(0.6),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Constants.primaryColor, width: 1.7)),
+          border: Border.all(color: primaryColor, width: 1.7)),
       child: Center(
         child: TextField(
           controller: controller,
@@ -335,7 +335,7 @@ class CreateCustomerDialog {
               fontWeight: FontWeight.w800,
             ),
             labelStyle: TextStyle(
-              color: Constants.primaryColor,
+              color: primaryColor,
               fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
@@ -359,7 +359,7 @@ class CreateCustomerDialog {
       decoration: BoxDecoration(
           color: Constants.greyColor.withOpacity(0.6),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Constants.primaryColor, width: 1.7)),
+          border: Border.all(color: primaryColor, width: 1.7)),
       child: Row(
         children: [
           Expanded(

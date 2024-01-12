@@ -237,7 +237,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -274,8 +274,8 @@
 //       contentPadding: EdgeInsets.zero,
 //       controlAffinity: ListTileControlAffinity.leading,
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       title: Text(
 //         'Is bundled?',
@@ -301,8 +301,8 @@
 //       contentPadding: EdgeInsets.zero,
 //       controlAffinity: ListTileControlAffinity.leading,
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       title: Text(
 //         'Can be sold',
@@ -330,8 +330,8 @@
 //       contentPadding: EdgeInsets.zero,
 //       controlAffinity: ListTileControlAffinity.leading,
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       title: Text(
 //         'Can be purchased',
@@ -361,8 +361,8 @@
 //       contentPadding: EdgeInsets.zero,
 //       controlAffinity: ListTileControlAffinity.leading,
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       title: Text(
 //         'Can be manufactured',
@@ -871,7 +871,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -912,8 +912,8 @@
 //         context.read<ProductDetailController>().notify();
 //       },
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       controlAffinity: ListTileControlAffinity.leading,
 //       contentPadding: EdgeInsets.zero,
@@ -980,8 +980,8 @@
 //         context.read<ProductDetailController>().notify();
 //       },
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       controlAffinity: ListTileControlAffinity.leading,
 //       contentPadding: EdgeInsets.zero,
@@ -1005,8 +1005,8 @@
 //         context.read<ProductDetailController>().notify();
 //       },
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       controlAffinity: ListTileControlAffinity.leading,
 //       contentPadding: EdgeInsets.zero,
@@ -1026,7 +1026,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1063,7 +1063,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1099,7 +1099,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1135,7 +1135,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1259,7 +1259,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1288,7 +1288,7 @@
 //       keyboardType: TextInputType.number,
 //       decoration: InputDecoration(
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1322,7 +1322,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1354,7 +1354,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1386,7 +1386,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1423,8 +1423,8 @@
 //         context.read<ProductDetailController>().notify();
 //       },
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       controlAffinity: ListTileControlAffinity.leading,
 //       contentPadding: EdgeInsets.zero,
@@ -1476,7 +1476,7 @@
 //       textAlignVertical: TextAlignVertical.center,
 //       decoration: InputDecoration(
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1515,8 +1515,8 @@
 //         context.read<ProductDetailController>().notify();
 //       },
 //       side: MaterialStateBorderSide.resolveWith(
-//           (_) => const BorderSide(width: 2, color: Constants.primaryColor)),
-//       checkColor: Constants.primaryColor,
+//           (_) => const BorderSide(width: 2, color: primaryColor)),
+//       checkColor: primaryColor,
 //       fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
 //       controlAffinity: ListTileControlAffinity.leading,
 //       contentPadding: EdgeInsets.zero,
@@ -1598,7 +1598,7 @@
 //           fontWeight: FontWeight.w800,
 //         ),
 //         labelStyle: TextStyle(
-//           color: Constants.primaryColor,
+//           color: primaryColor,
 //           fontSize: 13,
 //           fontWeight: FontWeight.w800,
 //         ),
@@ -1620,9 +1620,9 @@
 //   }) {
 //     return RadioListTile(
 //       value: value,
-//       activeColor: Constants.primaryColor,
+//       activeColor: primaryColor,
 //       fillColor:
-//           MaterialStateColor.resolveWith((states) => Constants.primaryColor),
+//           MaterialStateColor.resolveWith((states) => primaryColor),
 //       controlAffinity: ListTileControlAffinity.leading,
 //       contentPadding: EdgeInsets.zero,
 //       groupValue: groupValue,

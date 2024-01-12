@@ -33,7 +33,7 @@ class ProductUntiDialog {
                     width: MediaQuery.of(context).size.width / 4,
                     height: 70,
                     decoration: BoxDecoration(
-                        color: Constants.primaryColor,
+                        color: primaryColor,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
