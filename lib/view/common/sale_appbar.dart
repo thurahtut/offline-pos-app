@@ -1,5 +1,3 @@
-import 'package:offline_pos/controller/theme_setting_controller.dart';
-
 import '../../components/export_files.dart';
 
 class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -31,20 +29,28 @@ class _SaleAppBarState extends State<SaleAppBar> {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return AppBar(
       backgroundColor: Colors.white,
-      leading: context.watch<ThemeSettingController>().appConfig?.logo != null
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: BackButton(
+          color: primaryColor,
+          style: ButtonStyle(
+            iconSize: MaterialStateProperty.resolveWith((states) => 30),
+          ),
+        ),
+      ),
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          context.watch<ThemeSettingController>().appConfig?.logo != null
           ? Image.memory(
               context.read<ThemeSettingController>().appConfig!.logo!,
         width: 120,
         height: 60,
         fit: BoxFit.fitWidth,
             )
-          : SizedBox(),
-      title: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CommonUtils.svgIconActionButton(
-            'assets/svg/border_color.svg',
-          ),
+              : SizedBox(),
           isTabletMode ? SizedBox(width: 10) : spacer,
           CommonUtils.appBarActionButtonWithText(
             'assets/svg/Cash.svg',

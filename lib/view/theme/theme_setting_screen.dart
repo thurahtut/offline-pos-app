@@ -84,12 +84,12 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
         final Database db = await DatabaseHelper().db;
         // await db.transaction((txn) async {
         // final Database database = txn.database;
-        await AppConfigTable.insertOrUpdate(
+        await AppConfigTable.insertOrUpdateWithDB(
             db, THEME_BODY_COLOR, controller.themeColor);
 
         if (controller.imageBytes != null &&
             controller.imageBytes!.isNotEmpty) {
-          await AppConfigTable.insertOrUpdate(
+          await AppConfigTable.insertOrUpdateWithDB(
               db, LOGO, base64Encode(controller.imageBytes!));
         }
         // });

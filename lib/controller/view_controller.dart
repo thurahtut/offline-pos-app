@@ -35,19 +35,35 @@ class ViewController with ChangeNotifier {
     notifyListeners();
   }
 
-  int _userId = 0;
-  int get userId => _userId;
-  set userId(int userId) {
-    if (_userId == userId) return;
-    _userId = userId;
+  // int _userId = 0;
+  // int get userId => _userId;
+  // set userId(int userId) {
+  //   if (_userId == userId) return;
+  //   _userId = userId;
+  //   notifyListeners();
+  // }
+
+  // int _userPinCode = 0;
+  // int get userPinCode => _userPinCode;
+  // set userPinCode(int userPinCode) {
+  //   if (_userPinCode == userPinCode) return;
+  //   _userPinCode = userPinCode;
+  //   notifyListeners();
+  // }
+
+  String? _email;
+  String? get email => _email;
+  set email(String? email) {
+    if (_email == email) return;
+    _email = email;
     notifyListeners();
   }
 
-  int _userPinCode = 0;
-  int get userPinCode => _userPinCode;
-  set userPinCode(int userPinCode) {
-    if (_userPinCode == userPinCode) return;
-    _userPinCode = userPinCode;
+  String? _password;
+  String? get password => _password;
+  set password(String? password) {
+    if (_password == password) return;
+    _password = password;
     notifyListeners();
   }
 

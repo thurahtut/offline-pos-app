@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -202,8 +204,8 @@ class Api {
   }
 
   static Future<Response?> login({
-    int? id,
-    int? pinCode,
+    String? email,
+    String? password,
   }) async {
     dio.options.headers = {
       'Content-Type': 'application/json',
@@ -212,22 +214,31 @@ class Api {
       endpoint: '/login'.onEndPoint(),
       method: Method.POST.name,
       data: jsonEncode({
-        "id": id,
-        "pin": pinCode,
+        "email": email,
+        "password": password,
       }),
     );
   }
 
   static Future<Response?> getAllProduct({
-    void Function(int, int)? onSendProgress,
+    int? locationId,
+    String? lastSyncDate,
+    void Function(int, int)? onReceiveProgress,
   }) async {
     dio.options.headers = {
       'Content-Type': 'application/json',
     };
+    Map<String, dynamic> map = {
+      "location_id": locationId,
+    };
+    if (lastSyncDate != null) {
+      map.putIfAbsent("last_sync_date", () => lastSyncDate);
+    }
     return request(
       endpoint: '/products'.onEndPoint(),
       method: Method.GET.name,
-      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+      queryParameters: map,
     );
   }
 
@@ -244,7 +255,7 @@ class Api {
   }
 
   static Future<Response?> getAllCustomer({
-    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
   }) async {
     dio.options.headers = {
       'Content-Type': 'application/json',
@@ -252,7 +263,35 @@ class Api {
     return request(
       endpoint: '/customers'.onEndPoint(),
       method: Method.GET.name,
-      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
+
+  static Future<Response?> getPosConfigByID({
+    int? inventoryId,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/posconfig/$inventoryId'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
+
+  static Future<Response?> getPosSessionByID({
+    int? configId,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/posconfig/session/$configId'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
     );
   }
 }

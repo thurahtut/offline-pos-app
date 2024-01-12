@@ -48,7 +48,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
           children: [
             Divider(),
             SizedBox(height: MediaQuery.of(context).size.height / 13),
-            _userIdWidget(textStyle),
+            _emailWidget(textStyle),
             SizedBox(height: 20),
             _pinWidget(textStyle, context),
             SizedBox(height: MediaQuery.of(context).size.height / 13),
@@ -74,7 +74,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
     );
   }
 
-  TextFormField _userIdWidget(TextStyle textStyle) {
+  TextFormField _emailWidget(TextStyle textStyle) {
     return TextFormField(
       autofocus: true,
       style: TextStyle(
@@ -82,7 +82,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
         fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
-        label: Text('User Id'),
+        label: Text('Email'),
         labelStyle: textStyle,
         contentPadding: EdgeInsets.all(20),
         border: OutlineInputBorder(
@@ -92,20 +92,17 @@ class _UserLoginFormState extends State<UserLoginForm> {
           borderSide: BorderSide(color: primaryColor),
         ),
       ),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(
-          RegExp(r'^\d+'),
-        ),
-      ],
+      // inputFormatters: [
+      //   FilteringTextInputFormatter.allow(
+      //     RegExp(r'^\d+'),
+      //   ),
+      // ],
       onSaved: (newValue) {
-        widget.mainContext.read<ViewController>().userId =
-            int.tryParse(newValue ?? '') ?? 0;
+        widget.mainContext.read<ViewController>().email = newValue;
       },
       validator: (value) {
-        if (value != null &&
-            value.isNotEmpty &&
-            double.tryParse(value) == null) {
-          return "Please enter the user id!";
+        if (value == null) {
+          return "Please enter email!";
         }
         return null;
       },
@@ -125,7 +122,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
           ),
           keyboardType: TextInputType.visiblePassword, //to check
           decoration: InputDecoration(
-            label: Text('Pin'),
+            label: Text('Password'),
             labelStyle: textStyle,
             contentPadding: EdgeInsets.all(20),
             border: OutlineInputBorder(
@@ -147,24 +144,21 @@ class _UserLoginFormState extends State<UserLoginForm> {
               ),
             ),
           ),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(
-              RegExp(r'^\d+'),
-            ),
-          ],
+          // inputFormatters: [
+          //   FilteringTextInputFormatter.allow(
+          //     RegExp(r'^\d+'),
+          //   ),
+          // ],
           obscureText: !passwordVisible,
           onFieldSubmitted: (value) {
             loginUser(widget.bContext);
           },
           onSaved: (newValue) {
-            widget.mainContext.read<ViewController>().userPinCode =
-                int.tryParse(newValue ?? '') ?? 0;
+            widget.mainContext.read<ViewController>().password = newValue;
           },
           validator: (value) {
-            if (value != null &&
-                value.isNotEmpty &&
-                double.tryParse(value) == null) {
-              return "Please enter the user pin code!";
+            if (value == null) {
+              return "Please enter password!";
             }
             return null;
           },
@@ -217,12 +211,14 @@ class _UserLoginFormState extends State<UserLoginForm> {
     if (widget.formKey.currentState?.validate() ?? false) {
       widget.formKey.currentState?.save();
       Api.login(
-        id: widget.mainContext.read<ViewController>().userId,
-        pinCode: widget.mainContext.read<ViewController>().userPinCode,
+        email: widget.mainContext.read<ViewController>().email,
+        password: widget.mainContext.read<ViewController>().password,
       ).then((response) {
         if (response != null &&
             response.statusCode == 200 &&
             response.data != null) {
+          context.read<LoginUserController>().loginUser =
+              User.fromJson(response.data);
           Navigator.pop(bContext, true);
         }
       });

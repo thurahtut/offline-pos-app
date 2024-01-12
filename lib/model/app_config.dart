@@ -6,6 +6,7 @@ class AppConfig {
   String? themeBodyColor;
   Uint8List? logo;
   String? dbVersion;
+  String? productLastSyncDate;
 
   AppConfig({this.themeBodyColor, this.logo, this.dbVersion});
 
@@ -20,6 +21,7 @@ class AppConfig {
     }
     // logo = json['logo'];
     dbVersion = json['db_version'];
+    productLastSyncDate = json['product_last_sync_date'];
   }
 
   Map<String, dynamic> toJson() {
@@ -30,6 +32,7 @@ class AppConfig {
     }
     // data['logo'] = logo;
     data['db_version'] = dbVersion;
+    data['product_last_sync_date'] = productLastSyncDate;
     return data;
   }
 }

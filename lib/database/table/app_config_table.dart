@@ -11,6 +11,7 @@ const APP_CONFIG_VALUE = "value";
 const THEME_BODY_COLOR = "theme_body_color";
 const LOGO = "logo";
 const DB_VERSION = "db_version";
+const PRODUCT_LAST_SYNC_DATE = "product_last_sync_date";
 
 class AppConfigTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -56,8 +57,13 @@ class AppConfigTable {
     isExist = maps.isNotEmpty;
     return isExist;
   }
-
   static Future<int> insertOrUpdate(
+     String columnName, String? value) async {
+    final Database db = await DatabaseHelper().db;
+    return insertOrUpdateWithDB(db, columnName, value);
+  }
+
+  static Future<int> insertOrUpdateWithDB(
       final Database db, String columnName, String? value) async {
     if (await checkRowExist(db, columnName)) {
       String sql = "UPDATE $APP_CONFIG_TABLE_NAME "

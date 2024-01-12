@@ -1,7 +1,7 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class MorningsyncController with ChangeNotifier {
-  final int allTask = 1;
+  final int allTask = 2;
 
   int _currentReachTask = 1;
   int get currentReachTask => _currentReachTask;

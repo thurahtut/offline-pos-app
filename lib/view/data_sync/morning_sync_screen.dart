@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/morning_sync_controller.dart';
+
 
 class MorningSyncScreen extends StatefulWidget {
   const MorningSyncScreen({super.key});
@@ -14,10 +17,11 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getAllProductFromApi(() {
+        AppConfigTable.insertOrUpdate(
+            PRODUCT_LAST_SYNC_DATE, DateTime.now().toString());
         getAllCustomerFromApi(() {
           context.read<MorningsyncController>().currentTaskTitle = "";
-          Navigator.pop(context);
-          Navigator.pushNamed(context, MainScreen.routeName);
+          Navigator.pushReplacementNamed(context, MainScreen.routeName);
         });
       });
     });
@@ -27,9 +31,16 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
   void getAllProductFromApi(Function() callback) {
     context.read<MorningsyncController>().currentTaskTitle =
         "Product List Sync....";
+    context.read<MorningsyncController>().currentReachTask = 1;
+    String? lastSyncDate =
+        context.read<ThemeSettingController>().appConfig?.productLastSyncDate;
+    int? locationId =
+        context.read<LoginUserController>().posConfig?.shPosLocation;
     Api.getAllProduct(
-      onSendProgress: (sent, total) {
-        double value = double.parse((sent / total).toStringAsFixed(2)) * 100;
+      lastSyncDate: lastSyncDate,
+      locationId: locationId,
+      onReceiveProgress: (sent, total) {
+        double value = min(((sent / total) * 100), 100);
         context.read<MorningsyncController>().percentage =
             value == 100 ? null : value;
       },
@@ -48,9 +59,10 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
   void getAllCustomerFromApi(Function() callback) {
     context.read<MorningsyncController>().currentTaskTitle =
         "Customer List Sync....";
+    context.read<MorningsyncController>().currentReachTask = 2;
     Api.getAllCustomer(
-      onSendProgress: (sent, total) {
-        double value = double.parse((sent / total).toStringAsFixed(2)) * 100;
+      onReceiveProgress: (sent, total) {
+        double value = min(((sent / total) * 100), 100);
         context.read<MorningsyncController>().percentage =
             value == 100 ? null : value;
       },
@@ -121,8 +133,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(text: "", children: [
                             TextSpan(
-                              text: context
-                                  .read<MorningsyncController>()
+                                text: controller
                                   .currentReachTask
                                   .toString(),
                               style: TextStyle(
@@ -138,8 +149,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: context
-                                  .read<MorningsyncController>()
+                                text: controller
                                   .allTask
                                   .toString(),
                               style: TextStyle(
@@ -154,8 +164,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                     ),
                     SizedBox(width: 15),
                     Text(
-                      // controller.currentTaskTitle ??
-                      'Product List Sync',
+                        controller.currentTaskTitle,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 25,
@@ -166,7 +175,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                 ),
                 SizedBox(height: 15),
                 GFProgressBar(
-                  percentage: controller.percentage ?? 0 / 100,
+                    percentage: (controller.percentage ?? 0) / 100,
                   lineHeight: 25,
                   backgroundColor: Colors.black12,
                   progressBarColor: Constants.greyColor,
@@ -181,7 +190,8 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
             ),
           ),
         );
-      }),
+        },
+      ),
     );
   }
 }

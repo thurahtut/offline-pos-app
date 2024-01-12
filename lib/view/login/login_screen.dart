@@ -1,4 +1,5 @@
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
+import 'package:offline_pos/view/inventory/choose_inventory_dialog.dart';
 import 'package:offline_pos/view/user/user_login_dialog.dart';
 
 import '/components/export_files.dart';
@@ -38,13 +39,19 @@ class LoginScreen extends StatelessWidget {
       ),
       Text('Or'),
       BorderContainer(
-        text: 'Select Cashier',
+        text: 'Login',
         onTap: () {
           return UserLoginDialog.loginUserDialogWidget(
             context,
           ).then((value) {
             if (value == true) {
-              Navigator.pushNamed(context, MorningSyncScreen.routeName);
+              return ChooseInventoryDialog.chooseInventoryDialogWidget(
+                context,
+              ).then((value) {
+                if (value == true) {
+                  Navigator.pushNamed(context, MorningSyncScreen.routeName);
+                }
+              });
             }
           });
         },
