@@ -110,19 +110,26 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
       child: Row(
         children: [
           Expanded(
-            child: DropdownButton(
-              value: list.first,
-              icon: SizedBox(),
-              underline: Container(),
-              items: list.map((ConfigData items) {
-                return DropdownMenuItem(
-                  value: items,
-                  child: Text(items.name ?? ''),
-                );
-              }).toList(),
-              onChanged: (ConfigData? newValue) {
-                inventoryIdNotifier.value = newValue?.id ?? 0;
-              },
+            child: ValueListenableBuilder<int>(
+                valueListenable: inventoryIdNotifier,
+                builder: (_, inventoryId, __) {
+                  return DropdownButton<int>(
+                    value: inventoryId == 0 ? list.first.id : inventoryId,
+                    icon: SizedBox(),
+                    underline: Container(),
+                    items: list.map((ConfigData items) {
+                      return DropdownMenuItem(
+                        value: items.id,
+                        child: Text(items.name ?? ''),
+                      );
+                    }).toList(),
+                    onChanged: (int? newValue) {
+                      inventoryIdNotifier.value = newValue != null
+                          ? (list.firstWhere((e) => e.id == newValue).id ?? 0)
+                          : 0;
+                    },
+                  );
+                }
             ),
           ),
           Icon(Icons.keyboard_arrow_down),

@@ -1060,11 +1060,12 @@ class ProductInfoView extends StatelessWidget {
 
   Widget _internalReferenceWidget(BuildContext context) {
     return TextFormField(
-      initialValue: context
-              .read<ProductDetailController>()
-              .creatingProduct
-              .internalRef
-              ?.toString() ??
+      initialValue:
+          // context
+          //         .read<ProductDetailController>()
+          //         .creatingProduct
+          //         .internalRef
+          //         ?.toString() ??
           '',
       enabled: false,
       textAlignVertical: TextAlignVertical.center,

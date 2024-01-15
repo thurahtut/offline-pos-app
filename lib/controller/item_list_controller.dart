@@ -68,8 +68,26 @@ class ItemListController with ChangeNotifier {
       limit: limit,
       offset: offset,
     ).then((list) {
-      productList.addAll(list);
-      notifyListeners();
+      List<int> productIds = [];
+      for (var data in list) {
+        if (data.productId != null && data.productId != 0) {
+          productIds.add(data.productId!);
+        }
+      }
+      PriceListItemTable.getPriceListItemByProductIds(productIds).then(
+        (value) {
+          for (var pli in value) {
+            for (var data in list) {
+              if (data.productId == pli.productTmplId) {
+                data.priceListItem = pli;
+                break;
+              }
+            }
+          }
+          productList.addAll(list);
+          notifyListeners();
+        },
+      );
     });
   }
 

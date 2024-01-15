@@ -67,6 +67,7 @@ class DatabaseHelper {
     await EmployeeTable.onCreate(db, version);
     await CustomerTable.onCreate(db, version);
     await ProductTable.onCreate(db, version);
+    await PriceListItemTable.onCreate(db, version);
     await OrderHistoryTable.onCreate(db, version);
     await AppConfigTable.onCreate(db, version);
 
@@ -80,6 +81,7 @@ class DatabaseHelper {
   static Future<void> clear() async {
     final db = await DatabaseHelper().db;
     await db.delete(PRODUCT_TABLE_NAME);
+    await db.delete(PRICE_LIST_ITEM_TABLE_NAME);
     await db.delete(ORDER_HISTORY_TABLE_NAME);
     await db.delete(EMPLOYEE_TABLE_NAME);
     await db.delete(CUSTOMER_TABLE_NAME);

@@ -18,8 +18,10 @@ class CurrentOrderController with ChangeNotifier {
     int tQty = 0;
     int tTotal = 0;
     for (var i = 0; i < cOrderList.length; i++) {
-      tQty += int.tryParse(cOrderList[i].qty?.toString() ?? "0") ?? 0;
-      tTotal += (int.tryParse(cOrderList[i].qty?.toString() ?? "0") ?? 0) *
+      tQty +=
+          int.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0;
+      tTotal +=
+          (int.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0) *
           (0); //int.tryParse(cOrderList[i].salePrice?.toString() ?? "0") ??
     }
     list.first = tQty;

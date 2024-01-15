@@ -116,9 +116,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
               child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/network_wifi.svg', 'Wifi Address Name',
                   fontSize: 16, onPressed: () {
-                return ChooseCashierDialog.chooseCashierDialogWidget(
-                  context,
-                );
               }),
             ),
             PopupMenuItem<int>(
@@ -126,9 +123,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
               child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/credit_card.svg', 'Customer\'s Screen',
                   fontSize: 16, onPressed: () {
-                return ChooseCashierDialog.chooseCashierDialogWidget(
-                  context,
-                );
               }),
             ),
             PopupMenuItem<int>(
@@ -136,9 +130,10 @@ class _SaleAppBarState extends State<SaleAppBar> {
               child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/lock_open_right.svg', 'Lock / Unlock',
                   fontSize: 16, onPressed: () {
-                return ChooseCashierDialog.chooseCashierDialogWidget(
-                  context,
-                );
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                    ModalRoute.withName("/Home"));
               }),
             ),
             PopupMenuItem<int>(
@@ -146,9 +141,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
               child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/move_item.svg', 'Close', fontSize: 16,
                   onPressed: () {
-                return ChooseCashierDialog.chooseCashierDialogWidget(
-                  context,
-                );
               }),
             ),
           ];

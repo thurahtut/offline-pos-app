@@ -25,7 +25,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
     {"title": "Product Variants", "onTap": (context) {}},
     {"title": "Product Tags", "onTap": (context) {}},
     {"title": "Custom Product Template", "onTap": (context) {}},
-    {"title": "Pricelists", "onTap": (context) {}},
+    // {"title": "Pricelists", "onTap": (context) {}},
     {"title": "Product Multi UOM", "onTap": (context) {}},
     {
       "title": "Product Packagings",

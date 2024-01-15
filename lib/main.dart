@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PaymentMethodListController()),
         ChangeNotifierProvider(create: (_) => ProductPackagingController()),
         ChangeNotifierProvider(create: (_) => ProductListController()),
-        ChangeNotifierProvider(create: (_) => PriceRulesListController()),
+        ChangeNotifierProvider(create: (_) => PriceListItemController()),
         ChangeNotifierProvider(create: (_) => ProductDetailController()),
         ChangeNotifierProvider(create: (_) => EmployeeListController()),
         ChangeNotifierProvider(create: (_) => MorningsyncController()),

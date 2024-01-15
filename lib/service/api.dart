@@ -294,4 +294,18 @@ class Api {
       onReceiveProgress: onReceiveProgress,
     );
   }
+
+  static Future<Response?> getPriceListItemByID({
+    int? priceListId,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/pricelist/items/$priceListId'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
 }

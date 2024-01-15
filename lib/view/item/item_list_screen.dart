@@ -268,7 +268,8 @@ class _ItemListScreenState extends State<ItemListScreen> {
             ),
             Expanded(
                 child:
-                    Text(0.toString(), style: textStyle)), //product.qtyInBags
+                    Text(product.onhandQuantity?.toString() ?? "0",
+                    style: textStyle)), //product.qtyInBags
             Expanded(
                 child: Text(
                     // product.unitOfMeasure != null &&
@@ -279,7 +280,9 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     style: textStyle)),
             Expanded(
                 child:
-                    Text(0.toString(), style: textStyle)), //product.salePrice
+                    Text(
+                    product.priceListItem?.fixedPrice?.toString() ?? "0",
+                    style: textStyle)), //product.salePrice
           ],
         ),
       ),
@@ -287,7 +290,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
   }
 
   void _addItemToList(Product product) {
-    product.qty = 1;
+    product.onhandQuantity = 1;
     context.read<CurrentOrderController>().currentOrderList.add(product);
     context.read<CurrentOrderController>().notify();
   }

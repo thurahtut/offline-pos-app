@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 
 import '../../components/export_files.dart';
@@ -11,7 +13,12 @@ const CATEGORY_ID_IN_PT = "categ_id";
 const IS_ROUNDING_PRODUCT = "is_rounding_product";
 const SH_IS_BUNDLE = "sh_is_bundle";
 const SH_SECONDARY_UOM = "sh_secondary_uom";
-const INTERNAL_REF = "internal_ref";
+const POS_CATEG_ID_IN_PT = "pos_categ_id";
+const WRITE_UID_IN_PT = "write_uid";
+const WRITE_DATE_IN_PT = "write_date";
+const PRODUCT_VARIANT_IDS = "product_variant_ids";
+const BARCODE_IN_PT = "barcode";
+const ON_HAND_QUANTITY = "onhand_quantity";
 
 class ProductTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -22,7 +29,12 @@ class ProductTable {
         "$IS_ROUNDING_PRODUCT BOOLEAN,"
         "$SH_IS_BUNDLE BOOLEAN,"
         "$SH_SECONDARY_UOM INTEGER,"
-        "$INTERNAL_REF TEXT"
+        "$POS_CATEG_ID_IN_PT INTEGER,"
+        "$WRITE_UID_IN_PT INTEGER,"
+        "$WRITE_DATE_IN_PT TEXT,"
+        "$PRODUCT_VARIANT_IDS TEXT,"
+        "$BARCODE_IN_PT TEXT,"
+        "$ON_HAND_QUANTITY TEXT"
         ")");
   }
 
@@ -30,14 +42,18 @@ class ProductTable {
     final Database db = await DatabaseHelper().db;
 
     String sql = "INSERT INTO $PRODUCT_TABLE_NAME("
+        "${product.productId != null && product.productId != 0 ? "$PRODUCT_ID," : ""}"
         "$PRODUCT_NAME, $CATEGORY_ID_IN_PT, $IS_ROUNDING_PRODUCT, "
-        "$SH_IS_BUNDLE, "
-        "$SH_SECONDARY_UOM, $INTERNAL_REF"
+        "$SH_IS_BUNDLE, $SH_SECONDARY_UOM, $POS_CATEG_ID_IN_PT, "
+        "$WRITE_UID_IN_PT, $WRITE_DATE_IN_PT, $PRODUCT_VARIANT_IDS, "
+        "$BARCODE_IN_PT, $ON_HAND_QUANTITY"
         ")"
         " VALUES("
+        "${product.productId != null && product.productId != 0 ? "${product.productId}," : ""}"
         "'${product.productName}', ${product.categoryId}, '${product.isRoundingProduct}', "
-        "'${product.shIsBundle}', "
-        "'${product.shSecondaryUom}', '${product.internalRef}'"
+        "'${product.shIsBundle}', '${product.shSecondaryUom}', ${product.posCategId}, "
+        "${product.writeUid}, '${product.writeDate}', '${product.productVariantIds != null && product.productVariantIds!.isNotEmpty ? jsonEncode(product.productVariantIds!) : ""}', "
+        "'${product.barcode}', '${product.onhandQuantity ?? "0"}', "
         ")";
 
     return db.rawInsert(sql);
@@ -169,57 +185,6 @@ class ProductTable {
 
     return Product.fromJson(maps.first);
   }
-
-  // static Product _parseProduct(Map<String, dynamic> json) {
-  //   Product product = Product();
-  //   product.productId = json[PRODUCT_ID];
-  //   product.productName = json[PRODUCT_NAME];
-  //   product.package = json[PACKAGE];
-  //   product.productType = json[PRODUCT_TYPE] != "null"
-  //       ? ProductType.values.firstWhere((e) => e.name == json[PRODUCT_TYPE])
-  //       : ProductType.consumable;
-  //   product.isBundled = bool.tryParse(json[IS_BUNDLED]);
-  //   product.canBeSold = bool.tryParse(json[CAN_BE_SOLD]);
-  //   product.canBePurchased = bool.tryParse(json[CAN_BE_PURCHASED]);
-  //   product.canBeManufactured = bool.tryParse(json[CAN_BE_MANUFACTURED]);
-  //   product.reInvoiceExpenses = json[RE_INVOICE_EXPENSES] != "null"
-  //       ? ReInvoiceExpenses.values
-  //           .firstWhere((e) => e.text == json[RE_INVOICE_EXPENSES])
-  //       : ReInvoiceExpenses.no;
-  //   product.invoicingPolicy = json[INVOICE_POLICY] != "null"
-  //       ? InvoicingPolicy.values
-  //           .firstWhere((e) => e.name == json[INVOICE_POLICY])
-  //       : InvoicingPolicy.orderedQuantities;
-  //   product.unitOfMeasure = json[UNIT_OF_MEASURE];
-  //   product.baseUnitCount = double.tryParse(json[BASE_UNIT_COUNT].toString());
-  //   product.isSecondaryUnit = bool.tryParse(json[IS_SECONDARY_UNIT]);
-  //   product.purchaseUOM = json[PURCHASE_UOM];
-  //   product.isCommissionBasedServices =
-  //       bool.tryParse(json[IS_COMMISSION_BASED_SERVICES]);
-  //   product.isThirdUnit = bool.tryParse(json[IS_THIRD_UNIT]);
-  //   product.rebatePercentage =
-  //       double.tryParse(json[REBATE_PERCENTAGE].toString());
-  //   product.price = double.tryParse(json[PRICE].toString());
-  //   product.salePrice = double.tryParse(json[SALE_PRICE].toString());
-  //   product.latestPrice = double.tryParse(json[LATEST_PRICE].toString());
-  //   product.productCategory = json[PRODUCT_CATEGORY];
-  //   product.productBrand = json[PRODUCT_BRAND];
-  //   product.qtyInBags = double.tryParse(json[QTY_IN_BAGS].toString());
-  //   product.multipleOfQty = double.tryParse(json[MULTIPLE_OF_QTY].toString());
-  //   product.oldInternalRef = json[OLD_INTERNAL_REF];
-  //   product.internalRef = json[INTERNAL_REF];
-  //   product.barcode = json[BARCODE];
-  //   product.isClearance = bool.tryParse(json[IS_CLEARANCE]);
-  //   product.itemType = json[ITEM_TYPE] != "null"
-  //       ? ItemType.values.firstWhere((e) => e.text == json[ITEM_TYPE])
-  //       : ItemType.none;
-  //   product.countryCode = json[COUNTRY_CODE];
-  //   product.allowNegativeStock = bool.tryParse(json[ALLOW_NEGATIVE_STOCK]);
-  //   product.company = json[COMPANY];
-  //   product.tags = json[TAGS];
-  //   product.internalNotes = json[INTERNAL_NOTES];
-  //   return product;
-  // }
 
   static Future<int> delete(int productId) async {
     final Database db = await DatabaseHelper().db;
