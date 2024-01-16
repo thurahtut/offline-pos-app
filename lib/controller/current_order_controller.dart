@@ -9,6 +9,14 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  int? _selectedIndex;
+  int? get selectedIndex => _selectedIndex;
+  set selectedIndex(int? selectedIndex) {
+    if (_selectedIndex == selectedIndex) return;
+    _selectedIndex = selectedIndex;
+    notifyListeners();
+  }
+
   notify() {
     notifyListeners();
   }
@@ -22,7 +30,9 @@ class CurrentOrderController with ChangeNotifier {
           int.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0;
       tTotal +=
           (int.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0) *
-          (0); //int.tryParse(cOrderList[i].salePrice?.toString() ?? "0") ??
+          (int.tryParse(
+                  cOrderList[i].priceListItem?.fixedPrice?.toString() ?? "0") ??
+              0); //int.tryParse(cOrderList[i].salePrice?.toString() ?? "0") ??
     }
     list.first = tQty;
     list.last = tTotal;
@@ -45,8 +55,21 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  CurrentOrderKeyboardState _currentOrderKeyboardState =
+      CurrentOrderKeyboardState.qty;
+  CurrentOrderKeyboardState get currentOrderKeyboardState =>
+      _currentOrderKeyboardState;
+  set currentOrderKeyboardState(
+      CurrentOrderKeyboardState currentOrderKeyboardState) {
+    if (currentOrderKeyboardState == _currentOrderKeyboardState) return;
+    _currentOrderKeyboardState = currentOrderKeyboardState;
+    notifyListeners();
+  }
+
   resetCurrentOrderController() {
     _currentOrderList = [];
+    _selectedIndex = null;
+    _currentOrderKeyboardState = CurrentOrderKeyboardState.qty;
     notifyListeners();
   }
 }

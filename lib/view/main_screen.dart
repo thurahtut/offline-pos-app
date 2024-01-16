@@ -132,6 +132,17 @@ class _MainScreenState extends State<MainScreen> {
                     ? Colors.white
                     : primaryColor,
               ),
+              // spacer,
+              // CommonUtils.svgIconActionButton(
+              //   'assets/svg/home.svg',
+              //   withContianer: true,
+              //   containerColor: context.watch<ViewController>().isHome
+              //       ? primaryColor
+              //       : Constants.unselectedColor,
+              //   iconColor: context.watch<ViewController>().isHome
+              //       ? Colors.white
+              //       : primaryColor,
+              // ),
               spacer,
               ...CommonUtils.categoryList
                   .map((e) => Row(

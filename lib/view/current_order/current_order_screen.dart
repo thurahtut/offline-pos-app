@@ -44,7 +44,10 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         Align(
             alignment: Alignment.bottomCenter,
             child: Consumer<ViewController>(builder: (_, controller, __) {
-              return _orderCalculatorWidget(context);
+              return Consumer<CurrentOrderController>(
+                  builder: (_, currentOrderController, __) {
+                return _orderCalculatorWidget(context, currentOrderController);
+              });
             })),
       ],
     );
@@ -62,93 +65,111 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ...controller.currentOrderList
+                .asMap()
                 .map(
-                  (e) => Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        height: isTabletMode ? 70 : 100,
-                        width: isTabletMode ? widget.width - 16 : widget.width,
-                        margin: isTabletMode ? EdgeInsets.all(8) : null,
-                        decoration: BoxDecoration(
-                          color: Constants.currentOrderDividerColor,
-                          borderRadius:
-                              isTabletMode ? BorderRadius.circular(20) : null,
-                        ),
-                        child: Center(
-                          child: ListTile(
-                            dense: true,
-                            title: Row(
-                              children: [
-                                Expanded(
-                                  child: RichText(
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(text: "", children: [
-                                      TextSpan(
-                                        text: "[${e.productId}]",
-                                        style: textStyle.copyWith(
-                                            color: Constants.successColor),
-                                      ),
-                                      TextSpan(
-                                          text: e.productName,
-                                          style: textStyle),
-                                    ]),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    ProductUntiDialog.productUnitWidget(context,
-                                        product: e);
-                                  },
-                                  child: Text(
-                                      "${0} Ks".toString(), // product.salePrice
-                                      style: textStyle.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: primaryColor,
-                                      )),
-                                )
-                              ],
+                  (i, e) => MapEntry(
+                    i,
+                    InkWell(
+                      onTap: () {
+                        controller.selectedIndex = i;
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            height: isTabletMode ? 70 : 100,
+                            width:
+                                isTabletMode ? widget.width - 16 : widget.width,
+                            margin: isTabletMode ? EdgeInsets.all(8) : null,
+                            decoration: BoxDecoration(
+                              color: controller.selectedIndex == i
+                                  ? primaryColor.withOpacity(0.13)
+                                  : Constants.currentOrderDividerColor,
+                              borderRadius: isTabletMode
+                                  ? BorderRadius.circular(20)
+                                  : null,
                             ),
-                            subtitle: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                      "1 Unit at 900.00 Ks/Unit with a 0.00 % discount"),
-                                ),
-                                Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: primaryColor),
-                                  child: Center(
-                                    child: Text(
-                                      "%",
-                                      style: TextStyle(
-                                        color: Constants.accentColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                            child: Center(
+                              child: ListTile(
+                                dense: true,
+                                title: Row(
+                                  children: [
+                                    Expanded(
+                                      child: RichText(
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        text: TextSpan(text: "", children: [
+                                          TextSpan(
+                                            text: "[${e.productId}]",
+                                            style: textStyle.copyWith(
+                                                color: Constants.successColor),
+                                          ),
+                                          TextSpan(
+                                              text: e.productName,
+                                              style: textStyle),
+                                        ]),
                                       ),
                                     ),
-                                  ),
-                                )
-                              ],
+                                    InkWell(
+                                      onTap: () {
+                                        ProductUntiDialog.productUnitWidget(
+                                            context,
+                                            product: e);
+                                      },
+                                      child: Text(
+                                          "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"
+                                              .toString(), // product.salePrice
+                                          style: textStyle.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: primaryColor,
+                                          )),
+                                    )
+                                  ],
+                                ),
+                                subtitle: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                          "${max(e.onhandQuantity ?? 0, 1)} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"),
+                                    ),
+                                    Container(
+                                      width: 35,
+                                      height: 35,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          color: primaryColor),
+                                      child: Center(
+                                        child: Text(
+                                          "%",
+                                          style: TextStyle(
+                                            color: Constants.accentColor,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 14.0),
+                            child: Divider(
+                              thickness: 0.6,
+                              height: 6,
+                              color: Constants.disableColor.withOpacity(0.96),
+                            ),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                        child: Divider(
-                          thickness: 0.6,
-                          height: 6,
-                          color: Constants.disableColor.withOpacity(0.96),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 )
+                .values
                 .toList(),
           ],
         );
@@ -240,7 +261,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     );
   }
 
-  Widget _orderCalculatorWidget(BuildContext context) {
+  Widget _orderCalculatorWidget(
+      BuildContext context, CurrentOrderController currentOrderController) {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     List<Widget> list = [];
     List<Widget> rowList = [];
@@ -249,25 +271,35 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     List<Widget> calculatorActionWidgetList = [
       CommonUtils.eachCalculateButtonWidget(
         text: "1",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "1");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "2",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "2");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "3",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "3");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "Qty",
-        onPressed: () {},
+        containerColor: currentOrderController.currentOrderKeyboardState ==
+                CurrentOrderKeyboardState.qty
+            ? primaryColor.withOpacity(0.3)
+            : null,
+        onPressed: () {
+          currentOrderController.currentOrderKeyboardState =
+              CurrentOrderKeyboardState.qty;
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
-        icon: NavigationService.navigatorKey.currentContext != null &&
-                NavigationService.navigatorKey.currentContext!
-                    .watch<ViewController>()
-                    .isKeyboardHide
+        icon: context.watch<ViewController>().isKeyboardHide
             ? Icons.keyboard_arrow_up_rounded
             : Icons.keyboard_arrow_down_rounded,
         iconSize: 32,
@@ -278,39 +310,72 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "4",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "4");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "5",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "5");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "6",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "6");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
+        containerColor: currentOrderController.currentOrderKeyboardState ==
+                CurrentOrderKeyboardState.disc
+            ? primaryColor.withOpacity(0.3)
+            : null,
         text: "Disc",
-        onPressed: () {},
+        onPressed: () {
+          currentOrderController.currentOrderKeyboardState =
+              CurrentOrderKeyboardState.disc;
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "Price",
-        onPressed: () {},
+        containerColor: currentOrderController.currentOrderKeyboardState ==
+                CurrentOrderKeyboardState.price
+            ? primaryColor.withOpacity(0.3)
+            : null,
+        onPressed: () {
+          currentOrderController.currentOrderKeyboardState =
+              CurrentOrderKeyboardState.price;
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "7",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "7");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "8",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "8");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "9",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "9");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "+/-",
-        onPressed: () {},
+        containerColor: currentOrderController.currentOrderKeyboardState ==
+                CurrentOrderKeyboardState.refund
+            ? primaryColor.withOpacity(0.3)
+            : null,
+        onPressed: () {
+          currentOrderController.currentOrderKeyboardState =
+              CurrentOrderKeyboardState.refund;
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         icon: Icons.arrow_forward_ios,
@@ -330,16 +395,22 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: ".",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, ".");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "0",
-        onPressed: () {},
+        onPressed: () {
+          _updateCurrentOrder(currentOrderController, "0");
+        },
       ),
       CommonUtils.eachCalculateButtonWidget(
           icon: Icons.backspace_outlined,
           iconColor: Constants.alertColor,
-          onPressed: () {}),
+          onPressed: () {
+            _updateCurrentOrder(currentOrderController, "", isBack: true);
+          }),
       CommonUtils.eachCalculateButtonWidget(
         text: "Customer",
         containerColor: primaryColor,
@@ -348,11 +419,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         onPressed: () async {
           context.read<ViewController>().isCustomerView = true;
           CustomerListDialog.customerListDialogWidget(context).then((value) {
-            if (NavigationService.navigatorKey.currentContext != null) {
-              NavigationService.navigatorKey.currentContext!
-                  .read<ViewController>()
-                  .isCustomerView = false;
-            }
+            context.read<ViewController>().isCustomerView = false;
           });
         },
       ),
@@ -398,5 +465,39 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     return Column(
       children: list,
     );
+  }
+
+  void _updateCurrentOrder(
+    CurrentOrderController currentOrderController,
+    String value, {
+    bool? isBack,
+  }) {
+    if (currentOrderController.selectedIndex != null) {
+      Product product = currentOrderController.currentOrderList
+          .elementAt(currentOrderController.selectedIndex!);
+      product.priceListItem ??= PriceListItem();
+      if (currentOrderController.currentOrderKeyboardState ==
+          CurrentOrderKeyboardState.price) {
+        String price = product.priceListItem!.fixedPrice?.toString() ?? "";
+        if (isBack == true) {
+          price = price.substring(0, price.length - 1);
+        } else {
+          price += value;
+        }
+        product.priceListItem?.fixedPrice = double.tryParse(price);
+        currentOrderController.notify();
+      } else if (currentOrderController.currentOrderKeyboardState ==
+          CurrentOrderKeyboardState.qty) {
+        String qty = product.onhandQuantity?.toString() ?? "";
+        if (isBack == true) {
+          qty = qty.substring(0, qty.length - 1);
+        } else {
+          qty = (qty != "1" ? qty : "");
+          qty += value;
+        }
+        product.onhandQuantity = double.tryParse(qty);
+        currentOrderController.notify();
+      }
+    }
   }
 }

@@ -49,3 +49,6 @@ enum DataSync {
   price,
   customer,
 }
+
+
+enum CurrentOrderKeyboardState { disc, qty, price, refund }

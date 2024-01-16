@@ -41,7 +41,11 @@ class ThemeSettingController with ChangeNotifier {
       _themeColor = appConfig?.themeBodyColor != null &&
               appConfig!.themeBodyColor!.isNotEmpty
           ? appConfig!.themeBodyColor!
-          : "007ACC";
+          : primaryColor
+              .toString()
+              .toLowerCase()
+              .replaceAll("color(0xff", "")
+              .replaceAll(")", "");
       primaryColor = Color(int.parse('0xff$_themeColor'));
 
       if (appConfig?.logo != null) {

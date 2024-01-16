@@ -1,5 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
-Color primaryColor = Color(0xFF007ACC);
+Color primaryColor = Color(0xFF207810); //007ACC
 class CommonUtils {
   static bool isTabletMode(BuildContext context) {
     return MediaQuery.of(context).size.width < 1080;
