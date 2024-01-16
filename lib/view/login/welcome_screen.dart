@@ -85,12 +85,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisSize: MainAxisSize.min,
                 children: [
                   _buttonContainer(context, 'Sync', () {
                     Navigator.pushNamed(context, ManualSyncScreen.routeName);
                   }, icon: Icons.replay_rounded),
-                  SizedBox(width: 8),
-                  SizedBox(width: 8),
+                  // SizedBox(width: 8),
+                  // SizedBox(width: 8),
                 ],
               ),
               // Row(

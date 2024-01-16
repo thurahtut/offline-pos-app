@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:image/image.dart' as img;
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/theme_setting_controller.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class ThemeSettingScreen extends StatefulWidget {
@@ -55,7 +54,7 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
           ),
           child: Column(children: [
             _titleWidget(),
-            SizedBox(height: 20),
+            SizedBox(height: 50),
             _logoWidget(),
             SizedBox(height: 20),
             _themeBodyColorWidget(),
@@ -102,14 +101,25 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
   }
 
   Widget _titleWidget() {
-    return Text(
-      'Setting',
-      style: TextStyle(
-        color: Constants.textColor,
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 1.2,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        BackButton(
+          style: ButtonStyle(
+            iconSize: MaterialStateProperty.resolveWith((states) => 30),
+          ),
+        ),
+        Text(
+          'Setting',
+          style: TextStyle(
+            color: Constants.textColor,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
+        SizedBox(),
+      ],
     );
   }
 
