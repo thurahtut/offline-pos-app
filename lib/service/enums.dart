@@ -25,7 +25,7 @@ enum ItemType {
 }
 
 enum Computation {
-  fixedPrice("Fixed Price"),
+  fixed("Fixed Price"),
   discount("Discount"),
   formula("Formula");
 

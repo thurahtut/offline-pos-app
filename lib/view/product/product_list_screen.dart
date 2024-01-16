@@ -40,18 +40,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   void getAllProduct() {
     context.read<ProductListController>().loading = true;
-    context.read<ProductListController>().getAllProduct().then((value) {
-      updateProductListToTable();
-      context.read<ProductListController>().loading = false;
-    });
+    context.read<ProductListController>().getAllProduct(
+      callback: () {
+        updateProductListToTable();
+        context.read<ProductListController>().loading = false;
+      },
+    );
   }
 
   Future<void> updateProductListToTable() async {
-      context.read<ProductListController>().productInfoDataSource =
-          DataSourceForProductListScreen(
-              context,
-              context.read<ProductListController>().productList,
-              () {});
+    context.read<ProductListController>().productInfoDataSource =
+        DataSourceForProductListScreen(
+            context, context.read<ProductListController>().productList, () {});
   }
 
   @override
@@ -254,13 +254,31 @@ class _ProductListScreenState extends State<ProductListScreen> {
     return context.watch<ProductListController>().productInfoDataSource != null
         ? Scrollbar(
             controller: scrollController,
-      thumbVisibility: true,
-      child: isTabletMode == true
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(22),
-              child: singleChildScrollView,
-            )
-          : singleChildScrollView,
+            thumbVisibility: true,
+            child: isTabletMode == true
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(22),
+                    child: SingleChildScrollView(
+                      primary: true,
+                      scrollDirection: Axis.horizontal,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      child: Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width),
+                        child: _paginationTable(),
+                      ),
+                    ),
+                  )
+                : SingleChildScrollView(
+                    primary: true,
+                    scrollDirection: Axis.horizontal,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Container(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width),
+                      child: _paginationTable(),
+                    ),
+                  ),
           )
         : SizedBox();
   }
@@ -292,8 +310,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       columnSpacing: 0.0,
       sortColumnIndex: _sortColumnIndex,
       sortAscending: _sortAscending ?? false,
-      headingRowColor:
-          MaterialStateColor.resolveWith((states) => primaryColor),
+      headingRowColor: MaterialStateColor.resolveWith((states) => primaryColor),
       columns: [
         CommonUtils.dataColumn(
           // fixedWidth: isTabletMode ? 150 : 120,
@@ -405,8 +422,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -416,8 +433,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: true,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -427,8 +444,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: true,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -438,8 +455,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: true,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -449,8 +466,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -460,8 +477,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -471,8 +488,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -482,8 +499,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -493,8 +510,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -504,8 +521,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -515,8 +532,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -639,14 +656,14 @@ class DataSourceForProductListScreen extends DataTableSource {
           onTap: () {
             onTap(product);
           },
-          Text(''), //product.barcode ??
+          Text(product.barcode ?? ''),
         ),
         DataCell(
           onTap: () {
             onTap(product);
           },
           Text(
-            '${0} Ks', //product.salePrice ??
+            '${product.priceListItem?.fixedPrice ?? 0} Ks', //
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -656,7 +673,7 @@ class DataSourceForProductListScreen extends DataTableSource {
             onTap(product);
           },
           Text(
-            '${0} Ks', //product.latestPrice ??
+            '${product.priceListItem?.fixedPrice ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),

@@ -57,9 +57,9 @@ class Routers {
         return MaterialPageRoute(
           builder: (_) => ProductListScreen(),
         );
-      case PriceRulesListScreen.routeName:
+      case PriceItemListScreen.routeName:
         return MaterialPageRoute(
-          builder: (_) => PriceRulesListScreen(),
+          builder: (_) => PriceItemListScreen(),
         );
       case ProductDetailScreen.routeName:
         return MaterialPageRoute(

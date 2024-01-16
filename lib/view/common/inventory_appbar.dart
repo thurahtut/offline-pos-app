@@ -36,7 +36,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
     {
       "title": "Pricelist Item",
       "onTap": (context) {
-        Navigator.pushNamed(context, PriceRulesListScreen.routeName);
+        Navigator.pushNamed(context, PriceItemListScreen.routeName);
       }
     },
     {"title": "Weight Barcode", "onTap": (context) {}},
@@ -107,6 +107,12 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
         mainAxisSize:
             isMobileMode || isTabletMode ? MainAxisSize.min : MainAxisSize.max,
         children: [
+          BackButton(
+            color: primaryColor,
+            style: ButtonStyle(
+              iconSize: MaterialStateProperty.resolveWith((states) => 30),
+            ),
+          ),
           IconButton(
               padding: EdgeInsets.zero,
               onPressed: () {
@@ -120,6 +126,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
                 color: primaryColor,
                 size: 35,
               )),
+
           if (!isTabletMode) ..._titleList(),
         ],
       ),
@@ -297,7 +304,6 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
       //     fontSize: textStyle.fontSize,
       //   ),
       // ),
-   
     ];
   }
 }

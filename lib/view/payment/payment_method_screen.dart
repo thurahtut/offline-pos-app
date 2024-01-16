@@ -68,7 +68,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     return PopScope(
       canPop: !context.read<PaymentMethodListController>().isDetail,
       onPopInvoked: (didPop) {
-        context.read<PaymentMethodListController>().isDetail = false;
+        if (!didPop) {
+          context.read<PaymentMethodListController>().isDetail = false;
+        }
       },
       child: Scaffold(
         backgroundColor: Constants.backgroundColor.withOpacity(0.74),

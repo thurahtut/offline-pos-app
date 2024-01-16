@@ -462,16 +462,6 @@ class CommonUtils {
     company: true,
   );
 
-  static PriceRules demoPriceRule = PriceRules(
-      priceList: "Horeca/Wholesale MOQ...",
-      appliedOn: "[8850418000992] ...",
-      applyOn: Condition.product,
-      product: "100 Pipers whisky 175ML",
-      price: 4200,
-      quantity: 430,
-      startDate: "12.12.2023",
-      endDate: "01.04.2024");
-
   static DataColumn2 dataColumn({
     required String text,
     Function(int, bool)? onSort,

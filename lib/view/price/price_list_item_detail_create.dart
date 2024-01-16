@@ -1,13 +1,13 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class PriceRuleDetailNew extends StatefulWidget {
-  const PriceRuleDetailNew({super.key});
+class PriceListItemDetailNew extends StatefulWidget {
+  const PriceListItemDetailNew({super.key});
 
   @override
-  State<PriceRuleDetailNew> createState() => _PriceRuleDetailNewState();
+  State<PriceListItemDetailNew> createState() => _PriceListItemDetailNewState();
 }
 
-class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
+class _PriceListItemDetailNewState extends State<PriceListItemDetailNew> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fixedPriceTextController =
       TextEditingController();
@@ -92,41 +92,43 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
     var spacer = SizedBox(height: 15);
 
     return [
-      spacer,
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(child: _textForDetailInfo("Computation")),
-          Expanded(
-            flex: 2,
-            child: Column(
-              children: Computation.values.map((e) {
-                return _eachRadioWidget(
-                  text: e.text,
-                  value: e.index,
-                  groupValue: (context
-                                  .watch<PriceRulesListController>()
-                                  .creatingPriceRule
-                                  ?.computation ??
-                              '') ==
-                          e
-                      ? e.index
-                      : -1,
-                  onChanged: (value) {
-                    if (value != null) {
-                      context
-                          .read<PriceRulesListController>()
-                          .creatingPriceRule
-                          ?.computation = Computation.values.elementAt(value);
-                      context.read<PriceRulesListController>().notify();
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
+      // spacer,
+      // Row(
+      //   crossAxisAlignment: CrossAxisAlignment.start,
+      //   children: [
+      //     Expanded(child: _textForDetailInfo("Computation")),
+      //     Expanded(
+      //       flex: 2,
+      //       child: Column(
+      //         children: Computation.values.map((e) {
+      //           return _eachRadioWidget(
+      //             text: e.text,
+      //             value: e.index,
+      //             groupValue:
+      //             (context
+      //                             .watch<PriceListItemController>()
+      //                             .creatingPriceItem
+      //                             ?.computation ??
+      //                         '') ==
+      //                     e
+      //                 ? e.index
+      //                 :
+      //                  -1,
+      //             onChanged: (value) {
+      //               if (value != null) {
+      //                 context
+      //                     .read<PriceListItemController>()
+      //                     .creatingPriceItem
+      //                     ?.computation = Computation.values.elementAt(value);
+      //                 context.read<PriceListItemController>().notify();
+      //               }
+      //             },
+      //           );
+      //         }).toList(),
+      //       ),
+      //     ),
+      //   ],
+      // ),
       spacer,
       Row(
         children: [
@@ -168,9 +170,10 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
                         text: e.text,
                         value: e.index,
                         groupValue: (context
-                                        .watch<PriceRulesListController>()
-                                        .creatingPriceRule
-                                        ?.applyOn ??
+                                        .watch<PriceListItemController>()
+                                        .creatingPriceItem
+                                        ?.priceListItem
+                                        ?.appliedOn ??
                                     '') ==
                                 e
                             ? e.index
@@ -178,10 +181,12 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
                         onChanged: (value) {
                           if (value != null) {
                             context
-                                .read<PriceRulesListController>()
-                                .creatingPriceRule
-                                ?.applyOn = Condition.values.elementAt(value);
-                            context.read<PriceRulesListController>().notify();
+                                    .read<PriceListItemController>()
+                                    .creatingPriceItem
+                                    ?.priceListItem
+                                    ?.appliedOn =
+                                Condition.values.elementAt(value).name;
+                            context.read<PriceListItemController>().notify();
                           }
                         },
                       );
@@ -311,8 +316,7 @@ class _PriceRuleDetailNewState extends State<PriceRuleDetailNew> {
     return RadioListTile(
       value: value,
       activeColor: primaryColor,
-      fillColor:
-          MaterialStateColor.resolveWith((states) => primaryColor),
+      fillColor: MaterialStateColor.resolveWith((states) => primaryColor),
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       groupValue: groupValue,

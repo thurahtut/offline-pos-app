@@ -1,13 +1,14 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class PriceRuleDetailView extends StatefulWidget {
-  const PriceRuleDetailView({super.key});
+class PriceListItemDetailView extends StatefulWidget {
+  const PriceListItemDetailView({super.key});
 
   @override
-  State<PriceRuleDetailView> createState() => _PriceRuleDetailViewState();
+  State<PriceListItemDetailView> createState() =>
+      _PriceListItemDetailViewState();
 }
 
-class _PriceRuleDetailViewState extends State<PriceRuleDetailView> {
+class _PriceListItemDetailViewState extends State<PriceListItemDetailView> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -112,7 +113,7 @@ class _PriceRuleDetailViewState extends State<PriceRuleDetailView> {
           Expanded(
               flex: 2,
               child: _textForDetailInfo(
-                  '${context.read<PriceRulesListController>().editingPriceRule?.price ?? 0} Ks')),
+                  '${context.read<PriceListItemController>().editingPriceItem?.priceListItem?.fixedPrice ?? 0} Ks')),
         ],
       ),
       spacer,
@@ -172,7 +173,7 @@ class _PriceRuleDetailViewState extends State<PriceRuleDetailView> {
                           Expanded(
                               flex: 2,
                               child: _textForDetailInfo(
-                                  '${context.read<PriceRulesListController>().editingPriceRule?.quantity ?? 0}')),
+                                  '${context.read<PriceListItemController>().editingPriceItem?.priceListItem?.minQuantity ?? 0}')),
                         ],
                       ),
                       spacer,
@@ -216,8 +217,8 @@ class _PriceRuleDetailViewState extends State<PriceRuleDetailView> {
           Expanded(
             flex: 2,
             child: _textForDetailInfo(
-                '[${context.read<PriceRulesListController>().editingPriceRule?.appliedOn ?? ''}]'
-                '${context.read<PriceRulesListController>().editingPriceRule?.product ?? ''}'),
+                '[${context.read<PriceListItemController>().editingPriceItem?.priceListItem?.appliedOn ?? ''}]'
+                '${context.read<PriceListItemController>().editingPriceItem?.productName ?? ''}'),
           ),
         ],
       ),
@@ -234,8 +235,7 @@ class _PriceRuleDetailViewState extends State<PriceRuleDetailView> {
       value: value,
       selected: selected,
       activeColor: primaryColor,
-      fillColor:
-          MaterialStateColor.resolveWith((states) => primaryColor),
+      fillColor: MaterialStateColor.resolveWith((states) => primaryColor),
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       groupValue: groupValue,

@@ -1,6 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:offline_pos/model/price_list_item.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../components/export_files.dart';
@@ -149,6 +148,38 @@ class PriceListItemTable {
     return PriceListItem.fromJson(maps.first);
   }
 
+static Future<List<Product>> getPriceItemByFilteringWithProduct({
+    String? filter,
+    int? limit,
+    int? offset,
+  }) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+
+    String query = "SELECT * from $PRICE_LIST_ITEM_TABLE_NAME pli "
+        "left join $PRODUCT_TABLE_NAME pt "
+        "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
+        "where 1=1 "
+        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ?)" : ''} "
+        "ORDER by pli.$PRICE_LIST_ITEM_ID DESC"
+        "${limit != null ? " limit $limit " : " "}"
+        "${offset != null ? " offset $offset " : " "}";
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+        query,
+        filter != null && filter.isNotEmpty
+            ? ['%$filter%', '%${filter.toLowerCase()}%']
+            : null);
+
+    // Convert the List<Map<String, dynamic> into a List<Category>.
+    return List.generate(maps.length, (i) {
+      Product product = Product.fromJson(maps[i]);
+      PriceListItem priceListItem = PriceListItem.fromJson(maps[i]);
+      product.priceListItem = priceListItem;
+      return product;
+    });
+  }
+
+  
   static Future<int> delete(int priceListItemId) async {
     final Database db = await DatabaseHelper().db;
 

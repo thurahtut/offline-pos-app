@@ -1,22 +1,21 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/price/price_rules_detail_create.dart';
-import 'package:offline_pos/view/price/price_rules_detail_view.dart';
+import 'package:offline_pos/view/price/price_list_item_detail_create.dart';
+import 'package:offline_pos/view/price/price_list_item_detail_view.dart';
 
-class PriceRulesListScreen extends StatefulWidget {
-  const PriceRulesListScreen({super.key});
+class PriceItemListScreen extends StatefulWidget {
+  const PriceItemListScreen({super.key});
   static const String routeName = "/price_rules_list_screen";
 
   @override
-  State<PriceRulesListScreen> createState() => _PriceRulesListScreenState();
+  State<PriceItemListScreen> createState() => _PriceItemListScreenState();
 }
 
-class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
+class _PriceItemListScreenState extends State<PriceItemListScreen> {
   final TextEditingController _searchProductTextController =
       TextEditingController();
-  int _limit = 20;
-  int _offset = 0;
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
@@ -33,32 +32,39 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<PriceRulesListController>().resetPriceRulesListController();
+      context.read<PriceListItemController>().resetPriceItemListController();
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
-      for (var i = 0; i < 20; i++) {
-        context
-            .read<PriceRulesListController>()
-            .priceRulesList
-            .add(CommonUtils.demoPriceRule);
-      }
-      context.read<PriceRulesListController>().priceRulesDataSource =
-          DataSourceForPriceRulesListScreen(
-              context,
-              context.read<PriceRulesListController>().priceRulesList,
-              _offset,
-              () {});
-      setState(() {});
+      getAllProduct();
     });
     super.initState();
+  }
+
+  void getAllProduct() {
+    context.read<PriceListItemController>().loading = true;
+    context.read<PriceListItemController>().getAllPriceItemList().then((value) {
+      updatePriceItemListToTable();
+      context.read<PriceListItemController>().loading = false;
+    });
+  }
+
+  Future<void> updatePriceItemListToTable() async {
+    context.read<PriceListItemController>().priceItemDataSource =
+        DataSourceForPriceItemListScreen(
+            context,
+            context.read<PriceListItemController>().priceItemList,
+            context.read<PriceListItemController>().offset,
+            () {});
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !context.read<PriceRulesListController>().isDetail,
+      canPop: !context.read<PriceListItemController>().isDetail,
       onPopInvoked: (didPop) {
-        context.read<PriceRulesListController>().isDetail = false;
+        if (!didPop) {
+          context.read<PriceListItemController>().isDetail = false;
+        }
       },
       child: Scaffold(
         appBar: InventoryAppBar(),
@@ -76,8 +82,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
             SizedBox(width: 16),
             Text(
               'Price Rules'
-              '${context.read<PriceRulesListController>().isDetail ? "/ Detail" : ""}'
-              '${context.read<PriceRulesListController>().isNew ? "/ New" : ""}',
+              '${context.read<PriceListItemController>().isDetail ? "/ Detail" : ""}'
+              '${context.read<PriceListItemController>().isNew ? "/ New" : ""}',
               style: TextStyle(
                 color: Constants.textColor,
                 fontSize: 17,
@@ -91,11 +97,11 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
         ),
         _filtersWidget(),
         Expanded(
-            child: context.read<PriceRulesListController>().isDetail
-                ? SingleChildScrollView(child: PriceRuleDetailView())
-                : context.read<PriceRulesListController>().isNew
-                    ? SingleChildScrollView(child: PriceRuleDetailNew())
-                : _tableWidget()),
+            child: context.read<PriceListItemController>().isDetail
+                ? SingleChildScrollView(child: PriceListItemDetailView())
+                : context.read<PriceListItemController>().isNew
+                    ? SingleChildScrollView(child: PriceListItemDetailNew())
+                    : _tableWidget()),
       ],
     );
   }
@@ -156,14 +162,14 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
   }
 
   Widget _filtersWidget() {
-    return context.watch<PriceRulesListController>().isDetail
+    return context.watch<PriceListItemController>().isDetail
         ? Row(
             children: [
               SizedBox(width: 16),
               Expanded(
                 child: _textForDetailInfo(
-                    'Product : [${context.read<PriceRulesListController>().editingPriceRule?.appliedOn ?? ''}]'
-                    '${context.read<PriceRulesListController>().editingPriceRule?.product ?? ''}'),
+                    'Product : [${context.read<PriceListItemController>().editingPriceItem?.priceListItem?.appliedOn ?? ''}]'
+                    '${context.read<PriceListItemController>().editingPriceItem?.productName ?? ''}'),
               ),
               Expanded(
                 flex: 2,
@@ -200,10 +206,9 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                       textColor: Colors.white,
                       width: 150,
                       onTap: () {
-                        context.read<PriceRulesListController>().isDetail =
+                        context.read<PriceListItemController>().isDetail =
                             false;
-                        context.read<PriceRulesListController>().isNew = true;
-                        
+                        context.read<PriceListItemController>().isNew = true;
                       },
                     ),
                     SizedBox(width: 4),
@@ -256,10 +261,10 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
       child: Container(
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
-        child: context.watch<PriceRulesListController>().priceRulesDataSource !=
-                null
-            ? _paginationTable()
-            : SizedBox(),
+        child:
+            context.watch<PriceListItemController>().priceItemDataSource != null
+                ? _paginationTable()
+                : SizedBox(),
       ),
     );
     return Scrollbar(
@@ -292,8 +297,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
       border: TableBorder(
           horizontalInside:
               BorderSide(color: Constants.disableColor.withOpacity(0.81))),
-      rowsPerPage: min(_limit,
-          context.read<PriceRulesListController>().priceRulesList.length),
+      rowsPerPage: min(context.read<PriceListItemController>().limit,
+          max(context.read<PriceListItemController>().priceItemList.length, 1)),
       minWidth: MediaQuery.of(context).size.width,
       showCheckboxColumn: true,
       fit: FlexFit.tight,
@@ -301,8 +306,7 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
       columnSpacing: 0.0,
       sortColumnIndex: _sortColumnIndex,
       sortAscending: _sortAscending ?? false,
-      headingRowColor:
-          MaterialStateColor.resolveWith((states) => primaryColor),
+      headingRowColor: MaterialStateColor.resolveWith((states) => primaryColor),
       columns: [
         CommonUtils.dataColumn(
           // fixedWidth: isTabletMode ? 150 : 120,
@@ -322,10 +326,10 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
           // onSort: (columnIndex, ascending) =>
           //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
         ),
-        CommonUtils.dataColumn(
-          fixedWidth: isTabletMode == true ? 300 : 300,
-          text: 'Apply On',
-        ),
+        // CommonUtils.dataColumn(
+        //   fixedWidth: isTabletMode == true ? 300 : 300,
+        //   text: 'Apply On',
+        // ),
         CommonUtils.dataColumn(
           // fixedWidth: 180,
           text: 'Product',
@@ -353,7 +357,7 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
           // onSort: onSort,
         )
       ],
-      source: context.read<PriceRulesListController>().priceRulesDataSource!,
+      source: context.read<PriceListItemController>().priceItemDataSource!,
     );
   }
 
@@ -370,8 +374,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -381,8 +385,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                   value: true,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -392,8 +396,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                   value: true,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -403,8 +407,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                   value: true,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -414,8 +418,8 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
                   value: false,
                   onChanged: (bool? value) {},
                   controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith((_) =>
-                       BorderSide(width: 2, color: primaryColor)),
+                  side: MaterialStateBorderSide.resolveWith(
+                      (_) => BorderSide(width: 2, color: primaryColor)),
                   checkColor: primaryColor,
                   fillColor:
                       MaterialStateColor.resolveWith((states) => Colors.white),
@@ -471,15 +475,15 @@ class _PriceRulesListScreenState extends State<PriceRulesListScreen> {
   }
 }
 
-class DataSourceForPriceRulesListScreen extends DataTableSource {
+class DataSourceForPriceItemListScreen extends DataTableSource {
   BuildContext context;
-  late List<PriceRules> priceRulesList;
+  late List<Product> priceItemList;
   int offset;
   Function() reloadDataCallback;
 
-  DataSourceForPriceRulesListScreen(
+  DataSourceForPriceItemListScreen(
     this.context,
-    this.priceRulesList,
+    this.priceItemList,
     this.offset,
     this.reloadDataCallback,
   );
@@ -488,8 +492,8 @@ class DataSourceForPriceRulesListScreen extends DataTableSource {
     return _createRow(index);
   }
 
-  void sort<T>(Comparable<T> Function(PriceRules d) getField, bool ascending) {
-    priceRulesList.sort((a, b) {
+  void sort<T>(Comparable<T> Function(Product d) getField, bool ascending) {
+    priceItemList.sort((a, b) {
       final aValue = getField(a);
       final bValue = getField(b);
       return ascending
@@ -503,16 +507,16 @@ class DataSourceForPriceRulesListScreen extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => priceRulesList.length;
+  int get rowCount => priceItemList.length;
 
   @override
   int get selectedRowCount => 0;
 
   DataRow _createRow(int index) {
-    PriceRules priceRules = priceRulesList[index];
+    Product priceListItem = priceItemList[index];
     onTap() {
-      context.read<PriceRulesListController>().isDetail = true;
-      context.read<PriceRulesListController>().editingPriceRule = priceRules;
+      context.read<PriceListItemController>().isDetail = true;
+      context.read<PriceListItemController>().editingPriceItem = priceListItem;
     }
 
     return DataRow(
@@ -523,30 +527,30 @@ class DataSourceForPriceRulesListScreen extends DataTableSource {
         ),
         DataCell(
           onTap: onTap,
-          Text(priceRules.priceList ?? ''),
+          Text(priceListItem.priceListItem?.id?.toString() ?? ''),
         ),
         DataCell(
           onTap: onTap,
           Text(
-            priceRules.appliedOn ?? '',
+            priceListItem.priceListItem?.appliedOn ?? '',
+          ),
+        ),
+        // DataCell(
+        //   onTap: onTap,
+        //   Text(
+        //     priceListItem.applyOn?.text ?? '',
+        //   ),
+        // ),
+        DataCell(
+          onTap: onTap,
+          Text(
+            priceListItem.productName ?? '',
           ),
         ),
         DataCell(
           onTap: onTap,
           Text(
-            priceRules.applyOn?.text ?? '',
-          ),
-        ),
-        DataCell(
-          onTap: onTap,
-          Text(
-            priceRules.product ?? '',
-          ),
-        ),
-        DataCell(
-          onTap: onTap,
-          Text(
-            '${priceRules.price ?? 0} Ks',
+            '${priceListItem.priceListItem?.fixedPrice ?? 0} Ks',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -554,18 +558,27 @@ class DataSourceForPriceRulesListScreen extends DataTableSource {
         DataCell(
           onTap: onTap,
           Text(
-            '${priceRules.quantity ?? 0}',
+            '${priceListItem.priceListItem?.minQuantity ?? 0}',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
         ),
         DataCell(
           onTap: onTap,
-          Text(priceRules.startDate ?? ''),
+          Text((priceListItem.priceListItem?.dateStart != null)
+              ? (DateFormat("hh:mm:ss dd-MM-yyyy")
+                  .format(
+                      DateTime.parse(priceListItem.priceListItem!.dateStart!))
+                  .toString())
+              : ''),
         ),
         DataCell(
           onTap: onTap,
-          Text(priceRules.endDate ?? ''),
+          Text((priceListItem.priceListItem?.dateEnd != null)
+              ? (DateFormat("hh:mm:ss dd-MM-yyyy")
+                  .format(DateTime.parse(priceListItem.priceListItem!.dateEnd!))
+                  .toString())
+              : ''),
         ),
         DataCell(
           onTap: onTap,
@@ -573,60 +586,5 @@ class DataSourceForPriceRulesListScreen extends DataTableSource {
         ),
       ],
     );
-  }
-}
-
-class PriceRules {
-  String? priceList;
-  String? appliedOn;
-  Condition? applyOn;
-  String? product;
-  double? price;
-  double? quantity;
-  String? startDate;
-  String? endDate;
-  Computation? computation;
-  double? fixedPrice;
-  String? currency;
-  String? company;
-  
-
-  PriceRules(
-      {this.priceList,
-      this.appliedOn,
-      this.applyOn,
-      this.product,
-      this.price,
-      this.quantity,
-      this.startDate,
-    this.endDate,
-    this.computation,
-    this.fixedPrice,
-    this.currency,
-    this.company,
-  });
-
-  PriceRules.fromJson(Map<String, dynamic> json) {
-    priceList = json['price_list'];
-    appliedOn = json['applied_on'];
-    applyOn = json['apply_on'];
-    product = json['product'];
-    price = json['price'];
-    quantity = json['quantity'];
-    startDate = json['start_date'];
-    endDate = json['end_date'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['price_list'] = priceList;
-    data['applied_on'] = appliedOn;
-    data['apply_on'] = applyOn;
-    data['product'] = product;
-    data['price'] = price;
-    data['quantity'] = quantity;
-    data['start_date'] = startDate;
-    data['end_date'] = endDate;
-    return data;
   }
 }
