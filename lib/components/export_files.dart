@@ -32,6 +32,7 @@ export '../../service/api.dart';
 export '../../service/pagination.dart';
 export '../components/common_utils.dart';
 export '../controller/login_user_controller.dart';
+export '../controller/morning_sync_controller.dart';
 export '../controller/price_item_list_controller.dart';
 export '../controller/view_controller.dart';
 export '../database/database_helper.dart';

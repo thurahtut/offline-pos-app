@@ -43,3 +43,9 @@ enum Condition {
   const Condition(this.text);
   final String text;
 }
+
+enum DataSync {
+  product,
+  price,
+  customer,
+}

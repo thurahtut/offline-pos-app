@@ -1,5 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/theme_setting_controller.dart';
+import 'package:offline_pos/view/sync/manual_sync_screen.dart';
 import 'package:offline_pos/view/theme/theme_setting_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -45,7 +45,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     context,
                     'Sale (POS)',
                     () {
-                      Navigator.pushNamed(context, LoginScreen.routeName);
+                      Navigator.pushNamed(context, MainScreen.routeName);
                     },
                     svg: "assets/svg/sell.svg",
                   ),
@@ -80,6 +80,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     },
                     svg: "assets/svg/settings.svg",
                   ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buttonContainer(context, 'Sync', () {
+                    Navigator.pushNamed(context, ManualSyncScreen.routeName);
+                  }, icon: Icons.replay_rounded),
+                  SizedBox(width: 8),
+                  SizedBox(width: 8),
                 ],
               ),
               // Row(
