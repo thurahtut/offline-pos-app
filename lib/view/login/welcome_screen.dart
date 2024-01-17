@@ -1,6 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/sync/manual_sync_screen.dart';
-import 'package:offline_pos/view/theme/theme_setting_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

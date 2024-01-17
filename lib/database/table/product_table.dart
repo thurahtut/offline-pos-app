@@ -58,7 +58,7 @@ class ProductTable {
 
     return db.rawInsert(sql);
   }
-  
+
   static Future<void> insertOrUpdate(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     await deleteAll(db); // todo: to remove
@@ -186,7 +186,7 @@ class ProductTable {
     return Product.fromJson(maps.first);
   }
 
-static Future<List<Product>> getProductByFilteringWithPrice({
+  static Future<List<Product>> getProductByFilteringWithPrice({
     String? filter,
     int? limit,
     int? offset,
@@ -198,15 +198,18 @@ static Future<List<Product>> getProductByFilteringWithPrice({
         "SELECT pt.id productId, pli.id priceListItemId,* from $PRODUCT_TABLE_NAME pt "
         "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
+        "and pli.$APPLIED_ON='1_product' "
+        "and datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') "
+        "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "where 1=1 "
-        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ?)" : ''} "
-        "ORDER by pli.$PRODUCT_ID DESC"
-        "${limit != null ? " limit $limit " : " "}"
-        "${offset != null ? " offset $offset " : " "}";
+        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)" : ''} "
+        "ORDER by pt.$PRODUCT_ID DESC "
+        "${limit != null ? "limit $limit " : " "}"
+        "${offset != null ? "offset $offset " : " "}";
     final List<Map<String, dynamic>> maps = await db.rawQuery(
         query,
         filter != null && filter.isNotEmpty
-            ? ['%$filter%', '%${filter.toLowerCase()}%']
+            ? ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%']
             : null);
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
@@ -228,6 +231,7 @@ static Future<List<Product>> getProductByFilteringWithPrice({
       whereArgs: [productId],
     );
   }
+
   static Future<void> deleteAll(Database db) async {
     db.rawQuery("delete from $PRODUCT_TABLE_NAME");
   }

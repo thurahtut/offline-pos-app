@@ -15,6 +15,7 @@ class ThemeSettingScreen extends StatefulWidget {
 
 class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
   var formKey = GlobalKey<FormState>();
+  bool? isSwitch = true;
 
   @override
   void dispose() {
@@ -62,6 +63,10 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
             _logoWidget(),
             SizedBox(height: 20),
             _themeBodyColorWidget(),
+            SizedBox(
+              height: 20,
+            ),
+            _rememberPasswordWidget(),
             Expanded(child: SizedBox()),
             _actionWidget(),
           ]),
@@ -296,7 +301,6 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
                             ElevatedButton(
                               child: const Text('Confirm'),
                               onPressed: () {
-                                // setState(() => currentColor = pickerColor);
                                 Navigator.of(context).pop();
                               },
                             ),
@@ -314,24 +318,7 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                  )
-                  // Consumer<ThemeSettingController>(
-                  //   builder: (_, controller, __) {
-                  //     return Container(
-                  //       width: 30,
-                  //       height: 30,
-                  //       margin: EdgeInsets.all(4),
-                  //       decoration: BoxDecoration(
-                  //         color: Color(
-                  //           int.parse('0xff${controller.themeColor}'),
-                  //         ),
-                  //         border: Border.all(color: Colors.black),
-                  //         borderRadius: BorderRadius.circular(2),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
-                  ),
+                  )),
               onChanged: (value) {
                 cc.themeColorFocus = true;
                 context.read<ThemeSettingController>().themeColor = value;
@@ -342,6 +329,38 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
         ),
       ],
     );
+  }
+
+  Widget _rememberPasswordWidget() {
+    return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+      Expanded(
+        flex: 1,
+        child: _childrenTitleWidget('Remember Password'),
+      ),
+      SizedBox(width: 20),
+      Expanded(
+        flex: 2,
+        child: Consumer<ThemeSettingController>(builder: (_, cc, __) {
+          return SwitchListTile(
+            value: //isSwitch ?? true,
+                cc.appConfig?.rememberPassword ?? true,
+            onChanged: (value) {
+              cc.appConfig?.rememberPassword = value;
+              cc.notify();
+              // setState(() {
+              //   isSwitch = value;
+              // });
+            },
+            controlAffinity: ListTileControlAffinity.leading,
+            activeColor: primaryColor,
+            // side: MaterialStateBorderSide.resolveWith(
+            //     (_) => BorderSide(width: 2, color: primaryColor)),
+            // checkColor: primaryColor,
+            // fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+          );
+        }),
+      )
+    ]);
   }
 
   Future<void> _pickImage() async {

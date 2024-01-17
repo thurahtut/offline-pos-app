@@ -7,21 +7,26 @@ class AppConfig {
   Uint8List? logo;
   String? dbVersion;
   String? productLastSyncDate;
+  bool? rememberPassword;
 
-  AppConfig({this.themeBodyColor, this.logo, this.dbVersion});
+  AppConfig({
+    this.themeBodyColor,
+    this.logo,
+    this.dbVersion,
+    this.rememberPassword,
+  });
 
   AppConfig.fromJson(Map<String, dynamic> json) {
     themeBodyColor = json['theme_body_color'];
     if (json['logo'] != null && json['logo'] != "") {
       try {
-        // String s = String.fromCharCodes(json['logo']);
         var outputAsUint8List = Uint8List.fromList(base64Decode(json['logo']));
         logo = outputAsUint8List;
       } catch (_) {}
     }
-    // logo = json['logo'];
     dbVersion = json['db_version'];
     productLastSyncDate = json['product_last_sync_date'];
+    rememberPassword = bool.tryParse(json['remember_password']);
   }
 
   Map<String, dynamic> toJson() {
@@ -30,9 +35,9 @@ class AppConfig {
     if (logo != null && logo!.isNotEmpty) {
       data['logo'] = base64Encode(logo!);
     }
-    // data['logo'] = logo;
     data['db_version'] = dbVersion;
     data['product_last_sync_date'] = productLastSyncDate;
+    data['remember_password'] = rememberPassword.toString();
     return data;
   }
 }

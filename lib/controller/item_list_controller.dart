@@ -61,13 +61,13 @@ class ItemListController with ChangeNotifier {
   }
 
   Future<void> getAllProduct() async {
-    productList = [];
     getTotalProductCount();
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       limit: limit,
       offset: offset,
     ).then((list) {
+      productList = [];
       productList.addAll(list);
       notifyListeners();
     });

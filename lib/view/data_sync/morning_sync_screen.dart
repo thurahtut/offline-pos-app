@@ -17,97 +17,30 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
         context.read<ThemeSettingController>().appConfig?.productLastSyncDate,
         context.read<LoginUserController>().posConfig?.shPosLocation,
         () {
-        context.read<ThemeSettingController>().appConfig?.productLastSyncDate =
-            DateTime.now().toUtc().toString();
-        AppConfigTable.insertOrUpdate(
-            PRODUCT_LAST_SYNC_DATE, DateTime.now().toString());
+          context
+              .read<ThemeSettingController>()
+              .appConfig
+              ?.productLastSyncDate = DateTime.now().toUtc().toString();
+          AppConfigTable.insertOrUpdate(
+              PRODUCT_LAST_SYNC_DATE, DateTime.now().toString());
           context.read<MorningsyncController>().getAllCustomerFromApi(() {
             context.read<MorningsyncController>().getAllPriceListItemFromApi(
                 context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
                 () {
-            context.read<MorningsyncController>().currentTaskTitle = "";
+              List<int> ids = [];
+              context
+                  .read<MorningsyncController>()
+                  .getAllPaymentMethodListItemFromApi(ids.join(","), () {
+                context.read<MorningsyncController>().currentTaskTitle = "";
               Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+              });
+            });
           });
-        });
         },
       );
     });
     super.initState();
   }
-
-  // void getAllProductFromApi(Function() callback) {
-  //   context.read<MorningsyncController>().currentTaskTitle =
-  //       "Product List Sync....";
-  //   context.read<MorningsyncController>().currentReachTask = 1;
-  //   String? lastSyncDate =
-  //       context.read<ThemeSettingController>().appConfig?.productLastSyncDate;
-  //   int? locationId =
-  //       context.read<LoginUserController>().posConfig?.shPosLocation;
-  //   Api.getAllProduct(
-  //     lastSyncDate: lastSyncDate,
-  //     locationId: locationId,
-  //     onReceiveProgress: (sent, total) {
-  //       double value = min(((sent / total) * 100), 100);
-  //       context.read<MorningsyncController>().percentage =
-  //           value > 100 ? null : value;
-  //     },
-  //   ).then((response) {
-  //     if (response != null &&
-  //         response.statusCode == 200 &&
-  //         response.data != null) {
-  //       if (response.data is List) {
-  //         ProductTable.insertOrUpdate(response.data)
-  //             .then((value) => callback());
-  //       }
-  //     }
-  //   });
-  // }
-
-  // void getAllCustomerFromApi(Function() callback) {
-  //   context.read<MorningsyncController>().currentTaskTitle =
-  //       "Customer List Sync....";
-  //   context.read<MorningsyncController>().currentReachTask = 2;
-  //   Api.getAllCustomer(
-  //     onReceiveProgress: (sent, total) {
-  //       double value = min(((sent / total) * 100), 100);
-  //       context.read<MorningsyncController>().percentage =
-  //           value > 100 ? null : value;
-  //     },
-  //   ).then((response) {
-  //     if (response != null &&
-  //         response.statusCode == 200 &&
-  //         response.data != null) {
-  //       if (response.data is List) {
-  //         CustomerTable.insertOrUpdate(response.data)
-  //             .then((value) => callback());
-  //       }
-  //     }
-  //   });
-  // }
-
-  // void getAllPriceListItemFromApi(Function() callback) {
-  //   context.read<MorningsyncController>().currentTaskTitle = "Price Sync....";
-  //   context.read<MorningsyncController>().currentReachTask = 3;
-  //   int priceListId =
-  //       context.read<LoginUserController>().posConfig?.pricelistId ?? 0;
-  //   Api.getPriceListItemByID(
-  //     priceListId: priceListId,
-  //     onReceiveProgress: (sent, total) {
-  //       double value = min(((sent / total) * 100), 100);
-  //       context.read<MorningsyncController>().percentage =
-  //           value > 100 ? null : value;
-  //     },
-  //   ).then((response) {
-  //     if (response != null &&
-  //         response.statusCode == 200 &&
-  //         response.data != null) {
-  //       if (response.data is List) {
-  //         PriceListItemTable.insertOrUpdate(response.data)
-  //             .then((value) => callback());
-  //       }
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {

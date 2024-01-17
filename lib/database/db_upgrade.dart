@@ -6,5 +6,6 @@ class DBUpgrade {
     await AppConfigTable.insertOrUpdateWithDB(db, THEME_BODY_COLOR, "007ACC");
     await AppConfigTable.insertOrUpdateWithDB(db, LOGO, "");
     await AppConfigTable.insertOrUpdateWithDB(db, DB_VERSION, "1");
+    await AppConfigTable.insertOrUpdateWithDB(db, REMEMBER_PASSWORD, "true");
   }
 }

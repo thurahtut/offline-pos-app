@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:offline_pos/view/inventory/choose_inventory_dialog.dart';
 import 'package:offline_pos/view/user/user_login_dialog.dart';
@@ -17,35 +15,46 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await context.read<ThemeSettingController>().getThemeConfig();
-      setState(() {
-        log('Login User 1: ${context.read<LoginUserController>().loginUser?.userData?.id}');
-        log('Login User 2: ${context.read<LoginUserController>().loginUser?.employeeData?.workEmail}');
-      });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<ThemeSettingController>().getThemeConfig();
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: primaryColor,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-            size: 30,
+    return Consumer<ThemeSettingController>(builder: (_, controller, __) {
+      return Scaffold(
+        backgroundColor: primaryColor,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, ThemeSettingScreen.routeName);
+                },
+                icon: Icon(
+                  Icons.settings,
+                  size: 45,
+                  color: Colors.white,
+                  shadows: const [Shadow(color: Colors.black, blurRadius: 8.0)],
+                )),
+          ],
         ),
-      ),
-      body: bodyWidget(context),
+        body: bodyWidget(context),
+      );
+    }
     );
   }
 

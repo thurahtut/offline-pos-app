@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:offline_pos/components/export_files.dart';
 
 class MorningsyncController with ChangeNotifier {
-  final int allTask = 3;
+  final int allTask = 4;
 
   int _currentReachTask = 1;
   int get currentReachTask => _currentReachTask;
@@ -112,6 +112,31 @@ class MorningsyncController with ChangeNotifier {
     //     context.read<LoginUserController>().posConfig?.pricelistId ?? 0;
     Api.getPriceListItemByID(
       priceListId: priceListId,
+      onReceiveProgress: (sent, total) {
+        double value = min(((sent / total) * 100), 100);
+        percentage = value > 100 ? null : value;
+        updateProcessingPercentage(DataSync.price.name, percentage);
+      },
+    ).then((response) {
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        if (response.data is List) {
+          PriceListItemTable.insertOrUpdate(response.data)
+              .then((value) => callback?.call());
+        }
+      }
+    });
+  }
+
+  void getAllPaymentMethodListItemFromApi(
+      String? paymentMethodListStr, Function()? callback) {
+    currentTaskTitle = "Payment Method Sync....";
+    currentReachTask = 4;
+    // int priceListId =
+    //     context.read<LoginUserController>().posConfig?.pricelistId ?? 0;
+    Api.getPaymentMethodListItemByID(
+      paymentMethodListStr: paymentMethodListStr,
       onReceiveProgress: (sent, total) {
         double value = min(((sent / total) * 100), 100);
         percentage = value > 100 ? null : value;

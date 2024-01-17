@@ -12,6 +12,7 @@ const THEME_BODY_COLOR = "theme_body_color";
 const LOGO = "logo";
 const DB_VERSION = "db_version";
 const PRODUCT_LAST_SYNC_DATE = "product_last_sync_date";
+const REMEMBER_PASSWORD = "remember_password";
 
 class AppConfigTable {
   static Future<void> onCreate(Database db, int version) async {

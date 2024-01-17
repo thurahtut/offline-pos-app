@@ -308,4 +308,21 @@ class Api {
       onReceiveProgress: onReceiveProgress,
     );
   }
+
+  static Future<Response?> getPaymentMethodListItemByID({
+    String? paymentMethodListStr,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/paymethod',
+      method: Method.GET.name,
+      queryParameters: {
+        "ids": paymentMethodListStr,
+      },
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
 }
