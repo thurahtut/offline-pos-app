@@ -63,31 +63,13 @@ class ItemListController with ChangeNotifier {
   Future<void> getAllProduct() async {
     productList = [];
     getTotalProductCount();
-    await ProductTable.getProductsFiltering(
+    await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       limit: limit,
       offset: offset,
     ).then((list) {
-      List<int> productIds = [];
-      for (var data in list) {
-        if (data.productId != null && data.productId != 0) {
-          productIds.add(data.productId!);
-        }
-      }
-      PriceListItemTable.getPriceListItemByProductIds(productIds).then(
-        (value) {
-          for (var pli in value) {
-            for (var data in list) {
-              if (data.productId == pli.productTmplId) {
-                data.priceListItem = pli;
-                break;
-              }
-            }
-          }
-          productList.addAll(list);
-          notifyListeners();
-        },
-      );
+      productList.addAll(list);
+      notifyListeners();
     });
   }
 

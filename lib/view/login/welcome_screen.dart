@@ -2,25 +2,9 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/sync/manual_sync_screen.dart';
 import 'package:offline_pos/view/theme/theme_setting_screen.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
   static const String routeName = "/welcome_screen";
-
-  @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
-}
-
-class _WelcomeScreenState extends State<WelcomeScreen> {
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await context.read<ThemeSettingController>().getThemeConfig();
-      setState(() {});
-    });
-    super.initState();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

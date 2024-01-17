@@ -33,8 +33,8 @@ class Product {
     this.priceListItem,
   });
 
-  Product.fromJson(Map<String, dynamic> json) {
-    productId = json['id'];
+  Product.fromJson(Map<String, dynamic> json, {int? pId}) {
+    productId = pId ?? json['id'];
     productName = json['name'];
     categoryId = int.tryParse(json['categ_id'].toString());
     isRoundingProduct =
@@ -79,5 +79,9 @@ class Product {
     data['barcode'] = barcode;
     data['onhand_quantity'] = onhandQuantity.toString();
     return data;
+  }
+
+Product cloneProduct() {
+    return Product.fromJson(jsonDecode(jsonEncode(this)));
   }
 }

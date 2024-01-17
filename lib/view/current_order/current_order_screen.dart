@@ -72,6 +72,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                     InkWell(
                       onTap: () {
                         controller.selectedIndex = i;
+                        // _addManualDiscountProduct(controller);
                       },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -130,7 +131,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                          "${max(e.onhandQuantity ?? 0, 1)} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"),
+                                          "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"),
                                     ),
                                     Container(
                                       width: 35,
@@ -335,6 +336,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         onPressed: () {
           currentOrderController.currentOrderKeyboardState =
               CurrentOrderKeyboardState.disc;
+          // _addManualDiscountProduct(currentOrderController);
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
@@ -489,15 +491,52 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       } else if (currentOrderController.currentOrderKeyboardState ==
           CurrentOrderKeyboardState.qty) {
         String qty = product.onhandQuantity?.toString() ?? "";
+        bool isDelete = false;
         if (isBack == true) {
-          qty = qty.substring(0, qty.length - 1);
+          if (product.onhandQuantity == 1) {
+            isDelete = true;
+          } else {
+            qty = qty.substring(0, qty.length - 1);
+          }
         } else {
           qty = (qty != "1" ? qty : "");
           qty += value;
         }
-        product.onhandQuantity = double.tryParse(qty);
+        if (isDelete) {
+          currentOrderController.currentOrderList
+              .removeAt(currentOrderController.selectedIndex!);
+          currentOrderController.selectedIndex = null;
+        } else {
+          product.onhandQuantity = double.tryParse(qty);
+        }
         currentOrderController.notify();
-      }
+      } 
+      // else if (currentOrderController.currentOrderKeyboardState ==
+      //     CurrentOrderKeyboardState.disc) {
+      //   Product promotionProduct = product.cloneProduct();
+      //   promotionProduct.onhandQuantity = 1;
+      //   promotionProduct.priceListItem?.fixedPrice = 0;
+      //   currentOrderController.currentOrderList.insert(
+      //       currentOrderController.selectedIndex! + 1, promotionProduct);
+      //   currentOrderController.notify();
+      // }
+    }
+  }
+
+  void _addManualDiscountProduct(
+      CurrentOrderController currentOrderController) {
+    if (currentOrderController.selectedIndex != null &&
+        currentOrderController.currentOrderKeyboardState ==
+            CurrentOrderKeyboardState.disc) {
+      Product product = currentOrderController.currentOrderList
+          .elementAt(currentOrderController.selectedIndex!);
+      product.priceListItem ??= PriceListItem();
+      Product promotionProduct = product.cloneProduct();
+      promotionProduct.onhandQuantity = 1;
+      promotionProduct.priceListItem?.fixedPrice = 0;
+      currentOrderController.currentOrderList
+          .insert(currentOrderController.selectedIndex! + 1, promotionProduct);
+      currentOrderController.notify();
     }
   }
 }

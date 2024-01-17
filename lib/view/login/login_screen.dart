@@ -1,12 +1,31 @@
+import 'dart:developer';
+
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:offline_pos/view/inventory/choose_inventory_dialog.dart';
 import 'package:offline_pos/view/user/user_login_dialog.dart';
 
 import '/components/export_files.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   static const String routeName = "/login_screen";
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await context.read<ThemeSettingController>().getThemeConfig();
+      setState(() {
+        log('Login User 1: ${context.read<LoginUserController>().loginUser?.userData?.id}');
+        log('Login User 2: ${context.read<LoginUserController>().loginUser?.employeeData?.workEmail}');
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

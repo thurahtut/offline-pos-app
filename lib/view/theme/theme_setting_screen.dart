@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image/image.dart' as img;
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -22,6 +23,9 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<ThemeSettingController>().getThemeConfig();
+    });
     super.initState();
   }
 
@@ -269,14 +273,46 @@ class _ThemeSettingScreenState extends State<ThemeSettingScreen> {
                       color: Constants.textColor,
                     ),
                   ),
-                  suffixIcon: Container(
-                    width: 30,
-                    height: 30,
-                    margin: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: themeColor,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(2),
+                  suffixIcon: InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text('Pick a color!'),
+                          content: SingleChildScrollView(
+                            child: ColorPicker(
+                              enableAlpha: false,
+                              pickerColor: themeColor,
+                              onColorChanged: (color) {
+                                cc.themeColor = color
+                                    .toString()
+                                    .toLowerCase()
+                                    .replaceAll("color(0xff", "")
+                                    .replaceAll(")", "");
+                              },
+                            ),
+                          ),
+                          actions: <Widget>[
+                            ElevatedButton(
+                              child: const Text('Confirm'),
+                              onPressed: () {
+                                // setState(() => currentColor = pickerColor);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      margin: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: themeColor,
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                   )
                   // Consumer<ThemeSettingController>(

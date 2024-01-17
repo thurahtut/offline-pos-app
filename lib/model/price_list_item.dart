@@ -26,8 +26,8 @@ class PriceListItem {
       this.writeDate,
       this.writeUid});
 
-  PriceListItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  PriceListItem.fromJson(Map<String, dynamic> json, {int? priceListItemId}) {
+    id = priceListItemId ?? json['id'];
     productTmplId = json['product_tmpl_id'];
     minQuantity = double.tryParse(json['min_quantity'].toString());
     appliedOn = json['applied_on'];

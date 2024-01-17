@@ -156,7 +156,8 @@ static Future<List<Product>> getPriceItemByFilteringWithProduct({
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
 
-    String query = "SELECT * from $PRICE_LIST_ITEM_TABLE_NAME pli "
+    String query =
+        "SELECT pt.id productId, pli.id priceListItemId,* from $PRICE_LIST_ITEM_TABLE_NAME pli "
         "left join $PRODUCT_TABLE_NAME pt "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
         "where 1=1 "
@@ -172,13 +173,13 @@ static Future<List<Product>> getPriceItemByFilteringWithProduct({
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
     return List.generate(maps.length, (i) {
-      Product product = Product.fromJson(maps[i]);
-      PriceListItem priceListItem = PriceListItem.fromJson(maps[i]);
+      Product product = Product.fromJson(maps[i], pId: maps[i]["productId"]);
+      PriceListItem priceListItem = PriceListItem.fromJson(maps[i],
+          priceListItemId: maps[i]["priceListItemId"]);
       product.priceListItem = priceListItem;
       return product;
     });
   }
-
   
   static Future<int> delete(int priceListItemId) async {
     final Database db = await DatabaseHelper().db;

@@ -30,8 +30,10 @@ class ProductUntiDialog {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width / 4,
-                    height: 70,
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width / 4,
+                      maxHeight: 85,
+                    ),
                     decoration: BoxDecoration(
                         color: primaryColor,
                         borderRadius: BorderRadius.only(
@@ -53,7 +55,7 @@ class ProductUntiDialog {
                     ),
                   ),
                   SizedBox(height: 8),
-                  packagesWidget(product),
+                  packagesWidget(context, product),
                   spacer,
                   SizedBox(height: 16),
                   CommonUtils.okCancelWidget(
@@ -75,18 +77,18 @@ class ProductUntiDialog {
     );
   }
 
-  static Widget packagesWidget(Product product) {
+  static Widget packagesWidget(BuildContext context, Product product) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _eachPackageWdget(product),
-        _eachPackageWdget(product),
+        _eachPackageWdget(context, product),
+        _eachPackageWdget(context, product),
       ],
     );
   }
 
-  static Widget _eachPackageWdget(Product product) {
+  static Widget _eachPackageWdget(BuildContext context, Product product) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,14 +159,21 @@ class ProductUntiDialog {
             fontWeight: FontWeight.w500,
           ),
         ),
-        Text(
-          product.productName ?? '',
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: Constants.textColor,
-            fontWeight: FontWeight.w500,
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width / 8.5,
+            minWidth: MediaQuery.of(context).size.width / 8.5,
+            maxHeight: 80,
+          ),
+          child: Text(
+            product.productName ?? '',
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Constants.textColor,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         SizedBox(height: 8),
