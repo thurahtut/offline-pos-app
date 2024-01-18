@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/order_and_order_line_table.dart';
+import 'package:offline_pos/database/table/order_and_transaction_table.dart';
+import 'package:offline_pos/database/table/order_line_id_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -68,8 +71,16 @@ class DatabaseHelper {
     await CustomerTable.onCreate(db, version);
     await ProductTable.onCreate(db, version);
     await PriceListItemTable.onCreate(db, version);
-    await OrderHistoryTable.onCreate(db, version);
     await AppConfigTable.onCreate(db, version);
+    await PaymentMethodTable.onCreate(db, version);
+    await LoginUserTable.onCreate(db, version);
+    await POSConfigTable.onCreate(db, version);
+    await POSSessionTable.onCreate(db, version);
+    await PaymentTransactionTable.onCreate(db, version);
+    await OrderLineIdTable.onCreate(db, version);
+    await OrderAndOrderLineTable.onCreate(db, version);
+    await OrderAndPaymentTransactionTable.onCreate(db, version);
+    await OrderHistoryTable.onCreate(db, version);
 
     await DBUpgrade.uploadAppConfigForVersion1(db);
   }
@@ -82,8 +93,16 @@ class DatabaseHelper {
     final db = await DatabaseHelper().db;
     await db.delete(PRODUCT_TABLE_NAME);
     await db.delete(PRICE_LIST_ITEM_TABLE_NAME);
-    await db.delete(ORDER_HISTORY_TABLE_NAME);
     await db.delete(EMPLOYEE_TABLE_NAME);
     await db.delete(CUSTOMER_TABLE_NAME);
+    await db.delete(PAYMENT_METHOD_TABLE_NAME);
+    await db.delete(LOGIN_USER_TABLE_NAME);
+    await db.delete(POS_CONFIG_TABLE_NAME);
+    await db.delete(POS_SESSION_TABLE_NAME);
+    await db.delete(PAYMENT_TRANSACTION_TABLE_NAME);
+    await db.delete(ORDER_LINE_ID_TABLE_NAME);
+    await db.delete(ORDER_AND_ORDER_LINE_ID);
+    await db.delete(ORDER_AND_PAYMENT_TRANSACTION_ID);
+    await db.delete(ORDER_HISTORY_TABLE_NAME);
   }
 }

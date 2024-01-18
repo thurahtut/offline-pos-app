@@ -317,7 +317,7 @@ class Api {
       'Content-Type': 'application/json',
     };
     return request(
-      endpoint: '/paymethod',
+      endpoint: '/paymethod'.onEndPoint(),
       method: Method.GET.name,
       queryParameters: {
         "ids": paymentMethodListStr,

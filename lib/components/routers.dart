@@ -3,9 +3,6 @@ import 'dart:developer';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/category/product_category_list_screen.dart';
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
-import 'package:offline_pos/view/sync/manual_sync_screen.dart';
-import 'package:offline_pos/view/theme/theme_setting_screen.dart';
-
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -15,11 +12,6 @@ class Routers {
         return MaterialPageRoute(
           // settings: RouteSettings(name: 'Login'),
           builder: (_) => WelcomeScreen(),
-        );
-      case LoginScreen.routeName:
-        return MaterialPageRoute(
-          // settings: RouteSettings(name: 'Login'),
-          builder: (_) => LoginScreen(),
         );
       case MainScreen.routeName:
         return MaterialPageRoute(
@@ -93,17 +85,20 @@ class Routers {
       default:
         {
           return MaterialPageRoute(
-            builder: (context) => Scaffold(
-              appBar: AppBar(),
-              body: SafeArea(
-                child: Center(
-                  child: Text(
-                    "Route name not found ${settings.name}",
-                  ),
-                ),
-              ),
-            ),
+            builder: (_) => LoginScreen(),
           );
+          //  MaterialPageRoute(
+          //   builder: (context) => Scaffold(
+          //     appBar: AppBar(),
+          //     body: SafeArea(
+          //       child: Center(
+          //         child: Text(
+          //           "Route name not found ${settings.name}",
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // );
         }
     }
   }

@@ -1,5 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/model/pos_session.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SelectInventoryScreen extends StatefulWidget {
   const SelectInventoryScreen(
@@ -45,7 +45,7 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                 text: "Choose",
                 containerColor: primaryColor,
                 textColor: Colors.white,
-                onTap: () {
+                onTap: () async {
                   LoginUserController controller =
                       widget.mainContext.read<LoginUserController>();
                   for (var i = 0;
@@ -58,6 +58,8 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                       controller.selectedInventory =
                           controller.loginUser!.configData![index];
                       int? inventoryId = controller.selectedInventory?.id;
+
+                      final Database db = await DatabaseHelper().db;
                       Api.getPosConfigByID(inventoryId: inventoryId)
                           .then((configResponse) {
                         if (configResponse != null &&
@@ -68,6 +70,8 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                           controller.posConfig = POSConfig.fromJson(
                               (configResponse.data as List).first);
                           int? configId = controller.posConfig?.id;
+                          POSConfigTable.insertOrUpdatePosConfigWithDB(
+                              db, controller.posConfig!);
                           Api.getPosSessionByID(configId: configId)
                               .then((sessionResponse) {
                             if (sessionResponse != null &&
@@ -77,6 +81,8 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                                 (sessionResponse.data as List).isNotEmpty) {
                               controller.posSession = POSSession.fromJson(
                                   (sessionResponse.data as List).first);
+                              POSSessionTable.insertOrUpdatePOSSessionWithDB(
+                                  db, controller.posSession!);
                               Navigator.pop(widget.bContext, true);
                             } else {
                               Navigator.pop(widget.bContext, false);
@@ -129,8 +135,7 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                           : 0;
                     },
                   );
-                }
-            ),
+                }),
           ),
           Icon(Icons.keyboard_arrow_down),
         ],

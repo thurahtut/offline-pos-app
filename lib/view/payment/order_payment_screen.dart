@@ -12,6 +12,14 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   final TextEditingController _amountController = TextEditingController();
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<CurrentOrderController>().getAllPaymentMethod();
+    });
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _amountController.dispose();
     super.dispose();
@@ -115,34 +123,27 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   Widget _paymentTypeWidget() {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        BorderContainer(
-          text: 'Cash (Easy 3)',
-          width: MediaQuery.of(context).size.width / (isTabletMode ? 2 : 6),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        SizedBox(height: 10),
-        BorderContainer(
-          text: 'Credit/Debit Cards (Easy 3)',
-          width: MediaQuery.of(context).size.width / (isTabletMode ? 2 : 6),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        SizedBox(height: 10),
-        BorderContainer(
-          text: 'Near Me E-Payment (Easy 3)',
-          width: MediaQuery.of(context).size.width / (isTabletMode ? 2 : 6),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        SizedBox(height: 10),
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            (context.watch<CurrentOrderController>().paymentMethodList.isEmpty)
+                ? []
+                : [
+                    ...context
+                        .read<CurrentOrderController>()
+                        .paymentMethodList
+                        .map((e) => Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: BorderContainer(
+                                text: e.name ?? '',
+                                width: MediaQuery.of(context).size.width /
+                                    (isTabletMode ? 2 : 6),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ))
+                        .toList()
+                  ]);
   }
 
   Widget _editAmountWidget() {
@@ -234,7 +235,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     prefixSvg: "assets/svg/receipt_long.svg",
                     svgColor: primaryColor,
                     onPressed: () {},
-            ),
+                  ),
           ],
         ),
         SizedBox(height: 4),
@@ -271,11 +272,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 }),
             context.watch<CurrentOrderController>().isContainCustomer == true
                 ? CommonUtils.eachCalculateButtonWidget(
-              text: "Invoice",
-              width: 150,
-              prefixSvg: "assets/svg/receipt_long.svg",
+                    text: "Invoice",
+                    width: 150,
+                    prefixSvg: "assets/svg/receipt_long.svg",
                     svgColor: primaryColor,
-              onPressed: () {},
+                    onPressed: () {},
                   )
                 : SizedBox(),
           ],

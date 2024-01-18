@@ -199,7 +199,7 @@ class ProductTable {
         "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
         "and pli.$APPLIED_ON='1_product' "
-        "and datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') "
+        "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
         "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "where 1=1 "
         "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)" : ''} "

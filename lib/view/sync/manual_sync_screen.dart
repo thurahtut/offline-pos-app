@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:offline_pos/components/export_files.dart';
 
 class ManualSyncScreen extends StatefulWidget {
@@ -59,7 +57,6 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
         margin: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.white,
-          // color: primaryColor.withOpacity(0.4),
           border: Border.all(color: primaryColor),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -69,87 +66,113 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _syncWidget(
-                'Product Sync',
-                controller.doneActionList.contains(DataSync.product.name),
-                percentage:
-                    controller.processingPercentage[DataSync.product.name],
-                onSync: () {
-                  log('Pos location : ${context.read<LoginUserController>().posConfig?.shPosLocation}');
-                  context.read<MorningsyncController>().getAllProductFromApi(
-                    context
-                        .read<ThemeSettingController>()
-                        .appConfig
-                        ?.productLastSyncDate,
-                    context
-                        .read<LoginUserController>()
-                        .posConfig
-                        ?.shPosLocation,
-                    () {
-                      controller.doneActionList.add(DataSync.product.name);
-                      controller.notify();
-                      context
-                              .read<ThemeSettingController>()
-                              .appConfig
-                              ?.productLastSyncDate =
-                          DateTime.now().toUtc().toString();
-                      AppConfigTable.insertOrUpdate(
-                          PRODUCT_LAST_SYNC_DATE, DateTime.now().toString());
-                    },
-                  );
-                },
-              ),
+              _productSyncWidget(controller),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Divider(
                   thickness: 0.3,
                 ),
               ),
-              _syncWidget(
-                'Price List Sync',
-                controller.doneActionList.contains(DataSync.price.name),
-                percentage:
-                    controller.processingPercentage[DataSync.price.name],
-                onSync: () {
-                  context
-                      .read<MorningsyncController>()
-                      .getAllPriceListItemFromApi(
-                    context
-                            .read<LoginUserController>()
-                            .posConfig
-                            ?.pricelistId ??
-                        0,
-                    () {
-                      controller.doneActionList.add(DataSync.price.name);
-                      controller.notify();
-                    },
-                  );
-                },
-              ),
+              _priceSyncWidget(controller),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Divider(
                   thickness: 0.3,
                 ),
               ),
-              _syncWidget(
-                'Customer List Sync',
-                controller.doneActionList.contains(DataSync.customer.name),
-                percentage:
-                    controller.processingPercentage[DataSync.customer.name],
-                onSync: () {
-                  context.read<MorningsyncController>().getAllCustomerFromApi(
-                    () {
-                      controller.doneActionList.add(DataSync.customer.name);
-                      controller.notify();
-                    },
-                  );
-                },
+              _customerSyncWidget(controller),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 0.3,
+                ),
               ),
+              _paymentMethodSyncWidget(controller),
             ],
           );
         }),
       ),
+    );
+  }
+
+  Widget _productSyncWidget(MorningsyncController controller) {
+    return _syncWidget(
+      'Product Sync',
+      controller.doneActionList.contains(DataSync.product.name),
+      percentage: controller.processingPercentage[DataSync.product.name],
+      onSync: () {
+        context.read<MorningsyncController>().getAllProductFromApi(
+          context.read<ThemeSettingController>().appConfig?.productLastSyncDate,
+          context.read<LoginUserController>().posConfig?.shPosLocation,
+          () {
+            controller.doneActionList.add(DataSync.product.name);
+            controller.notify();
+            context
+                .read<ThemeSettingController>()
+                .appConfig
+                ?.productLastSyncDate = DateTime.now().toUtc().toString();
+            AppConfigTable.insertOrUpdate(
+                PRODUCT_LAST_SYNC_DATE, DateTime.now().toString());
+          },
+        );
+      },
+    );
+  }
+
+  Widget _priceSyncWidget(MorningsyncController controller) {
+    return _syncWidget(
+      'Price List Sync',
+      controller.doneActionList.contains(DataSync.price.name),
+      percentage: controller.processingPercentage[DataSync.price.name],
+      onSync: () {
+        context.read<MorningsyncController>().getAllPriceListItemFromApi(
+          context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
+          () {
+            controller.doneActionList.add(DataSync.price.name);
+            controller.notify();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _customerSyncWidget(MorningsyncController controller) {
+    return _syncWidget(
+      'Customer List Sync',
+      controller.doneActionList.contains(DataSync.customer.name),
+      percentage: controller.processingPercentage[DataSync.customer.name],
+      onSync: () {
+        context.read<MorningsyncController>().getAllCustomerFromApi(
+          () {
+            controller.doneActionList.add(DataSync.customer.name);
+            controller.notify();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _paymentMethodSyncWidget(MorningsyncController controller) {
+    return _syncWidget(
+      'Payment Method List Sync',
+      controller.doneActionList.contains(DataSync.paymentMethod.name),
+      percentage: controller.processingPercentage[DataSync.paymentMethod.name],
+      onSync: () {
+        context
+            .read<MorningsyncController>()
+            .getAllPaymentMethodListItemFromApi(
+          context
+                  .read<LoginUserController>()
+                  .posConfig
+                  ?.paymentMethodIds
+                  ?.join(",") ??
+              "",
+          () {
+            controller.doneActionList.add(DataSync.paymentMethod.name);
+            controller.notify();
+          },
+        );
+      },
     );
   }
 
@@ -179,6 +202,7 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                     ),
                     child: Center(
                       child: GFProgressBar(
+                        key: Key(text),
                         percentage: (percentage ?? 0) / 100,
                         margin: EdgeInsets.zero,
                         padding: EdgeInsets.zero,

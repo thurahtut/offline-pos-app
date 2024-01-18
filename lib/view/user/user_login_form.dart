@@ -219,6 +219,8 @@ class _UserLoginFormState extends State<UserLoginForm> {
             response.data != null) {
           context.read<LoginUserController>().loginUser =
               User.fromJson(response.data);
+          LoginUserTable.insertOrUpdateUser(
+              context.read<LoginUserController>().loginUser!);
           Navigator.pop(bContext, true);
         }
       });

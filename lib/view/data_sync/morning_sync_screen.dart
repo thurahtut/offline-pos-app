@@ -27,10 +27,13 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
             context.read<MorningsyncController>().getAllPriceListItemFromApi(
                 context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
                 () {
-              List<int> ids = [];
+              List<int>? ids = context
+                  .read<LoginUserController>()
+                  .posConfig
+                  ?.paymentMethodIds;
               context
                   .read<MorningsyncController>()
-                  .getAllPaymentMethodListItemFromApi(ids.join(","), () {
+                  .getAllPaymentMethodListItemFromApi(ids?.join(",") ?? "", () {
                 context.read<MorningsyncController>().currentTaskTitle = "";
               Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
               });
@@ -144,7 +147,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                     child: Text(
                       "${controller.percentage?.toStringAsFixed(2) ?? 0}%",
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(fontSize: 18, color: Colors.black),
                     ),
                   )
                 ],

@@ -148,7 +148,7 @@ class PriceListItemTable {
     return PriceListItem.fromJson(maps.first);
   }
 
-static Future<List<Product>> getPriceItemByFilteringWithProduct({
+  static Future<List<Product>> getPriceItemByFilteringWithProduct({
     String? filter,
     int? limit,
     int? offset,
@@ -160,8 +160,11 @@ static Future<List<Product>> getPriceItemByFilteringWithProduct({
         "SELECT pt.id productId, pli.id priceListItemId,* from $PRICE_LIST_ITEM_TABLE_NAME pli "
         "left join $PRODUCT_TABLE_NAME pt "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
+        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)" : ''} "
         "where 1=1 "
-        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ?)" : ''} "
+        "and pli.$APPLIED_ON='1_product' "
+        "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
+        "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "ORDER by pli.$PRICE_LIST_ITEM_ID DESC"
         "${limit != null ? " limit $limit " : " "}"
         "${offset != null ? " offset $offset " : " "}";
@@ -180,7 +183,7 @@ static Future<List<Product>> getPriceItemByFilteringWithProduct({
       return product;
     });
   }
-  
+
   static Future<int> delete(int priceListItemId) async {
     final Database db = await DatabaseHelper().db;
 

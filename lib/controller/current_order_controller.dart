@@ -28,8 +28,9 @@ class CurrentOrderController with ChangeNotifier {
     for (var i = 0; i < cOrderList.length; i++) {
       tQty +=
           int.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0;
-      tTotal +=
-          (int.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0) *
+      tTotal += (int.tryParse(
+                  cOrderList[i].onhandQuantity?.toString() ?? "0") ??
+              0) *
           (int.tryParse(
                   cOrderList[i].priceListItem?.fixedPrice?.toString() ?? "0") ??
               0); //int.tryParse(cOrderList[i].salePrice?.toString() ?? "0") ??
@@ -66,10 +67,38 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  List<PaymentMethod> _paymentMethodList = [];
+  List<PaymentMethod> get paymentMethodList => _paymentMethodList;
+  set paymentMethodList(List<PaymentMethod> paymentMethodList) {
+    _paymentMethodList = paymentMethodList;
+    notifyListeners();
+  }
+
+  Map<String, PaymentTransaction> _paymentTransactionList = {};
+  Map<String, PaymentTransaction> get paymentTransactionList =>
+      _paymentTransactionList;
+  set paymentTransactionList(
+      Map<String, PaymentTransaction> paymentTransactionList) {
+    _paymentTransactionList = paymentTransactionList;
+    notifyListeners();
+  }
+
+  Future<void> getAllPaymentMethod() async {
+    PaymentMethodTable.getActivePaymentMethod().then((paymentMethods) {
+      _paymentMethodList = [];
+      if (paymentMethods != null) {
+        _paymentMethodList.addAll(paymentMethods);
+      }
+      notifyListeners();
+    });
+  }
+
   resetCurrentOrderController() {
     _currentOrderList = [];
     _selectedIndex = null;
     _currentOrderKeyboardState = CurrentOrderKeyboardState.qty;
+    _paymentMethodList = [];
+    _paymentTransactionList = {};
     notifyListeners();
   }
 }

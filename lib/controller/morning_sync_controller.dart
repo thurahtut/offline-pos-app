@@ -60,10 +60,6 @@ class MorningsyncController with ChangeNotifier {
       String? lastSyncDate, int? locationId, Function()? callback) {
     currentTaskTitle = "Product List Sync....";
     currentReachTask = 1;
-    // String? lastSyncDate =
-    //     context.read<ThemeSettingController>().appConfig?.productLastSyncDate;
-    // int? locationId =
-    //     context.read<LoginUserController>().posConfig?.shPosLocation;
     Api.getAllProduct(
       lastSyncDate: lastSyncDate,
       locationId: locationId,
@@ -108,8 +104,6 @@ class MorningsyncController with ChangeNotifier {
   void getAllPriceListItemFromApi(int priceListId, Function()? callback) {
     currentTaskTitle = "Price Sync....";
     currentReachTask = 3;
-    // int priceListId =
-    //     context.read<LoginUserController>().posConfig?.pricelistId ?? 0;
     Api.getPriceListItemByID(
       priceListId: priceListId,
       onReceiveProgress: (sent, total) {
@@ -133,21 +127,19 @@ class MorningsyncController with ChangeNotifier {
       String? paymentMethodListStr, Function()? callback) {
     currentTaskTitle = "Payment Method Sync....";
     currentReachTask = 4;
-    // int priceListId =
-    //     context.read<LoginUserController>().posConfig?.pricelistId ?? 0;
     Api.getPaymentMethodListItemByID(
       paymentMethodListStr: paymentMethodListStr,
       onReceiveProgress: (sent, total) {
         double value = min(((sent / total) * 100), 100);
         percentage = value > 100 ? null : value;
-        updateProcessingPercentage(DataSync.price.name, percentage);
+        updateProcessingPercentage(DataSync.paymentMethod.name, percentage);
       },
     ).then((response) {
       if (response != null &&
           response.statusCode == 200 &&
           response.data != null) {
         if (response.data is List) {
-          PriceListItemTable.insertOrUpdate(response.data)
+          PaymentMethodTable.insertOrUpdate(response.data)
               .then((value) => callback?.call());
         }
       }

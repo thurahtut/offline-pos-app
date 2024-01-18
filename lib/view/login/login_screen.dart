@@ -29,16 +29,17 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-              size: 30,
-            ),
-          ),
+          automaticallyImplyLeading: false,
+          // leading: IconButton(
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          //   icon: Icon(
+          //     Icons.arrow_back_ios,
+          //     color: Colors.white,
+          //     size: 30,
+          //   ),
+          // ),
           actions: [
             IconButton(
                 onPressed: () {
