@@ -92,6 +92,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 context,
               ).then((value) {
                 if (value == true) {
+                  AppConfigTable.deleteByColumnName(PRODUCT_LAST_SYNC_DATE);
+                  context
+                      .read<ThemeSettingController>()
+                      .appConfig
+                      ?.productLastSyncDate = null;
+                  context.read<ThemeSettingController>().notify();
+
                   Navigator.pushNamed(context, MorningSyncScreen.routeName);
                 }
               });

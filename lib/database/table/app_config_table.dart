@@ -95,4 +95,10 @@ class AppConfigTable {
     }
     return appConfig;
   }
+
+  static Future<void> deleteByColumnName(String columnName) async {
+    final Database db = await DatabaseHelper().db;
+    db.rawQuery(
+        "delete from $PRODUCT_TABLE_NAME where $APP_CONFIG_NAME='$columnName';");
+  }
 }
