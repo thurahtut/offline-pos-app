@@ -101,7 +101,7 @@ enum Method {
 
 class Api {
   static const String apiType = "uat";
-  static const String baseUrl = "http://10.10.88.157:3000/api";
+  static const String baseUrl = "http://103.105.175.186:3000/api";
 
 //--------------------------------------------------------------------------------------
   static const String version1 = "/v1";

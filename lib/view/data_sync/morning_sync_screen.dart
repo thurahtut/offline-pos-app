@@ -155,7 +155,11 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                     child: Text(
                       "${controller.percentage?.toStringAsFixed(2) ?? 0}%",
                       textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   )
                 ],
