@@ -107,6 +107,9 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
           () {
             controller.doneActionList.add(DataSync.product.name);
             controller.notify();
+            if (context.read<ThemeSettingController>().appConfig == null) {
+              context.read<ThemeSettingController>().appConfig = AppConfig();
+            }
             context
                 .read<ThemeSettingController>()
                 .appConfig

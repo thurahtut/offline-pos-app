@@ -17,12 +17,20 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
         context.read<ThemeSettingController>().appConfig?.productLastSyncDate,
         context.read<LoginUserController>().posConfig?.shPosLocation,
         () {
+
+          if (context.read<ThemeSettingController>().appConfig == null) {
+            context.read<ThemeSettingController>().appConfig = AppConfig();
+          }
           context
               .read<ThemeSettingController>()
               .appConfig
               ?.productLastSyncDate = DateTime.now().toUtc().toString();
           AppConfigTable.insertOrUpdate(
-              PRODUCT_LAST_SYNC_DATE, DateTime.now().toString());
+              PRODUCT_LAST_SYNC_DATE,
+              context
+                  .read<ThemeSettingController>()
+                  .appConfig
+                  ?.productLastSyncDate);
           context.read<MorningsyncController>().getAllCustomerFromApi(() {
             context.read<MorningsyncController>().getAllPriceListItemFromApi(
                 context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
