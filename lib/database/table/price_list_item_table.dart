@@ -58,7 +58,6 @@ class PriceListItemTable {
 
   static Future<void> insertOrUpdate(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
-    await deleteAll(db); // todo: to remove
     Batch batch = db.batch();
     // var time = DateTime.now();
     int index = 0;
