@@ -37,7 +37,7 @@ class DatabaseHelper {
         onUpgrade: _onUpgrade,
       );
     } else if (kIsWeb) {
-      var databaseFactory = databaseFactoryFfiWeb;
+      databaseFactory = databaseFactoryFfiWeb;
       // await deleteDatabase(_databaseName);
       // path = join(_databaseName, _databaseName);
       return await databaseFactory.openDatabase(_databaseName,
