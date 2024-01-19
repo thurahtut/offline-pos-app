@@ -47,8 +47,8 @@ class DatabaseHelper {
             onUpgrade: _onUpgrade,
           ));
     } else {
+      databaseFactory = databaseFactoryFfi;
       var databasesPath = await getDatabasesPath();
-      var databaseFactory = databaseFactoryFfi;
       path = join(databasesPath, _databaseName);
       // await deleteDatabase(path);
       return await databaseFactory.openDatabase(path,
