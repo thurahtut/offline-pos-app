@@ -23,7 +23,6 @@ class _QuotationOrderListScreenState extends State<QuotationOrderListScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
-      CommonUtils.orderHistoryList;
       for (var i = 0; i < 20; i++) {
         context
             .read<QuotationOrderListController>()

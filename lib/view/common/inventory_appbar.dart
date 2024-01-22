@@ -203,9 +203,14 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
           style: textStyle,
         ),
       ),
-      Text(
-        'Orders',
-        style: textStyle,
+      InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, OrderHistoryListScreen.routeName);
+        },
+        child: Text(
+          'Orders',
+          style: textStyle,
+        ),
       ),
       PopupMenuButton(
         tooltip: "",

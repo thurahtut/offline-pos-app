@@ -3,7 +3,7 @@ class PaymentTransaction {
   int? orderId;
   String? paymentDate;
   int? paymentMethodId;
-  int? amount;
+  String? amount;
 
   PaymentTransaction(
       {this.id,
@@ -17,7 +17,7 @@ class PaymentTransaction {
     orderId = json['order_id'];
     paymentDate = json['payment_date'];
     paymentMethodId = json['payment_method_id'];
-    amount = json['amount'];
+    amount = json['amount'].toString();
   }
 
   Map<String, dynamic> toJson() {

@@ -5,6 +5,7 @@ class WelcomeScreen extends StatelessWidget {
   static const String routeName = "/welcome_screen";
   @override
   Widget build(BuildContext context) {
+    return Consumer<ThemeSettingController>(builder: (_, controller, __) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -24,11 +25,11 @@ class WelcomeScreen extends StatelessWidget {
    
       body: _bodyWidget(context),
     );
+    });
   }
 
   Widget _bodyWidget(BuildContext context) {
-    return Consumer<ThemeSettingController>(builder: (_, controller, __) {
-      return Container(
+    return Container(
         color: primaryColor,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,9 +109,7 @@ class WelcomeScreen extends StatelessWidget {
               //     SizedBox(width: 8),
               //   ],
               // ),
-            ]),
-      );
-    }
+          ]),
     );
   }
 

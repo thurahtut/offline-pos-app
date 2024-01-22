@@ -44,12 +44,12 @@ class _SaleAppBarState extends State<SaleAppBar> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           context.watch<ThemeSettingController>().appConfig?.logo != null
-          ? Image.memory(
-              context.read<ThemeSettingController>().appConfig!.logo!,
-        width: 120,
-        height: 60,
-        fit: BoxFit.fitWidth,
-            )
+              ? Image.memory(
+                  context.read<ThemeSettingController>().appConfig!.logo!,
+                  width: 120,
+                  height: 60,
+                  fit: BoxFit.fitWidth,
+                )
               : SizedBox(),
           isTabletMode ? SizedBox(width: 10) : spacer,
           CommonUtils.appBarActionButtonWithText(
@@ -115,15 +115,13 @@ class _SaleAppBarState extends State<SaleAppBar> {
               value: 1,
               child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/network_wifi.svg', 'Wifi Address Name',
-                  fontSize: 16, onPressed: () {
-              }),
+                  fontSize: 16, onPressed: () {}),
             ),
             PopupMenuItem<int>(
               value: 2,
               child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/credit_card.svg', 'Customer\'s Screen',
-                  fontSize: 16, onPressed: () {
-              }),
+                  fontSize: 16, onPressed: () {}),
             ),
             PopupMenuItem<int>(
               value: 3,
@@ -139,9 +137,8 @@ class _SaleAppBarState extends State<SaleAppBar> {
             PopupMenuItem<int>(
               value: 4,
               child: CommonUtils.appBarActionButtonWithText(
-                  'assets/svg/move_item.svg', 'Close', fontSize: 16,
-                  onPressed: () {
-              }),
+                  'assets/svg/move_item.svg', 'Close',
+                  fontSize: 16, onPressed: () {}),
             ),
           ];
         },
@@ -161,12 +158,15 @@ class _SaleAppBarState extends State<SaleAppBar> {
       ),
       spacer,
       CommonUtils.appBarActionButtonWithText(
-          'assets/svg/account_circle.svg', 'Easy 3 A - Store Leader',
-          fontSize: 16, onPressed: () {
-        return ChooseCashierDialog.chooseCashierDialogWidget(
-          context,
-        );
-      }),
+        'assets/svg/account_circle.svg',
+        context.read<LoginUserController>().loginUser?.employeeData?.name ?? '',
+        fontSize: 16,
+        onPressed: () {
+          return ChooseCashierDialog.chooseCashierDialogWidget(
+            context,
+          );
+        },
+      ),
       spacer,
       CommonUtils.svgIconActionButton(
         'assets/svg/network_wifi.svg',

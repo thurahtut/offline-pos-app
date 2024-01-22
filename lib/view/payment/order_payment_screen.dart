@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:sqflite/sqflite.dart';
 
 class OrderPaymentScreen extends StatefulWidget {
   static const String routeName = "/order_payment_screen";
@@ -39,8 +40,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
     return Container(
       padding: EdgeInsets.symmetric(
           vertical: 10,
-          horizontal:
-              isTabletMode ? 10 : (MediaQuery.of(context).size.width / 3) / 2),
+          horizontal: isTabletMode
+              ? 10
+              : (MediaQuery.of(context).size.width / 3) / 2.5),
       child: Column(
         children: [
           _actionButtonsWidget(),
@@ -74,13 +76,46 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           width: MediaQuery.of(context).size.width / 8.5,
           containerColor: primaryColor,
           textColor: Colors.white,
-          onTap: () {
-            context.read<CurrentOrderController>().currentOrderList = [];
-            var count = 0;
-            Navigator.popUntil(context, (route) {
-              return count++ == 1;
+          onTap: () async {
+            CurrentOrderController currentOrderController =
+                context.read<CurrentOrderController>();
+            final Database db = await DatabaseHelper().db;
+            double totalAmt = currentOrderController
+                .getTotalQty(currentOrderController.currentOrderList)
+                .last;
+            double totalPayAmt = 0;
+            PaymentTransactionTable.deleteByOrderId(
+                db, currentOrderController.orderHistory?.id ?? 0);
+            for (var data
+                in currentOrderController.paymentTransactionList.values) {
+              totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
+              data.orderId = currentOrderController.orderHistory?.id ?? 0;
+              data.paymentDate =
+                  currentOrderController.orderHistory?.createDate ?? '';
+            }
+            if (totalAmt > totalPayAmt) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                  'Pay amount is required!',
+                  textAlign: TextAlign.center,
+                )));
+              }
+              return;
+            }
+
+            PaymentTransactionTable.insertOrUpdateWithDB(
+                    db,
+                    currentOrderController.paymentTransactionList.values
+                        .toList())
+                .then((value) {
+              // currentOrderController.currentOrderList = [];
+              var count = 0;
+              Navigator.popUntil(context, (route) {
+                return count++ == 1;
+              });
+              Navigator.pushNamed(context, OrderPaymentReceiptScreen.routeName);
             });
-            Navigator.pushNamed(context, OrderPaymentReceiptScreen.routeName);
           },
         ),
       ],
@@ -121,235 +156,343 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   }
 
   Widget _paymentTypeWidget() {
-    bool isTabletMode = CommonUtils.isTabletMode(context);
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            (context.watch<CurrentOrderController>().paymentMethodList.isEmpty)
-                ? []
-                : [
-                    ...context
-                        .read<CurrentOrderController>()
-                        .paymentMethodList
-                        .map((e) => Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: BorderContainer(
-                                text: e.name ?? '',
-                                width: MediaQuery.of(context).size.width /
-                                    (isTabletMode ? 2 : 6),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ))
-                        .toList()
-                  ]);
+    return Consumer<CurrentOrderController>(builder: (_, controller, __) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ...controller.paymentMethodList
+            .map(
+              (e) => InkWell(
+                onTap: () {
+                  controller.selectedPaymentMethodId = e.id ?? -1;
+                  controller.paymentTransactionList[e.id ?? -1] ??=
+                      PaymentTransaction(
+                    paymentMethodId: e.id,
+                  );
+                  controller.notify();
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 10, right: 10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: controller
+                                .paymentTransactionList[
+                                    controller.selectedPaymentMethodId]
+                                ?.paymentMethodId ==
+                            e.id
+                        ? primaryColor
+                        : null,
+                    border: Border.all(
+                      color: primaryColor,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          e.name ?? '',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: (controller.paymentTransactionList[
+                                            controller.selectedPaymentMethodId])
+                                        ?.paymentMethodId ==
+                                    e.id
+                                ? Colors.white
+                                : primaryColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          (double.tryParse(controller
+                                              .paymentTransactionList[e.id]
+                                              ?.amount ??
+                                          '') ??
+                                      0) <=
+                                  0
+                              ? ''
+                              : CommonUtils.priceFormat.format(double.tryParse(
+                                      controller.paymentTransactionList[e.id]
+                                              ?.amount ??
+                                          '') ??
+                                  0),
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: controller
+                                        .paymentTransactionList[
+                                            controller.selectedPaymentMethodId]
+                                        ?.paymentMethodId ==
+                                    e.id
+                                ? Colors.white
+                                : primaryColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+            .toList()
+      ]);
+    });
   }
 
   Widget _editAmountWidget() {
-    TextStyle textStyle = TextStyle(
-      color: primaryColor,
-      fontSize: 30,
-      fontWeight: FontWeight.w800,
-    );
-    return Container(
-      height: 200,
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width / 30),
-      decoration: BoxDecoration(
-        color: Constants.greyColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-              controller: _amountController,
-              style: textStyle,
-              decoration: InputDecoration(
-                hintText: '0.00 Ks',
-                hintStyle: textStyle,
-                border: InputBorder.none,
-              ),
-              inputFormatters: [
-                // FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
-                FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)'))
-              ]),
-          Text(
-            'Please select a payment method',
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              color: Constants.alertColor,
-            ),
+    return Consumer<CurrentOrderController>(
+      builder: (_, controller, __) {
+        double totalAmt =
+            controller.getTotalQty(controller.currentOrderList).last;
+        double totalPayAmt = 0;
+        double remainingAmt = totalAmt;
+
+        // ;
+        for (var data in controller.paymentTransactionList.values) {
+          totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
+        }
+        remainingAmt = totalAmt - totalPayAmt;
+        return Container(
+          height: 200,
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width / 45),
+          decoration: BoxDecoration(
+            color: Constants.greyColor,
+            borderRadius: BorderRadius.circular(20),
           ),
-        ],
-      ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(text: "", children: [
+                      TextSpan(
+                        text: "Remaining ",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                      ),
+                      TextSpan(
+                        text:
+                            '${CommonUtils.priceFormat.format(totalPayAmt >= totalAmt ? 0 : remainingAmt)} Ks',
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ]),
+                  ),
+                  Expanded(child: SizedBox()),
+                  RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(text: "", children: [
+                      TextSpan(
+                        text: "Change ",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                      ),
+                      TextSpan(
+                        text:
+                            '${CommonUtils.priceFormat.format(totalPayAmt >= totalAmt ? (double.tryParse(controller.paymentTransactionList[controller.selectedPaymentMethodId]?.amount ?? '') ?? 0) - (totalAmt - (totalPayAmt - (double.tryParse(controller.paymentTransactionList[controller.selectedPaymentMethodId]?.amount ?? '') ?? 0))) : 0)} Ks',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.56),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ]),
+                  ),
+                ],
+              ),
+              SizedBox(height: 6),
+              Text(
+                'Total Due ${CommonUtils.priceFormat.format(totalAmt)} Ks',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.56),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Expanded(child: SizedBox(height: 6)),
+              Text(
+                controller.paymentTransactionList.isEmpty &&
+                        controller
+                                .paymentTransactionList[
+                                    controller.selectedPaymentMethodId]
+                                ?.paymentMethodId ==
+                            null
+                    ? 'Please select a payment method'
+                    : '',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Constants.alertColor,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _paymentCalculatorWidget() {
-    return Column(
-      children: [
-        _eachCalculatorRowWidget(
-          [
-            CommonUtils.eachCalculateButtonWidget(
-              text: "1",
-              onPressed: () {
-                _amountController.text += "1";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "2",
-              onPressed: () {
-                _amountController.text += "2";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "3",
-              onPressed: () {
-                _amountController.text += "3";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "+10",
-              onPressed: () {
-                _amountController.text =
-                    (parseValueAmount(_amountController.text) + 10).toString();
-                setState(() {});
-              },
-            ),
-            context.watch<CurrentOrderController>().isContainCustomer == true
-                ? CommonUtils.eachCalculateButtonWidget(
-                    text: "BG Bakerys",
-                    width: 150,
-                    prefixSvg: "assets/svg/account_circle.svg",
-                    svgColor: primaryColor,
-                    onPressed: () {},
-                  )
-                : CommonUtils.eachCalculateButtonWidget(
-                    text: "Invoice",
-                    width: 150,
-                    prefixSvg: "assets/svg/receipt_long.svg",
-                    svgColor: primaryColor,
-                    onPressed: () {},
-                  ),
-          ],
-        ),
-        SizedBox(height: 4),
-        _eachCalculatorRowWidget(
-          [
-            CommonUtils.eachCalculateButtonWidget(
-              text: "4",
-              onPressed: () {
-                _amountController.text += "4";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "5",
-              onPressed: () {
-                _amountController.text += "5";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "6",
-              onPressed: () {
-                _amountController.text += "6";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-                text: "+20",
+    return Consumer<CurrentOrderController>(
+        builder: (_, currentOrderController, __) {
+      return Column(
+        children: [
+          _eachCalculatorRowWidget(
+            [
+              CommonUtils.eachCalculateButtonWidget(
+                text: "1",
                 onPressed: () {
-                  _amountController.text =
-                      (parseValueAmount(_amountController.text) + 20)
-                          .toString();
-                  setState(() {});
-                }),
-            context.watch<CurrentOrderController>().isContainCustomer == true
-                ? CommonUtils.eachCalculateButtonWidget(
-                    text: "Invoice",
-                    width: 150,
-                    prefixSvg: "assets/svg/receipt_long.svg",
-                    svgColor: primaryColor,
-                    onPressed: () {},
-                  )
-                : SizedBox(),
-          ],
-        ),
-        SizedBox(height: 4),
-        _eachCalculatorRowWidget(
-          [
-            CommonUtils.eachCalculateButtonWidget(
-              text: "7",
-              onPressed: () {
-                _amountController.text += "7";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "8",
-              onPressed: () {
-                _amountController.text += "8";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "9",
-              onPressed: () {
-                _amountController.text += "9";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "+50",
-              onPressed: () {
-                _amountController.text =
-                    (parseValueAmount(_amountController.text) + 50).toString();
-                setState(() {});
-              },
-            ),
-          ],
-        ),
-        SizedBox(height: 4),
-        _eachCalculatorRowWidget(
-          [
-            CommonUtils.eachCalculateButtonWidget(
-                text: "+/-", onPressed: () {}),
-            CommonUtils.eachCalculateButtonWidget(
-              text: "0",
-              onPressed: () {
-                _amountController.text += "0";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              text: ".",
-              onPressed: () {
-                double d = parseValueAmount(_amountController.text);
-                if (d is! int) {
-                  return;
-                }
-                _amountController.text += ".";
-                setState(() {});
-              },
-            ),
-            CommonUtils.eachCalculateButtonWidget(
-              icon: Icons.backspace_outlined,
-              iconColor: Constants.alertColor,
-              onPressed: () {
-                _amountController.text = _amountController.text
-                    .substring(0, _amountController.text.length - 1);
-              },
-            ),
-          ],
-        ),
-      ],
-    );
+                  _updatePayAmount(currentOrderController, "1");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "2",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "2");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "3",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "3");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "+10",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "10",
+                      valueAdding: true);
+                },
+              ),
+              context.watch<CurrentOrderController>().isContainCustomer == true
+                  ? CommonUtils.eachCalculateButtonWidget(
+                      text: "BG Bakerys",
+                      width: 150,
+                      prefixSvg: "assets/svg/account_circle.svg",
+                      svgColor: primaryColor,
+                      onPressed: () {},
+                    )
+                  : CommonUtils.eachCalculateButtonWidget(
+                      text: "Invoice",
+                      width: 150,
+                      prefixSvg: "assets/svg/receipt_long.svg",
+                      svgColor: primaryColor,
+                      onPressed: () {},
+                    ),
+            ],
+          ),
+          SizedBox(height: 4),
+          _eachCalculatorRowWidget(
+            [
+              CommonUtils.eachCalculateButtonWidget(
+                text: "4",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "4");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "5",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "5");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "6",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "6");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                  text: "+20",
+                  onPressed: () {
+                    _updatePayAmount(currentOrderController, "20",
+                        valueAdding: true);
+                  }),
+              context.watch<CurrentOrderController>().isContainCustomer == true
+                  ? CommonUtils.eachCalculateButtonWidget(
+                      text: "Invoice",
+                      width: 150,
+                      prefixSvg: "assets/svg/receipt_long.svg",
+                      svgColor: primaryColor,
+                      onPressed: () {},
+                    )
+                  : SizedBox(),
+            ],
+          ),
+          SizedBox(height: 4),
+          _eachCalculatorRowWidget(
+            [
+              CommonUtils.eachCalculateButtonWidget(
+                text: "7",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "7");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "8",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "8");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "9",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "9");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "+50",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "50",
+                      valueAdding: true);
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 4),
+          _eachCalculatorRowWidget(
+            [
+              CommonUtils.eachCalculateButtonWidget(
+                  text: "+/-", onPressed: () {}),
+              CommonUtils.eachCalculateButtonWidget(
+                text: "0",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "0");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                text: ".",
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, ".");
+                },
+              ),
+              CommonUtils.eachCalculateButtonWidget(
+                icon: Icons.backspace_outlined,
+                iconColor: Constants.alertColor,
+                onPressed: () {
+                  _updatePayAmount(currentOrderController, "", isBack: true);
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+    });
   }
 
   Widget _eachCalculatorRowWidget(List<Widget> widgets) {
@@ -370,5 +513,37 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   double parseValueAmount(String str) {
     double value = double.tryParse(str) ?? 0;
     return value;
+  }
+
+  void _updatePayAmount(
+    CurrentOrderController currentOrderController,
+    String value, {
+    bool? isBack,
+    bool? valueAdding,
+  }) {
+    if (currentOrderController.paymentTransactionList[
+            currentOrderController.selectedPaymentMethodId] !=
+        null) {
+      String price = currentOrderController
+              .paymentTransactionList[
+                  currentOrderController.selectedPaymentMethodId]!
+              .amount
+              ?.toString() ??
+          "";
+      if (isBack == true) {
+        price = price.substring(0, price.length - 1);
+      } else if (valueAdding == true) {
+        double val =
+            (double.tryParse(price) ?? 0) + (double.tryParse(value) ?? 0);
+        price = val.toString();
+      } else {
+        price += value;
+      }
+      currentOrderController
+          .paymentTransactionList[
+              currentOrderController.selectedPaymentMethodId]!
+          .amount = price;
+      currentOrderController.notify();
+    }
   }
 }

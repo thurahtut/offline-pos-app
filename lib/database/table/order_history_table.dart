@@ -34,12 +34,13 @@ class OrderHistoryTable {
         "$CREATE_UID_IN_OH INTEGER NOT NULL,"
         "$WRITE_DATE_IN_OH TEXT NOT NULL,"
         "$WRITE_UID_IN_OH INTEGER NOT NULL,"
-        "$SEQUENCE_NUMBER INTEGER NOT NULL"
+        "$SEQUENCE_NUMBER INTEGER NOT NULL,"
+        "unique ($NAME_IN_OH, $SESSION_ID, $SEQUENCE_NUMBER)"
         ")");
   }
 
-  static Future<int> insert(OrderHistory orderHistory) async {
-    final Database db = await DatabaseHelper().db;
+  static Future<int> insert(
+      final Database db, OrderHistory orderHistory) async {
     String sql = "INSERT INTO $ORDER_HISTORY_TABLE_NAME("
         "$AMOUNT_TOTAL,"
         "$COMPANY_ID_IN_OH, $CONFIG_ID, $CREATE_DATE_IN_OH, $CREATE_UID_IN_OH, "
@@ -79,6 +80,29 @@ class OrderHistoryTable {
     });
   }
 
+  static Future<int> insertOrUpdate(
+      final Database db, OrderHistory orderHistory) async {
+    if (await checkRowExist(db, orderHistory.id ?? 0)) {
+      return update(db, orderHistory);
+    } else {
+      return insert(db, orderHistory);
+    }
+  }
+
+  static Future<bool> checkRowExist(
+    final Database db,
+    int orderHistoryId,
+  ) async {
+    bool isExist = false;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+        ORDER_HISTORY_TABLE_NAME,
+        where: "$ORDER_HISTORY_ID=?",
+        whereArgs: [orderHistoryId]);
+    isExist = maps.isNotEmpty;
+    return isExist;
+  }
+
   static Future<int> delete(int orderHistoryId) async {
     final Database db = await DatabaseHelper().db;
 
@@ -89,8 +113,8 @@ class OrderHistoryTable {
     );
   }
 
-  static Future<int> update(OrderHistory orderHistory) async {
-    final Database db = await DatabaseHelper().db;
+  static Future<int> update(
+      final Database db, OrderHistory orderHistory) async {
 
     return db.update(
       ORDER_HISTORY_TABLE_NAME,
@@ -98,5 +122,34 @@ class OrderHistoryTable {
       where: "$ORDER_HISTORY_ID=?",
       whereArgs: [orderHistory.id],
     );
+  }
+
+  static Future<List<OrderHistory>> getOrderHistorysFiltering({
+    String? filter,
+    int? limit,
+    int? offset,
+  }) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+
+    // Query the table for all The Categories.
+    final List<Map<String, dynamic>> maps = await db.query(
+      ORDER_HISTORY_TABLE_NAME,
+      where: filter != null
+          ? "$SEQUENCE_NUMBER LIKE ? or lower($NAME_IN_OH) LIKE ?"
+          : null,
+      whereArgs:
+          filter != null ? ['%$filter%', '%${filter.toLowerCase()}%'] : null,
+      // where: "$PRODUCT_NAME=?",
+      // whereArgs: [filter],
+      orderBy: '$ORDER_HISTORY_ID DESC',
+      limit: limit,
+      offset: offset,
+    );
+
+    // Convert the List<Map<String, dynamic> into a List<Category>.
+    return List.generate(maps.length, (i) {
+      return OrderHistory.fromJson(maps[i]);
+    });
   }
 }

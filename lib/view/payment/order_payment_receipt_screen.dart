@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -44,8 +46,14 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _bodyWidget(),
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        context.read<CurrentOrderController>().resetCurrentOrderController();
+      },
+      child: Scaffold(
+        body: _bodyWidget(),
+      ),
     );
   }
 
@@ -180,17 +188,19 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                       maxLines: 2,
                       // overflow: pw.TextOverflow.ellipsis,
                       text: pw.TextSpan(text: "", children: [
-                        // pw.TextSpan(
-                        //   text: "[${e["id"]}]",
-                        //   style: textStyle.copyWith(
-                        //       color: PdfColor.fromInt(
-                        //           Constants.successColor.value)),
-                        // ),
+                        pw.TextSpan(
+                          text: "[${e.productId}]",
+                          style: textStyle.copyWith(
+                              color: PdfColor.fromInt(
+                                  Constants.successColor.value)),
+                        ),
                         pw.TextSpan(text: e.productName, style: textStyle),
                       ]),
                     ),
                   ),
-                  pw.Text("${0} Ks".toString(), //e.price
+                  pw.Text(
+                      "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"
+                          .toString(),
                       style: textStyle.copyWith(
                         // fontWeight: FontWeight.bold,
                         color: PdfColor.fromInt(primaryColor.value),
@@ -199,7 +209,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
               ),
               pw.Row(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
                 pw.Text(
-                    "1 Unit at ${0} Ks/Unit with a 0.00 % discount"), //e.price
+                    "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"), //e.price
               ]),
             ]),
           ),
@@ -270,6 +280,19 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   pw.Widget _changeWidget() {
+    double totalAmt = context
+        .read<CurrentOrderController>()
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList)
+        .last;
+    double totalPayAmt = 0;
+
+    // ;
+    for (var data in context
+        .read<CurrentOrderController>()
+        .paymentTransactionList
+        .values) {
+      totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
+    }
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(horizontal: 14.0),
       child: pw.Row(
@@ -289,7 +312,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           ),
           pw.SizedBox(height: 4),
           pw.Text(
-            "300",
+            totalPayAmt > totalAmt ? '${totalPayAmt - totalAmt} Ks' : "0.00K",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#171717"),
               fontSize: 22,
@@ -342,12 +365,12 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             // }
           },
         ),
-        SizedBox(height: 20),
-        BorderContainer(
-          width: MediaQuery.of(context).size.width / 4.5,
-          text: 'Mail',
-          textColor: primaryColor,
-        ),
+        // SizedBox(height: 20),
+        // BorderContainer(
+        //   width: MediaQuery.of(context).size.width / 4.5,
+        //   text: 'Mail',
+        //   textColor: primaryColor,
+        // ),
         SizedBox(height: 20),
         BorderContainer(
           width: MediaQuery.of(context).size.width / 4.5,
@@ -355,6 +378,9 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           textColor: Colors.white,
           containerColor: primaryColor,
           onTap: () {
+            context
+                .read<CurrentOrderController>()
+                .resetCurrentOrderController();
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => MainScreen()),

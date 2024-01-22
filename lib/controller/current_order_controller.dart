@@ -74,12 +74,27 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, PaymentTransaction> _paymentTransactionList = {};
-  Map<String, PaymentTransaction> get paymentTransactionList =>
+  Map<int, PaymentTransaction> _paymentTransactionList = {};
+  Map<int, PaymentTransaction> get paymentTransactionList =>
       _paymentTransactionList;
   set paymentTransactionList(
-      Map<String, PaymentTransaction> paymentTransactionList) {
+      Map<int, PaymentTransaction> paymentTransactionList) {
     _paymentTransactionList = paymentTransactionList;
+    notifyListeners();
+  }
+
+  int _selectedPaymentMethodId = -1;
+  int get selectedPaymentMethodId => _selectedPaymentMethodId;
+  set selectedPaymentMethodId(int selectedPaymentMethodId) {
+    _selectedPaymentMethodId = selectedPaymentMethodId;
+    notifyListeners();
+  }
+
+  OrderHistory? _orderHistory;
+  OrderHistory? get orderHistory => _orderHistory;
+  set orderHistory(OrderHistory? orderHistory) {
+    if (_orderHistory == orderHistory) return;
+    _orderHistory = orderHistory;
     notifyListeners();
   }
 
@@ -99,6 +114,8 @@ class CurrentOrderController with ChangeNotifier {
     _currentOrderKeyboardState = CurrentOrderKeyboardState.qty;
     _paymentMethodList = [];
     _paymentTransactionList = {};
+    _selectedPaymentMethodId = -1;
+    _orderHistory = null;
     notifyListeners();
   }
 }

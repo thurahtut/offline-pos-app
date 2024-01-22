@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/order_line_id_table.dart';
+import 'package:offline_pos/model/order_line_id.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CurrentOrderScreen extends StatefulWidget {
   const CurrentOrderScreen({super.key, required this.width});
@@ -392,6 +395,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             return;
           }
           context.read<CurrentOrderController>().isContainCustomer = false;
+          uploadOrderHistoryToDatabase();
           Navigator.pushNamed(context, OrderPaymentScreen.routeName);
         },
       ),
@@ -510,7 +514,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           product.onhandQuantity = double.tryParse(qty);
         }
         currentOrderController.notify();
-      } 
+      }
       // else if (currentOrderController.currentOrderKeyboardState ==
       //     CurrentOrderKeyboardState.disc) {
       //   Product promotionProduct = product.cloneProduct();
@@ -538,5 +542,61 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           .insert(currentOrderController.selectedIndex! + 1, promotionProduct);
       currentOrderController.notify();
     }
+  }
+
+  Future<void> uploadOrderHistoryToDatabase() async {
+    CurrentOrderController currentOrderController =
+        context.read<CurrentOrderController>();
+    DateTime orderDate = DateTime.now().toUtc();
+    OrderHistory orderHistory = currentOrderController.orderHistory ??
+        OrderHistory(
+          dateOrder: orderDate.toString(),
+          createDate: orderDate.toString(),
+          createUid:
+              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
+          partnerId:
+              context.read<LoginUserController>().loginUser?.partnerData?.id ??
+                  0,
+          employeeId:
+              context.read<LoginUserController>().loginUser?.employeeData?.id ??
+                  0,
+          configId: context.read<LoginUserController>().posConfig?.id ?? 0,
+          sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
+          amountTotal: currentOrderController
+              .getTotalQty(currentOrderController.currentOrderList)
+              .last,
+          name:
+              "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.microsecond}",
+        );
+    final Database db = await DatabaseHelper().db;
+    OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
+      orderHistory.id = value;
+      currentOrderController.orderHistory = orderHistory;
+      List<OrderLineID> orderLineIdList = [];
+      OrderLineIdTable.deleteByOrderId(db, value);
+      for (var data in currentOrderController.currentOrderList) {
+        if ((data.onhandQuantity ?? 0) <= 0) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+            '${data.productName} is something wrong!',
+            textAlign: TextAlign.center,
+          )));
+        }
+
+        OrderLineID orderLineID = OrderLineID(
+          orderId: value,
+          productId: data.productId,
+          qty: data.onhandQuantity!,
+          priceUnit: (data.priceListItem?.fixedPrice ?? 0) * 0.05,
+          priceSubtotal: (data.priceListItem?.fixedPrice ?? 0) * 0.05,
+          priceSubtotalIncl: (data.priceListItem?.fixedPrice ?? 0),
+        );
+        orderLineIdList.add(orderLineID);
+      }
+      OrderLineIdTable.insertOrUpdate(orderLineIdList).then((lineValue) async {
+        OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) =>
+            currentOrderController.orderHistory?.lineIds = lineIds);
+      });
+    });
   }
 }

@@ -13,8 +13,6 @@ class OrderHistoryListScreen extends StatefulWidget {
 }
 
 class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
-  int _limit = 20;
-  int _offset = 0;
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
@@ -24,25 +22,32 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
       ValueNotifier(DateTime.now());
   final scrollController = ScrollController();
 
+  void getAllOrderHistory() async {
+    context.read<OrderHistoryListController>().loading = true;
+    context
+        .read<OrderHistoryListController>()
+        .getAllOrderHistory()
+        .then((value) {
+      updateOrderHistoryListToTable();
+      context.read<OrderHistoryListController>().loading = false;
+    });
+  }
+
+  Future<void> updateOrderHistoryListToTable() async {
+    context.read<OrderHistoryListController>().orderHistoryInfoDataSource =
+        DataSourceForOrderHistoryListScreen(
+            context,
+            context.read<OrderHistoryListController>().orderHistoryList,
+            context.read<OrderHistoryListController>().offset,
+            () {});
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       headerString = DateFormat('MMMM yyyy').format(DateTime.now()).toString();
       isTabletMode = CommonUtils.isTabletMode(context);
-      CommonUtils.orderHistoryList;
-      for (var i = 0; i < 20; i++) {
-        context
-            .read<OrderHistoryListController>()
-            .orderHistoryList
-            .add(CommonUtils.orderHistoryList.first);
-      }
-      context.read<OrderHistoryListController>().orderHistoryInfoDataSource =
-          DataSourceForOrderHistoryListScreen(
-              context,
-              context.read<OrderHistoryListController>().orderHistoryList,
-              _offset,
-              () {});
-      setState(() {});
+      getAllOrderHistory();
     });
     super.initState();
   }
@@ -455,19 +460,21 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                   headingRowHeight: 70,
                   dividerThickness: 0.0,
                   rowsPerPage: min(
-                      _limit,
-                      context
+                      context.read<OrderHistoryListController>().limit,
+                      max(
+                          context
                           .read<OrderHistoryListController>()
                           .orderHistoryList
-                          .length),
+                              .length,
+                          1)),
                   minWidth: MediaQuery.of(context).size.width - 100,
                   showCheckboxColumn: false,
                   fit: FlexFit.tight,
                   hidePaginator: true,
                   sortColumnIndex: _sortColumnIndex,
                   sortAscending: _sortAscending ?? false,
-                  headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => primaryColor),
+                  headingRowColor:
+                      MaterialStateColor.resolveWith((states) => primaryColor),
                   columns: [
                     CommonUtils.dataColumn(
                       // fixedWidth: isTabletMode ? 150 : 120,
@@ -523,7 +530,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
 
 class DataSourceForOrderHistoryListScreen extends DataTableSource {
   BuildContext context;
-  late List<OrderHistoryDataModel> orderHistoryList;
+  late List<OrderHistory> orderHistoryList;
   int offset;
   Function() reloadDataCallback;
 
@@ -539,8 +546,8 @@ class DataSourceForOrderHistoryListScreen extends DataTableSource {
     return _createRow(index);
   }
 
-  void sort<T>(Comparable<T> Function(OrderHistoryDataModel d) getField,
-      bool ascending) {
+  void sort<T>(
+      Comparable<T> Function(OrderHistory d) getField, bool ascending) {
     orderHistoryList.sort((a, b) {
       final aValue = getField(a);
       final bValue = getField(b);
@@ -561,7 +568,7 @@ class DataSourceForOrderHistoryListScreen extends DataTableSource {
   int get selectedRowCount => 0;
 
   DataRow _createRow(int index) {
-    OrderHistoryDataModel orderHistory = orderHistoryList[index];
+    OrderHistory orderHistory = orderHistoryList[index];
     return DataRow(
       onSelectChanged: (value) {
         // (NavigationService.navigatorKey.currentContext ?? context).goNamed(
@@ -577,26 +584,26 @@ class DataSourceForOrderHistoryListScreen extends DataTableSource {
         ),
         DataCell(
           Text(
-            orderHistory.orderRef ?? '',
+            orderHistory.name ?? '',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
         ),
         DataCell(
-          Text(orderHistory.customer ?? ''),
+          Text(orderHistory.partnerId?.toString() ?? ''), 
         ),
         DataCell(
-          Text(orderHistory.date ?? ''),
+          Text(orderHistory.createDate ?? ''),
         ),
         DataCell(
-          Text('${orderHistory.total?.toStringAsFixed(2) ?? '0.00'} Ks'),
+          Text('${orderHistory.amountTotal?.toStringAsFixed(2) ?? '0.00'} Ks'),
         ),
         DataCell(
-          Text(orderHistory.state ?? ''),
+          Text(''), //orderHistory.state ??
         ),
         DataCell(
           Text(
-            orderHistory.returnState ?? '-',
+            '-', //orderHistory.returnState ??
             textAlign: TextAlign.center,
           ),
         ),
@@ -618,46 +625,5 @@ class DataSourceForOrderHistoryListScreen extends DataTableSource {
         ),
       ],
     );
-  }
-}
-
-class OrderHistoryDataModel {
-  String? name;
-  String? orderRef;
-  String? customer;
-  String? date;
-  double? total;
-  String? state;
-  String? returnState;
-
-  OrderHistoryDataModel(
-      {this.name,
-      this.orderRef,
-      this.customer,
-      this.date,
-      this.total,
-      this.state,
-      this.returnState});
-
-  OrderHistoryDataModel.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    orderRef = json['order_ref'];
-    customer = json['customer'];
-    date = json['date'];
-    total = json['total'];
-    state = json['state'];
-    returnState = json['return_state'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['order_ref'] = orderRef;
-    data['customer'] = customer;
-    data['date'] = date;
-    data['total'] = total;
-    data['state'] = state;
-    data['return_state'] = returnState;
-    return data;
   }
 }

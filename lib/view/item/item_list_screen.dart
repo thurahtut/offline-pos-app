@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:offline_pos/components/export_files.dart';
 
 class ItemListScreen extends StatefulWidget {
@@ -153,7 +155,18 @@ class _ItemListScreenState extends State<ItemListScreen> {
                         .read<ItemListController>()
                         .productList
                   .map((e) => InkWell(
-                        onTap: () => _addItemToList(e),
+                              onTap: () {
+                                if ((e.onhandQuantity ?? 0) > 0) {
+                                  _addItemToList(e);
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                          content: Text(
+                                    'Stock out',
+                                    textAlign: TextAlign.center,
+                                  )));
+                                }
+                              },
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
@@ -246,7 +259,17 @@ class _ItemListScreenState extends State<ItemListScreen> {
     );
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return InkWell(
-      onTap: () => _addItemToList(product),
+      onTap: () {
+        if ((product.onhandQuantity ?? 0) > 0) {
+          _addItemToList(product);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+            'Stock out',
+            textAlign: TextAlign.center,
+          )));
+        }
+      },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),
         height: isTabletMode ? 46 : 52,
@@ -290,8 +313,24 @@ class _ItemListScreenState extends State<ItemListScreen> {
   }
 
   void _addItemToList(Product product) {
-    product.onhandQuantity = 1;
-    context.read<CurrentOrderController>().currentOrderList.add(product);
+    Product orderProduct = Product.fromJson(jsonDecode(jsonEncode(product)));
+    int index = context
+        .read<CurrentOrderController>()
+        .currentOrderList
+        .indexWhere((e) => e.productId == orderProduct.productId);
+    if (index >= 0) {
+      orderProduct.onhandQuantity = (context
+                  .read<CurrentOrderController>()
+                  .currentOrderList[index]
+                  .onhandQuantity ??
+              0) +
+          1;
+      context.read<CurrentOrderController>().currentOrderList[index] =
+          orderProduct;
+    } else {
+      orderProduct.onhandQuantity = 1;
+      context.read<CurrentOrderController>().currentOrderList.add(orderProduct);
+    }
     context.read<CurrentOrderController>().notify();
   }
 

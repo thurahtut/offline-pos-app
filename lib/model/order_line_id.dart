@@ -2,10 +2,10 @@ class OrderLineID {
   int? id;
   int? orderId;
   int? productId;
-  int? qty;
-  int? priceUnit;
-  int? priceSubtotal;
-  int? priceSubtotalIncl;
+  double? qty;
+  double? priceUnit;
+  double? priceSubtotal;
+  double? priceSubtotalIncl;
 
   OrderLineID(
       {this.id,
@@ -20,10 +20,10 @@ class OrderLineID {
     id = int.tryParse(json['id'].toString());
     orderId = int.tryParse(json['order_id'].toString());
     productId = int.tryParse(json['product_id'].toString());
-    qty = int.tryParse(json['qty'].toString());
-    priceUnit = int.tryParse(json['price_unit'].toString());
-    priceSubtotal = int.tryParse(json['price_subtotal'].toString());
-    priceSubtotalIncl = int.tryParse(json['price_subtotal_incl'].toString());
+    qty = double.tryParse(json['qty']?.toString() ?? '');
+    priceUnit = double.tryParse(json['price_unit'].toString());
+    priceSubtotal = double.tryParse(json['price_subtotal'].toString());
+    priceSubtotalIncl = double.tryParse(json['price_subtotal_incl'].toString());
   }
 
   Map<String, dynamic> toJson() {

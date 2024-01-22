@@ -72,4 +72,40 @@ class PaymentTransactionTable {
       whereArgs: [orderID, paymentMethodId],
     );
   }
+
+  static Future<int> deleteByOrderId(final Database db, int orderID) async {
+    return db.delete(
+      PAYMENT_TRANSACTION_TABLE_NAME,
+      where: "$ORDER_ID_IN_TRAN=?",
+      whereArgs: [orderID],
+    );
+  }
+
+  static Future<void> insertOrUpdate(List<dynamic> data) async {
+    final Database db = await DatabaseHelper().db;
+    insertOrUpdateWithDB(db, data);
+  }
+
+  static Future<void> insertOrUpdateWithDB(
+      final Database db, List<dynamic> data) async {
+    final Database db = await DatabaseHelper().db;
+    Batch batch = db.batch();
+    // var time = DateTime.now();
+    int index = 0;
+    for (final element in data) {
+      PaymentTransaction paymentTransaction = element is PaymentTransaction
+          ? element
+          : PaymentTransaction.fromJson(element);
+      batch.insert(
+        PAYMENT_TRANSACTION_TABLE_NAME,
+        paymentTransaction.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (index % 1000 == 0) {
+        await batch.commit(noResult: true);
+        batch = db.batch();
+      }
+      index++;
+    }
+  }
 }

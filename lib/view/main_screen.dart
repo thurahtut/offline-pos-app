@@ -22,6 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<CurrentOrderController>().resetCurrentOrderController();
       context.read<ViewController>().isCustomerView = false;
     });
     super.initState();

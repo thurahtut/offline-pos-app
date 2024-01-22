@@ -20,7 +20,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   static List<String> list = ["All Active Orders", "Quotation", "On Going"];
 
-  
 
   @override
   void dispose() {
@@ -28,21 +27,25 @@ class _OrderListScreenState extends State<OrderListScreen> {
     super.dispose();
   }
 
+  void getAllOrderHistory() async {
+    context.read<OrderListController>().loading = true;
+    context.read<OrderListController>().getAllOrderHistory().then((value) {
+      updateOrderHistoryListToTable();
+      context.read<OrderListController>().loading = false;
+    });
+  }
+
+  Future<void> updateOrderHistoryListToTable() async {
+    context.read<OrderListController>().orderInfoDataSource =
+        DataSourceForOrderListScreen(context,
+            context.read<OrderListController>().orderList, _offset, () {});
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
-      CommonUtils.orderHistoryList;
-      for (var i = 0; i < 20; i++) {
-        context
-            .read<OrderListController>()
-            .orderList
-            .add(CommonUtils.demoOrderData);
-      }
-      context.read<OrderListController>().orderInfoDataSource =
-          DataSourceForOrderListScreen(context,
-              context.read<OrderListController>().orderList, _offset, () {});
-      setState(() {});
+      getAllOrderHistory();
     });
     super.initState();
   }
@@ -245,7 +248,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   headingRowHeight: 70,
                   dividerThickness: 0.0,
                   rowsPerPage: min(_limit,
-                      context.read<OrderListController>().orderList.length),
+                      max(context.read<OrderListController>().orderList.length,
+                          1)),
                   minWidth: MediaQuery.of(context).size.width - 100,
                   showCheckboxColumn: false,
                   fit: FlexFit.tight,
@@ -300,7 +304,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
 class DataSourceForOrderListScreen extends DataTableSource {
   BuildContext context;
-  late List<OrderDataModel> orderList;
+  late List<OrderHistory> orderList;
   int offset;
   Function() reloadDataCallback;
 
@@ -317,7 +321,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
   }
 
   void sort<T>(
-      Comparable<T> Function(OrderDataModel d) getField, bool ascending) {
+      Comparable<T> Function(OrderHistory d) getField, bool ascending) {
     orderList.sort((a, b) {
       final aValue = getField(a);
       final bValue = getField(b);
@@ -338,7 +342,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
   int get selectedRowCount => 0;
 
   DataRow _createRow(int index) {
-    OrderDataModel order = orderList[index];
+    OrderHistory order = orderList[index];
     return DataRow(
       onSelectChanged: (value) {
         // (NavigationService.navigatorKey.currentContext ?? context).goNamed(
@@ -350,64 +354,27 @@ class DataSourceForOrderListScreen extends DataTableSource {
       },
       cells: [
         DataCell(
-          Text(order.date ?? ''),
+          Text(order.createDate ?? ''),
         ),
         DataCell(
-          Text(order.receiptNumber ?? ''),
+          Text(''), //order.receiptNumber ??
         ),
         DataCell(
-          Text(order.customer ?? ''),
+          Text(''), //order.customerId??
         ),
         DataCell(
-          Text(order.employee ?? ''),
+          Text(order.employeeId?.toString() ?? ''),
         ),
         DataCell(
-          Text('${order.total?.toStringAsFixed(2) ?? '0.00'} Ks'),
+          Text('${order.amountTotal?.toStringAsFixed(2) ?? '0.00'} Ks'),
         ),
         DataCell(
-          Text(order.state ?? ''),
+          Text(''), //order.state ??
         ),
         DataCell(
           CommonUtils.svgIconActionButton('assets/svg/delete.svg'),
         ),
       ],
     );
-  }
-}
-
-class OrderDataModel {
-  String? date;
-  String? receiptNumber;
-  String? customer;
-  String? employee;
-  double? total;
-  String? state;
-
-  OrderDataModel(
-      {this.date,
-      this.receiptNumber,
-      this.customer,
-      this.employee,
-      this.total,
-      this.state});
-
-  OrderDataModel.fromJson(Map<String, dynamic> json) {
-    date = json['date'];
-    receiptNumber = json['receipt_number'];
-    customer = json['customer'];
-    employee = json['employee'];
-    total = json['total'];
-    state = json['state'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['date'] = date;
-    data['receipt_number'] = receiptNumber;
-    data['customer'] = customer;
-    data['employee'] = employee;
-    data['total'] = total;
-    data['state'] = state;
-    return data;
   }
 }

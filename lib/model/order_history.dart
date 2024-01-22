@@ -10,6 +10,7 @@ class OrderHistory {
   String? createDate;
   int? createUid;
   int? configId;
+  String? configName;
   int? companyId;
   int? amountTotal;
   String? sequenceNumber;
@@ -27,6 +28,7 @@ class OrderHistory {
     this.createDate,
     this.createUid,
     this.configId,
+    this.configName,
     this.companyId,
     this.amountTotal,
     this.sequenceNumber,
@@ -45,12 +47,11 @@ class OrderHistory {
     createDate = json['create_date'];
     createUid = json['create_uid'];
     configId = json['config_id'];
-    companyId = json['company_id'];
+    companyId = int.tryParse(json['company_id'].toString());
     amountTotal = json['amount_total'];
-    sequenceNumber = json['sequence_number'];
-    writeDate = json['write_date'];
-    writeUid = json['write_uid'];
-    lineIds = json["line_ids"];
+    sequenceNumber = json['sequence_number']?.toString();
+    writeDate = json['write_date']?.toString();
+    writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -69,7 +70,6 @@ class OrderHistory {
     data['sequence_number'] = sequenceNumber;
     data['write_date'] = writeDate;
     data['write_uid'] = writeUid;
-    data["line_ids"] = lineIds;
     return data;
   }
 }

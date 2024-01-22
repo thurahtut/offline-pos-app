@@ -50,7 +50,7 @@ class OrderLineIdTable {
     return db.rawInsert(sql);
   }
 
-  static Future<List<OrderLineID>?> getProductByProductId(int orderId) async {
+  static Future<List<OrderLineID>?> getOrderLinesByOrderId(int orderId) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
 
@@ -78,7 +78,7 @@ class OrderLineIdTable {
     );
   }
 
-  static Future<int> delete(int orderID, int productId) async {
+  static Future<int> deleteByOrderIdAndPId(int orderID, int productId) async {
     final Database db = await DatabaseHelper().db;
 
     return db.delete(
@@ -86,5 +86,34 @@ class OrderLineIdTable {
       where: "$ORDER_ID_IN_LINE=? and $PRODUCT_ID_IN_LINE=?",
       whereArgs: [orderID, productId],
     );
+  }
+
+  static Future<int> deleteByOrderId(final Database db, int orderID) async {
+    return db.delete(
+      ORDER_LINE_ID_TABLE_NAME,
+      where: "$ORDER_ID_IN_LINE=?",
+      whereArgs: [orderID],
+    );
+  }
+
+  static Future<void> insertOrUpdate(List<dynamic> data) async {
+    final Database db = await DatabaseHelper().db;
+    Batch batch = db.batch();
+    // var time = DateTime.now();
+    int index = 0;
+    for (final element in data) {
+      OrderLineID orderLineId =
+          element is OrderLineID ? element : OrderLineID.fromJson(element);
+      batch.insert(
+        ORDER_LINE_ID_TABLE_NAME,
+        orderLineId.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (index % 1000 == 0) {
+        await batch.commit(noResult: true);
+        batch = db.batch();
+      }
+      index++;
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 Color primaryColor = Color(0xFF207810); //007ACC
 class CommonUtils {
@@ -17,6 +18,8 @@ class CommonUtils {
       ));
     }
   }
+
+  static final NumberFormat priceFormat = NumberFormat("#,##0.##", "en_US");
 
   static Widget svgIconActionButton(
     String svg, {
@@ -412,17 +415,6 @@ class CommonUtils {
     );
   }
 
-  static List<OrderHistoryDataModel> orderHistoryList = [
-    OrderHistoryDataModel(
-      name: "Easy 3 - POS 2/65358",
-      orderRef: "Order 14151-140-0042",
-      customer: "BG Bakery",
-      date: "12-12-2023 12:30 PM",
-      total: 467000,
-      state: "Paid",
-    ),
-  ];
-
   static QuotationDataModel demoQuotationData = QuotationDataModel(
     order: "S02034",
     date: "12-12-2023 12:30 PM",
@@ -430,15 +422,6 @@ class CommonUtils {
     salePerson: "Admin",
     total: 467000,
     state: "Quotation",
-  );
-
-  static OrderDataModel demoOrderData = OrderDataModel(
-    receiptNumber: "Order 14151-136-00001",
-    date: "12-12-2023 12:30 PM",
-    customer: "May Pearl",
-    employee: "Easy 3-A Store Leader",
-    total: 467000,
-    state: "onGoing",
   );
 
   static PaymentMethods demoPaymentMethod = PaymentMethods(
