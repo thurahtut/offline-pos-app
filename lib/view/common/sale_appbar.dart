@@ -249,14 +249,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
             itemListController.filterValue = value;
             itemListController.offset = 0;
             itemListController.currentIndex = 1;
-            itemListController.getAllProduct().then((value) {
-              if (itemListController.productList.length == 1) {
-                context
-                    .read<CurrentOrderController>()
-                    .addItemToList(itemListController.productList.first);
-                _clearSearch();
-              }
-            });
+            itemListController.getAllProduct();
           },
         ),
       ),

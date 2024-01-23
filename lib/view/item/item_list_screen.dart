@@ -153,15 +153,15 @@ class _ItemListScreenState extends State<ItemListScreen> {
                         .productList
                         .map((e) => InkWell(
                               onTap: () {
-                                if ((e.onhandQuantity ?? 0) > 0) {
-                                  context
-                                      .read<CurrentOrderController>()
-                                      .addItemToList(e);
-                                } else {
-                                  CommonUtils.showSnackBar(
-                                    message: 'Stock out',
-                                  );
-                                }
+                                // if ((e.onhandQuantity ?? 0) > 0) {
+                                context
+                                    .read<CurrentOrderController>()
+                                    .addItemToList(e);
+                                // } else {
+                                //   CommonUtils.showSnackBar(
+                                //     message: 'Stock out',
+                                //   );
+                                // }
                               },
                               child: Card(
                                 shape: RoundedRectangleBorder(

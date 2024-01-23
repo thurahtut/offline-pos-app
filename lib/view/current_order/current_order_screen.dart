@@ -81,8 +81,21 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                     i,
                     InkWell(
                       onTap: () {
+                        if (controller.selectedIndex == i) {
+                          _textNode.unfocus();
+                          controller.selectedIndex = -1;
+                          context
+                              .read<ViewController>()
+                              .productFocusNode
+                              .requestFocus();
+                        } else {
                         _textNode.requestFocus();
-                        controller.selectedIndex = i;
+                          controller.selectedIndex = i;
+                          context
+                              .read<ViewController>()
+                              .productFocusNode
+                              .unfocus();
+                        }
                         // _addManualDiscountProduct(controller);
                       },
                       child: RawKeyboardListener(

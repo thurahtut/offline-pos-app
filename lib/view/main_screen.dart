@@ -15,6 +15,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     _showSideBar.dispose();
+    context.read<ViewController>().productFocusNode.dispose();
     scrollController.dispose();
     super.dispose();
   }
@@ -22,6 +23,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<ViewController>().productFocusNode.requestFocus();
       context.read<CurrentOrderController>().resetCurrentOrderController();
       context.read<ViewController>().isCustomerView = false;
     });
@@ -46,36 +48,54 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         : MediaQuery.of(context).size.width -
             (MediaQuery.of(context).size.width / 5.5) -
             ((MediaQuery.of(context).size.width / 5.3) * 3);
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        SizedBox(height: 8),
-        _headerWidget(),
-        SizedBox(height: 16),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ValueListenableBuilder<bool>(
-                  valueListenable: _showSideBar,
-                  builder: (_, showSidebar, __) {
-                    return Visibility(
-                        visible: showSidebar, child: _sideBarWidget());
-                  }),
-              if (!isTabletMode) ItemListScreen(showSideBar: _showSideBar),
-              if (!isTabletMode) CurrentOrderScreen(width: currentOrderWidth),
-              if (isTabletMode)
-                Column(
-                  children: [
-                    Expanded(child: ItemListScreen(showSideBar: _showSideBar)),
-                    Expanded(
-                        child: CurrentOrderScreen(width: currentOrderWidth)),
-                  ],
-                )
-            ],
-          ),
-        )
-      ],
+    return RawKeyboardListener(
+      focusNode: context.read<ViewController>().productFocusNode,
+      onKey: (event) {
+        // _handleKeyEvent(event, controller);
+        context.read<ItemListController>().searchProduct(callback: (product) {
+          if (product != null) {
+            // if ((e.onhandQuantity ?? 0) > 0) {
+            context.read<CurrentOrderController>().addItemToList(product);
+            // } else {
+            //   CommonUtils.showSnackBar(
+            //     message: 'Stock out',
+            //   );
+            // }
+          }
+        });
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          SizedBox(height: 8),
+          _headerWidget(),
+          SizedBox(height: 16),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ValueListenableBuilder<bool>(
+                    valueListenable: _showSideBar,
+                    builder: (_, showSidebar, __) {
+                      return Visibility(
+                          visible: showSidebar, child: _sideBarWidget());
+                    }),
+                if (!isTabletMode) ItemListScreen(showSideBar: _showSideBar),
+                if (!isTabletMode) CurrentOrderScreen(width: currentOrderWidth),
+                if (isTabletMode)
+                  Column(
+                    children: [
+                      Expanded(
+                          child: ItemListScreen(showSideBar: _showSideBar)),
+                      Expanded(
+                          child: CurrentOrderScreen(width: currentOrderWidth)),
+                    ],
+                  )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
