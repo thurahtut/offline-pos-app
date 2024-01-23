@@ -1,3 +1,4 @@
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -11,6 +12,7 @@ class OrderPaymentScreen extends StatefulWidget {
 
 class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
   final TextEditingController _amountController = TextEditingController();
+  final FocusNode _textNode = FocusNode();
 
   @override
   void initState() {
@@ -22,6 +24,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   @override
   void dispose() {
+    _textNode.dispose();
     _amountController.dispose();
     super.dispose();
   }
@@ -37,18 +40,24 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   Widget _bodyWidget() {
     bool isTabletMode = CommonUtils.isTabletMode(context);
-    return Container(
-      padding: EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: isTabletMode
-              ? 10
-              : (MediaQuery.of(context).size.width / 3) / 2.5),
-      child: Column(
-        children: [
-          _actionButtonsWidget(),
-          SizedBox(height: 40),
-          _paymentTypeAndAmountWidget(),
-        ],
+    return RawKeyboardListener(
+      focusNode: _textNode,
+      onKey: (event) {
+        _handleKeyEvent(event, context.read<CurrentOrderController>());
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: isTabletMode
+                ? 10
+                : (MediaQuery.of(context).size.width / 3) / 2.5),
+        child: Column(
+          children: [
+            _actionButtonsWidget(),
+            SizedBox(height: 40),
+            _paymentTypeAndAmountWidget(),
+          ],
+        ),
       ),
     );
   }
@@ -95,11 +104,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             }
             if (totalAmt > totalPayAmt) {
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                  'Pay amount is required!',
-                  textAlign: TextAlign.center,
-                )));
+                CommonUtils.showSnackBar(
+                  message: 'Pay amount is required!',
+                );
               }
               return;
             }
@@ -162,13 +169,29 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             .map(
               (e) => InkWell(
                 onTap: () {
+                  _textNode.requestFocus();
+                  double totalAmt =
+                      controller.getTotalQty(controller.currentOrderList).last;
+                  double totalPayAmt = 0;
+
+                  for (var data in controller.paymentTransactionList.values) {
+                    totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
+                  }
+                  
                   controller.selectedPaymentMethodId = e.id ?? -1;
                   controller.paymentTransactionList[e.id ?? -1] ??=
                       PaymentTransaction(
                     paymentMethodId: e.id,
                   );
+                  controller.paymentTransactionList[e.id ?? -1]?.amount =
+                      (totalPayAmt < totalAmt ? totalAmt - totalPayAmt : 0)
+                          .toString();
                   controller.notify();
                 },
+                focusColor: Colors.transparent,
+                overlayColor: MaterialStateProperty.resolveWith(
+                    (states) => Colors.transparent),
+                highlightColor: Colors.transparent,
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 10, right: 10),
                   padding: EdgeInsets.all(10),
@@ -524,14 +547,17 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
     if (currentOrderController.paymentTransactionList[
             currentOrderController.selectedPaymentMethodId] !=
         null) {
-      String price = currentOrderController
-              .paymentTransactionList[
-                  currentOrderController.selectedPaymentMethodId]!
-              .amount
-              ?.toString() ??
-          "";
+      PaymentTransaction paymentTransaction =
+          currentOrderController.paymentTransactionList[
+              currentOrderController.selectedPaymentMethodId]!;
+      String price = paymentTransaction.amount?.toString() ?? "";
       if (isBack == true) {
-        price = price.substring(0, price.length - 1);
+        if (paymentTransaction.firstTime == true) {
+          price = "";
+          paymentTransaction.firstTime = false;
+        } else {
+          price = price.substring(0, price.length - 1);
+        }
       } else if (valueAdding == true) {
         double val =
             (double.tryParse(price) ?? 0) + (double.tryParse(value) ?? 0);
@@ -544,6 +570,27 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               currentOrderController.selectedPaymentMethodId]!
           .amount = price;
       currentOrderController.notify();
+    }
+  }
+
+  void _handleKeyEvent(RawKeyEvent event, CurrentOrderController controller) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.backspace ||
+          event.logicalKey == LogicalKeyboardKey.delete) {
+        _updatePayAmount(controller, "", isBack: true);
+      } else if (event.logicalKey.keyLabel == "1" ||
+          event.logicalKey.keyLabel == "2" ||
+          event.logicalKey.keyLabel == "3" ||
+          event.logicalKey.keyLabel == "4" ||
+          event.logicalKey.keyLabel == "5" ||
+          event.logicalKey.keyLabel == "6" ||
+          event.logicalKey.keyLabel == "7" ||
+          event.logicalKey.keyLabel == "8" ||
+          event.logicalKey.keyLabel == "9" ||
+          event.logicalKey.keyLabel == "0" ||
+          event.logicalKey.keyLabel == ".") {
+        _updatePayAmount(controller, event.logicalKey.keyLabel);
+      }
     }
   }
 }

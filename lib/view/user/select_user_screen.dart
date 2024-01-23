@@ -180,18 +180,19 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
               passwordTextController.text,
             ).then((result) {
               if (result != null) {
-                ScaffoldMessenger.of(mainContext).showSnackBar(SnackBar(
-                    content: Text('Login with '
+                CommonUtils.showSnackBar(
+                  message: 'Login with '
                         '"${e.name}"'
-                        ' successful!')));
+                      ' successful!',
+                );
 
                 Navigator.pop(dialogContext, true);
               } else {
-                ScaffoldMessenger.of(mainContext).showSnackBar(SnackBar(
-                    content: Text('Login with '
+CommonUtils.showSnackBar(
+                  message: 'Login with '
                         '"${e.name}"'
-                        ' is failed. Invalid Password !')));
-
+                      ' is failed. Invalid Password !',
+                );
                 Navigator.pop(dialogContext, false);
               }
             });

@@ -11,7 +11,7 @@ class OrderHistory {
   int? createUid;
   int? configId;
   String? configName;
-  int? companyId;
+  // int? companyId;
   int? amountTotal;
   String? sequenceNumber;
   String? writeDate;
@@ -29,7 +29,7 @@ class OrderHistory {
     this.createUid,
     this.configId,
     this.configName,
-    this.companyId,
+    // this.companyId,
     this.amountTotal,
     this.sequenceNumber,
     this.writeDate,
@@ -47,7 +47,7 @@ class OrderHistory {
     createDate = json['create_date'];
     createUid = json['create_uid'];
     configId = json['config_id'];
-    companyId = int.tryParse(json['company_id'].toString());
+    // companyId = int.tryParse(json['company_id'].toString());
     amountTotal = json['amount_total'];
     sequenceNumber = json['sequence_number']?.toString();
     writeDate = json['write_date']?.toString();
@@ -65,7 +65,7 @@ class OrderHistory {
     data['create_date'] = createDate;
     data['create_uid'] = createUid;
     data['config_id'] = configId;
-    data['company_id'] = companyId;
+    // data['company_id'] = companyId;
     data['amount_total'] = amountTotal;
     data['sequence_number'] = sequenceNumber;
     data['write_date'] = writeDate;

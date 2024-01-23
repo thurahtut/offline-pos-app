@@ -56,10 +56,11 @@ class ProductDetailFilter extends StatelessWidget {
                           ProductTable.getProductByProductId(value)
                               .then((product) {
                             if (product == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text('Inserting '
+                              CommonUtils.showSnackBar(
+                                message: 'Inserting '
                                       '"${context.read<ProductDetailController>().creatingProduct.productName}"'
-                                      ' does not have! Something was wrong!')));
+                                    ' does not have! Something was wrong!',
+                              );
                               return;
                             }
                             int index = context
@@ -90,10 +91,11 @@ class ProductDetailFilter extends StatelessWidget {
                                     () {});
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Creating '
+                          CommonUtils.showSnackBar(
+                            message: 'Creating '
                                   '"${context.read<ProductDetailController>().creatingProduct.productName}"'
-                                  ' is failed!')));
+                                ' is failed!',
+                          );
                         }
                       });
                     }
@@ -122,10 +124,11 @@ class ProductDetailFilter extends StatelessWidget {
                           ProductTable.getProductByProductId(value)
                               .then((product) {
                             if (product == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text('Updating '
+                              CommonUtils.showSnackBar(
+                                message: 'Updating '
                                       '"${context.read<ProductDetailController>().creatingProduct.productName}"'
-                                      ' does not have! Something was wrong!')));
+                                    ' does not have! Something was wrong!',
+                              );
                               return;
                             }
                             int index = context
@@ -156,10 +159,11 @@ class ProductDetailFilter extends StatelessWidget {
                                     () {});
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Updating '
+                          CommonUtils.showSnackBar(
+                            message: 'Updating '
                                   '"${context.read<ProductDetailController>().creatingProduct.productName}"'
-                                  ' is failed!')));
+                                ' is failed!',
+                          );
                         }
                       });
                     }

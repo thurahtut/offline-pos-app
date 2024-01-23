@@ -191,10 +191,11 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                           EmployeeTable.getEmployeeByEmployeeId(value)
                               .then((employee) {
                             if (employee == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text('Inserting '
+                              CommonUtils.showSnackBar(
+                                message: 'Inserting '
                                       '"${context.read<EmployeeListController>().creatingEmployee.name}"'
-                                      ' does not have! Something was wrong!')));
+                                    ' does not have! Something was wrong!',
+                              );
                               return;
                             }
                             int index = context
@@ -216,10 +217,11 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                             context.read<EmployeeListController>().notify();
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Creating '
+                          CommonUtils.showSnackBar(
+                            message: 'Creating '
                                   '"${context.read<EmployeeListController>().creatingEmployee.name}"'
-                                  ' is failed!')));
+                                ' is failed!',
+                          );
                         }
                       });
                     }
@@ -251,10 +253,11 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                           EmployeeTable.getEmployeeByEmployeeId(value)
                               .then((employee) {
                             if (employee == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text('Updating '
+                              CommonUtils.showSnackBar(
+                                message: 'Updating '
                                       '"${context.read<EmployeeListController>().creatingEmployee.name}"'
-                                      ' does not have! Something was wrong!')));
+                                    ' does not have! Something was wrong!',
+                              );
                               return;
                             }
                             int index = context
@@ -276,10 +279,11 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                             context.read<EmployeeListController>().notify();
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Updating '
+                          CommonUtils.showSnackBar(
+                            message: 'Updating '
                                   '"${context.read<EmployeeListController>().creatingEmployee.name}"'
-                                  ' is failed!')));
+                                ' is failed!',
+                          );
                         }
                       });
                     }

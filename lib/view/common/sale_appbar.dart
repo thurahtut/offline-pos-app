@@ -200,6 +200,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
           borderRadius: BorderRadius.circular(22),
         ),
         child: TextField(
+          autofocus: true,
           controller: _searchProductTextController,
           decoration: InputDecoration(
             border: OutlineInputBorder(
@@ -227,12 +228,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
             ),
             suffixIcon: InkWell(
               onTap: () {
-                _searchProductTextController.clear();
-                _showSearchBox.value = false;
-                context.read<ItemListController>().filterValue = null;
-                context.read<ItemListController>().offset = 0;
-                context.read<ItemListController>().currentIndex = 1;
-                context.read<ItemListController>().getAllProduct();
+                _clearSearch();
               },
               child: UnconstrainedBox(
                 child: SvgPicture.asset(
@@ -248,13 +244,32 @@ class _SaleAppBarState extends State<SaleAppBar> {
             ),
           ),
           onChanged: (value) {
-            context.read<ItemListController>().filterValue = value;
-            context.read<ItemListController>().offset = 0;
-            context.read<ItemListController>().currentIndex = 1;
-            context.read<ItemListController>().getAllProduct();
+            ItemListController itemListController =
+                context.read<ItemListController>();
+            itemListController.filterValue = value;
+            itemListController.offset = 0;
+            itemListController.currentIndex = 1;
+            itemListController.getAllProduct().then((value) {
+              if (itemListController.productList.length == 1) {
+                context
+                    .read<CurrentOrderController>()
+                    .addItemToList(itemListController.productList.first);
+                _clearSearch();
+              }
+            });
           },
         ),
       ),
     );
+  }
+
+  void _clearSearch() {
+    ItemListController itemListController = context.read<ItemListController>();
+    _searchProductTextController.clear();
+    _showSearchBox.value = false;
+    itemListController.filterValue = null;
+    itemListController.offset = 0;
+    itemListController.currentIndex = 1;
+    itemListController.getAllProduct();
   }
 }

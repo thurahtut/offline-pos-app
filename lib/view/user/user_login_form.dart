@@ -222,6 +222,8 @@ class _UserLoginFormState extends State<UserLoginForm> {
           LoginUserTable.insertOrUpdateUser(
               context.read<LoginUserController>().loginUser!);
           Navigator.pop(bContext, true);
+        } else if (response?.statusMessage != null) {
+          CommonUtils.showSnackBar(message: response?.statusMessage ?? '');
         }
       });
     }

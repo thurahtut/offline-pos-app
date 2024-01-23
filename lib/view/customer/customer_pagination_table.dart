@@ -62,11 +62,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
             .read<CurrentOrderController>()
             .currentOrderList
             .isEmpty) {
-          ScaffoldMessenger.of(widget.mainContext).showSnackBar(SnackBar(
-              content: Text(
-            'There is no order items.',
-            textAlign: TextAlign.center,
-          )));
+          CommonUtils.showSnackBar(message: 'There is no order items.');
           return;
         }
         widget.mainContext.read<CurrentOrderController>().isContainCustomer =

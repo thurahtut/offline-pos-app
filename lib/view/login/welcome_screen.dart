@@ -6,110 +6,76 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeSettingController>(builder: (_, controller, __) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: primaryColor,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-            size: 30,
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: primaryColor,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
         ),
-      ),
-   
-      body: _bodyWidget(context),
-    );
+        body: _bodyWidget(context),
+      );
     });
   }
 
   Widget _bodyWidget(BuildContext context) {
     return Container(
-        color: primaryColor,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            // mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buttonContainer(
-                    context,
-                    'Sale (POS)',
-                    () {
-                      Navigator.pushNamed(context, MainScreen.routeName);
-                    },
-                    svg: "assets/svg/sell.svg",
-                  ),
-                  SizedBox(width: 8),
-                  _buttonContainer(
-                    context,
-                    'Inventory',
-                    () {
-                      Navigator.pushNamed(context, ProductListScreen.routeName);
-                    },
-                    svg: "assets/svg/inventory_2.svg",
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buttonContainer(
-                    context,
-                    'Finance',
-                    () {},
-                    svg: "assets/svg/account_balance.svg",
-                  ),
-                  SizedBox(width: 8),
-                  _buttonContainer(
-                    context,
-                    'Settings',
-                    () {
-                      Navigator.pushNamed(
-                          context, ThemeSettingScreen.routeName);
-                    },
-                    svg: "assets/svg/settings.svg",
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                // mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buttonContainer(context, 'Sync', () {
-                    Navigator.pushNamed(context, ManualSyncScreen.routeName);
-                  }, icon: Icons.replay_rounded),
-                  // SizedBox(width: 8),
-                  // SizedBox(width: 8),
-                ],
-              ),
-              // Row(
-              //   crossAxisAlignment: CrossAxisAlignment.center,
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     _buttonContainer(
-              //       context,
-              //       'Employee',
-              //       () {
-              //         Navigator.pushNamed(context, EmployeeListScreen.routeName);
-              //       },
-              //       icon: Icons.people_alt_outlined,
-              //     ),
-              //     SizedBox(width: 8),
-              //     SizedBox(width: 8),
-              //   ],
-              // ),
-          ]),
+      color: primaryColor,
+      // height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buttonContainer(
+            context,
+            'Sale (POS)',
+            () {
+              Navigator.pushNamed(context, MainScreen.routeName);
+            },
+            svg: "assets/svg/sell.svg",
+          ),
+          SizedBox(width: 8),
+          _buttonContainer(
+            context,
+            'Inventory',
+            () {
+              Navigator.pushNamed(context, ProductListScreen.routeName);
+            },
+            svg: "assets/svg/inventory_2.svg",
+          ),
+          SizedBox(width: 8),
+          _buttonContainer(
+            context,
+            'Finance',
+            () {},
+            svg: "assets/svg/account_balance.svg",
+          ),
+          SizedBox(width: 8),
+          _buttonContainer(
+            context,
+            'Settings',
+            () {
+              Navigator.pushNamed(context, ThemeSettingScreen.routeName);
+            },
+            svg: "assets/svg/settings.svg",
+          ),
+          SizedBox(width: 8),
+          _buttonContainer(context, 'Sync', () {
+            Navigator.pushNamed(context, ManualSyncScreen.routeName);
+          }, icon: Icons.replay_rounded),
+        ],
+      ),
     );
   }
 
@@ -127,16 +93,17 @@ class WelcomeScreen extends StatelessWidget {
         children: [
           if (svg != null)
             CommonUtils.svgIconActionButton(
-            svg,
-            width: MediaQuery.of(context).size.width / (isTabletMode ? 12 : 30),
-            height:
-                MediaQuery.of(context).size.width / (isTabletMode ? 12 : 30),
-            withContianer: true,
-            radius: 12,
-            padding:
-                MediaQuery.of(context).size.width / (isTabletMode ? 16 : 30),
+              svg,
+              width:
+                  MediaQuery.of(context).size.width / (isTabletMode ? 12 : 30),
+              height:
+                  MediaQuery.of(context).size.width / (isTabletMode ? 12 : 30),
+              withContianer: true,
+              radius: 12,
+              padding:
+                  MediaQuery.of(context).size.width / (isTabletMode ? 16 : 30),
               iconColor: primaryColor,
-            containerColor: Colors.white,
+              containerColor: Colors.white,
             ),
           if (icon != null)
             CommonUtils.iconActionButton(
@@ -149,7 +116,7 @@ class WelcomeScreen extends StatelessWidget {
                   MediaQuery.of(context).size.width / (isTabletMode ? 16 : 30),
               iconColor: primaryColor,
               containerColor: Colors.white,
-          ),
+            ),
           SizedBox(height: 8),
           Text(
             text,

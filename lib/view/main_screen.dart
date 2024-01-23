@@ -8,7 +8,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   final ValueNotifier<bool> _showSideBar = ValueNotifier(true);
   final scrollController = ScrollController();
 

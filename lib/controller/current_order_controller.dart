@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:offline_pos/components/export_files.dart';
 
 class CurrentOrderController with ChangeNotifier {
@@ -106,6 +108,25 @@ class CurrentOrderController with ChangeNotifier {
       }
       notifyListeners();
     });
+  }
+
+  void addItemToList(Product product) {
+    Product orderProduct = Product.fromJson(jsonDecode(jsonEncode(product)));
+    PriceListItem? priceListItem = product.priceListItem != null
+        ? PriceListItem.fromJson(jsonDecode(jsonEncode(product.priceListItem)))
+        : null;
+    orderProduct.priceListItem = priceListItem;
+    int index = currentOrderList
+        .indexWhere((e) => e.productId == orderProduct.productId);
+    if (index >= 0) {
+      orderProduct.onhandQuantity =
+          (currentOrderList[index].onhandQuantity ?? 0) + 1;
+      currentOrderList[index] = orderProduct;
+    } else {
+      orderProduct.onhandQuantity = 1;
+      currentOrderList.add(orderProduct);
+    }
+    notifyListeners();
   }
 
   resetCurrentOrderController() {

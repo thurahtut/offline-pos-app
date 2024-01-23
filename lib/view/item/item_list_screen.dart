@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:offline_pos/components/export_files.dart';
 
 class ItemListScreen extends StatefulWidget {
@@ -11,7 +9,6 @@ class ItemListScreen extends StatefulWidget {
 }
 
 class _ItemListScreenState extends State<ItemListScreen> {
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -146,81 +143,82 @@ class _ItemListScreenState extends State<ItemListScreen> {
             child: (context.watch<ItemListController>().productList.isEmpty)
                 ? SizedBox()
                 : GridView(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: isTabletMode ? 5 : 6,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-              ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: isTabletMode ? 5 : 6,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                    ),
                     children: context
                         .read<ItemListController>()
                         .productList
-                  .map((e) => InkWell(
+                        .map((e) => InkWell(
                               onTap: () {
                                 if ((e.onhandQuantity ?? 0) > 0) {
-                                  _addItemToList(e);
+                                  context
+                                      .read<CurrentOrderController>()
+                                      .addItemToList(e);
                                 } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          content: Text(
-                                    'Stock out',
-                                    textAlign: TextAlign.center,
-                                  )));
+                                  CommonUtils.showSnackBar(
+                                    message: 'Stock out',
+                                  );
                                 }
                               },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              side: BorderSide(
-                                  color:
-                                      Constants.greyColor2.withOpacity(0.2))),
-                          color: Constants.unselectedColor.withOpacity(0.8),
-                          shadowColor: Colors.white,
-                          elevation: 7,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Expanded(
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    side: BorderSide(
+                                        color: Constants.greyColor2
+                                            .withOpacity(0.2))),
+                                color:
+                                    Constants.unselectedColor.withOpacity(0.8),
+                                shadowColor: Colors.white,
+                                elevation: 7,
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 8),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Expanded(
                                               child: Text(
                                                   "${0} Ks"
                                                       .toString(), // product.price
-                                            style: textStyle)),
-                                    CommonUtils.svgIconActionButton(
-                                      'assets/svg/Info.svg',
-                                    ),
-                                  ],
-                                ),
-                                CommonUtils.svgIconActionButton(
-                                  'assets/svg/broken_image.svg',
-                                  iconColor: Constants.disableColor,
-                                  width: 35,
-                                  height: 35,
-                                ),
-                                RichText(
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  text: TextSpan(text: "", children: [
-                                    TextSpan(
+                                                  style: textStyle)),
+                                          CommonUtils.svgIconActionButton(
+                                            'assets/svg/Info.svg',
+                                          ),
+                                        ],
+                                      ),
+                                      CommonUtils.svgIconActionButton(
+                                        'assets/svg/broken_image.svg',
+                                        iconColor: Constants.disableColor,
+                                        width: 35,
+                                        height: 35,
+                                      ),
+                                      RichText(
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        text: TextSpan(text: "", children: [
+                                          TextSpan(
                                             text: "[${e.productId}]",
-                                      style: textStyle.copyWith(
-                                          color: Constants.successColor),
-                                    ),
+                                            style: textStyle.copyWith(
+                                                color: Constants.successColor),
+                                          ),
                                           TextSpan(
                                               text: e.productName,
                                               style: textStyle),
-                                  ]),
+                                        ]),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
           ),
         ],
       ),
@@ -260,15 +258,13 @@ class _ItemListScreenState extends State<ItemListScreen> {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return InkWell(
       onTap: () {
-        if ((product.onhandQuantity ?? 0) > 0) {
-          _addItemToList(product);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-            'Stock out',
-            textAlign: TextAlign.center,
-          )));
-        }
+        // if ((product.onhandQuantity ?? 0) > 0) {
+        context.read<CurrentOrderController>().addItemToList(product);
+        // } else {
+        //   CommonUtils.showSnackBar(
+        //     message: 'Stock out',
+        //   );
+        // }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),
@@ -290,8 +286,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
               ),
             ),
             Expanded(
-                child:
-                    Text(product.onhandQuantity?.toString() ?? "0",
+                child: Text(product.onhandQuantity?.toString() ?? "0",
                     style: textStyle)), //product.qtyInBags
             Expanded(
                 child: Text(
@@ -302,36 +297,13 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     '-',
                     style: textStyle)),
             Expanded(
-                child:
-                    Text(
+                child: Text(
                     product.priceListItem?.fixedPrice?.toString() ?? "0",
                     style: textStyle)), //product.salePrice
           ],
         ),
       ),
     );
-  }
-
-  void _addItemToList(Product product) {
-    Product orderProduct = Product.fromJson(jsonDecode(jsonEncode(product)));
-    int index = context
-        .read<CurrentOrderController>()
-        .currentOrderList
-        .indexWhere((e) => e.productId == orderProduct.productId);
-    if (index >= 0) {
-      orderProduct.onhandQuantity = (context
-                  .read<CurrentOrderController>()
-                  .currentOrderList[index]
-                  .onhandQuantity ??
-              0) +
-          1;
-      context.read<CurrentOrderController>().currentOrderList[index] =
-          orderProduct;
-    } else {
-      orderProduct.onhandQuantity = 1;
-      context.read<CurrentOrderController>().currentOrderList.add(orderProduct);
-    }
-    context.read<CurrentOrderController>().notify();
   }
 
   Widget _paginationWidget() {
@@ -377,5 +349,4 @@ class _ItemListScreenState extends State<ItemListScreen> {
       );
     });
   }
-
 }

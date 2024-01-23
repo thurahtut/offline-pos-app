@@ -15,6 +15,13 @@ class CurrentOrderScreen extends StatefulWidget {
 
 class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   bool isTabletMode = false;
+  final FocusNode _textNode = FocusNode();
+
+  @override
+  void dispose() {
+    _textNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,101 +81,110 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                     i,
                     InkWell(
                       onTap: () {
+                        _textNode.requestFocus();
                         controller.selectedIndex = i;
                         // _addManualDiscountProduct(controller);
                       },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            height: isTabletMode ? 70 : 100,
-                            width:
-                                isTabletMode ? widget.width - 16 : widget.width,
-                            margin: isTabletMode ? EdgeInsets.all(8) : null,
-                            decoration: BoxDecoration(
-                              color: controller.selectedIndex == i
-                                  ? primaryColor.withOpacity(0.13)
-                                  : Constants.currentOrderDividerColor,
-                              borderRadius: isTabletMode
-                                  ? BorderRadius.circular(20)
-                                  : null,
-                            ),
-                            child: Center(
-                              child: ListTile(
-                                dense: true,
-                                title: Row(
-                                  children: [
-                                    Expanded(
-                                      child: RichText(
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        text: TextSpan(text: "", children: [
-                                          TextSpan(
-                                            text: "[${e.productId}]",
-                                            style: textStyle.copyWith(
-                                                color: Constants.successColor),
-                                          ),
-                                          TextSpan(
-                                              text: e.productName,
-                                              style: textStyle),
-                                        ]),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        ProductUntiDialog.productUnitWidget(
-                                            context,
-                                            product: e);
-                                      },
-                                      child: Text(
-                                          "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"
-                                              .toString(), // product.salePrice
-                                          style: textStyle.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: primaryColor,
-                                          )),
-                                    )
-                                  ],
-                                ),
-                                subtitle: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                          "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"),
-                                    ),
-                                    Container(
-                                      width: 35,
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          color: primaryColor),
-                                      child: Center(
-                                        child: Text(
-                                          "%",
-                                          style: TextStyle(
-                                            color: Constants.accentColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
+                      child: RawKeyboardListener(
+                        focusNode: _textNode,
+                        onKey: (event) {
+                          _handleKeyEvent(event, controller);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              height: isTabletMode ? 70 : 100,
+                              width: isTabletMode
+                                  ? widget.width - 16
+                                  : widget.width,
+                              margin: isTabletMode ? EdgeInsets.all(8) : null,
+                              decoration: BoxDecoration(
+                                color: controller.selectedIndex == i
+                                    ? primaryColor.withOpacity(0.13)
+                                    : Constants.currentOrderDividerColor,
+                                borderRadius: isTabletMode
+                                    ? BorderRadius.circular(20)
+                                    : null,
+                              ),
+                              child: Center(
+                                child: ListTile(
+                                  dense: true,
+                                  title: Row(
+                                    children: [
+                                      Expanded(
+                                        child: RichText(
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          text: TextSpan(text: "", children: [
+                                            TextSpan(
+                                              text: "[${e.productId}]",
+                                              style: textStyle.copyWith(
+                                                  color:
+                                                      Constants.successColor),
+                                            ),
+                                            TextSpan(
+                                                text: e.productName,
+                                                style: textStyle),
+                                          ]),
                                         ),
                                       ),
-                                    )
-                                  ],
+                                      InkWell(
+                                        onTap: () {
+                                          ProductUntiDialog.productUnitWidget(
+                                              context,
+                                              product: e);
+                                        },
+                                        child: Text(
+                                            "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"
+                                                .toString(), // product.salePrice
+                                            style: textStyle.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: primaryColor,
+                                            )),
+                                      )
+                                    ],
+                                  ),
+                                  subtitle: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                            "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"),
+                                      ),
+                                      Container(
+                                        width: 35,
+                                        height: 35,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: primaryColor),
+                                        child: Center(
+                                          child: Text(
+                                            "%",
+                                            style: TextStyle(
+                                              color: Constants.accentColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 14.0),
-                            child: Divider(
-                              thickness: 0.6,
-                              height: 6,
-                              color: Constants.disableColor.withOpacity(0.96),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14.0),
+                              child: Divider(
+                                thickness: 0.6,
+                                height: 6,
+                                color: Constants.disableColor.withOpacity(0.96),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -179,6 +195,27 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         );
       }),
     );
+  }
+
+  void _handleKeyEvent(RawKeyEvent event, CurrentOrderController controller) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.backspace ||
+          event.logicalKey == LogicalKeyboardKey.delete) {
+        _updateCurrentOrder(controller, "", isBack: true);
+      } else if (event.logicalKey.keyLabel == "1" ||
+          event.logicalKey.keyLabel == "2" ||
+          event.logicalKey.keyLabel == "3" ||
+          event.logicalKey.keyLabel == "4" ||
+          event.logicalKey.keyLabel == "5" ||
+          event.logicalKey.keyLabel == "6" ||
+          event.logicalKey.keyLabel == "7" ||
+          event.logicalKey.keyLabel == "8" ||
+          event.logicalKey.keyLabel == "9" ||
+          event.logicalKey.keyLabel == "0" ||
+          event.logicalKey.keyLabel == ".") {
+        _updateCurrentOrder(controller, event.logicalKey.keyLabel);
+      }
+    }
   }
 
   Widget _totalWidget() {
@@ -387,11 +424,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         iconSize: 21,
         onPressed: () {
           if (context.read<CurrentOrderController>().currentOrderList.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-              'There is no order items.',
-              textAlign: TextAlign.center,
-            )));
+            CommonUtils.showSnackBar(message: 'There is no order items.');
             return;
           }
           context.read<CurrentOrderController>().isContainCustomer = false;
@@ -501,6 +534,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             isDelete = true;
           } else {
             qty = qty.substring(0, qty.length - 1);
+            if (qty.isEmpty) {
+              qty = "1";
+            }
           }
         } else {
           qty = (qty != "1" ? qty : "");
@@ -562,6 +598,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                   0,
           configId: context.read<LoginUserController>().posConfig?.id ?? 0,
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
+          sequenceNumber: orderDate.microsecond.toString(),
           amountTotal: currentOrderController
               .getTotalQty(currentOrderController.currentOrderList)
               .last,
@@ -576,11 +613,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       OrderLineIdTable.deleteByOrderId(db, value);
       for (var data in currentOrderController.currentOrderList) {
         if ((data.onhandQuantity ?? 0) <= 0) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-            '${data.productName} is something wrong!',
-            textAlign: TextAlign.center,
-          )));
+          CommonUtils.showSnackBar(
+              message: '${data.productName} is something wrong!');
         }
 
         OrderLineID orderLineID = OrderLineID(

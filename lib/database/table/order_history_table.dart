@@ -3,13 +3,13 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 const ORDER_HISTORY_TABLE_NAME = "order_history_table";
-const ORDER_HISTORY_ID = "order_history_id";
+const ORDER_HISTORY_ID = "id";
 const NAME_IN_OH = "name";
 const SESSION_ID = "session_id";
 const DATE_ORDER = "date_order";
 const EMPLOYEE_ID_IN_OH = "employee_id";
 const PARTNER_ID = "partner_id";
-const COMPANY_ID_IN_OH = "company_id";
+// const COMPANY_ID_IN_OH = "company_id";
 const CONFIG_ID = "config_id";
 const CREATE_DATE_IN_OH = "create_date";
 const CREATE_UID_IN_OH = "create_uid";
@@ -28,7 +28,7 @@ class OrderHistoryTable {
         "$EMPLOYEE_ID_IN_OH INTEGER NOT NULL,"
         "$PARTNER_ID INTEGER NOT NULL,"
         "$AMOUNT_TOTAL REAL NOT NULL,"
-        "$COMPANY_ID_IN_OH INTEGER NOT NULL,"
+        // "$COMPANY_ID_IN_OH INTEGER NOT NULL,"
         "$CONFIG_ID INTEGER NOT NULL,"
         "$CREATE_DATE_IN_OH TEXT NOT NULL,"
         "$CREATE_UID_IN_OH INTEGER NOT NULL,"
@@ -43,7 +43,8 @@ class OrderHistoryTable {
       final Database db, OrderHistory orderHistory) async {
     String sql = "INSERT INTO $ORDER_HISTORY_TABLE_NAME("
         "$AMOUNT_TOTAL,"
-        "$COMPANY_ID_IN_OH, $CONFIG_ID, $CREATE_DATE_IN_OH, $CREATE_UID_IN_OH, "
+        // "$COMPANY_ID_IN_OH, "
+        "$CONFIG_ID, $CREATE_DATE_IN_OH, $CREATE_UID_IN_OH, "
         "$DATE_ORDER,  "
         "$EMPLOYEE_ID_IN_OH, "
         "$NAME_IN_OH, "
@@ -53,7 +54,8 @@ class OrderHistoryTable {
         ")"
         " VALUES("
         "'${orderHistory.amountTotal}', "
-        "'${orderHistory.companyId}', '${orderHistory.configId}', '${orderHistory.createDate}', '${orderHistory.createUid}', "
+        // "'${orderHistory.companyId}', "
+        "'${orderHistory.configId}', '${orderHistory.createDate}', '${orderHistory.createUid}', "
         "'${orderHistory.dateOrder}', "
         "'${orderHistory.employeeId}', "
         "'${orderHistory.name}', "

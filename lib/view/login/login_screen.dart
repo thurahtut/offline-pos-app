@@ -1,5 +1,6 @@
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:offline_pos/view/inventory/choose_inventory_dialog.dart';
+import 'package:offline_pos/view/session/create_session_dialog.dart';
 import 'package:offline_pos/view/user/user_login_dialog.dart';
 
 import '/components/export_files.dart';
@@ -55,8 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         body: bodyWidget(context),
       );
-    }
-    );
+    });
   }
 
   Widget bodyWidget(BuildContext context) {
@@ -100,6 +100,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   context.read<ThemeSettingController>().notify();
 
                   Navigator.pushNamed(context, MorningSyncScreen.routeName);
+                } else if (context.read<LoginUserController>().posSession?.id ==
+                        null ||
+                    context.read<LoginUserController>().posSession?.id == 0) {
+                  return CreateSessionDialog.createSessionDialogWidget(context)
+                      .then((value) {
+                    if (value == true) {
+                      AppConfigTable.deleteByColumnName(PRODUCT_LAST_SYNC_DATE);
+                      context
+                          .read<ThemeSettingController>()
+                          .appConfig
+                          ?.productLastSyncDate = null;
+                      context.read<ThemeSettingController>().notify();
+
+                      Navigator.pushNamed(context, MorningSyncScreen.routeName);
+                    }
+                  });
                 }
               });
             }

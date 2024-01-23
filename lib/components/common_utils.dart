@@ -13,7 +13,10 @@ class CommonUtils {
     if (NavigationService.navigatorKey.currentContext != null) {
       ScaffoldMessenger.of(NavigationService.navigatorKey.currentContext!)
           .showSnackBar(SnackBar(
-        content: Text(message),
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
         duration: duration ?? Duration(seconds: 2),
       ));
     }

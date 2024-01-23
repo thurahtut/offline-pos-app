@@ -4,13 +4,16 @@ class PaymentTransaction {
   String? paymentDate;
   int? paymentMethodId;
   String? amount;
+  bool? firstTime;
 
   PaymentTransaction(
       {this.id,
       this.orderId,
       this.paymentDate,
       this.paymentMethodId,
-      this.amount});
+    this.amount,
+    this.firstTime = true,
+  });
 
   PaymentTransaction.fromJson(Map<String, dynamic> json) {
     id = json['id'];
