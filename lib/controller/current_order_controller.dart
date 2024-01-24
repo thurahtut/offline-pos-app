@@ -129,6 +129,133 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateCurrentOrder(
+    String value, {
+    bool? isBack,
+  }) {
+    if (selectedIndex != null) {
+      Product product = currentOrderList.elementAt(selectedIndex!);
+      product.priceListItem ??= PriceListItem();
+      if (currentOrderKeyboardState == CurrentOrderKeyboardState.price) {
+        String price = product.priceListItem!.fixedPrice?.toString() ?? "";
+        if (isBack == true) {
+          price = price.substring(0, price.length - 1);
+        } else {
+          price += value;
+        }
+        product.priceListItem?.fixedPrice = double.tryParse(price);
+        notify();
+      } else if (currentOrderKeyboardState == CurrentOrderKeyboardState.qty) {
+        String qty = product.onhandQuantity?.toString() ?? "";
+        bool isDelete = false;
+        if (isBack == true) {
+          if (product.onhandQuantity == 1) {
+            isDelete = true;
+          } else {
+            qty = qty.substring(0, qty.length - 1);
+            if (qty.isEmpty) {
+              qty = "1";
+            }
+          }
+        } else {
+          qty = (qty != "1" ? qty : "");
+          qty += value;
+        }
+        if (isDelete) {
+          currentOrderList.removeAt(selectedIndex!);
+          selectedIndex = null;
+        } else {
+          product.onhandQuantity = double.tryParse(qty);
+        }
+        notifyListeners();
+      }
+      // else if (currentOrderKeyboardState ==
+      //     CurrentOrderKeyboardState.disc) {
+      //   Product promotionProduct = product.cloneProduct();
+      //   promotionProduct.onhandQuantity = 1;
+      //   promotionProduct.priceListItem?.fixedPrice = 0;
+      //   currentOrderList.insert(
+      //       selectedIndex! + 1, promotionProduct);
+      //   notify();
+      // }
+    }
+  }
+
+  void handleKeyEvent(
+      RawKeyEvent event, ItemListController itemListController) {
+    if (event is RawKeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.backspace ||
+          event.logicalKey == LogicalKeyboardKey.delete) {
+        updateCurrentOrder("", isBack: true);
+      } else if (event.logicalKey.keyLabel == "1" ||
+          event.logicalKey.keyLabel == "2" ||
+          event.logicalKey.keyLabel == "3" ||
+          event.logicalKey.keyLabel == "4" ||
+          event.logicalKey.keyLabel == "5" ||
+          event.logicalKey.keyLabel == "6" ||
+          event.logicalKey.keyLabel == "7" ||
+          event.logicalKey.keyLabel == "8" ||
+          event.logicalKey.keyLabel == "9" ||
+          event.logicalKey.keyLabel == "0" ||
+          event.logicalKey.keyLabel == ".") {
+        updateCurrentOrder(event.logicalKey.keyLabel);
+      }
+      //else if (event.logicalKey.keyLabel.length >= 3) {
+      //   productTextFieldFocusNode.requestFocus();
+      //   log('Key event: ${event.logicalKey}');
+      //   log('Key event label: ${event.logicalKey.keyId}');
+      //   // itemListController.filterValue = event.logicalKey.keyLabel;
+      //   // TextEditingController con =
+      //   //     TextEditingController(text: event.logicalKey.keyLabel);
+      //   // log('Con Val :${con.text}');
+      //   // itemListController.searchProduct(callback: (product) {
+      //   //   if (product != null) {
+      //   //     // if ((e.onhandQuantity ?? 0) > 0) {
+      //   //     addItemToList(product);
+      //   //     // } else {
+      //   //     //   CommonUtils.showSnackBar(
+      //   //     //     message: 'Stock out',
+      //   //     //   );
+      //   //     // }
+      //   //   }
+      //   // });
+      // }
+    }
+    // else if (event is RawKeyUpEvent &&
+    //     !(event.logicalKey.keyLabel == "1" ||
+    //         event.logicalKey.keyLabel == "2" ||
+    //         event.logicalKey.keyLabel == "3" ||
+    //         event.logicalKey.keyLabel == "4" ||
+    //         event.logicalKey.keyLabel == "5" ||
+    //         event.logicalKey.keyLabel == "6" ||
+    //         event.logicalKey.keyLabel == "7" ||
+    //         event.logicalKey.keyLabel == "8" ||
+    //         event.logicalKey.keyLabel == "9" ||
+    //         event.logicalKey.keyLabel == "0" ||
+    //         event.logicalKey.keyLabel == ".")) {
+    //   if (event.logicalKey.keyLabel.length >= 3) {
+    //     // BarcodeKeyboardListener.onKey(event, (){});
+    //     log('Key event: ${event.logicalKey}');
+    //     log('Key event: ${event.logicalKey}');
+    //     log('Key event label: ${event.logicalKey.keyLabel}');
+    //     itemListController.filterValue = event.logicalKey.keyLabel;
+    //     itemListController.searchProduct(callback: (product) {
+    //       if (product != null) {
+    //         // if ((e.onhandQuantity ?? 0) > 0) {
+    //         addItemToList(product);
+    //         // } else {
+    //         //   CommonUtils.showSnackBar(
+    //         //     message: 'Stock out',
+    //         //   );
+    //         // }
+    //       }
+    //     });
+    //   }
+    // }
+  }
+
+  final FocusNode productTextFieldFocusNode = FocusNode();
+
   resetCurrentOrderController() {
     _currentOrderList = [];
     _selectedIndex = null;

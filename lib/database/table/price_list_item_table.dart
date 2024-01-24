@@ -159,7 +159,7 @@ class PriceListItemTable {
         "SELECT pt.id productId, pli.id priceListItemId,* from $PRICE_LIST_ITEM_TABLE_NAME pli "
         "left join $PRODUCT_TABLE_NAME pt "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
-        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)" : ''} "
+        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)" : ''} "
         "where 1=1 "
         "and pli.$APPLIED_ON='1_product' "
         "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
@@ -170,7 +170,7 @@ class PriceListItemTable {
     final List<Map<String, dynamic>> maps = await db.rawQuery(
         query,
         filter != null && filter.isNotEmpty
-            ? ['%$filter%', '%${filter.toLowerCase()}%']
+            ? ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%']
             : null);
 
     // Convert the List<Map<String, dynamic> into a List<Category>.

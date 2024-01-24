@@ -82,32 +82,14 @@ class ItemListController with ChangeNotifier {
   }
 
   Future<void> searchProduct({Function(Product?)? callback}) async {
-    ProductTable.getProductsFiltering(
+    await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       limit: 1,
       offset: 0,
+      barcodeOnly: true,
     ).then((list) {
-      List<int> productIds = [];
-      for (var data in list) {
-        if (data.productId != null && data.productId != 0) {
-          productIds.add(data.productId!);
-        }
-      }
-      PriceListItemTable.getPriceListItemByProductIds(productIds).then(
-        (value) {
-          for (var pli in value) {
-            for (var data in list) {
-              if (data.productId == pli.productTmplId) {
-                data.priceListItem = pli;
-                break;
-              }
-            }
-          }
-          Product? product = list.isNotEmpty ? list.first : null;
-          notifyListeners();
-          callback?.call(product);
-        },
-      );
+      Product? product = list.isNotEmpty ? list.first : null;
+      callback?.call(product);
     });
   }
 

@@ -67,7 +67,8 @@ class ViewController with ChangeNotifier {
     notifyListeners();
   }
 
-  final FocusNode productFocusNode = FocusNode();
+  // final FocusNode productFocusNode = FocusNode();
+  final FocusNode searchProductFocusNode = FocusNode();
 
   notify() {
     notifyListeners();

@@ -200,7 +200,8 @@ class _SaleAppBarState extends State<SaleAppBar> {
           borderRadius: BorderRadius.circular(22),
         ),
         child: TextField(
-          autofocus: true,
+          // autofocus: true,
+          focusNode: context.read<ViewController>().searchProductFocusNode,
           controller: _searchProductTextController,
           decoration: InputDecoration(
             border: OutlineInputBorder(

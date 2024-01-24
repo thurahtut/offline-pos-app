@@ -189,6 +189,7 @@ class ProductTable {
     String? filter,
     int? limit,
     int? offset,
+    bool? barcodeOnly,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
@@ -201,14 +202,16 @@ class ProductTable {
         "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
         "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "where 1=1 "
-        "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_NAME like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)" : ''} "
+        "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
         "ORDER by pt.$PRODUCT_ID DESC "
         "${limit != null ? "limit $limit " : " "}"
         "${offset != null ? "offset $offset " : " "}";
     final List<Map<String, dynamic>> maps = await db.rawQuery(
         query,
         filter != null && filter.isNotEmpty
-            ? ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%']
+            ? (barcodeOnly == true
+                ? [filter]
+                : ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'])
             : null);
 
     // Convert the List<Map<String, dynamic> into a List<Category>.

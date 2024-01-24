@@ -53,6 +53,52 @@ class _ItemListScreenState extends State<ItemListScreen> {
           padding: const EdgeInsets.only(bottom: 30.0),
           child: Column(
             children: [
+              Opacity(
+                opacity: 0,
+                child: SizedBox(
+                  width: 100,
+                  height: 0,
+                  child: TextField(
+                    // autofocus: true,
+                    focusNode: context
+                        .read<CurrentOrderController>()
+                        .productTextFieldFocusNode,
+                    // controller: _searchProductTextController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.all(16),
+                      hintText: 'Search Products...',
+                      hintStyle: TextStyle(fontSize: 14),
+                      filled: true,
+                    ),
+                    onChanged: (value) {
+                      ItemListController itemListController =
+                          context.read<ItemListController>();
+                      itemListController.filterValue = value;
+                      itemListController.searchProduct(callback: (product) {
+                        if (product != null) {
+                          // if ((e.onhandQuantity ?? 0) > 0) {
+                          context
+                              .read<CurrentOrderController>()
+                              .addItemToList(product);
+                          // } else {
+                          //   CommonUtils.showSnackBar(
+                          //     message: 'Stock out',
+                          //   );
+                          // }
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ),
+        
               _itemListHeaderWidget(),
               Expanded(
                 child: Row(

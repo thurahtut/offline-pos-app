@@ -15,7 +15,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     _showSideBar.dispose();
-    context.read<ViewController>().productFocusNode.dispose();
+    context.read<ViewController>().searchProductFocusNode.unfocus();
+    context.read<CurrentOrderController>().productTextFieldFocusNode.unfocus();
     scrollController.dispose();
     super.dispose();
   }
@@ -23,10 +24,22 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ViewController>().productFocusNode.requestFocus();
+      context
+          .read<CurrentOrderController>()
+          .productTextFieldFocusNode
+          .requestFocus();
       context.read<CurrentOrderController>().resetCurrentOrderController();
       context.read<ViewController>().isCustomerView = false;
+      context.read<ViewController>().searchProductFocusNode.addListener(() {
+        if (!context.read<ViewController>().searchProductFocusNode.hasFocus) {
+          context
+              .read<CurrentOrderController>()
+              .productTextFieldFocusNode
+              .requestFocus();
+        }
+      });
     });
+    
     super.initState();
   }
 
@@ -48,23 +61,23 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         : MediaQuery.of(context).size.width -
             (MediaQuery.of(context).size.width / 5.5) -
             ((MediaQuery.of(context).size.width / 5.3) * 3);
-    return RawKeyboardListener(
-      focusNode: context.read<ViewController>().productFocusNode,
-      onKey: (event) {
-        // _handleKeyEvent(event, controller);
-        context.read<ItemListController>().searchProduct(callback: (product) {
-          if (product != null) {
-            // if ((e.onhandQuantity ?? 0) > 0) {
-            context.read<CurrentOrderController>().addItemToList(product);
-            // } else {
-            //   CommonUtils.showSnackBar(
-            //     message: 'Stock out',
-            //   );
-            // }
-          }
-        });
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<CurrentOrderController>()
+            .productTextFieldFocusNode
+            .requestFocus();
       },
-      child: Column(
+      child:
+          // RawKeyboardListener(
+          //   focusNode: context.read<ViewController>().productFocusNode,
+          //   onKey: (event) {
+          //     context
+          //         .read<CurrentOrderController>()
+          //         .handleKeyEvent(event, context.read<ItemListController>());
+          //   },
+          // child:
+          Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(height: 8),
@@ -96,6 +109,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           )
         ],
       ),
+      // ),
     );
   }
 

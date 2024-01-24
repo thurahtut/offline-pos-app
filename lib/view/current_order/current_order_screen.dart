@@ -69,41 +69,46 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       fontSize: 16,
       fontWeight: FontWeight.w500,
     );
-    return SingleChildScrollView(
-      child: Consumer<CurrentOrderController>(builder: (_, controller, __) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ...controller.currentOrderList
-                .asMap()
-                .map(
-                  (i, e) => MapEntry(
-                    i,
-                    InkWell(
-                      onTap: () {
-                        if (controller.selectedIndex == i) {
-                          _textNode.unfocus();
-                          controller.selectedIndex = -1;
-                          context
-                              .read<ViewController>()
-                              .productFocusNode
-                              .requestFocus();
-                        } else {
-                        _textNode.requestFocus();
-                          controller.selectedIndex = i;
-                          context
-                              .read<ViewController>()
-                              .productFocusNode
-                              .unfocus();
-                        }
-                        // _addManualDiscountProduct(controller);
-                      },
-                      child: RawKeyboardListener(
-                        focusNode: _textNode,
-                        onKey: (event) {
-                          _handleKeyEvent(event, controller);
+    return RawKeyboardListener(
+      focusNode: _textNode,
+      onKey: (event) {
+        context
+            .read<CurrentOrderController>()
+            .handleKeyEvent(event, context.read<ItemListController>());
+      },
+      child: SingleChildScrollView(
+        child: Consumer<CurrentOrderController>(builder: (_, controller, __) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...controller.currentOrderList
+                  .asMap()
+                  .map(
+                    (i, e) => MapEntry(
+                      i,
+                      InkWell(
+                        onTap: () {
+                          if (controller.selectedIndex == i) {
+                            _textNode.unfocus();
+                            controller.selectedIndex = -1;
+                            controller.productTextFieldFocusNode.requestFocus();
+                          } else {
+                            _textNode.requestFocus();
+                            controller.selectedIndex = i;
+                            controller.productTextFieldFocusNode.unfocus();
+                          }
+                          // _addManualDiscountProduct(controller);
                         },
-                        child: Column(
+                        child:
+                            //  RawKeyboardListener(
+                            //   focusNode: _textNode,
+                            //   onKey: (event) {
+                            //     controller.handleKeyEvent(
+                            //         event, context.read<ItemListController>());
+                            //   },
+                            //   child:
+
+                            Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
@@ -198,37 +203,17 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                             ),
                           ],
                         ),
+                        // ),
                       ),
                     ),
-                  ),
-                )
-                .values
-                .toList(),
-          ],
-        );
-      }),
+                  )
+                  .values
+                  .toList(),
+            ],
+          );
+        }),
+      ),
     );
-  }
-
-  void _handleKeyEvent(RawKeyEvent event, CurrentOrderController controller) {
-    if (event is RawKeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.backspace ||
-          event.logicalKey == LogicalKeyboardKey.delete) {
-        _updateCurrentOrder(controller, "", isBack: true);
-      } else if (event.logicalKey.keyLabel == "1" ||
-          event.logicalKey.keyLabel == "2" ||
-          event.logicalKey.keyLabel == "3" ||
-          event.logicalKey.keyLabel == "4" ||
-          event.logicalKey.keyLabel == "5" ||
-          event.logicalKey.keyLabel == "6" ||
-          event.logicalKey.keyLabel == "7" ||
-          event.logicalKey.keyLabel == "8" ||
-          event.logicalKey.keyLabel == "9" ||
-          event.logicalKey.keyLabel == "0" ||
-          event.logicalKey.keyLabel == ".") {
-        _updateCurrentOrder(controller, event.logicalKey.keyLabel);
-      }
-    }
   }
 
   Widget _totalWidget() {
@@ -326,19 +311,19 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       CommonUtils.eachCalculateButtonWidget(
         text: "1",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "1");
+          currentOrderController.updateCurrentOrder("1");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "2",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "2");
+          currentOrderController.updateCurrentOrder("2");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "3",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "3");
+          currentOrderController.updateCurrentOrder("3");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
@@ -365,19 +350,19 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       CommonUtils.eachCalculateButtonWidget(
         text: "4",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "4");
+          currentOrderController.updateCurrentOrder("4");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "5",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "5");
+          currentOrderController.updateCurrentOrder("5");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "6",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "6");
+          currentOrderController.updateCurrentOrder("6");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
@@ -406,19 +391,19 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       CommonUtils.eachCalculateButtonWidget(
         text: "7",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "7");
+          currentOrderController.updateCurrentOrder("7");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "8",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "8");
+          currentOrderController.updateCurrentOrder("8");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "9",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "9");
+          currentOrderController.updateCurrentOrder("9");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
@@ -441,27 +426,27 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             return;
           }
           context.read<CurrentOrderController>().isContainCustomer = false;
-          uploadOrderHistoryToDatabase();
+          // uploadOrderHistoryToDatabase();
           Navigator.pushNamed(context, OrderPaymentScreen.routeName);
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: ".",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, ".");
+          currentOrderController.updateCurrentOrder(".");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
         text: "0",
         onPressed: () {
-          _updateCurrentOrder(currentOrderController, "0");
+          currentOrderController.updateCurrentOrder("0");
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
           icon: Icons.backspace_outlined,
           iconColor: Constants.alertColor,
           onPressed: () {
-            _updateCurrentOrder(currentOrderController, "", isBack: true);
+            currentOrderController.updateCurrentOrder("", isBack: true);
           }),
       CommonUtils.eachCalculateButtonWidget(
         text: "Customer",
@@ -517,63 +502,6 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     return Column(
       children: list,
     );
-  }
-
-  void _updateCurrentOrder(
-    CurrentOrderController currentOrderController,
-    String value, {
-    bool? isBack,
-  }) {
-    if (currentOrderController.selectedIndex != null) {
-      Product product = currentOrderController.currentOrderList
-          .elementAt(currentOrderController.selectedIndex!);
-      product.priceListItem ??= PriceListItem();
-      if (currentOrderController.currentOrderKeyboardState ==
-          CurrentOrderKeyboardState.price) {
-        String price = product.priceListItem!.fixedPrice?.toString() ?? "";
-        if (isBack == true) {
-          price = price.substring(0, price.length - 1);
-        } else {
-          price += value;
-        }
-        product.priceListItem?.fixedPrice = double.tryParse(price);
-        currentOrderController.notify();
-      } else if (currentOrderController.currentOrderKeyboardState ==
-          CurrentOrderKeyboardState.qty) {
-        String qty = product.onhandQuantity?.toString() ?? "";
-        bool isDelete = false;
-        if (isBack == true) {
-          if (product.onhandQuantity == 1) {
-            isDelete = true;
-          } else {
-            qty = qty.substring(0, qty.length - 1);
-            if (qty.isEmpty) {
-              qty = "1";
-            }
-          }
-        } else {
-          qty = (qty != "1" ? qty : "");
-          qty += value;
-        }
-        if (isDelete) {
-          currentOrderController.currentOrderList
-              .removeAt(currentOrderController.selectedIndex!);
-          currentOrderController.selectedIndex = null;
-        } else {
-          product.onhandQuantity = double.tryParse(qty);
-        }
-        currentOrderController.notify();
-      }
-      // else if (currentOrderController.currentOrderKeyboardState ==
-      //     CurrentOrderKeyboardState.disc) {
-      //   Product promotionProduct = product.cloneProduct();
-      //   promotionProduct.onhandQuantity = 1;
-      //   promotionProduct.priceListItem?.fixedPrice = 0;
-      //   currentOrderController.currentOrderList.insert(
-      //       currentOrderController.selectedIndex! + 1, promotionProduct);
-      //   currentOrderController.notify();
-      // }
-    }
   }
 
   void _addManualDiscountProduct(
