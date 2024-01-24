@@ -545,12 +545,12 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                   0,
           configId: context.read<LoginUserController>().posConfig?.id ?? 0,
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
-          sequenceNumber: orderDate.microsecond.toString(),
+          sequenceNumber: orderDate.millisecondsSinceEpoch.toString(),
           amountTotal: currentOrderController
               .getTotalQty(currentOrderController.currentOrderList)
               .last,
           name:
-              "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.microsecond}",
+              "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.millisecondsSinceEpoch}",
         );
     final Database db = await DatabaseHelper().db;
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {

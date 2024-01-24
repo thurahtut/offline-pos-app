@@ -31,7 +31,10 @@ class _SaleAppBarState extends State<SaleAppBar> {
       backgroundColor: Colors.white,
       leading: IconButton(
         onPressed: () {
-          Navigator.pop(context);
+          Navigator.pushNamed(
+            context,
+            WelcomeScreen.routeName,
+          );
         },
         icon: BackButton(
           color: primaryColor,
