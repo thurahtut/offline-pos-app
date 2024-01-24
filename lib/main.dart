@@ -44,10 +44,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Offline POS',
         navigatorKey: NavigationService.navigatorKey,
-        initialRoute: MainScreen.routeName,
-        home: MainScreen(),
-        // initialRoute: OrderPaymentScreen.routeName,
-        // home: OrderPaymentScreen(),
+        initialRoute: LoginScreen.routeName,
+        home: LoginScreen(),
+        // initialRoute: OrderPaymentReceiptScreen.routeName,
+        // home: OrderPaymentReceiptScreen(),
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

@@ -183,6 +183,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   controller.paymentTransactionList[e.id ?? -1] ??=
                       PaymentTransaction(
                     paymentMethodId: e.id,
+                    paymentMethodName: e.name,
                   );
                   controller.paymentTransactionList[e.id ?? -1]?.amount =
                       (totalPayAmt < totalAmt ? totalAmt - totalPayAmt : 0)

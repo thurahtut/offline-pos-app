@@ -5,6 +5,7 @@ class PaymentTransaction {
   int? paymentMethodId;
   String? amount;
   bool? firstTime;
+  String? paymentMethodName;
 
   PaymentTransaction(
       {this.id,
@@ -13,6 +14,7 @@ class PaymentTransaction {
       this.paymentMethodId,
     this.amount,
     this.firstTime = true,
+    this.paymentMethodName,
   });
 
   PaymentTransaction.fromJson(Map<String, dynamic> json) {

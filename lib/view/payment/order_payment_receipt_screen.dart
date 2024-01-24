@@ -18,6 +18,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   List<int> byteList = [];
   var myTheme;
 
+  ByteData? font;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -36,7 +38,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       // myTheme = pw.ThemeData.withFont(
       //   base: pw.Font.//PdfGoogleFonts.outfitRegular()
       // );
-
+      font = await rootBundle.load("assets/font/Padauk-Regular.ttf");
       final ByteData bytes = await rootBundle.load('assets/png/logo_small.png');
       byteList = bytes.buffer.asInt8List();
       setState(() {});
@@ -140,10 +142,27 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 ),
               ),
               pw.SizedBox(height: 20),
+              pw.SizedBox(
+                // width: 150,
+                child: pw.Divider(thickness: 2),
+              ),
+              getHeaderWidget(doc),
+              pw.SizedBox(
+                // width: 150,
+                child: pw.Divider(thickness: 2),
+              ),
               ...getOrderItem(doc),
               _totalWidget(),
               pw.SizedBox(height: 20),
+              ..._transactionWidget(),
+              pw.SizedBox(height: 20),
               _changeWidget(),
+              pw.SizedBox(height: 20),
+              _totalQtyWidget(),
+              pw.SizedBox(height: 20),
+              ..._thankYouWidget(),
+              pw.SizedBox(height: 40),
+              ..._orderIdWidget(),
             ],
           );
         },
@@ -151,6 +170,46 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     );
 
     return doc.save();
+  }
+
+  pw.Widget getHeaderWidget(pw.Document doc) {
+    pw.TextStyle textStyle = pw.TextStyle(
+      color: PdfColors.black,
+      fontSize: 16,
+      fontWeight: pw.FontWeight.bold,
+      // fontWeight: pw.FontWeight.w500,
+    );
+    double maxPageWidth = PdfPageFormat.roll80.width * 2;
+    return pw.Row(children: [
+      pw.Expanded(
+        // width: (maxPageWidth / 8) * 3,
+        child: pw.Text(
+          "Description",
+          style: textStyle,
+        ),
+      ),
+      pw.SizedBox(
+        width: (maxPageWidth / 8),
+        child: pw.Text(
+          "Qty",
+          style: textStyle,
+        ),
+      ),
+      pw.SizedBox(
+        width: (maxPageWidth / 8) * 2,
+        child: pw.Text(
+          "Price",
+          style: textStyle,
+        ),
+      ),
+      pw.SizedBox(
+        width: (maxPageWidth / 8) * 2,
+        child: pw.Text(
+          "Amount",
+          style: textStyle,
+        ),
+      ),
+    ]);
   }
 
   List<pw.Widget> getOrderItem(pw.Document doc) {
@@ -171,60 +230,44 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       fontWeight: pw.FontWeight.bold,
       // fontWeight: pw.FontWeight.w500,
     );
-    return pw.Column(
-      mainAxisSize: pw.MainAxisSize.min,
-      children: [
-        pw.Container(
-          margin: pw.EdgeInsets.all(8),
-          decoration: pw.BoxDecoration(
-            borderRadius: pw.BorderRadius.circular(20),
-          ),
-          child: pw.Center(
-            child: pw.Column(children: [
-              pw.Row(
-                children: [
-                  pw.Expanded(
-                    child: pw.RichText(
-                      maxLines: 2,
-                      // overflow: pw.TextOverflow.ellipsis,
-                      text: pw.TextSpan(text: "", children: [
-                        pw.TextSpan(
-                          text: "[${e.productId}]",
-                          style: textStyle.copyWith(
-                              color: PdfColor.fromInt(
-                                  Constants.successColor.value)),
-                        ),
-                        pw.TextSpan(text: e.productName, style: textStyle),
-                      ]),
-                    ),
-                  ),
-                  pw.Text(
-                      "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"
-                          .toString(),
-                      style: textStyle.copyWith(
-                        // fontWeight: FontWeight.bold,
-                        color: PdfColor.fromInt(primaryColor.value),
-                      ))
-                ],
-              ),
-              pw.Row(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
-                pw.Text(
-                    "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"), //e.price
-              ]),
-            ]),
-          ),
+    double maxPageWidth = PdfPageFormat.roll80.width * 2;
+    return pw.Row(children: [
+      pw.Expanded(
+        // width: (maxPageWidth / 8) * 3,
+        child: pw.RichText(
+          maxLines: 2,
+          // overflow: pw.TextOverflow.ellipsis,
+          text: pw.TextSpan(text: "", children: [
+            pw.TextSpan(
+              text: "[${e.productId}]",
+              style: textStyle,
+            ),
+            pw.TextSpan(text: e.productName, style: textStyle),
+          ]),
         ),
-        // pw.Padding(
-        //   padding: const pw.EdgeInsets.symmetric(horizontal: 14.0),
-        //   child: pw.Divider(
-        //     thickness: 0.6,
-        //     height: 6,
-        //     color: PdfColor.fromInt(
-        //         Constants.disableColor.withOpacity(0.96).value),
-        //   ),
-        // ),
-      ],
-    );
+      ),
+      pw.SizedBox(
+        width: (maxPageWidth / 8),
+        child: pw.Text(
+          "${e.onhandQuantity ?? 0}",
+          style: textStyle,
+        ),
+      ),
+      pw.SizedBox(
+        width: (maxPageWidth / 8) * 2,
+        child: pw.Text(
+          "${e.priceListItem?.fixedPrice ?? 0}",
+          style: textStyle,
+        ),
+      ),
+      pw.SizedBox(
+        width: (maxPageWidth / 8) * 2,
+        child: pw.Text(
+          "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks",
+          style: textStyle,
+        ),
+      ),
+    ]);
   }
 
   pw.Widget _totalWidget() {
@@ -244,6 +287,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 thickness: 0.6,
                 height: 6,
                 color: PdfColors.black,
+                borderStyle: pw.BorderStyle.dashed,
               ),
             ),
           ]),
@@ -277,6 +321,45 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         ],
       ),
     );
+  }
+
+  List<pw.Widget> _transactionWidget() {
+    List<pw.Widget> widgets = [];
+    if (context.read<CurrentOrderController>().paymentTransactionList.isEmpty) {
+      return widgets;
+    }
+    for (var e in context
+        .read<CurrentOrderController>()
+        .paymentTransactionList
+        .values) {
+      widgets.add(pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+        children: [
+          pw.Expanded(
+            child: pw.Center(
+              child: pw.Text(
+                e.paymentMethodName ?? '',
+                style: pw.TextStyle(
+                  color: PdfColor.fromHex("#171717"),
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          pw.SizedBox(height: 4),
+          pw.Text(
+            "${e.amount ?? 0} Ks",
+            style: pw.TextStyle(
+              color: PdfColors.black,
+              fontSize: 18,
+              // fontWeight: pw.FontWeight.w400,
+            ),
+          ),
+        ],
+      ));
+    }
+    return widgets;
   }
 
   pw.Widget _changeWidget() {
@@ -322,6 +405,85 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         ],
       ),
     );
+  }
+
+  pw.Widget _totalQtyWidget() {
+    List list = context
+        .read<CurrentOrderController>()
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
+    return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        pw.Center(
+          child: pw.Text(
+            "Total Item : ${context.read<CurrentOrderController>().currentOrderList.length} | Total Qty : ${list.first}",
+            style: pw.TextStyle(
+              color: PdfColor.fromHex("#262927"),
+              fontSize: 18,
+            ),
+          ),
+        ),
+        pw.Expanded(child: pw.SizedBox()),
+      ],
+    );
+  }
+
+  List<pw.Widget> _thankYouWidget() {
+    return [
+      pw.Text(
+        "Thank you for shopping with us.",
+        style: pw.TextStyle(
+          color: PdfColor.fromHex("#262927"),
+          fontSize: 18,
+        ),
+      ),
+      pw.Text(
+        "See you again.",
+        style: pw.TextStyle(
+          color: PdfColor.fromHex("#262927"),
+          fontSize: 18,
+        ),
+      ),
+      pw.Text(
+        "(၀ယ်ပြီးပစ္စည်းပြန်မလဲပေးပါ။)",
+        style: pw.TextStyle(
+          color: PdfColor.fromHex("#262927"),
+          fontSize: 18,
+          font: font != null ? pw.Font.ttf(font!) : null,
+        ),
+      ),
+      pw.Text(
+        "Customer Service Hotline: +959123456789",
+        style: pw.TextStyle(
+          color: PdfColor.fromHex("#262927"),
+          fontSize: 18,
+        ),
+      ),
+    ];
+  }
+
+  List<pw.Widget> _orderIdWidget() {
+    return [
+      pw.Text(
+        context
+                .read<CurrentOrderController>()
+                .orderHistory
+                ?.sequenceNumber
+                ?.toString() ??
+            '',
+        style: pw.TextStyle(
+          color: PdfColor.fromHex("#262927"),
+          fontSize: 18,
+        ),
+      ),
+      pw.Text(
+        context.read<CurrentOrderController>().orderHistory?.createDate ?? '',
+        style: pw.TextStyle(
+          color: PdfColor.fromHex("#262927"),
+          fontSize: 18,
+        ),
+      ),
+    ];
   }
 
   Widget _otherActionButtons() {
