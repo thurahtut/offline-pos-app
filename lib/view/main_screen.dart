@@ -68,16 +68,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             .productTextFieldFocusNode
             .requestFocus();
       },
-      child:
-          // RawKeyboardListener(
-          //   focusNode: context.read<ViewController>().productFocusNode,
-          //   onKey: (event) {
-          //     context
-          //         .read<CurrentOrderController>()
-          //         .handleKeyEvent(event, context.read<ItemListController>());
-          //   },
-          // child:
-          Column(
+      child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(height: 8),
@@ -109,7 +100,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           )
         ],
       ),
-      // ),
     );
   }
 

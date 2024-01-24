@@ -426,8 +426,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             return;
           }
           context.read<CurrentOrderController>().isContainCustomer = false;
-          // uploadOrderHistoryToDatabase();
-          Navigator.pushNamed(context, OrderPaymentScreen.routeName);
+          uploadOrderHistoryToDatabase();
+
+          // Navigator.pushNamed(context, OrderPaymentScreen.routeName);
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
@@ -525,6 +526,11 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
     DateTime orderDate = DateTime.now().toUtc();
+    if (currentOrderController.orderHistory != null) {
+      currentOrderController.orderHistory!.writeDate = orderDate.toString();
+      currentOrderController.orderHistory!.writeUid =
+          context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
+    }
     OrderHistory orderHistory = currentOrderController.orderHistory ??
         OrderHistory(
           dateOrder: orderDate.toString(),
@@ -548,6 +554,11 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         );
     final Database db = await DatabaseHelper().db;
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
+      if (value <= 0) {
+        CommonUtils.showSnackBar(
+            message: "Creating/Updating order : something was wrong!");
+        return;
+      }
       orderHistory.id = value;
       currentOrderController.orderHistory = orderHistory;
       List<OrderLineID> orderLineIdList = [];
@@ -569,8 +580,11 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         orderLineIdList.add(orderLineID);
       }
       OrderLineIdTable.insertOrUpdate(orderLineIdList).then((lineValue) async {
-        OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) =>
-            currentOrderController.orderHistory?.lineIds = lineIds);
+        OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) {
+          currentOrderController.orderHistory?.lineIds = lineIds;
+
+          Navigator.pushNamed(context, OrderPaymentScreen.routeName);
+        });
       });
     });
   }

@@ -87,6 +87,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                           context
                               .read<CurrentOrderController>()
                               .addItemToList(product);
+                          itemListController.filterValue = null;
                           // } else {
                           //   CommonUtils.showSnackBar(
                           //     message: 'Stock out',

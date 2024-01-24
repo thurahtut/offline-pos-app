@@ -127,6 +127,7 @@ class CurrentOrderController with ChangeNotifier {
       currentOrderList.add(orderProduct);
     }
     notifyListeners();
+    productTextFieldFocusNode.requestFocus();
   }
 
   void updateCurrentOrder(
