@@ -68,6 +68,7 @@ export '../view/current_order/current_order_screen.dart';
 export '../view/customer/create_customer_dialog.dart';
 export '../view/customer/customer_list_dialog.dart';
 export '../view/customer/customer_pagination_table.dart';
+export '../view/customer/customer_password_dioalog.dart';
 export '../view/inventory/select_inventory_screen.dart';
 // export '../view/inventory/inventory_list_screen.dart';
 export '../view/item/item_list_screen.dart';

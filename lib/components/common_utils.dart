@@ -9,9 +9,12 @@ class CommonUtils {
     return MediaQuery.of(context).size.width < 500;
   }
 
-  static showSnackBar({required String message, Duration? duration}) {
-    if (NavigationService.navigatorKey.currentContext != null) {
-      ScaffoldMessenger.of(NavigationService.navigatorKey.currentContext!)
+  static showSnackBar(
+      {BuildContext? context, required String message, Duration? duration}) {
+    if (context != null ||
+        NavigationService.navigatorKey.currentContext != null) {
+      ScaffoldMessenger.of(
+              context ?? NavigationService.navigatorKey.currentContext!)
           .showSnackBar(SnackBar(
         content: Text(
           message,

@@ -16,28 +16,31 @@ class Customer {
   List? propertyProductPricelist;
   String? barcode;
   int? propertyAccountPositionId;
+  String? ref;
 
   Customer(
     this.id, {
     this.name,
-      this.blockingStage,
+    this.blockingStage,
     this.street,
-      this.city,
+    this.city,
     this.stateId,
-      this.countryId,
+    this.countryId,
     this.vat,
     this.lang,
-      this.phone,
+    this.phone,
     this.zip,
     this.mobile,
     this.email,
     this.companyId,
-      this.propertyProductPricelist,
+    this.propertyProductPricelist,
     this.barcode,
     this.propertyAccountPositionId,
+    this.ref,
   });
 
   Customer.fromJson(Map<String, dynamic> json) {
+    id = int.tryParse(json["id"]?.toString() ?? '');
     name = json['name'];
     blockingStage = int.tryParse(json['blocking_stage'].toString());
     street = json['street'];
@@ -50,6 +53,7 @@ class Customer {
     zip = json['zip'];
     mobile = json['mobile'];
     email = json['email'];
+    ref = json['ref'];
     companyId = int.tryParse(json['company_id'].toString());
     propertyProductPricelist = json['property_product_pricelist'];
     barcode = json['barcode'];
@@ -59,6 +63,7 @@ class Customer {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
     data['name'] = name;
     data['blocking_stage'] = blockingStage;
     data['street'] = street;
@@ -75,6 +80,7 @@ class Customer {
     data['property_product_pricelist'] = propertyProductPricelist;
     data['barcode'] = barcode;
     data['property_account_position_id'] = propertyAccountPositionId;
+    data['ref'] = ref;
     return data;
   }
 }

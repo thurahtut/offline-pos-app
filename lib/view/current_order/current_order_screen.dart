@@ -460,6 +460,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           context.read<ViewController>().isCustomerView = true;
           CustomerListDialog.customerListDialogWidget(context).then((value) {
             context.read<ViewController>().isCustomerView = false;
+            if (value == true) {
+              uploadOrderHistoryToDatabase();
+            }
           });
         },
       ),
@@ -524,7 +527,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     }
   }
 
-  Future<void> uploadOrderHistoryToDatabase() async {
+  Future<void> uploadOrderHistoryToDatabase({int? partnerId}) async {
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
     DateTime orderDate = DateTime.now().toUtc();
@@ -532,6 +535,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       currentOrderController.orderHistory!.writeDate = orderDate.toString();
       currentOrderController.orderHistory!.writeUid =
           context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
+      currentOrderController.orderHistory!.partnerId = partnerId;
     }
     OrderHistory orderHistory = currentOrderController.orderHistory ??
         OrderHistory(
@@ -539,9 +543,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           createDate: orderDate.toString(),
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          partnerId:
-              context.read<LoginUserController>().loginUser?.partnerData?.id ??
-                  0,
+          partnerId: partnerId,
           employeeId:
               context.read<LoginUserController>().loginUser?.employeeData?.id ??
                   0,

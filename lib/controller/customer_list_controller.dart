@@ -41,7 +41,7 @@ class CustomerListController with ChangeNotifier {
     notifyListeners();
   }
 
-  int _limit = 100;
+  int _limit = 20;
   int get limit => _limit;
   set limit(int limit) {
     if (limit == _limit) return;

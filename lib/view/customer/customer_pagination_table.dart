@@ -57,26 +57,22 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
       widget.mainContext.read<CustomerListController>().customerList,
       passwordTextController,
       () {},
-      () {
+      (customer) {
         if (widget.mainContext
             .read<CurrentOrderController>()
             .currentOrderList
             .isEmpty) {
-          CommonUtils.showSnackBar(message: 'There is no order items.');
+          CommonUtils.showSnackBar(
+              context: widget.mainContext, message: 'There is no order items.');
           return;
         }
         widget.mainContext.read<CurrentOrderController>().isContainCustomer =
             true;
-        PasswordDialog.enterPasswordWidget(
-                widget.mainContext, passwordTextController)
+        CustomerPasswordDialog.enterCustomerPasswordWidget(
+                widget.mainContext, customer, passwordTextController)
             .then((value) {
-          if (value == true) {
-            Navigator.pushNamed(
-              widget.mainContext,
-              OrderPaymentScreen.routeName,
-            );
             passwordTextController.clear();
-          }
+          Navigator.pop(widget.bContext, value);
         });
       },
     );
@@ -248,8 +244,8 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
               hidePaginator: true,
               sortColumnIndex: _sortColumnIndex,
               sortAscending: _sortAscending ?? false,
-              headingRowColor: MaterialStateColor.resolveWith(
-                  (states) => primaryColor),
+              headingRowColor:
+                  MaterialStateColor.resolveWith((states) => primaryColor),
               columns: [
                 CommonUtils.dataColumn(
                   // fixedWidth: isTabletMode ? 150 : 120,
@@ -387,7 +383,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   late List<Customer> customerInfoList;
   TextEditingController passwordTextController;
   Function() reloadDataCallback;
-  Function() cartCallback;
+  Function(Customer) cartCallback;
 
   CustomerInfoDataSourceForCustomerListScreen(
     this.context,
@@ -460,7 +456,9 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
                   '0 Ks'), //${customerInfo.credit?.toStringAsFixed(2) ?? '0.00'}
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/shopping_cart.svg',
-                  onPressed: cartCallback),
+                  onPressed: () {
+                cartCallback(customerInfo);
+              }),
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/share_windows.svg'),
             ],

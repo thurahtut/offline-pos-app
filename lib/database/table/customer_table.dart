@@ -6,7 +6,7 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
 const CUSTOMER_TABLE_NAME = "customer_table";
-const CUSTOMER_ID_IN_CT = "customer_id";
+const CUSTOMER_ID_IN_CT = "id";
 const CUSTOMER_NAME = "name";
 const BLOCKING_STAGE = "blocking_stage";
 const CUSTOMER_STREET = "street";
@@ -23,6 +23,7 @@ const COMPANY_ID = "company_id";
 const PROPERTY_PRODUCT_PRICELIST = "property_product_pricelist";
 const BARCODE_IN_CT = "barcode";
 const PROPERTY_ACCOUNT_POSITION_ID = "property_account_position_id";
+const REF = "ref";
 
 class CustomerTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -43,7 +44,8 @@ class CustomerTable {
         "$COMPANY_ID INTEGER,"
         "$PROPERTY_PRODUCT_PRICELIST TEXT,"
         "$BARCODE_IN_CT TEXT,"
-        "$PROPERTY_ACCOUNT_POSITION_ID INTEGER"
+        "$PROPERTY_ACCOUNT_POSITION_ID INTEGER,"
+        "$REF TEXT"
         ")");
   }
 
@@ -64,7 +66,8 @@ class CustomerTable {
         "$COMPANY_ID, "
         "$PROPERTY_PRODUCT_PRICELIST, "
         "$BARCODE_IN_CT, "
-        "$PROPERTY_ACCOUNT_POSITION_ID"
+        "$PROPERTY_ACCOUNT_POSITION_ID,"
+        "$REF"
         ")"
         " VALUES("
         "'${customer.name}',"
@@ -74,15 +77,16 @@ class CustomerTable {
         "'${customer.stateId}',"
         "'${customer.countryId}',"
         "'${customer.vat}',"
-        "'${customer.lang}'"
-        "'${customer.phone}'"
-        "'${customer.zip}'"
-        "'${customer.mobile}'"
-        "'${customer.email}'"
-        "'${customer.companyId}'"
-        "'${customer.propertyProductPricelist != null ? jsonEncode(customer.propertyProductPricelist) : null}'"
-        "'${customer.barcode}'"
-        "'${customer.propertyAccountPositionId}'"
+        "'${customer.lang}',"
+        "'${customer.phone}',"
+        "'${customer.zip}',"
+        "'${customer.mobile}',"
+        "'${customer.email}',"
+        "'${customer.companyId}',"
+        "'${customer.propertyProductPricelist != null ? jsonEncode(customer.propertyProductPricelist) : null}',"
+        "'${customer.barcode}',"
+        "'${customer.propertyAccountPositionId}',"
+        "'${customer.ref}'"
         ")";
 
     return db.rawInsert(sql);
@@ -221,7 +225,7 @@ class CustomerTable {
     final List<Map<String, dynamic>> maps =
         await db.rawQuery("select * from $CUSTOMER_TABLE_NAME "
             "where $CUSTOMER_ID_IN_CT='$customerId' "
-            "and $PIN='$password'");
+            "and $REF='$password'");
 
     return maps.isEmpty ? null : Customer.fromJson(maps.first);
   }
