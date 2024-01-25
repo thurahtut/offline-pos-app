@@ -550,7 +550,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           sequenceNumber: orderDate.millisecondsSinceEpoch.toString(),
           amountTotal: currentOrderController
               .getTotalQty(currentOrderController.currentOrderList)
-              .last,
+              .last
+              .toInt(),
           name:
               "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.millisecondsSinceEpoch}",
         );
