@@ -136,7 +136,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                           overflow: TextOverflow.ellipsis,
                                           text: TextSpan(text: "", children: [
                                             TextSpan(
-                                              text: "[${e.productId}]",
+                                              text: e.barcode != null
+                                                  ? " [${e.barcode}]"
+                                                  : "",
                                               style: textStyle.copyWith(
                                                   color:
                                                       Constants.successColor),

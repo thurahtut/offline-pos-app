@@ -12,6 +12,7 @@ class Product {
   int? posCategId;
   int? writeUid;
   String? writeDate;
+  String? productType;
   List<int>? productVariantIds;
   String? barcode;
   int? onhandQuantity;
@@ -27,6 +28,7 @@ class Product {
     this.posCategId,
     this.writeUid,
     this.writeDate,
+    this.productType,
     this.productVariantIds,
     this.barcode,
     this.onhandQuantity,
@@ -48,6 +50,7 @@ class Product {
     posCategId = int.tryParse(json['pos_categ_id'].toString());
     writeUid = int.tryParse(json['write_uid'].toString());
     writeDate = json['write_date'];
+    productType = json['type'];
     if ((json['product_variant_ids']?.isNotEmpty ?? false) &&
         json['product_variant_ids'] != "null") {
       if (json['product_variant_ids'] is List) {
@@ -74,6 +77,7 @@ class Product {
     data['pos_categ_id'] = posCategId;
     data['write_uid'] = writeUid;
     data['write_date'] = writeDate;
+    data['type'] = productType;
     if (productVariantIds != null) {
       data['product_variant_ids'] = jsonEncode(productVariantIds);
     }

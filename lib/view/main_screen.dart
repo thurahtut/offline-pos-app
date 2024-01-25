@@ -187,6 +187,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                     .posCategoryList[i]
                                     .id;
 
+                            context.read<ItemListController>().offset = 0;
+                            context.read<ItemListController>().currentIndex = 1;
                             context
                                 .read<ItemListController>()
                                 .getAllProduct(context);

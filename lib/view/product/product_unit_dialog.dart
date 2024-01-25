@@ -42,7 +42,7 @@ class ProductUntiDialog {
                         )),
                     child: Center(
                       child: Text(
-                        'Product Packages [${product.productId}] \n ${product.productName}',
+                        'Product Packages ${product.barcode != null ? " [${product.barcode}]" : ""} \n ${product.productName}',
                         textAlign: TextAlign.center,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,

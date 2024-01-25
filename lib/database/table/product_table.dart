@@ -16,6 +16,7 @@ const SH_SECONDARY_UOM = "sh_secondary_uom";
 const POS_CATEG_ID_IN_PT = "pos_categ_id";
 const WRITE_UID_IN_PT = "write_uid";
 const WRITE_DATE_IN_PT = "write_date";
+const PRODUCT_TYPE = "type";
 const PRODUCT_VARIANT_IDS = "product_variant_ids";
 const BARCODE_IN_PT = "barcode";
 const ON_HAND_QUANTITY = "onhand_quantity";
@@ -32,6 +33,7 @@ class ProductTable {
         "$POS_CATEG_ID_IN_PT INTEGER,"
         "$WRITE_UID_IN_PT INTEGER,"
         "$WRITE_DATE_IN_PT TEXT,"
+        "$PRODUCT_TYPE TEXT,"
         "$PRODUCT_VARIANT_IDS TEXT,"
         "$BARCODE_IN_PT TEXT,"
         "$ON_HAND_QUANTITY TEXT"
@@ -45,14 +47,14 @@ class ProductTable {
         "${product.productId != null && product.productId != 0 ? "$PRODUCT_ID," : ""}"
         "$PRODUCT_NAME, $CATEGORY_ID_IN_PT, $IS_ROUNDING_PRODUCT, "
         "$SH_IS_BUNDLE, $SH_SECONDARY_UOM, $POS_CATEG_ID_IN_PT, "
-        "$WRITE_UID_IN_PT, $WRITE_DATE_IN_PT, $PRODUCT_VARIANT_IDS, "
+        "$WRITE_UID_IN_PT, $WRITE_DATE_IN_PT, $PRODUCT_TYPE, $PRODUCT_VARIANT_IDS, "
         "$BARCODE_IN_PT, $ON_HAND_QUANTITY"
         ")"
         " VALUES("
         "${product.productId != null && product.productId != 0 ? "${product.productId}," : ""}"
         "'${product.productName}', ${product.categoryId}, '${product.isRoundingProduct}', "
         "'${product.shIsBundle}', '${product.shSecondaryUom}', ${product.posCategId}, "
-        "${product.writeUid}, '${product.writeDate}', '${product.productVariantIds != null && product.productVariantIds!.isNotEmpty ? jsonEncode(product.productVariantIds!) : ""}', "
+        "${product.writeUid}, '${product.writeDate}', '${product.productType}', '${product.productVariantIds != null && product.productVariantIds!.isNotEmpty ? jsonEncode(product.productVariantIds!) : ""}', "
         "'${product.barcode}', '${product.onhandQuantity ?? "0"}', "
         ")";
 
@@ -82,24 +84,6 @@ class ProductTable {
     // var d = time2.difference(time);
     // print("Finished ${data.length} in $d");
     await batch.commit(noResult: true);
-  }
-
-  static Future<int> getAllProductCount({
-    String? filter,
-  }) async {
-    // Get a reference to the database.
-    final Database db = await DatabaseHelper().db;
-    filter = filter?.toLowerCase();
-    // Query the table for all The Categories.
-    final result = await db.rawQuery(
-        'SELECT COUNT(*) FROM $PRODUCT_TABLE_NAME '
-        '${filter != null && filter.isNotEmpty ? 'Where $PRODUCT_ID Like ? or lower($PRODUCT_NAME) Like ?' : ''}',
-        filter != null && filter.isNotEmpty
-            ? ['%$filter%', '%${filter.toLowerCase()}%']
-            : null);
-    final count = Sqflite.firstIntValue(result);
-
-    return count ?? 0;
   }
 
   static Future<List<Product>> getAll({
@@ -231,6 +215,36 @@ class ProductTable {
       product.priceListItem = priceListItem;
       return product;
     });
+  }
+
+  static Future<int> getAllProductCount({
+    String? filter,
+    int? categoryId,
+  }) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+    filter = filter?.toLowerCase();
+    // Query the table for all The Categories.
+    List<Object?>? objects;
+    if ((filter != null && filter.isNotEmpty) ||
+        (categoryId != null && categoryId != -1)) {
+      objects = [];
+      if (filter != null && filter.isNotEmpty) {
+        objects = ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'];
+      }
+      if (categoryId != null && categoryId != -1) {
+        objects.add(categoryId);
+      }
+    }
+    final result = await db.rawQuery(
+        'SELECT COUNT(*) FROM $PRODUCT_TABLE_NAME '
+        'where 1=1'
+        '${filter != null && filter.isNotEmpty ? ' and $PRODUCT_ID Like ? or lower($PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?' : ''}'
+        "${categoryId != null && categoryId != -1 ? " and $POS_CATEG_ID_IN_PT=?" : ''} ",
+        objects);
+    final count = Sqflite.firstIntValue(result);
+
+    return count ?? 0;
   }
 
   static Future<int> delete(int productId) async {

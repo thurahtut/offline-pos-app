@@ -227,7 +227,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           // overflow: pw.TextOverflow.ellipsis,
           text: pw.TextSpan(text: "", children: [
             pw.TextSpan(
-              text: "[${e.productId}]",
+              text: e.barcode != null ? " [${e.barcode}]" : "",
               style: textStyle,
             ),
             pw.TextSpan(text: e.productName, style: textStyle),

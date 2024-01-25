@@ -250,7 +250,9 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                         overflow: TextOverflow.ellipsis,
                                         text: TextSpan(text: "", children: [
                                           TextSpan(
-                                            text: "[${e.productId}]",
+                                            text: e.barcode != null
+                                                ? " [${e.barcode}]"
+                                                : "",
                                             style: textStyle.copyWith(
                                                 color: Constants.successColor),
                                           ),
@@ -333,7 +335,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
               ),
             ),
             Expanded(
-                child: Text(product.onhandQuantity?.toString() ?? "0",
+                child: Text(
+                    product.productType == "product"
+                        ? product.onhandQuantity?.toString() ?? "0"
+                        : "-",
                     style: textStyle)), //product.qtyInBags
             Expanded(
                 child: Text(

@@ -61,7 +61,7 @@ class ItemListController with ChangeNotifier {
   }
 
   Future<void> getAllProduct(BuildContext context) async {
-    getTotalProductCount();
+    getTotalProductCount(context);
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       categoryId: context.read<PosCategoryController>().selectedCategory,
@@ -74,9 +74,10 @@ class ItemListController with ChangeNotifier {
     });
   }
 
-  Future<void> getTotalProductCount() async {
+  Future<void> getTotalProductCount(BuildContext context) async {
     ProductTable.getAllProductCount(
       filter: filterValue,
+      categoryId: context.read<PosCategoryController>().selectedCategory,
     ).then((count) {
       total = count;
     });
