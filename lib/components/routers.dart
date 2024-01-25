@@ -71,8 +71,12 @@ class Routers {
           builder: (_) => EmployeeListScreen(),
         );
       case MorningSyncScreen.routeName:
+        final MorningSyncScreen? args =
+            settings.arguments as MorningSyncScreen?;
         return MaterialPageRoute(
-          builder: (_) => MorningSyncScreen(),
+          builder: (_) => MorningSyncScreen(
+            alreadyLogin: args?.alreadyLogin,
+          ),
         );
       case ThemeSettingScreen.routeName:
         return MaterialPageRoute(

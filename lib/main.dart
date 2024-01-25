@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -41,18 +42,44 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginUserController()),
         ChangeNotifierProvider(create: (_) => PosCategoryController()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Offline POS',
-        navigatorKey: NavigationService.navigatorKey,
-        initialRoute: LoginScreen.routeName,
-        home: LoginScreen(),
-        onGenerateRoute: Routers.generateRoute,
-        theme: ThemeData(
-            textTheme:
-                GoogleFonts.outfitTextTheme(Theme.of(context).textTheme)),
-      ),
+      child: InitializePage(),
     );
+  }
+}
+
+class InitializePage extends StatelessWidget {
+  const InitializePage({
+    super.key,
+  });
+
+  Future<bool> checkLogin() async {
+    return await LoginUserTable.checkRowExist(USER_DATA);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: checkLogin(),
+        builder: (_, snapshop) {
+          if (snapshop.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Offline POS',
+            navigatorKey: NavigationService.navigatorKey,
+            // initialRoute: LoginScreen.routeName,
+            home: snapshop.data == true
+                ? MorningSyncScreen(
+                    alreadyLogin: true,
+                  )
+                : LoginScreen(),
+            onGenerateRoute: Routers.generateRoute,
+            theme: ThemeData(
+                textTheme:
+                    GoogleFonts.outfitTextTheme(Theme.of(context).textTheme)),
+          );
+        });
   }
 }
 

@@ -116,7 +116,7 @@ class POSConfigTable {
           posConfig.shPosLocation = int.tryParse(data[POS_CONFIG_VALUE]);
         } else if (data[POS_CONFIG_NAME] == CONFIG_PAYMENT_METHOD_IDS) {
           posConfig.paymentMethodIds =
-              jsonEncode(data[POS_CONFIG_VALUE]) as List<int>?;
+              jsonDecode(data[POS_CONFIG_VALUE])?.cast<int>();
         }
       }
     }

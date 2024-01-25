@@ -471,6 +471,33 @@ class CommonUtils {
       onSort: onSort,
     );
   }
+
+  static void showAlertDialogWithOkButton(
+    BuildContext context, {
+    String? title,
+    String? content,
+    Function()? callback,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: title != null ? Text(title) : null,
+          content: content != null ? Text(content) : null,
+          actions: [
+            TextButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                callback?.call();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   static List<String> categoryList = [
     "Dry Grocery",
     "Food To Go",

@@ -142,10 +142,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
               child: CommonUtils.appBarActionButtonWithText(
                   'assets/svg/lock_open_right.svg', 'Lock / Unlock',
                   fontSize: 16, onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                    ModalRoute.withName("/Home"));
+                _logOut();
               }),
             ),
             PopupMenuItem<int>(
@@ -161,6 +158,16 @@ class _SaleAppBarState extends State<SaleAppBar> {
         ),
       ),
     ];
+  }
+
+  void _logOut() {
+    DatabaseHelper.logOut().then(
+      (value) => Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+        ModalRoute.withName("/Home"),
+      ),
+    );
   }
 
   List<Widget> get _forWindowView {
@@ -192,16 +199,14 @@ class _SaleAppBarState extends State<SaleAppBar> {
       spacer,
       CommonUtils.svgIconActionButton('assets/svg/lock_open_right.svg',
           onPressed: () {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => WelcomeScreen()),
-            ModalRoute.withName("/Home"));
+        _logOut();
       }),
       spacer,
       CommonUtils.appBarActionButtonWithText(
         'assets/svg/move_item.svg',
         'Close',
         fontSize: 16,
+        onPressed: () {},
       ),
     ];
   }

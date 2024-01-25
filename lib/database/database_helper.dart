@@ -91,7 +91,7 @@ class DatabaseHelper {
     if (oldVersion == 1) {}
   }
 
-  static Future<void> clear() async {
+  static Future<void> clearAll() async {
     final db = await DatabaseHelper().db;
     await db.delete(PRODUCT_TABLE_NAME);
     await db.delete(PRICE_LIST_ITEM_TABLE_NAME);
@@ -107,5 +107,13 @@ class DatabaseHelper {
     await db.delete(ORDER_AND_PAYMENT_TRANSACTION_ID);
     await db.delete(ORDER_HISTORY_TABLE_NAME);
     await db.delete(POS_CATEGORY_TABLE_NAME);
+  }
+
+  static Future<void> logOut() async {
+    final db = await DatabaseHelper().db;
+    await db.delete(LOGIN_USER_TABLE_NAME);
+    await db.delete(POS_CONFIG_TABLE_NAME);
+    await db.delete(POS_SESSION_TABLE_NAME);
+    await db.delete(POS_SESSION_TABLE_NAME);
   }
 }

@@ -33,7 +33,7 @@ class LoginUserTable {
     return inq;
   }
 
-  static Future<User?> getAppConfig() async {
+  static Future<User?> getLoginUser() async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
 
@@ -45,6 +45,13 @@ class LoginUserTable {
   }
 
   static Future<bool> checkRowExist(
+    String columnName,
+  ) async {
+    final Database db = await DatabaseHelper().db;
+    return checkRowExistWithDb(db, columnName);
+  }
+
+  static Future<bool> checkRowExistWithDb(
     final Database db,
     String columnName,
   ) async {
@@ -65,7 +72,7 @@ class LoginUserTable {
 
   static Future<int> insertOrUpdateWithDB(
       final Database db, String columnName, String? value) async {
-    if (await checkRowExist(db, columnName)) {
+    if (await checkRowExistWithDb(db, columnName)) {
       String sql = "UPDATE $LOGIN_USER_TABLE_NAME "
           "SET $LOGIN_NAME = '$columnName',"
           " $LOGIN_VALUE = '$value'";

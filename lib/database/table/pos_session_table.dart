@@ -40,7 +40,7 @@ class POSSessionTable {
     return inq;
   }
 
-  static Future<POSSession?> getAppConfig() async {
+  static Future<POSSession?> getAppSession() async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
 
@@ -129,7 +129,7 @@ class POSSessionTable {
               bool.tryParse(data[POS_SESSION_VALUE]);
         } else if (data[POS_SESSION_NAME] == SESSION_PAYMENT_METHOD_IDS) {
           posSession.paymentMethodIds =
-              jsonEncode(data[POS_SESSION_VALUE]) as List<int>?;
+              jsonDecode(data[POS_SESSION_VALUE])?.cast<int>();
         }
       }
     }

@@ -99,7 +99,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ?.productLastSyncDate = null;
                   context.read<ThemeSettingController>().notify();
 
-                  Navigator.pushNamed(context, MorningSyncScreen.routeName);
+                  Navigator.pushNamed(
+                    context,
+                    MorningSyncScreen.routeName,
+                    arguments: MorningSyncScreen(alreadyLogin: false),
+                  );
                 } else if (context.read<LoginUserController>().posSession?.id ==
                         null ||
                     context.read<LoginUserController>().posSession?.id == 0) {
@@ -113,7 +117,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ?.productLastSyncDate = null;
                       context.read<ThemeSettingController>().notify();
 
-                      Navigator.pushNamed(context, MorningSyncScreen.routeName);
+                      Navigator.pushNamed(
+                        context,
+                        MorningSyncScreen.routeName,
+                        arguments: MorningSyncScreen(alreadyLogin: false),
+                      );
                     }
                   });
                 }
