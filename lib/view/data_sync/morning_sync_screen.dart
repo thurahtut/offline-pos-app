@@ -26,19 +26,19 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
   void _alreadyLogin() {
     LoginUserController controller = context.read<LoginUserController>();
     LoginUserTable.getLoginUser().then((loginUser) {
-      if (loginUser != null) {
+      if (loginUser == null) {
         _alreadyLoginError();
         return;
       }
       context.read<LoginUserController>().loginUser = loginUser;
       POSConfigTable.getAppConfig().then((posConfig) {
-        if (posConfig != null) {
+        if (posConfig == null) {
           _alreadyLoginError();
           return;
         }
         controller.posConfig = posConfig;
         POSSessionTable.getAppSession().then((posSession) {
-          if (posSession != null) {
+          if (posSession == null) {
             _alreadyLoginError();
             return;
           }
@@ -69,13 +69,15 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
       title: "Please login again",
       content: "Your previous login data is something wrong!.",
       callback: () {
+        DatabaseHelper.logOut().then(
+          (value) => 
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (context) => MorningSyncScreen(
-                      alreadyLogin: false,
-                    )),
-            ModalRoute.withName("/Home"));
+                builder: (context) => LoginScreen()),
+            ModalRoute.withName("/Home"),
+          ),
+        );
       },
     );
   }
