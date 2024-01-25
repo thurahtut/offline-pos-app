@@ -14,7 +14,7 @@ class Product {
   String? writeDate;
   List<int>? productVariantIds;
   String? barcode;
-  double? onhandQuantity;
+  int? onhandQuantity;
   PriceListItem? priceListItem;
 
   Product({
@@ -59,7 +59,8 @@ class Product {
       }
     }
     barcode = json['barcode'];
-    onhandQuantity = double.tryParse(json['onhand_quantity'].toString());
+    onhandQuantity =
+        double.tryParse(json['onhand_quantity'].toString())?.toInt() ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -77,7 +78,7 @@ class Product {
       data['product_variant_ids'] = jsonEncode(productVariantIds);
     }
     data['barcode'] = barcode;
-    data['onhand_quantity'] = onhandQuantity.toString();
+    data['onhand_quantity'] = onhandQuantity?.toString();
     return data;
   }
 

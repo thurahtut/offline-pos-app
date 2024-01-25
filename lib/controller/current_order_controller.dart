@@ -144,7 +144,7 @@ class CurrentOrderController with ChangeNotifier {
         } else {
           price += value;
         }
-        product.priceListItem?.fixedPrice = double.tryParse(price);
+        product.priceListItem?.fixedPrice = int.tryParse(price);
         notify();
       } else if (currentOrderKeyboardState == CurrentOrderKeyboardState.qty) {
         String qty = product.onhandQuantity?.toString() ?? "";
@@ -166,7 +166,7 @@ class CurrentOrderController with ChangeNotifier {
           currentOrderList.removeAt(selectedIndex!);
           selectedIndex = null;
         } else {
-          product.onhandQuantity = double.tryParse(qty);
+          product.onhandQuantity = int.tryParse(qty);
         }
         notifyListeners();
       }

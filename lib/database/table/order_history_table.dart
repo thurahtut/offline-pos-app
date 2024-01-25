@@ -32,8 +32,8 @@ class OrderHistoryTable {
         "$CONFIG_ID INTEGER NOT NULL,"
         "$CREATE_DATE_IN_OH TEXT NOT NULL,"
         "$CREATE_UID_IN_OH INTEGER NOT NULL,"
-        "$WRITE_DATE_IN_OH TEXT NOT NULL,"
-        "$WRITE_UID_IN_OH INTEGER NOT NULL,"
+        "$WRITE_DATE_IN_OH TEXT,"
+        "$WRITE_UID_IN_OH INTEGER,"
         "$SEQUENCE_NUMBER INTEGER NOT NULL,"
         "unique ($NAME_IN_OH, $SESSION_ID, $SEQUENCE_NUMBER)"
         ")");

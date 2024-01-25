@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/pos_category_table.dart';
 
 class MorningSyncScreen extends StatefulWidget {
   const MorningSyncScreen({super.key});
@@ -14,10 +15,10 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<MorningsyncController>().resetMorningsyncController();
       context.read<MorningsyncController>().getAllProductFromApi(
+        //product
         context.read<ThemeSettingController>().appConfig?.productLastSyncDate,
         context.read<LoginUserController>().posConfig?.shPosLocation,
         () {
-
           if (context.read<ThemeSettingController>().appConfig == null) {
             context.read<ThemeSettingController>().appConfig = AppConfig();
           }
@@ -32,7 +33,9 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                   .appConfig
                   ?.productLastSyncDate);
           context.read<MorningsyncController>().getAllCustomerFromApi(() {
+            //customer
             context.read<MorningsyncController>().getAllPriceListItemFromApi(
+                //price
                 context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
                 () {
               List<int>? ids = context
@@ -42,8 +45,23 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
               context
                   .read<MorningsyncController>()
                   .getAllPaymentMethodListItemFromApi(ids?.join(",") ?? "", () {
-                context.read<MorningsyncController>().currentTaskTitle = "";
-              Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+                //paymentmethod
+                context.read<MorningsyncController>().getAllPosCategory(() {
+                  //category
+                  POSCategoryTable.getAllPosCategory().then((posCategorys) {
+                    context.read<PosCategoryController>().posCategoryList = [
+                      PosCategory(id: -1, name: "All")
+                    ];
+                    context
+                        .read<PosCategoryController>()
+                        .posCategoryList
+                        .addAll(posCategorys);
+                    context.read<PosCategoryController>().notify();
+                  });
+                  context.read<MorningsyncController>().currentTaskTitle = "";
+                  Navigator.pushReplacementNamed(
+                      context, WelcomeScreen.routeName);
+                });
               });
             });
           });

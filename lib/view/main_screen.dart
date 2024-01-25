@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         }
       });
     });
-    
+
     super.initState();
   }
 
@@ -72,7 +72,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(height: 8),
-          _headerWidget(),
+          if (context.watch<ViewController>().hideCategory == false)
+            _headerWidget(),
           SizedBox(height: 16),
           Expanded(
             child: Row(
@@ -169,26 +170,66 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               //       : primaryColor,
               // ),
               spacer,
-              ...CommonUtils.categoryList
-                  .map((e) => Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 12),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: primaryColor,
-                            ),
-                            child: Text(
-                              e,
-                              style: TextStyle(
-                                color: Colors.white,
+              ...context
+                  .read<PosCategoryController>()
+                  .posCategoryList
+                  .asMap()
+                  .map(
+                    (i, e) => MapEntry(
+                        i,
+                        InkWell(
+                          onTap: () {
+                            context
+                                    .read<PosCategoryController>()
+                                    .selectedCategory =
+                                context
+                                    .read<PosCategoryController>()
+                                    .posCategoryList[i]
+                                    .id;
+
+                            context
+                                .read<ItemListController>()
+                                .getAllProduct(context);
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  color: context
+                                              .watch<PosCategoryController>()
+                                              .selectedCategory ==
+                                          context
+                                              .read<PosCategoryController>()
+                                              .posCategoryList[i]
+                                              .id
+                                      ? primaryColor
+                                      : primaryColor.withOpacity(0.76),
+                                ),
+                                child: Text(
+                                  e.name ?? '',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: context
+                                                  .watch<
+                                                      PosCategoryController>()
+                                                  .selectedCategory ==
+                                              context
+                                                  .read<PosCategoryController>()
+                                                  .posCategoryList[i]
+                                                  .id
+                                          ? FontWeight.bold
+                                          : FontWeight.w300),
+                                ),
                               ),
-                            ),
+                              spacer,
+                            ],
                           ),
-                          spacer,
-                        ],
-                      ))
+                        )),
+                  )
+                  .values
                   .toList(),
             ],
           ),

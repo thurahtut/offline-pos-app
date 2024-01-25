@@ -3,7 +3,6 @@ import 'package:offline_pos/components/export_files.dart';
 class ViewController with ChangeNotifier {
   bool _isList = true;
   bool get isList => _isList;
-
   set isList(bool isList) {
     if (_isList == isList) return;
     _isList = isList;
@@ -12,7 +11,6 @@ class ViewController with ChangeNotifier {
 
   bool _isHome = true;
   bool get isHome => _isHome;
-
   set isHome(bool isHome) {
     if (_isHome == isHome) return;
     _isHome = isHome;
@@ -32,6 +30,14 @@ class ViewController with ChangeNotifier {
   set isKeyboardHide(bool isKeyboardHide) {
     if (_isKeyboardHide == isKeyboardHide) return;
     _isKeyboardHide = isKeyboardHide;
+    notifyListeners();
+  }
+
+  bool _hideCategory = false;
+  bool get hideCategory => _hideCategory;
+  set hideCategory(bool hideCategory) {
+    if (_hideCategory == hideCategory) return;
+    _hideCategory = hideCategory;
     notifyListeners();
   }
 

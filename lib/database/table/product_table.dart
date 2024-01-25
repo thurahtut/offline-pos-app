@@ -187,6 +187,7 @@ class ProductTable {
 
   static Future<List<Product>> getProductByFilteringWithPrice({
     String? filter,
+    int? categoryId,
     int? limit,
     int? offset,
     bool? barcodeOnly,
@@ -203,16 +204,24 @@ class ProductTable {
         "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "where 1=1 "
         "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
+        "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
         "ORDER by pt.$PRODUCT_ID DESC "
         "${limit != null ? "limit $limit " : " "}"
         "${offset != null ? "offset $offset " : " "}";
+    List<Object?>? objects;
+    if ((filter != null && filter.isNotEmpty) ||
+        (categoryId != null && categoryId != -1)) {
+      objects = [];
+      if (filter != null && filter.isNotEmpty) {
+        objects = ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'];
+      }
+      if (categoryId != null && categoryId != -1) {
+        objects.add(categoryId);
+      }
+    }
     final List<Map<String, dynamic>> maps = await db.rawQuery(
         query,
-        filter != null && filter.isNotEmpty
-            ? (barcodeOnly == true
-                ? [filter]
-                : ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'])
-            : null);
+        objects);
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
     return List.generate(maps.length, (i) {

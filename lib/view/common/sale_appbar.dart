@@ -75,6 +75,17 @@ class _SaleAppBarState extends State<SaleAppBar> {
               );
             },
           ),
+          isTabletMode ? SizedBox(width: 10) : spacer,
+          CommonUtils.svgIconActionButton(
+            context.watch<ViewController>().hideCategory == true
+                ? 'assets/svg/category_fill.svg'
+                : 'assets/svg/category_unfill.svg',
+            width: 16,
+            onPressed: () {
+              context.read<ViewController>().hideCategory =
+                  !context.read<ViewController>().hideCategory;
+            },
+          ),
           ...isTabletMode ? _forTabletView : _forWindowView,
         ],
       ),
@@ -253,7 +264,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
             itemListController.filterValue = value;
             itemListController.offset = 0;
             itemListController.currentIndex = 1;
-            itemListController.getAllProduct();
+            itemListController.getAllProduct(context);
           },
         ),
       ),
@@ -267,6 +278,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
     itemListController.filterValue = null;
     itemListController.offset = 0;
     itemListController.currentIndex = 1;
-    itemListController.getAllProduct();
+    itemListController.getAllProduct(context);
   }
 }

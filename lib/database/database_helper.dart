@@ -3,6 +3,7 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/order_and_order_line_table.dart';
 import 'package:offline_pos/database/table/order_and_transaction_table.dart';
 import 'package:offline_pos/database/table/order_line_id_table.dart';
+import 'package:offline_pos/database/table/pos_category_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -81,6 +82,7 @@ class DatabaseHelper {
     await OrderAndOrderLineTable.onCreate(db, version);
     await OrderAndPaymentTransactionTable.onCreate(db, version);
     await OrderHistoryTable.onCreate(db, version);
+    await POSCategoryTable.onCreate(db, version);
 
     await DBUpgrade.uploadAppConfigForVersion1(db);
   }
@@ -104,5 +106,6 @@ class DatabaseHelper {
     await db.delete(ORDER_AND_ORDER_LINE_ID);
     await db.delete(ORDER_AND_PAYMENT_TRANSACTION_ID);
     await db.delete(ORDER_HISTORY_TABLE_NAME);
+    await db.delete(POS_CATEGORY_TABLE_NAME);
   }
 }

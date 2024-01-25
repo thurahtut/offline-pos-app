@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ItemListController()),
         ChangeNotifierProvider(create: (_) => ThemeSettingController()),
         ChangeNotifierProvider(create: (_) => LoginUserController()),
+        ChangeNotifierProvider(create: (_) => PosCategoryController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -46,8 +47,6 @@ class MyApp extends StatelessWidget {
         navigatorKey: NavigationService.navigatorKey,
         initialRoute: LoginScreen.routeName,
         home: LoginScreen(),
-        // initialRoute: OrderPaymentReceiptScreen.routeName,
-        // home: OrderPaymentReceiptScreen(),
         onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
             textTheme:

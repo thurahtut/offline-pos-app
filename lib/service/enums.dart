@@ -48,7 +48,8 @@ enum DataSync {
   product,
   price,
   customer,
-  paymentMethod
+  paymentMethod,
+  posCategory,
 }
 
 

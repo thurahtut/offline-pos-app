@@ -60,10 +60,11 @@ class ItemListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllProduct() async {
+  Future<void> getAllProduct(BuildContext context) async {
     getTotalProductCount();
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
+      categoryId: context.read<PosCategoryController>().selectedCategory,
       limit: limit,
       offset: offset,
     ).then((list) {

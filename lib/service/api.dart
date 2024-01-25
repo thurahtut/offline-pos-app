@@ -5,7 +5,6 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/model/create_session.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 class ApiServiceConfig {
@@ -338,6 +337,19 @@ class Api {
       endpoint: '/posconfig/session'.onEndPoint(),
       method: Method.POST.name,
       data: jsonEncode(createSession.toJson()),
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
+
+  static Future<Response?> getPosCategory({
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/pos-categ'.onEndPoint(),
+      method: Method.GET.name,
       onReceiveProgress: onReceiveProgress,
     );
   }

@@ -14,7 +14,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<ItemListController>().resetItemListController();
 
-      context.read<ItemListController>().getAllProduct();
+      context.read<ItemListController>().getAllProduct(context);
     });
     super.initState();
   }
@@ -366,25 +366,25 @@ class _ItemListScreenState extends State<ItemListScreen> {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct();
+              controller.getAllProduct(context);
             },
             onBackToFirstPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct();
+              controller.getAllProduct(context);
             },
             onNextPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct();
+              controller.getAllProduct(context);
             },
             onGoToLastPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct();
+              controller.getAllProduct(context);
             },
             backgroundColor: Theme.of(context).colorScheme.background,
             previousPageIcon: Icons.keyboard_arrow_left,
