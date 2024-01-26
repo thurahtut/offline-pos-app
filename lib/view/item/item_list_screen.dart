@@ -33,7 +33,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
             width: isTabletMode
                 ? (MediaQuery.of(context).size.width / 10) * 9
                 : ((MediaQuery.of(context).size.width / 5.3) * 3) +
-                    (showSidebar ? 0 : MediaQuery.of(context).size.width / 5.5),
+                    (showSidebar ? 0 : MediaQuery.of(context).size.width / 9),
             decoration: BoxDecoration(
               color:
                   context.watch<ViewController>().isList ? Colors.white : null,

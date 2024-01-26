@@ -26,7 +26,7 @@ class OrderHistoryTable {
         "$SESSION_ID INTEGER NOT NULL,"
         "$DATE_ORDER TEXT NOT NULL,"
         "$EMPLOYEE_ID_IN_OH INTEGER NOT NULL,"
-        "$PARTNER_ID INTEGER NOT NULL,"
+        "$PARTNER_ID INTEGER,"
         "$AMOUNT_TOTAL REAL NOT NULL,"
         // "$COMPANY_ID_IN_OH INTEGER NOT NULL,"
         "$CONFIG_ID INTEGER NOT NULL,"
@@ -41,29 +41,7 @@ class OrderHistoryTable {
 
   static Future<int> insert(
       final Database db, OrderHistory orderHistory) async {
-    String sql = "INSERT INTO $ORDER_HISTORY_TABLE_NAME("
-        "$AMOUNT_TOTAL,"
-        // "$COMPANY_ID_IN_OH, "
-        "$CONFIG_ID, $CREATE_DATE_IN_OH, $CREATE_UID_IN_OH, "
-        "$DATE_ORDER,  "
-        "$EMPLOYEE_ID_IN_OH, "
-        "$NAME_IN_OH, "
-        "$PARTNER_ID, "
-        "$SEQUENCE_NUMBER, $SESSION_ID, "
-        "$WRITE_DATE_IN_OH, $WRITE_UID_IN_OH"
-        ")"
-        " VALUES("
-        "'${orderHistory.amountTotal}', "
-        // "'${orderHistory.companyId}', "
-        "'${orderHistory.configId}', '${orderHistory.createDate}', '${orderHistory.createUid}', "
-        "'${orderHistory.dateOrder}', "
-        "'${orderHistory.employeeId}', "
-        "'${orderHistory.name}', "
-        "'${orderHistory.partnerId}', "
-        "'${orderHistory.sequenceNumber}', '${orderHistory.sessionId}', "
-        "'${orderHistory.writeDate}', '${orderHistory.writeUid}'"
-        ")";
-    return db.rawInsert(sql);
+    return db.insert(ORDER_HISTORY_TABLE_NAME, orderHistory.toJson());
   }
 
   static Future<List<OrderHistory>> getAll() async {

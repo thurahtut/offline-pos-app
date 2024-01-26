@@ -38,17 +38,17 @@ class OrderHistory {
   });
 
   OrderHistory.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = int.tryParse(json['id']?.toString() ?? '');
     name = json['name'];
-    sessionId = json['session_id'];
+    sessionId = int.tryParse(json['session_id']?.toString() ?? '');
     dateOrder = json['date_order'];
-    employeeId = json['employee_id'];
-    partnerId = json['partner_id'];
+    employeeId = int.tryParse(json['employee_id']?.toString() ?? '');
+    partnerId = int.tryParse(json['partner_id']?.toString() ?? '');
     createDate = json['create_date'];
-    createUid = json['create_uid'];
-    configId = json['config_id'];
+    createUid = int.tryParse(json['create_uid']?.toString() ?? '');
+    configId = int.tryParse(json['config_id']?.toString() ?? '');
     // companyId = int.tryParse(json['company_id'].toString());
-    amountTotal = json['amount_total'];
+    amountTotal = int.tryParse(json['amount_total']?.toString() ?? '');
     sequenceNumber = json['sequence_number']?.toString();
     writeDate = json['write_date']?.toString();
     writeUid = int.tryParse(json['write_uid']?.toString() ?? '');

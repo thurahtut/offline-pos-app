@@ -9,7 +9,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
-  final ValueNotifier<bool> _showSideBar = ValueNotifier(true);
+  final ValueNotifier<bool> _showSideBar = ValueNotifier(false);
   final scrollController = ScrollController();
 
   @override
@@ -56,11 +56,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   Widget _bodyWidget() {
     bool isTabletMode = CommonUtils.isTabletMode(context);
-    double currentOrderWidth = isTabletMode
-        ? (MediaQuery.of(context).size.width / 10) * 9
-        : MediaQuery.of(context).size.width -
-            (MediaQuery.of(context).size.width / 5.5) -
-            ((MediaQuery.of(context).size.width / 5.3) * 3);
     return GestureDetector(
       onTap: () {
         context
@@ -86,14 +81,39 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                           visible: showSidebar, child: _sideBarWidget());
                     }),
                 if (!isTabletMode) ItemListScreen(showSideBar: _showSideBar),
-                if (!isTabletMode) CurrentOrderScreen(width: currentOrderWidth),
+                if (!isTabletMode)
+                  ValueListenableBuilder<bool>(
+                      valueListenable: _showSideBar,
+                      builder: (_, showSidebar, __) {
+                        double currentOrderWidth = isTabletMode
+                            ? (MediaQuery.of(context).size.width / 10) * 9
+                            : MediaQuery.of(context).size.width -
+                                (MediaQuery.of(context).size.width /
+                                    (showSidebar ? 5.5 : 9)) -
+                                ((MediaQuery.of(context).size.width / 5.3) * 3);
+                        return CurrentOrderScreen(width: currentOrderWidth);
+                      }),
                 if (isTabletMode)
                   Column(
                     children: [
                       Expanded(
                           child: ItemListScreen(showSideBar: _showSideBar)),
                       Expanded(
-                          child: CurrentOrderScreen(width: currentOrderWidth)),
+                          child: ValueListenableBuilder<bool>(
+                              valueListenable: _showSideBar,
+                              builder: (_, showSidebar, __) {
+                                double currentOrderWidth = isTabletMode
+                                    ? (MediaQuery.of(context).size.width / 10) *
+                                        9
+                                    : MediaQuery.of(context).size.width -
+                                        (MediaQuery.of(context).size.width /
+                                            (showSidebar ? 5.5 : 9)) -
+                                        ((MediaQuery.of(context).size.width /
+                                                5.3) *
+                                            3);
+                                return CurrentOrderScreen(
+                                    width: currentOrderWidth);
+                              })),
                     ],
                   )
               ],
