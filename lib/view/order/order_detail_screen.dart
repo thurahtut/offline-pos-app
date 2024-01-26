@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/order_detail_controller.dart';
 
@@ -12,7 +14,9 @@ class OrderDetailScreen extends StatefulWidget {
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Future<void> _getOrder() async {
-    // OrderHistoryTable.getOrderById(1);
+    OrderHistory? orderHistory =
+        await OrderHistoryTable.getOrderById(widget.orderId);
+    log("Hello");
   }
 
   @override

@@ -1,6 +1,9 @@
 // ignore_for_file: constant_identifier_names
+import 'dart:convert';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/order_line_id_table.dart';
+import 'package:offline_pos/model/order_line_id.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 const ORDER_HISTORY_TABLE_NAME = "order_history_table";
@@ -149,14 +152,40 @@ class OrderHistoryTable {
 
   static Future<OrderHistory?> getOrderById(int orderHistoryId) async {
     final Database db = await DatabaseHelper().db;
-    final List<Map<String, dynamic>> maps = await db.rawQuery("select ot.* "
+    final List<Map<String, dynamic>> maps = await db.rawQuery("select ot.*, "
+        "'[' || group_concat(json_object('$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, '$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, '$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL), ', ') || ']' as orderLines, "
+        "'[' || group_concat(json_object('$PAYMENT_TRANSACTION_ID', ptt.$PAYMENT_TRANSACTION_ID, '$ORDER_ID_IN_TRAN', ptt.$ORDER_ID_IN_TRAN, '$PAYMENT_DATE' , ptt.$PAYMENT_DATE, '$PAYMENT_METHOD_ID_TRAN', ptt.$PAYMENT_METHOD_ID_TRAN, '$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN), ', ') || ']' as paymentLines "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         "left join $ORDER_LINE_ID_TABLE_NAME olt "
         "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
         "left join $PAYMENT_TRANSACTION_TABLE_NAME ptt "
         "on ptt.$ORDER_ID_IN_TRAN = ot.$ORDER_HISTORY_ID "
+        "where ot.$ORDER_HISTORY_ID = $orderHistoryId "
         "group by ot.$ORDER_HISTORY_ID ");
-    return maps.isNotEmpty ? OrderHistory.fromJson(maps.first) : null;
-  }
 
+    OrderHistory? orderHistory;
+    if (maps.isNotEmpty) {
+      orderHistory = OrderHistory.fromJson(maps.first);
+      List<OrderLineID> orderLines = [];
+      List<dynamic>? list = jsonDecode(maps.first["orderLines"]);
+      for (var data in list ?? []) {
+        OrderLineID orderLineID = OrderLineID.fromJson(data);
+        orderLines.add(orderLineID);
+      }
+      if (orderLines.isNotEmpty) {
+        orderHistory.lineIds ??= orderLines;
+      }
+
+      List<PaymentTransaction> paymentLines = [];
+      list = jsonDecode(maps.first["paymentLines"]);
+      for (var data in list ?? []) {
+        PaymentTransaction paymentLine = PaymentTransaction.fromJson(data);
+        paymentLines.add(paymentLine);
+      }
+      if (paymentLines.isNotEmpty) {
+        orderHistory.paymentIds ??= paymentLines;
+      }
+    }
+    return orderHistory;
+  }
 }

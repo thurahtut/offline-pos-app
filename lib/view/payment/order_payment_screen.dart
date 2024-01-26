@@ -122,7 +122,12 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   db,
                   currentOrderController.orderHistory?.id ?? 0,
                   RECEIPT_NUMBER,
-                  'Receipt_${DateTime.now().millisecondsSinceEpoch}');
+                  'Order_${DateTime.now().millisecondsSinceEpoch}');
+              OrderHistoryTable.updateValue(
+                  db,
+                  currentOrderController.orderHistory?.id ?? 0,
+                  ORDER_CONDITION,
+                  OrderState.paid.text);
               var count = 0;
               Navigator.popUntil(context, (route) {
                 return count++ == 1;

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/order/order_detail_screen.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -19,7 +20,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
   final scrollController = ScrollController();
 
   static List<String> list = ["All Active Orders", "Quotation", "On Going"];
-
 
   @override
   void dispose() {
@@ -247,7 +247,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   dataRowHeight: 70,
                   headingRowHeight: 70,
                   dividerThickness: 0.0,
-                  rowsPerPage: min(_limit,
+                  rowsPerPage: min(
+                      _limit,
                       max(context.read<OrderListController>().orderList.length,
                           1)),
                   minWidth: MediaQuery.of(context).size.width - 100,
@@ -256,8 +257,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   hidePaginator: true,
                   sortColumnIndex: _sortColumnIndex,
                   sortAscending: _sortAscending ?? false,
-                  headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => primaryColor),
+                  headingRowColor:
+                      MaterialStateColor.resolveWith((states) => primaryColor),
                   columns: [
                     CommonUtils.dataColumn(
                       fixedWidth: isTabletMode == true ? 300 : 300,
@@ -355,9 +356,13 @@ class DataSourceForOrderListScreen extends DataTableSource {
       cells: [
         DataCell(
           Text(order.createDate ?? ''),
+          onTap: () {
+            Navigator.pushNamed(context, OrderDetailScreen.routeName,
+                arguments: OrderDetailScreen(orderId: order.id ?? 0));
+          },
         ),
         DataCell(
-          Text(order.receiptNumber ?? ''), 
+          Text(order.receiptNumber ?? ''),
         ),
         DataCell(
           Text(''), //order.customerId??
@@ -369,7 +374,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
           Text('${order.amountTotal?.toStringAsFixed(2) ?? '0.00'} Ks'),
         ),
         DataCell(
-          Text(order.state ?? ''), 
+          Text(order.state ?? ''),
         ),
         DataCell(
           CommonUtils.svgIconActionButton('assets/svg/delete.svg'),
