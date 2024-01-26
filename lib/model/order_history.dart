@@ -1,3 +1,4 @@
+import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/model/order_line_id.dart';
 
 class OrderHistory {
@@ -17,6 +18,11 @@ class OrderHistory {
   String? writeDate;
   int? writeUid;
   List<OrderLineID>? lineIds;
+  List<PaymentTransaction>? paymentIds;
+  String? receiptNumber;
+  String? state;
+  String? orderCondition;
+
 
   OrderHistory({
     this.id,
@@ -35,6 +41,10 @@ class OrderHistory {
     this.writeDate,
     this.writeUid,
     this.lineIds,
+    this.paymentIds,
+    this.receiptNumber,
+    this.state,
+    this.orderCondition,
   });
 
   OrderHistory.fromJson(Map<String, dynamic> json) {
@@ -52,6 +62,9 @@ class OrderHistory {
     sequenceNumber = json['sequence_number']?.toString();
     writeDate = json['write_date']?.toString();
     writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
+    receiptNumber = json["pos_reference"];
+    state = json["state"];
+    orderCondition = json["order_condition"];
   }
 
   Map<String, dynamic> toJson() {
@@ -70,6 +83,9 @@ class OrderHistory {
     data['sequence_number'] = sequenceNumber;
     data['write_date'] = writeDate;
     data['write_uid'] = writeUid;
+    data["pos_reference"] = receiptNumber;
+    data["state"] = state;
+    data["order_condition"] = orderCondition;
     return data;
   }
 }

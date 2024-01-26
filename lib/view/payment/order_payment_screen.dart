@@ -118,6 +118,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         .toList())
                 .then((value) {
               // currentOrderController.currentOrderList = [];
+              OrderHistoryTable.updateValue(
+                  db,
+                  currentOrderController.orderHistory?.id ?? 0,
+                  RECEIPT_NUMBER,
+                  'Receipt_${DateTime.now().millisecondsSinceEpoch}');
               var count = 0;
               Navigator.popUntil(context, (route) {
                 return count++ == 1;

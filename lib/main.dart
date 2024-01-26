@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/controller/order_detail_controller.dart';
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeSettingController()),
         ChangeNotifierProvider(create: (_) => LoginUserController()),
         ChangeNotifierProvider(create: (_) => PosCategoryController()),
+        ChangeNotifierProvider(create: (_) => OrderDetailController()),
       ],
       child: InitializePage(),
     );

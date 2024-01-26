@@ -357,7 +357,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
           Text(order.createDate ?? ''),
         ),
         DataCell(
-          Text(''), //order.receiptNumber ??
+          Text(order.receiptNumber ?? ''), 
         ),
         DataCell(
           Text(''), //order.customerId??
@@ -369,7 +369,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
           Text('${order.amountTotal?.toStringAsFixed(2) ?? '0.00'} Ks'),
         ),
         DataCell(
-          Text(''), //order.state ??
+          Text(order.state ?? ''), 
         ),
         DataCell(
           CommonUtils.svgIconActionButton('assets/svg/delete.svg'),

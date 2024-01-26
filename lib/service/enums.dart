@@ -52,5 +52,14 @@ enum DataSync {
   posCategory,
 }
 
+enum OrderState {
+  draft("New"),
+  cancelled("Cancelled"),
+  paid("Paid");
+
+  const OrderState(this.text);
+  final String text;
+}
+
 
 enum CurrentOrderKeyboardState { disc, qty, price, refund }

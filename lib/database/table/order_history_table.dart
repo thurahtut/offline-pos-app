@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/order_line_id_table.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 const ORDER_HISTORY_TABLE_NAME = "order_history_table";
@@ -17,6 +18,9 @@ const AMOUNT_TOTAL = "amount_total";
 const WRITE_DATE_IN_OH = "write_date";
 const WRITE_UID_IN_OH = "write_uid";
 const SEQUENCE_NUMBER = "sequence_number";
+const RECEIPT_NUMBER = "pos_reference";
+const STATE_IN_OT = "state";
+const ORDER_CONDITION = "order_condition";
 
 class OrderHistoryTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -35,6 +39,9 @@ class OrderHistoryTable {
         "$WRITE_DATE_IN_OH TEXT,"
         "$WRITE_UID_IN_OH INTEGER,"
         "$SEQUENCE_NUMBER INTEGER NOT NULL,"
+        "$RECEIPT_NUMBER TEXT,"
+        "$STATE_IN_OT TEXT,"
+        "$ORDER_CONDITION TEXT,"
         "unique ($NAME_IN_OH, $SESSION_ID, $SEQUENCE_NUMBER)"
         ")");
   }
@@ -95,13 +102,20 @@ class OrderHistoryTable {
 
   static Future<int> update(
       final Database db, OrderHistory orderHistory) async {
-
     return db.update(
       ORDER_HISTORY_TABLE_NAME,
       orderHistory.toJson(),
       where: "$ORDER_HISTORY_ID=?",
       whereArgs: [orderHistory.id],
     );
+  }
+
+  static Future<int> updateValue(
+      final Database db, int orderId, String columnName, String? value) async {
+    String sql = "UPDATE $ORDER_HISTORY_TABLE_NAME "
+        "SET $columnName = '$value'"
+        " Where $ORDER_HISTORY_ID = $orderId";
+    return db.rawInsert(sql);
   }
 
   static Future<List<OrderHistory>> getOrderHistorysFiltering({
@@ -132,4 +146,17 @@ class OrderHistoryTable {
       return OrderHistory.fromJson(maps[i]);
     });
   }
+
+  static Future<OrderHistory?> getOrderById(int orderHistoryId) async {
+    final Database db = await DatabaseHelper().db;
+    final List<Map<String, dynamic>> maps = await db.rawQuery("select ot.* "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
+        "left join $PAYMENT_TRANSACTION_TABLE_NAME ptt "
+        "on ptt.$ORDER_ID_IN_TRAN = ot.$ORDER_HISTORY_ID "
+        "group by ot.$ORDER_HISTORY_ID ");
+    return maps.isNotEmpty ? OrderHistory.fromJson(maps.first) : null;
+  }
+
 }

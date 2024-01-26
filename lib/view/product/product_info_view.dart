@@ -194,68 +194,18 @@ class ProductInfoView extends StatelessWidget {
           spacer,
           context.watch<ProductDetailController>().isBarcodeView
               ? Center(
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(child: _textForDetailInfo("BarCode")),
-                            Expanded(
-                              flex: 2,
-                              child: _barcodeWidget(context),
-                            ),
-                          ],
-                        ),
-                        spacer,
-                        Row(
-                          children: [
-                            Expanded(child: _textForDetailInfo("BarCode")),
-                            Expanded(
-                              flex: 2,
-                              child: TextFormField(
-                                initialValue: '',
-                                enabled: false,
-                                textAlignVertical: TextAlignVertical.center,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  labelStyle: TextStyle(
-                                    color: primaryColor,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                  border: UnderlineInputBorder(),
-                                  contentPadding: EdgeInsets.all(16),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        spacer,
-                        Row(
-                          children: [
-                            Expanded(child: _textForDetailInfo("BarCode")),
-                            Expanded(
-                              flex: 2,
-                              child: TextFormField(
-                                initialValue: '',
-                                enabled: false,
-                                textAlignVertical: TextAlignVertical.center,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  labelStyle: TextStyle(
-                                    color: primaryColor,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                  border: UnderlineInputBorder(),
-                                  contentPadding: EdgeInsets.all(16),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: _textForDetailInfo("BarCode")),
+                          Expanded(
+                            flex: 2,
+                            child: _barcodeWidget(context),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 )
               : Row(
@@ -1046,6 +996,7 @@ class ProductInfoView extends StatelessWidget {
       enabled: false,
       textAlignVertical: TextAlignVertical.center,
       keyboardType: TextInputType.number,
+      style: TextStyle(color: Constants.textColor),
       decoration: InputDecoration(
         labelStyle: TextStyle(
           color: primaryColor,
@@ -1070,6 +1021,7 @@ class ProductInfoView extends StatelessWidget {
       enabled: false,
       textAlignVertical: TextAlignVertical.center,
       keyboardType: TextInputType.number,
+      style: TextStyle(color: Constants.textColor),
       decoration: InputDecoration(
         labelStyle: TextStyle(
           color: primaryColor,
@@ -1085,15 +1037,16 @@ class ProductInfoView extends StatelessWidget {
   Widget _barcodeWidget(BuildContext context) {
     return TextFormField(
       initialValue:
-          // context
-          //         .read<ProductDetailController>()
-          //         .creatingProduct
-          //         .barcode
-          //         ?.toString() ??
+          context
+              .read<ProductDetailController>()
+              .creatingProduct
+              .barcode
+              ?.toString() ??
           '',
       enabled: false,
       textAlignVertical: TextAlignVertical.center,
       keyboardType: TextInputType.number,
+      style: TextStyle(color: Constants.textColor),
       decoration: InputDecoration(
         labelStyle: TextStyle(
           color: primaryColor,
@@ -1267,6 +1220,7 @@ class ProductInfoView extends StatelessWidget {
       enabled: false,
       textAlignVertical: TextAlignVertical.center,
       keyboardType: TextInputType.number,
+      style: TextStyle(color: Constants.textColor),
       decoration: InputDecoration(
         labelStyle: TextStyle(
           color: primaryColor,

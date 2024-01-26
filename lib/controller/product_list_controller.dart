@@ -74,8 +74,8 @@ class ProductListController with ChangeNotifier {
     getTotalProductCount();
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
-      limit: 1,
-      offset: 0,
+      limit: limit,
+      offset: offset,
     ).then((list) {
       productList.addAll(list);
       notifyListeners();
