@@ -9,12 +9,21 @@ class OrderDetailController with ChangeNotifier {
     notifyListeners();
   }
 
+  int _headerIndex = 0;
+  int get headerIndex => _headerIndex;
+  set headerIndex(int headerIndex) {
+    if (_headerIndex == headerIndex) return;
+    _headerIndex = headerIndex;
+    notifyListeners();
+  }
+
   notify() {
     notifyListeners();
   }
 
   resetOrderDetailController() {
     _orderHistory = null;
+    _headerIndex = 0;
     notifyListeners();
   }
 }

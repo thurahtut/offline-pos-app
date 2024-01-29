@@ -6,15 +6,20 @@ class OrderLineID {
   double? priceUnit;
   double? priceSubtotal;
   double? priceSubtotalIncl;
+  String? productName;
+  String? barcode;
 
-  OrderLineID(
-      {this.id,
-      this.orderId,
-      this.productId,
-      this.qty,
-      this.priceUnit,
-      this.priceSubtotal,
-      this.priceSubtotalIncl});
+  OrderLineID({
+    this.id,
+    this.orderId,
+    this.productId,
+    this.qty,
+    this.priceUnit,
+    this.priceSubtotal,
+    this.priceSubtotalIncl,
+    this.productName,
+    this.barcode,
+  });
 
   OrderLineID.fromJson(Map<String, dynamic> json) {
     id = int.tryParse(json['id'].toString());
@@ -24,6 +29,8 @@ class OrderLineID {
     priceUnit = double.tryParse(json['price_unit'].toString());
     priceSubtotal = double.tryParse(json['price_subtotal'].toString());
     priceSubtotalIncl = double.tryParse(json['price_subtotal_incl'].toString());
+    productName = json["product_name"];
+    barcode = json["barcode"];
   }
 
   Map<String, dynamic> toJson() {

@@ -460,8 +460,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           context.read<ViewController>().isCustomerView = true;
           CustomerListDialog.customerListDialogWidget(context).then((value) {
             context.read<ViewController>().isCustomerView = false;
-            if (value == true) {
-              uploadOrderHistoryToDatabase();
+            if (value is int && value != 0) {
+              uploadOrderHistoryToDatabase(partnerId: value);
             }
           });
         },
@@ -510,22 +510,22 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     );
   }
 
-  void _addManualDiscountProduct(
-      CurrentOrderController currentOrderController) {
-    if (currentOrderController.selectedIndex != null &&
-        currentOrderController.currentOrderKeyboardState ==
-            CurrentOrderKeyboardState.disc) {
-      Product product = currentOrderController.currentOrderList
-          .elementAt(currentOrderController.selectedIndex!);
-      product.priceListItem ??= PriceListItem();
-      Product promotionProduct = product.cloneProduct();
-      promotionProduct.onhandQuantity = 1;
-      promotionProduct.priceListItem?.fixedPrice = 0;
-      currentOrderController.currentOrderList
-          .insert(currentOrderController.selectedIndex! + 1, promotionProduct);
-      currentOrderController.notify();
-    }
-  }
+  // void _addManualDiscountProduct(
+  //     CurrentOrderController currentOrderController) {
+  //   if (currentOrderController.selectedIndex != null &&
+  //       currentOrderController.currentOrderKeyboardState ==
+  //           CurrentOrderKeyboardState.disc) {
+  //     Product product = currentOrderController.currentOrderList
+  //         .elementAt(currentOrderController.selectedIndex!);
+  //     product.priceListItem ??= PriceListItem();
+  //     Product promotionProduct = product.cloneProduct();
+  //     promotionProduct.onhandQuantity = 1;
+  //     promotionProduct.priceListItem?.fixedPrice = 0;
+  //     currentOrderController.currentOrderList
+  //         .insert(currentOrderController.selectedIndex! + 1, promotionProduct);
+  //     currentOrderController.notify();
+  //   }
+  // }
 
   Future<void> uploadOrderHistoryToDatabase({int? partnerId}) async {
     CurrentOrderController currentOrderController =
@@ -584,7 +584,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         );
         orderLineIdList.add(orderLineID);
       }
-      OrderLineIdTable.insertOrUpdate(orderLineIdList).then((lineValue) async {
+      insertOrderLines(db, orderLineIdList).then((lineValue) async {
         OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) {
           currentOrderController.orderHistory?.lineIds = lineIds;
 
@@ -592,5 +592,14 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         });
       });
     });
+  }
+
+  Future<void> insertOrderLines(
+    final Database db,
+    List<OrderLineID> orderLineIdList,
+  ) async {
+    for (var data in orderLineIdList) {
+      OrderLineIdTable.insertWithDb(db, data);
+    }
   }
 }

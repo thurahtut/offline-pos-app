@@ -1,4 +1,3 @@
-
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -86,7 +85,6 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           containerColor: primaryColor,
           textColor: Colors.white,
           onTap: () async {
-            // Navigator.pushNamed(context, OrderPaymentReceiptScreen.routeName);
             CurrentOrderController currentOrderController =
                 context.read<CurrentOrderController>();
             final Database db = await DatabaseHelper().db;
@@ -102,6 +100,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               data.orderId = currentOrderController.orderHistory?.id ?? 0;
               data.paymentDate =
                   currentOrderController.orderHistory?.createDate ?? '';
+              if ((double.tryParse(data.amount ?? '') ?? 0) <= 0) {
+                currentOrderController.paymentTransactionList
+                    .remove(data.paymentMethodId);
+              }
             }
             if (totalAmt > totalPayAmt) {
               if (mounted) {
@@ -112,7 +114,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               return;
             }
 
-            PaymentTransactionTable.insertOrUpdateWithDB(
+            insertPaymentTransaction(
                     db,
                     currentOrderController.paymentTransactionList.values
                         .toList())
@@ -138,6 +140,13 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> insertPaymentTransaction(final Database db,
+      List<PaymentTransaction> paymentTransactionList) async {
+    for (var data in paymentTransactionList) {
+      PaymentTransactionTable.insertWithDb(db, data);
+    }
   }
 
   Widget _paymentTypeAndAmountWidget() {
@@ -188,7 +197,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   for (var data in controller.paymentTransactionList.values) {
                     totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
                   }
-                  
+
                   controller.selectedPaymentMethodId = e.id ?? -1;
                   controller.paymentTransactionList[e.id ?? -1] ??=
                       PaymentTransaction(

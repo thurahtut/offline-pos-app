@@ -152,25 +152,44 @@ class OrderHistoryTable {
 
   static Future<OrderHistory?> getOrderById(int orderHistoryId) async {
     final Database db = await DatabaseHelper().db;
-    final List<Map<String, dynamic>> maps = await db.rawQuery("select ot.*, "
-        "'[' || group_concat(json_object('$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, '$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, '$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL), ', ') || ']' as orderLines, "
-        "'[' || group_concat(json_object('$PAYMENT_TRANSACTION_ID', ptt.$PAYMENT_TRANSACTION_ID, '$ORDER_ID_IN_TRAN', ptt.$ORDER_ID_IN_TRAN, '$PAYMENT_DATE' , ptt.$PAYMENT_DATE, '$PAYMENT_METHOD_ID_TRAN', ptt.$PAYMENT_METHOD_ID_TRAN, '$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN), ', ') || ']' as paymentLines "
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+        "select ot.*, ct.$CUSTOMER_NAME, "
+        "json_group_array(distinct json_extract(json_object('$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, '$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, 'product_name', olt.product_name , '$BARCODE_IN_PT', olt.$BARCODE_IN_PT , '$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL), '\$' )) as orderLines, "
+        "json_group_array(distinct json_extract(json_object('$PAYMENT_TRANSACTION_ID', ptt.$PAYMENT_TRANSACTION_ID, '$ORDER_ID_IN_TRAN', ptt.$ORDER_ID_IN_TRAN, '$PAYMENT_DATE' , ptt.$PAYMENT_DATE, '$PAYMENT_METHOD_ID_TRAN', ptt.$PAYMENT_METHOD_ID_TRAN, 'name', pmt.$PAYMENT_METHOD_NAME, '$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN), '\$' )) as paymentLines "
         "from $ORDER_HISTORY_TABLE_NAME ot "
-        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "left join "
+        "("
+        "select olt.* , pt.$PRODUCT_NAME as product_name, pt.$BARCODE_IN_PT as $BARCODE_IN_PT "
+        "from $ORDER_LINE_ID_TABLE_NAME olt "
+        "left join $PRODUCT_TABLE_NAME pt "
+        "on pt.$PRODUCT_ID = olt.$PRODUCT_ID_IN_LINE "
+        ") olt "
+        // "$ORDER_LINE_ID_TABLE_NAME olt "
         "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
+        "and olt.$ORDER_ID_IN_LINE = $orderHistoryId "
         "left join $PAYMENT_TRANSACTION_TABLE_NAME ptt "
         "on ptt.$ORDER_ID_IN_TRAN = ot.$ORDER_HISTORY_ID "
+        "and ptt.$ORDER_ID_IN_TRAN = $orderHistoryId "
+        "left join $CUSTOMER_TABLE_NAME ct "
+        "on ct.$CUSTOMER_ID_IN_CT=ot.$PARTNER_ID "
+        "left join $PAYMENT_METHOD_TABLE_NAME pmt "
+        "on pmt.$PAYMENT_METHOD_ID=ptt.$PAYMENT_METHOD_ID_TRAN "
         "where ot.$ORDER_HISTORY_ID = $orderHistoryId "
         "group by ot.$ORDER_HISTORY_ID ");
 
     OrderHistory? orderHistory;
     if (maps.isNotEmpty) {
       orderHistory = OrderHistory.fromJson(maps.first);
+      orderHistory.partnerName = maps.first[CUSTOMER_NAME];
       List<OrderLineID> orderLines = [];
       List<dynamic>? list = jsonDecode(maps.first["orderLines"]);
       for (var data in list ?? []) {
         OrderLineID orderLineID = OrderLineID.fromJson(data);
+
+        // if (orderLines.indexWhere((element) => element.id == orderLineID.id) <
+        //     0) {
         orderLines.add(orderLineID);
+        // }
       }
       if (orderLines.isNotEmpty) {
         orderHistory.lineIds ??= orderLines;
@@ -180,7 +199,11 @@ class OrderHistoryTable {
       list = jsonDecode(maps.first["paymentLines"]);
       for (var data in list ?? []) {
         PaymentTransaction paymentLine = PaymentTransaction.fromJson(data);
+
+        // if (paymentLines.indexWhere((element) => element.id == paymentLine.id) <
+        //     0) {
         paymentLines.add(paymentLine);
+        // }
       }
       if (paymentLines.isNotEmpty) {
         orderHistory.paymentIds ??= paymentLines;

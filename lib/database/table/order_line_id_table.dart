@@ -28,26 +28,14 @@ class OrderLineIdTable {
 
   static Future<int> insert(OrderLineID orderLine) async {
     final Database db = await DatabaseHelper().db;
-    String sql = "INSERT INTO $ORDER_LINE_ID_TABLE_NAME("
-        "${orderLine.id != null && orderLine.id != 0 ? "$ORDER_LINE_ID," : ""}"
-        "$ORDER_ID_IN_LINE,"
-        "$PRODUCT_ID_IN_LINE,"
-        "$QTY_IN_LINE,"
-        "$PRICE_UNIT,"
-        "$PRICE_SUBTOTAL,"
-        "$PRICE_SUBTOTAL_INCL"
-        ")"
-        " VALUES("
-        "${orderLine.id != null && orderLine.id != 0 ? "${orderLine.id}," : ""}"
-        "${orderLine.orderId}, "
-        "${orderLine.productId}, "
-        "${orderLine.qty}, "
-        "${orderLine.priceUnit}, "
-        "${orderLine.priceSubtotal}, "
-        "${orderLine.priceSubtotalIncl}"
-        ")";
+    return db.insert(ORDER_LINE_ID_TABLE_NAME, orderLine.toJson());
+  }
 
-    return db.rawInsert(sql);
+  static Future<int> insertWithDb(
+    final Database db,
+    OrderLineID orderLine,
+  ) async {
+    return db.insert(ORDER_LINE_ID_TABLE_NAME, orderLine.toJson());
   }
 
   static Future<List<OrderLineID>?> getOrderLinesByOrderId(int orderId) async {

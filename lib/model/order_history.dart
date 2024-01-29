@@ -22,7 +22,7 @@ class OrderHistory {
   String? receiptNumber;
   String? state;
   String? orderCondition;
-
+  String? partnerName;
 
   OrderHistory({
     this.id,
@@ -45,6 +45,7 @@ class OrderHistory {
     this.receiptNumber,
     this.state,
     this.orderCondition,
+    this.partnerName,
   });
 
   OrderHistory.fromJson(Map<String, dynamic> json) {

@@ -23,6 +23,7 @@ class PaymentTransaction {
     paymentDate = json['payment_date'];
     paymentMethodId = json['payment_method_id'];
     amount = json['amount'].toString();
+    paymentMethodName = json["name"];
   }
 
   Map<String, dynamic> toJson() {

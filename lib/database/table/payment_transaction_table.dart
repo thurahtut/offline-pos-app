@@ -21,17 +21,12 @@ class PaymentTransactionTable {
         ")");
   }
 
-  static Future<int> insert(PaymentTransaction paymentTransaction) async {
-    final Database db = await DatabaseHelper().db;
-    String sql = "INSERT INTO $PAYMENT_TRANSACTION_TABLE_NAME("
-        "$ORDER_ID_IN_TRAN, $PAYMENT_DATE, $PAYMENT_METHOD_ID_TRAN, $AMOUNT_IN_TRAN"
-        ")"
-        " VALUES("
-        "${paymentTransaction.orderId}, '${paymentTransaction.paymentDate}', "
-        "${paymentTransaction.paymentMethodId}, ${paymentTransaction.amount}"
-        ")";
-
-    return db.rawInsert(sql);
+  static Future<int> insertWithDb(
+    final Database db,
+    PaymentTransaction paymentTransaction,
+  ) async {
+    return db.insert(
+        PAYMENT_TRANSACTION_TABLE_NAME, paymentTransaction.toJson());
   }
 
   static Future<List<PaymentTransaction>?> getProductByProductId(
