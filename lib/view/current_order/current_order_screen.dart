@@ -424,7 +424,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         iconSize: 21,
         onPressed: () {
           if (context.read<CurrentOrderController>().currentOrderList.isEmpty) {
-            CommonUtils.showSnackBar(message: 'There is no order items.');
+            CommonUtils.showSnackBar(
+                context: context, message: 'There is no order items.');
             return;
           }
           context.read<CurrentOrderController>().isContainCustomer = false;
@@ -561,6 +562,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
       if (value <= 0) {
         CommonUtils.showSnackBar(
+            context: context,
             message: "Creating/Updating order : something was wrong!");
         return;
       }
@@ -571,16 +573,20 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       for (var data in currentOrderController.currentOrderList) {
         if ((data.onhandQuantity ?? 0) <= 0) {
           CommonUtils.showSnackBar(
+              context: context,
               message: '${data.productName} is something wrong!');
         }
 
         OrderLineID orderLineID = OrderLineID(
           orderId: value,
           productId: data.productId,
-          qty: data.onhandQuantity!.toDouble(),
-          priceUnit: (data.priceListItem?.fixedPrice ?? 0) * 0.05,
-          priceSubtotal: (data.priceListItem?.fixedPrice ?? 0) * 0.05,
-          priceSubtotalIncl: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+          qty: data.onhandQuantity?.toDouble(),
+          priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+          priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *
+              ((data.priceListItem?.fixedPrice ?? 0) -
+                  (data.priceListItem?.fixedPrice ?? 0) * 0.05),
+          priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
+              (data.priceListItem?.fixedPrice ?? 0).toDouble(),
         );
         orderLineIdList.add(orderLineID);
       }

@@ -108,6 +108,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             if (totalAmt > totalPayAmt) {
               if (mounted) {
                 CommonUtils.showSnackBar(
+                  context: context,
                   message: 'Pay amount is required!',
                 );
               }
@@ -584,6 +585,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             (double.tryParse(price) ?? 0) + (double.tryParse(value) ?? 0);
         price = val.toString();
       } else {
+        if (paymentTransaction.firstTime == true) {
+          price = "";
+          paymentTransaction.firstTime = false;
+        } 
         price += value;
       }
       currentOrderController

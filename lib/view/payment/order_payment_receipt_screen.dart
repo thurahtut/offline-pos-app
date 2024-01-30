@@ -113,6 +113,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
               pw.Text(
                 context.read<LoginUserController>().posConfig?.receiptHeader ??
                     '',
+                textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),
                   fontSize: 20,
@@ -124,6 +125,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
               ),
               pw.Text(
                 'Served by : ${context.read<LoginUserController>().loginUser?.employeeData?.name}',
+                textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),
                   fontSize: 20,
@@ -147,7 +149,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
               _changeWidget(),
               pw.SizedBox(height: 20),
               _totalQtyWidget(),
-              pw.SizedBox(height: 20),
+              pw.SizedBox(height: 40),
               ..._thankYouWidget(),
               pw.SizedBox(height: 40),
               ..._orderIdWidget(),
@@ -324,14 +326,14 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
         children: [
           pw.Center(
-              child: pw.Text(
-                e.paymentMethodName ?? '',
-                style: pw.TextStyle(
-                  color: PdfColor.fromHex("#171717"),
+            child: pw.Text(
+              e.paymentMethodName ?? '',
+              style: pw.TextStyle(
+                color: PdfColor.fromHex("#171717"),
                 fontSize: 20,
-                ),
               ),
             ),
+          ),
           pw.Expanded(
             child: pw.SizedBox(height: 4),
           ),
@@ -420,6 +422,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     return [
       pw.Text(
         context.read<LoginUserController>().posConfig?.receiptFooter ?? '',
+        textAlign: pw.TextAlign.center,
         style: pw.TextStyle(
           color: PdfColor.fromHex("#262927"),
           fontSize: size,
@@ -438,6 +441,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 ?.sequenceNumber
                 ?.toString() ??
             '',
+        textAlign: pw.TextAlign.center,
         style: pw.TextStyle(
           color: PdfColor.fromHex("#262927"),
           fontSize: size,

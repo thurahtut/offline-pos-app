@@ -181,16 +181,18 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
             ).then((result) {
               if (result != null) {
                 CommonUtils.showSnackBar(
+                  context: widget.mainContext,
                   message: 'Login with '
-                        '"${e.name}"'
+                      '"${e.name}"'
                       ' successful!',
                 );
 
                 Navigator.pop(dialogContext, true);
               } else {
-CommonUtils.showSnackBar(
+                CommonUtils.showSnackBar(
+                  context: widget.mainContext,
                   message: 'Login with '
-                        '"${e.name}"'
+                      '"${e.name}"'
                       ' is failed. Invalid Password !',
                 );
                 Navigator.pop(dialogContext, false);

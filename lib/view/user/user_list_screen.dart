@@ -192,6 +192,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                               .then((employee) {
                             if (employee == null) {
                               CommonUtils.showSnackBar(
+                                context: context,
                                 message: 'Inserting '
                                       '"${context.read<EmployeeListController>().creatingEmployee.name}"'
                                     ' does not have! Something was wrong!',

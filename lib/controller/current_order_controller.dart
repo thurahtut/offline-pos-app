@@ -159,7 +159,7 @@ class CurrentOrderController with ChangeNotifier {
             }
           }
         } else {
-          qty = (qty != "1" ? qty : "");
+          qty = (qty == "1" && value != "0" ? "" : qty);
           qty += value;
         }
         if (isDelete) {
