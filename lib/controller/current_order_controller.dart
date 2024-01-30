@@ -123,6 +123,7 @@ class CurrentOrderController with ChangeNotifier {
           (currentOrderList[index].onhandQuantity ?? 0) + 1;
       currentOrderList[index] = orderProduct;
     } else {
+      orderProduct.firstTime = true;
       orderProduct.onhandQuantity = 1;
       currentOrderList.add(orderProduct);
     }
@@ -159,7 +160,10 @@ class CurrentOrderController with ChangeNotifier {
             }
           }
         } else {
-          qty = (qty == "1" && value != "0" ? "" : qty);
+          if (product.firstTime == true) {
+            qty = (qty == "1" && value != "0" ? "" : qty);
+            product.firstTime = false;
+          }
           qty += value;
         }
         if (isDelete) {

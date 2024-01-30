@@ -82,6 +82,11 @@ class POSSessionTable {
     }
   }
 
+  static Future<void> insertOrUpdatePOSSession(POSSession posConfig) async {
+    final Database db = await DatabaseHelper().db;
+    return insertOrUpdatePOSSessionWithDB(db, posConfig);
+  }
+
   static Future<void> insertOrUpdatePOSSessionWithDB(
       final Database db, POSSession posConfig) async {
     Map<String, dynamic> jsonOfConfig = posConfig.toJson();

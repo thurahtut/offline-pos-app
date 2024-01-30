@@ -239,7 +239,7 @@ class ProductTable {
     final result = await db.rawQuery(
         'SELECT COUNT(*) FROM $PRODUCT_TABLE_NAME '
         'where 1=1'
-        '${filter != null && filter.isNotEmpty ? ' and $PRODUCT_ID Like ? or lower($PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?' : ''}'
+        '${filter != null && filter.isNotEmpty ? ' and $PRODUCT_ID Like ? or lower($PRODUCT_NAME) Like ? or $BARCODE_IN_PT like ?' : ''}'
         "${categoryId != null && categoryId != -1 ? " and $POS_CATEG_ID_IN_PT=?" : ''} ",
         objects);
     final count = Sqflite.firstIntValue(result);

@@ -1,9 +1,9 @@
-import 'package:offline_pos/view/user/user_login_form.dart';
+import 'package:offline_pos/view/user/session_login_form.dart';
 
 import '../../components/export_files.dart';
 
-class UserLoginDialog {
-  static Future<dynamic> loginUserDialogWidget(
+class SessionLoginDialog {
+  static Future<dynamic> sessionLoginDialogWidget(
     BuildContext mainContext,
   ) {
     final formKey = GlobalKey<FormState>();
@@ -13,8 +13,8 @@ class UserLoginDialog {
         return AlertDialog(
           contentPadding: EdgeInsets.all(16),
           insetPadding: EdgeInsets.zero,
-          title: const Text(
-            'Login User',
+          title: Text(
+            'Login',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
@@ -24,7 +24,7 @@ class UserLoginDialog {
           ),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          content: UserLoginForm(
+          content: SessionLoginForm(
             mainContext: mainContext,
             bContext: bContext,
             formKey: formKey,

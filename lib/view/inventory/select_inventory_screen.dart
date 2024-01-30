@@ -58,7 +58,6 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                       controller.selectedInventory =
                           controller.loginUser!.configData![index];
                       int? inventoryId = controller.selectedInventory?.id;
-
                       final Database db = await DatabaseHelper().db;
                       Api.getPosConfigByID(inventoryId: inventoryId)
                           .then((configResponse) {
@@ -67,27 +66,25 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                             configResponse.data != null &&
                             configResponse.data is List &&
                             (configResponse.data as List).isNotEmpty) {
-                          controller.posConfig = POSConfig.fromJson(
-                              (configResponse.data as List).first);
-                          int? configId = controller.posConfig?.id;
+                          Map<String, dynamic> map =
+                              (configResponse.data as List).first;
+                          controller.posConfig = POSConfig.fromJson(map);
                           POSConfigTable.insertOrUpdatePosConfigWithDB(
                               db, controller.posConfig!);
-                          Api.getPosSessionByID(configId: configId)
-                              .then((sessionResponse) {
-                            if (sessionResponse != null &&
-                                sessionResponse.statusCode == 200 &&
-                                sessionResponse.data != null &&
-                                sessionResponse.data is List &&
-                                (sessionResponse.data as List).isNotEmpty) {
-                              controller.posSession = POSSession.fromJson(
-                                  (sessionResponse.data as List).first);
-                              POSSessionTable.insertOrUpdatePOSSessionWithDB(
-                                  db, controller.posSession!);
-                              Navigator.pop(widget.bContext, true);
-                            } else {
-                              Navigator.pop(widget.bContext, false);
-                            }
-                          });
+                          List<Employee> employeeList = [];
+                          if (map['employee_ids'] != null &&
+                              map['employee_ids'] is List &&
+                              (map['employee_ids'] as List).isNotEmpty) {
+                            map['employee_ids'].forEach((v) {
+                              employeeList.add(Employee.fromJson(v));
+                            });
+
+                            EmployeeTable.insertOrUpdateWithDB(
+                                db, employeeList);
+                          }
+                          Navigator.pop(widget.bContext, true);
+                        } else {
+                          Navigator.pop(widget.bContext, false);
                         }
                       });
                       break;

@@ -115,5 +115,6 @@ class DatabaseHelper {
     await db.delete(POS_CONFIG_TABLE_NAME);
     await db.delete(POS_SESSION_TABLE_NAME);
     await db.delete(POS_SESSION_TABLE_NAME);
+    await db.delete(EMPLOYEE_TABLE_NAME);
   }
 }

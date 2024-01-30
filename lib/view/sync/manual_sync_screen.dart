@@ -129,6 +129,7 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
       percentage: controller.processingPercentage[DataSync.price.name],
       onSync: () {
         context.read<MorningsyncController>().getAllPriceListItemFromApi(
+          context.read<ThemeSettingController>().appConfig?.priceLastSyncDate,
           context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
           () {
             controller.doneActionList.add(DataSync.price.name);

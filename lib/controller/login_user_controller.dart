@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/model/pos_session.dart';
 
 class LoginUserController with ChangeNotifier {
   User? _loginUser;
@@ -38,9 +37,17 @@ class LoginUserController with ChangeNotifier {
     notifyListeners();
   }
 
+  // List<Employee> _employeeList = [];
+  // List<Employee> get employeeList => _employeeList;
+  // set employeeList(List<Employee> employeeList) {
+  //   _employeeList = employeeList;
+  //   notifyListeners();
+  // }
+
   resetLoginUserController() {
     _loginUser = null;
     _selectedInventory = null;
+    // _employeeList = [];
     notifyListeners();
   }
 }

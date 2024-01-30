@@ -102,10 +102,15 @@ class MorningsyncController with ChangeNotifier {
     });
   }
 
-  void getAllPriceListItemFromApi(int priceListId, Function()? callback) {
+  void getAllPriceListItemFromApi(
+    String? lastSyncDate,
+    int priceListId,
+    Function()? callback,
+  ) {
     currentTaskTitle = "Price Sync....";
     currentReachTask = 3;
     Api.getPriceListItemByID(
+      lastSyncDate: lastSyncDate,
       priceListId: priceListId,
       onReceiveProgress: (sent, total) {
         double value = min(((sent / total) * 100), 100);

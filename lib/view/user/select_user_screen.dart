@@ -176,7 +176,7 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
             .then((value) {
           if (value == true) {
             EmployeeTable.checkEmployeeWithIdAndPassword(
-              e.employeeId ?? 0,
+              e.id ?? 0,
               passwordTextController.text,
             ).then((result) {
               if (result != null) {

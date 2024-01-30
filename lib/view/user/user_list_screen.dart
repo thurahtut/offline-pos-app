@@ -203,7 +203,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                                 .read<EmployeeListController>()
                                 .employeeList
                                 .indexWhere((element) =>
-                                    element.employeeId == employee.employeeId);
+                                    element.id == employee.id);
                             if (index != -1) {
                               context
                                   .read<EmployeeListController>()
@@ -265,7 +265,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                                 .read<EmployeeListController>()
                                 .employeeList
                                 .indexWhere((element) =>
-                                    element.employeeId == employee.employeeId);
+                                    element.id == employee.id);
                             if (index != -1) {
                               context
                                   .read<EmployeeListController>()

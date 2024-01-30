@@ -4,329 +4,54 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 const EMPLOYEE_TABLE_NAME = "employee_table";
-const EMPLOYEE_ID = "employee_id";
-const ACTIVE_IN_ET = "active";
-const ACTIVITY_CALENDAR_EVENT_ID_IN_ET = "activity_calendar_event_id";
-const ACTIVITY_DATE_DEADLINE_IN_ET = "activity_date_deadline";
-const ACTIVITY_EXCEPTION_DECORATION_IN_ET = "activity_exception_decoration";
-const ACTIVITY_EXCEPTION_ICON_IN_ET = "activity_exception_icon";
-const ACTIVTIY_IDS = " activity_ids";
-const ACTIVITY_STATE_IN_ET = "activity_state";
-const ACTIVITY_SUMMARY_IN_ET = "activity_summary";
-const ACTIVITY_TYPE_ICON_IN_ET = "activity_type_icon";
-const ACTIVITY_TYPE_ID_IN_ET = "activity_type_id";
-const ACTIVITY_USER_ID_IN_ET = "activity_user_id";
-const ADDTIONAL_NOTE = "additional_note";
-const ADDRESS_HOME_ID = "address_home_id";
-const ADDRESS_ID = "address_id";
-const AVATAR_1024 = "avatar_1024";
-const AVATAR_128 = "avatar_128";
-const AVATAR_1920 = "avatar_1920";
-const AVATAR_256 = "avatar_256";
-const AVATAR_512 = "avatar_512";
-const BANK_ACCOUNT_ID = "bank_account_id";
-const BARCODE_IN_ET = "barcode";
-const BIRTHDAY = "birthday";
-const CALENDAR_MISMATCH = "calendar_mismatch";
-const CATEGORY_IDS = "category_ids";
-const CERTIFICATE = "certificate";
-const CHILD_ALL_COUNT = "child_all_count";
-const CHILD_IDS_IN_ET = "child_ids";
-const CHILDREN = "children";
-const COACH_ID = "coach_id";
-const COLOR_IN_ET = "color";
-const COMPANY_COUNTRY_CODE = "company_country_code";
-const COMPANY_COUNTRY_ID = "company_country_id";
-const COMPANY_ID_IN_ET = "company_id";
-const CONTRACT_ID = "contract_id";
-const CONTRACT_IDS_IN_ET = "contract_ids";
-const CONTRACTS_COUNT = "contracts_count";
-const CONTRACT_WARNING = "contract_warning";
-const COUNTRY_ID_IN_ET = "country_id";
-const COUNTRY_OF_BIRTH = "country_of_birth";
-const CREATE_DATE_IN_ET = "create_date";
-const CREATE_UID_IN_ET = "create_uid";
-const DEPARTMENT_ID = "department_id";
-const DEPARTURE_DATE = "departure_date";
-const DEPARTURE_DESCRIPTION = "departure_description";
-const DEPARTURE_REASON_ID = "departure_reason_id";
-const DESTINATION_LOCATION_ID = "destination_location_id";
-const DISPLAY_NAME_IN_ET = "display_name";
-const DOCUMENT_COUNT_IN_ET = "document_count";
-const DRIVING_LICENSE = "driving_license";
-const EMERGENCY_CONTACT = "emergency_contact";
-const EMERGENCY_PHONE = "emergency_phone";
-const EMPLOYEE_TYPE = "employee_type";
-const FIRST_CONTRACT_DATE = "first_contract_date";
-const GENDER_IN_ET = "gender";
-const HAS_MESSAGE_IN_ET = "has_message";
-const HAS_WORK_PERMIT = "has_work_permit";
-const HR_ICON_DISPLAY = "hr_icon_display";
-const HR_PERSENCE_STATE = "hr_presence_state";
-const ID_CARD = "id_card";
-const IDENTIFICATION_ID = "identification_id";
-const IMAGE_1024 = "image_1024";
-const IMAGE_128 = "image_128";
-const IMAGE_1920 = "image_1920";
-const IMAGE_265 = "image_256";
-const IMAGE_512 = "image_512";
-const IS_ADDRESS_HOME_A_COMPANY = "is_address_home_a_company";
-const JOB_ID = "job_id";
-const JOB_TITLE = "job_title";
-const KM_HOME_WORK = "km_home_work";
-const LANG_IN_ET = "lang";
-const LAST_ACTIVITY = "last_activity";
-const LAST_ACTIVITY_TIME = "last_activity_time";
-const LAST_UPDATE_IN_ET = "last_update";
-const MARITAL = "marital";
-const MESSAGE_ATTACHMENT_COUNT_IN_ET = "message_attachment_count";
-const MESSAGE_FOLLOWER_IDS_IN_ET = "message_follower_ids";
-const MESSAGE_HAS_ERROR_IN_ET = "message_has_error";
-const MESSAGE_HAS_ERROR_COUNTER_IN_ET = "message_has_error_counter";
-const MESSAGE_HAS_SMS_ERROR_IN_ET = "message_has_sms_error";
-const MESSAGE_IDS_IN_ET = "message_ids";
-const MESSAGE_IS_FOLLOWER_IN_ET = "message_is_follower";
-const MESSAGE_MAIN_ATTACHMENT_ID_IN_ET = "message_main_attachment_id";
-const MESSAGE_NEEDACTION_IN_ET = "message_needaction";
-const MESSAGE_NEEDACTION_COUNNTER_IN_ET = "message_needaction_counter";
-const MESSAGE_PARTNER_IDS_IN_ET = "message_partner_ids";
-const MESSAGE_UNREAD_IN_ET = "message_unread";
-const MESSAGE_UNREAD_COUNTER_IN_ET = "message_unread_counter";
-const MOBILE_PHONE = "mobile_phone";
-const MY_ACTIVITY_DATE_DEADLINE_IN_ET = "my_activity_date_deadline";
+const EMPLOYEE_ID = "id";
 const NAME_IN_ET = "name";
-const NOTES = "notes";
-const PARENT_ID_IN_ET = "parent_id";
-const PASSPORT_ID = "passport_id";
-const PERMIT_NO = "permit_no";
-const PHONE_IN_ET = "phone";
-const PICKING_TYPE_ID_IN_ET = "picking_type_id";
 const PIN = "pin";
-const PLACE_OF_BIRTH = "place_of_birth";
-const PRIVATE_EMAIL = "private_email";
-const RESOURCE_CALENDAR_ID = "resource_calendar_id";
-const RESOURCE_ID = "resource_id";
-const SIGN_REQUEST_COUNT = "sign_request_count";
-const SINID = "sinid";
-const SPOUSE_BIRTHDATE = "spouse_birthdate";
-const SPOUSE_COMPLETE_NAME = "spouse_complete_name";
-const SSNID = "ssnid";
-const STUDY_FIELD = "study_field";
-const STUDY_SCHOOL = "study_school";
-const SUBORDINATE_IDS = "subordinate_ids";
-const TZ_IN_ET = "tz";
-const USER_ID_IN_ET = "user_id";
-const USER_PARTNER_ID = "user_partner_id";
-const VEHICLE = "vehicle";
-const VISA_EXPIRE = "visa_expire";
-const VISA_NO = "visa_no";
-const WEBSITE_MESSAGE_IDS_IN_ET = "website_message_ids";
 const WORK_EMAIL = "work_email";
-const WORK_LOCATION_ID = "work_location_id";
-const WORK_PERMIT_SCHEDULED_ACTIVITY = "work_permit_scheduled_activity";
-const WORK_PERMIT_EXPIRATION_DATE = "work_permit_expiration_date";
 const WORK_PHONE = "work_phone";
-const WRITE_DATE_IN_ET = "write_date";
-const WRITE_UID_IN_ET = "write_uid";
+const JOB_TITLE = "job_title";
 
 class EmployeeTable {
   static Future<void> onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE $EMPLOYEE_TABLE_NAME("
         "$EMPLOYEE_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "$ACTIVE_IN_ET TEXT,"
-        "$ACTIVITY_CALENDAR_EVENT_ID_IN_ET INTEGER,"
-        "$ACTIVITY_DATE_DEADLINE_IN_ET TEXT,"
-        "$ACTIVITY_EXCEPTION_DECORATION_IN_ET TEXT,"
-        "$ACTIVITY_EXCEPTION_ICON_IN_ET TEXT,"
-        "$ACTIVTIY_IDS TEXT,"
-        "$ACTIVITY_STATE_IN_ET TEXT,"
-        "$ACTIVITY_SUMMARY_IN_ET TEXT,"
-        "$ACTIVITY_TYPE_ICON_IN_ET TEXT,"
-        "$ACTIVITY_TYPE_ID_IN_ET INTEGER,"
-        "$ACTIVITY_USER_ID_IN_ET INTEGER,"
-        "$ADDTIONAL_NOTE TEXT,"
-        "$ADDRESS_HOME_ID TEXT,"
-        "$ADDRESS_ID INTEGER,"
-        "$AVATAR_1024 TEXT,"
-        "$AVATAR_128 TEXT,"
-        "$AVATAR_1920 TEXT,"
-        "$AVATAR_256 TEXT,"
-        "$AVATAR_512 TEXT,"
-        "$BANK_ACCOUNT_ID INTEGER,"
-        "$BARCODE_IN_ET TEXT,"
-        "$BIRTHDAY TEXT,"
-        "$CALENDAR_MISMATCH TEXT,"
-        "$CATEGORY_IDS TEXT,"
-        "$CERTIFICATE TEXT,"
-        "$CHILD_ALL_COUNT TEXT,"
-        "$CHILD_IDS_IN_ET TEXT,"
-        "$CHILDREN TEXT,"
-        "$COACH_ID INTEGER,"
-        "$COLOR_IN_ET TEXT,"
-        "$COMPANY_COUNTRY_CODE TEXT,"
-        "$COMPANY_COUNTRY_ID INTEGER,"
-        "$COMPANY_ID_IN_ET INTEGER,"
-        "$CONTRACT_ID INTEGER,"
-        "$CONTRACT_IDS_IN_ET TEXT,"
-        "$CONTRACTS_COUNT INTEGER,"
-        "$CONTRACT_WARNING TEXT,"
-        "$COUNTRY_ID_IN_ET INTEGER,"
-        "$COUNTRY_OF_BIRTH TEXT,"
-        "$CREATE_DATE_IN_ET TEXT,"
-        "$CREATE_UID_IN_ET INTEGER,"
-        "$DEPARTMENT_ID INTEGER,"
-        "$DEPARTURE_DATE TEXT,"
-        "$DEPARTURE_DESCRIPTION TEXT,"
-        "$DEPARTURE_REASON_ID INTEGER,"
-        "$DESTINATION_LOCATION_ID INTEGER,"
-        "$DISPLAY_NAME_IN_ET TEXT,"
-        "$DOCUMENT_COUNT_IN_ET INTEGER,"
-        "$DRIVING_LICENSE TEXT,"
-        "$EMERGENCY_CONTACT TEXT,"
-        "$EMERGENCY_PHONE TEXT,"
-        "$EMPLOYEE_TYPE TEXT,"
-        "$FIRST_CONTRACT_DATE TEXT,"
-        "$GENDER_IN_ET TEXT,"
-        "$HAS_MESSAGE_IN_ET TEXT,"
-        "$HAS_WORK_PERMIT TEXT,"
-        "$HR_ICON_DISPLAY TEXT,"
-        "$HR_PERSENCE_STATE TEXT,"
-        "$ID_CARD TEXT,"
-        "$IDENTIFICATION_ID INTEGER,"
-        "$IMAGE_1024 TEXT,"
-        "$IMAGE_128 TEXT,"
-        "$IMAGE_1920 TEXT,"
-        "$IMAGE_265 TEXT,"
-        "$IMAGE_512 TEXT,"
-        "$IS_ADDRESS_HOME_A_COMPANY TEXT,"
-        "$JOB_ID INTEGER,"
-        "$JOB_TITLE TEXT NOT NULL,"
-        "$KM_HOME_WORK TEXT,"
-        "$LANG_IN_ET TEXT,"
-        "$LAST_ACTIVITY TEXT,"
-        "$LAST_ACTIVITY_TIME TEXT,"
-        "$LAST_UPDATE_IN_ET TEXT,"
-        "$MARITAL TEXT,"
-        "$MESSAGE_ATTACHMENT_COUNT_IN_ET INTEGER,"
-        "$MESSAGE_FOLLOWER_IDS_IN_ET TEXT,"
-        "$MESSAGE_HAS_ERROR_IN_ET TEXT,"
-        "$MESSAGE_HAS_ERROR_COUNTER_IN_ET TEXT,"
-        "$MESSAGE_HAS_SMS_ERROR_IN_ET TEXT,"
-        "$MESSAGE_IDS_IN_ET TEXT,"
-        "$MESSAGE_IS_FOLLOWER_IN_ET TEXT,"
-        "$MESSAGE_MAIN_ATTACHMENT_ID_IN_ET INTEGER,"
-        "$MESSAGE_NEEDACTION_IN_ET TEXT,"
-        "$MESSAGE_NEEDACTION_COUNNTER_IN_ET TEXT,"
-        "$MESSAGE_PARTNER_IDS_IN_ET TEXT,"
-        "$MESSAGE_UNREAD_IN_ET TEXT,"
-        "$MESSAGE_UNREAD_COUNTER_IN_ET TEXT,"
-        "$MOBILE_PHONE TEXT,"
-        "$MY_ACTIVITY_DATE_DEADLINE_IN_ET TEXT,"
-        "$NAME_IN_ET TEXT NOT NULL,"
-        "$NOTES TEXT,"
-        "$PARENT_ID_IN_ET INTEGER,"
-        "$PASSPORT_ID INTEGER,"
-        "$PERMIT_NO TEXT,"
-        "$PHONE_IN_ET TEXT,"
-        "$PICKING_TYPE_ID_IN_ET INTEGER,"
-        "$PIN TEXT NOT NULL,"
-        "$PLACE_OF_BIRTH TEXT,"
-        "$PRIVATE_EMAIL TEXT,"
-        "$RESOURCE_CALENDAR_ID TEXT,"
-        "$RESOURCE_ID INTEGER,"
-        "$SIGN_REQUEST_COUNT INTEGER,"
-        "$SINID TEXT,"
-        "$SPOUSE_BIRTHDATE TEXT,"
-        "$SPOUSE_COMPLETE_NAME TEXT,"
-        "$SSNID TEXT,"
-        "$STUDY_FIELD TEXT,"
-        "$STUDY_SCHOOL TEXT,"
-        "$SUBORDINATE_IDS TEXT,"
-        "$TZ_IN_ET TEXT,"
-        "$USER_ID_IN_ET INTEGER,"
-        "$USER_PARTNER_ID INTEGER,"
-        "$VEHICLE TEXT,"
-        "$VISA_EXPIRE TEXT,"
-        "$VISA_NO TEXT,"
-        "$WEBSITE_MESSAGE_IDS_IN_ET TEXT,"
+        "$NAME_IN_ET TEXT,"
+        "$PIN TEXT,"
         "$WORK_EMAIL TEXT,"
-        "$WORK_LOCATION_ID INTEGER,"
-        "$WORK_PERMIT_SCHEDULED_ACTIVITY TEXT,"
-        "$WORK_PERMIT_EXPIRATION_DATE TEXT,"
         "$WORK_PHONE TEXT,"
-        "$WRITE_DATE_IN_ET TEXT,"
-        "$WRITE_UID_IN_ET INTEGER"
+        "$JOB_TITLE TEXT"
         ")");
   }
 
   static Future<int> insert(Employee employee) async {
     final Database db = await DatabaseHelper().db;
-    String sql = "INSERT INTO $EMPLOYEE_TABLE_NAME("
-        "$ACTIVE_IN_ET, $ACTIVITY_CALENDAR_EVENT_ID_IN_ET, $ACTIVITY_DATE_DEADLINE_IN_ET, $ACTIVITY_EXCEPTION_DECORATION_IN_ET, "
-        "$ACTIVITY_EXCEPTION_ICON_IN_ET, $ACTIVTIY_IDS, $ACTIVITY_STATE_IN_ET, $ACTIVITY_TYPE_ICON_IN_ET, "
-        "$ACTIVITY_TYPE_ID_IN_ET, $ACTIVITY_USER_ID_IN_ET, $ADDTIONAL_NOTE, $ADDRESS_HOME_ID, "
-        "$ADDRESS_ID, $AVATAR_1024, $AVATAR_128, $AVATAR_1920, "
-        "$AVATAR_256, $AVATAR_512, $BANK_ACCOUNT_ID, $BARCODE_IN_ET, "
-        "$BIRTHDAY, $CALENDAR_MISMATCH, $CATEGORY_IDS, $CERTIFICATE, "
-        "$CHILD_ALL_COUNT, $CHILD_IDS_IN_ET, $CHILDREN, $COACH_ID, "
-        "$COLOR_IN_ET, $COMPANY_COUNTRY_CODE, $COMPANY_COUNTRY_ID, $COMPANY_ID_IN_ET, "
-        "$CONTRACT_ID, $CONTRACT_IDS_IN_ET, $CONTRACTS_COUNT, $CONTRACT_WARNING, "
-        "$COUNTRY_ID_IN_ET, $COUNTRY_OF_BIRTH, $CREATE_DATE_IN_ET, $CREATE_UID_IN_ET, "
-        "$DEPARTMENT_ID, $DEPARTURE_DATE, $DEPARTURE_DESCRIPTION, $DEPARTURE_REASON_ID, "
-        "$DESTINATION_LOCATION_ID, $DISPLAY_NAME_IN_ET, $DOCUMENT_COUNT_IN_ET, $DRIVING_LICENSE, "
-        "$EMERGENCY_CONTACT, $EMERGENCY_PHONE, $FIRST_CONTRACT_DATE, $GENDER_IN_ET, $HAS_MESSAGE_IN_ET, "
-        "$HAS_WORK_PERMIT, $HR_ICON_DISPLAY, $HR_PERSENCE_STATE, $ID_CARD, "
-        "$IDENTIFICATION_ID, $IMAGE_1024, $IMAGE_128, $IMAGE_1920, "
-        "$IMAGE_265, $IMAGE_512, $IS_ADDRESS_HOME_A_COMPANY, $JOB_ID, "
-        "$JOB_TITLE, $KM_HOME_WORK, $LANG_IN_ET, $LAST_ACTIVITY, "
-        "$LAST_ACTIVITY_TIME, $LAST_UPDATE_IN_ET, $MARITAL, $MESSAGE_ATTACHMENT_COUNT_IN_ET, "
-        "$MESSAGE_FOLLOWER_IDS_IN_ET, $MESSAGE_HAS_ERROR_IN_ET, $MESSAGE_HAS_ERROR_COUNTER_IN_ET, $MESSAGE_HAS_SMS_ERROR_IN_ET, "
-        "$MESSAGE_IDS_IN_ET, $MESSAGE_IS_FOLLOWER_IN_ET, $MESSAGE_MAIN_ATTACHMENT_ID_IN_ET, $MESSAGE_NEEDACTION_IN_ET, "
-        "$MESSAGE_NEEDACTION_COUNNTER_IN_ET, $MESSAGE_PARTNER_IDS_IN_ET, $MESSAGE_UNREAD_IN_ET, $MESSAGE_UNREAD_COUNTER_IN_ET, "
-        "$MOBILE_PHONE, $MY_ACTIVITY_DATE_DEADLINE_IN_ET, $NAME_IN_ET, $NOTES, "
-        "$PARENT_ID_IN_ET, $PASSPORT_ID, $PERMIT_NO, $PHONE_IN_ET, "
-        "$PICKING_TYPE_ID_IN_ET, $PIN, $PLACE_OF_BIRTH, $PRIVATE_EMAIL, $RESOURCE_CALENDAR_ID, "
-        "$RESOURCE_ID, $SIGN_REQUEST_COUNT, $SINID, $SPOUSE_BIRTHDATE, "
-        "$SPOUSE_COMPLETE_NAME, $SSNID, $STUDY_FIELD, $STUDY_SCHOOL, "
-        "$SUBORDINATE_IDS, $TZ_IN_ET, $USER_ID_IN_ET, $USER_PARTNER_ID, "
-        "$VEHICLE, $VISA_EXPIRE, $VISA_NO, $WEBSITE_MESSAGE_IDS_IN_ET, "
-        "$WORK_EMAIL, $WORK_LOCATION_ID, $WORK_PERMIT_SCHEDULED_ACTIVITY, $WORK_PHONE, "
-        "$WRITE_DATE_IN_ET, $WRITE_UID_IN_ET, $WORK_PERMIT_EXPIRATION_DATE"
-        ")"
-        " VALUES("
-        "'${employee.active}', '${employee.activityCalendarEventId}', '${employee.activityDateDeadline}', '${employee.activityExceptionDecoration}', "
-        "'${employee.activityExceptionIcon}', '${employee.activityIds}', '${employee.activityState}', '${employee.activityTypeIcon}', "
-        "'${employee.activityTypeId}', '${employee.activityUserId}', '${employee.additionalNote}', '${employee.addressHomeId}', "
-        "'${employee.addressId}', '${employee.avatar1024}', '${employee.avatar128}', '${employee.avatar1920}', "
-        "'${employee.avatar256}', '${employee.avatar512}', '${employee.bankAccountId}', '${employee.barcode}', "
-        "'${employee.birthday}', '${employee.calendarMismatch}', '${employee.categoryIds}', '${employee.certificate}', "
-        "'${employee.childAllCount}', '${employee.childIds}', '${employee.children}', '${employee.coachId}', "
-        "'${employee.color}', '${employee.companyCountryCode}', '${employee.companyCountryId}', '${employee.companyId}', "
-        "'${employee.contractId}', '${employee.contractIds}', '${employee.contractsCount}', '${employee.contractWarning}', "
-        "'${employee.countryId}', '${employee.countryOfBirth}', '${employee.createDate}', '${employee.createUid}', "
-        "'${employee.departmentId}', '${employee.departureDate}', '${employee.departureDescription}', '${employee.departureReasonId}', "
-        "'${employee.destinationLocationId}', '${employee.displayName}', '${employee.documentCount}', '${employee.drivingLicense}', "
-        "'${employee.emergencyContact}', '${employee.emergencyPhone}', '${employee.firstContractDate}', '${employee.gender}', '${(employee.hasMessage == true).toString()}', "
-        "'${(employee.hasWorkPermit == true).toString()}', '${employee.hrIconDisplay}', '${employee.hrPresenceState}', '${employee.idCard}', "
-        "'${employee.identificationId}', '${employee.image1024}', '${employee.image128}', '${employee.image1920}', "
-        "'${employee.image256}', '${employee.image512}', '${(employee.isAddressHomeACompany == true).toString()}', '${employee.jobId}', "
-        "'${employee.jobTitle}', '${employee.kmHomeWork}', '${employee.lang}', '${employee.lastActivity}', "
-        "'${employee.lastActivityTime}', '${employee.lastUpdate}', '${employee.marital}', '${employee.messageAttachmentCount}', "
-        "'${employee.messageFollowerIds}', '${(employee.messageHasError == true).toString()}', '${(employee.messageHasErrorCounter == true).toString()}', '${(employee.messageHasSmsError == true).toString()}', "
-        "'${employee.messageIds}', '${employee.messageIsFollower}', '${employee.messageMainAttachmentId}', '${employee.messageNeedaction}', "
-        "'${employee.messageNeedactionCounter}', '${employee.messagePartnerIds}', '${employee.messageUnread}', '${employee.messageUnreadCounter}', "
-        "'${employee.mobilePhone}', '${employee.myActivityDateDeadline}', '${employee.name}', '${employee.notes}', "
-        "'${employee.parentId}', '${employee.passportId}', '${employee.permitNo}', '${employee.phone}', "
-        "'${employee.pickingTypeId}', '${employee.pin}', '${employee.placeOfBirth}', '${employee.privateEmail}', '${employee.resourceCalendarId}', "
-        "'${employee.resourceId}', '${employee.signRequestCount}', '${employee.sinid}', '${employee.spouseBirthdate}', "
-        "'${employee.spouseCompleteName}', '${employee.ssnid}', '${employee.studyField}', '${employee.studySchool}', "
-        "'${employee.subordinateIds}', '${employee.tz}', '${employee.userId}', '${employee.userPartnerId}', "
-        "'${employee.vehicle}', '${employee.visaExpire}', '${employee.visaNo}', '${employee.websiteMessageIds}', "
-        "'${employee.workEmail}', '${employee.workLocationId}', '${employee.workPermitScheduledActivity}', '${employee.workPhone}', "
-        "'${employee.writeDate}', '${employee.writeUid}', '${employee.workPermitExpirationDate}'"
-        ")";
+    return db.insert(EMPLOYEE_TABLE_NAME, employee.toJson());
+  }
 
-    return db.rawInsert(sql);
+  static Future<void> insertOrUpdateWithDB(
+      final Database db, List<dynamic> data) async {
+    Batch batch = db.batch();
+    // var time = DateTime.now();
+    int index = 0;
+    for (final element in data) {
+      Employee employee =
+          element is Employee ? element : Employee.fromJson(element);
+      batch.insert(
+        EMPLOYEE_TABLE_NAME,
+        employee.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (index % 1000 == 0) {
+        await batch.commit(noResult: true);
+        batch = db.batch();
+      }
+      index++;
+    }
+
+    // var time2 = DateTime.now();
+    // var d = time2.difference(time);
+    // print("Finished ${data.length} in $d");
+    await batch.commit(noResult: true);
   }
 
   static Future<List<Employee>> getAll() async {
@@ -352,7 +77,7 @@ class EmployeeTable {
     // Query the table for all The Categories.
     final List<Map<String, dynamic>> maps = await db.rawQuery(
         "select * from $EMPLOYEE_TABLE_NAME "
-        "where $NAME_IN_ET like '%$filter%' or $BARCODE_IN_ET like '%$filter%'");
+            "where $NAME_IN_ET like '%$filter%'");
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
     return List.generate(maps.length, (i) {
@@ -406,7 +131,7 @@ class EmployeeTable {
       EMPLOYEE_TABLE_NAME,
       employee.toJson(),
       where: "$EMPLOYEE_ID=?",
-      whereArgs: [employee.employeeId],
+      whereArgs: [employee.id],
     );
   }
 }

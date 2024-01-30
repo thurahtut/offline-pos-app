@@ -75,7 +75,7 @@ class InitializePage extends StatelessWidget {
                 ? MorningSyncScreen(
                     alreadyLogin: true,
                   )
-                : LoginScreen(),
+                : UserLoginScreen(),
             onGenerateRoute: Routers.generateRoute,
             theme: ThemeData(
                 textTheme:

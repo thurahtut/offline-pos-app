@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/category/product_category_list_screen.dart';
 import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
+import 'package:offline_pos/view/login/session_login_screen.dart';
 import 'package:offline_pos/view/order/order_detail_screen.dart';
 
 class Routers {
@@ -95,10 +96,14 @@ class Routers {
             orderId: args?.orderId ?? 0,
           ),
         );
+      case SessionLoginScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => SessionLoginScreen(),
+        );
       default:
         {
           return MaterialPageRoute(
-            builder: (_) => LoginScreen(),
+            builder: (_) => UserLoginScreen(),
           );
           //  MaterialPageRoute(
           //   builder: (context) => Scaffold(

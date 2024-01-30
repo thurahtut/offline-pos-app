@@ -56,8 +56,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                 .posCategoryList
                 .addAll(posCategorys);
             context.read<PosCategoryController>().notify();
-            Navigator.pushReplacementNamed(
-                context, WelcomeScreen.routeName);
+            Navigator.pushReplacementNamed(context, MainScreen.routeName);
           });
         });
       });
@@ -71,11 +70,9 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
       content: "Your previous login data is something wrong!.",
       callback: () {
         DatabaseHelper.logOut().then(
-          (value) => 
-        Navigator.pushAndRemoveUntil(
+          (value) => Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-                builder: (context) => LoginScreen()),
+            MaterialPageRoute(builder: (context) => UserLoginScreen()),
             ModalRoute.withName("/Home"),
           ),
         );
@@ -105,8 +102,22 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
           //customer
           context.read<MorningsyncController>().getAllPriceListItemFromApi(
               //price
+              context
+                  .read<ThemeSettingController>()
+                  .appConfig
+                  ?.priceLastSyncDate,
               context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
               () {
+            context
+                .read<ThemeSettingController>()
+                .appConfig
+                ?.priceLastSyncDate = DateTime.now().toUtc().toString();
+            AppConfigTable.insertOrUpdate(
+                PRICE_LAST_SYNC_DATE,
+                context
+                    .read<ThemeSettingController>()
+                    .appConfig
+                    ?.priceLastSyncDate);
             List<int>? ids =
                 context.read<LoginUserController>().posConfig?.paymentMethodIds;
             context

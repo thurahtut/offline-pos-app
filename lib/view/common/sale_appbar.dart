@@ -80,7 +80,8 @@ class _SaleAppBarState extends State<SaleAppBar> {
             context.watch<ViewController>().hideCategory == true
                 ? 'assets/svg/category_fill.svg'
                 : 'assets/svg/category_unfill.svg',
-            width: 16,
+            width: 22,
+            height: 22,
             onPressed: () {
               context.read<ViewController>().hideCategory =
                   !context.read<ViewController>().hideCategory;
@@ -164,7 +165,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
     DatabaseHelper.logOut().then(
       (value) => Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => UserLoginScreen()),
         ModalRoute.withName("/Home"),
       ),
     );

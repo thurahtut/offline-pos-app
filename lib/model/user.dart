@@ -1,7 +1,9 @@
+import '../components/export_files.dart';
+
 class User {
   UserData? userData;
   PartnerData? partnerData;
-  EmployeeData? employeeData;
+  Employee? employeeData;
   List<ConfigData>? configData;
 
   User({this.userData, this.partnerData, this.employeeData, this.configData});
@@ -13,7 +15,7 @@ class User {
         ? PartnerData.fromJson(json['partner_data'])
         : null;
     employeeData = json['employee_data'] != null
-        ? EmployeeData.fromJson(json['employee_data'])
+        ? Employee.fromJson(json['employee_data'])
         : null;
     if (json['config_data'] != null) {
       configData = <ConfigData>[];
@@ -75,43 +77,6 @@ class PartnerData {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
-    return data;
-  }
-}
-
-class EmployeeData {
-  int? id;
-  String? name;
-  String? pin;
-  String? workEmail;
-  String? workPhone;
-  String? jobTitle;
-
-  EmployeeData(
-      {this.id,
-      this.name,
-      this.pin,
-      this.workEmail,
-      this.workPhone,
-      this.jobTitle});
-
-  EmployeeData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    pin = json['pin'];
-    workEmail = json['work_email'];
-    workPhone = json['work_phone'];
-    jobTitle = json['job_title'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['pin'] = pin;
-    data['work_email'] = workEmail;
-    data['work_phone'] = workPhone;
-    data['job_title'] = jobTitle;
     return data;
   }
 }

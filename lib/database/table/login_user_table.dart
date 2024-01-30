@@ -113,7 +113,7 @@ class LoginUserTable {
               PartnerData.fromJson(jsonDecode(data[LOGIN_VALUE]));
         } else if (data[LOGIN_NAME] == EMPLOYEE_DATA) {
           loginUser.employeeData =
-              EmployeeData.fromJson(jsonDecode(data[LOGIN_VALUE]));
+              Employee.fromJson(jsonDecode(data[LOGIN_VALUE]));
         } else if (data[LOGIN_NAME] == CONFIG_DATA) {
           loginUser.configData = [];
           jsonDecode(data[LOGIN_VALUE]).forEach((v) {

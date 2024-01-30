@@ -146,6 +146,8 @@ class Api {
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,
+    Duration? receiveTimeout,
+    Duration? sendTimeout,
     Function()? callback,
     void Function(int, int)? onSendProgress,
     void Function(int, int)? onReceiveProgress,
@@ -157,6 +159,8 @@ class Api {
             Options(
               method: method,
               contentType: "application/json",
+              receiveTimeout: receiveTimeout,
+              sendTimeout: sendTimeout,
             ),
         data: data,
         queryParameters: queryParameters,
@@ -239,6 +243,8 @@ class Api {
       method: Method.GET.name,
       onReceiveProgress: onReceiveProgress,
       queryParameters: map,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
     );
   }
 
@@ -264,6 +270,8 @@ class Api {
       endpoint: '/customers'.onEndPoint(),
       method: Method.GET.name,
       onReceiveProgress: onReceiveProgress,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
     );
   }
 
@@ -297,15 +305,23 @@ class Api {
 
   static Future<Response?> getPriceListItemByID({
     int? priceListId,
+    String? lastSyncDate,
     void Function(int, int)? onReceiveProgress,
   }) async {
     dio.options.headers = {
       'Content-Type': 'application/json',
     };
+    Map<String, dynamic> map = {};
+    if (lastSyncDate != null) {
+      map.putIfAbsent("last_sync_date", () => lastSyncDate);
+    }
     return request(
       endpoint: '/pricelist/items/$priceListId'.onEndPoint(),
       method: Method.GET.name,
       onReceiveProgress: onReceiveProgress,
+      queryParameters: map,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
     );
   }
 

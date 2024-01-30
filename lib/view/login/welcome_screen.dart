@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/login/session_login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -41,7 +42,7 @@ class WelcomeScreen extends StatelessWidget {
             context,
             'Sale (POS)',
             () {
-              Navigator.pushNamed(context, MainScreen.routeName);
+              Navigator.pushNamed(context, SessionLoginScreen.routeName);
             },
             svg: "assets/svg/sell.svg",
           ),
@@ -54,13 +55,13 @@ class WelcomeScreen extends StatelessWidget {
             },
             svg: "assets/svg/inventory_2.svg",
           ),
-          SizedBox(width: 8),
-          _buttonContainer(
-            context,
-            'Finance',
-            () {},
-            svg: "assets/svg/account_balance.svg",
-          ),
+          // SizedBox(width: 8),
+          // _buttonContainer(
+          //   context,
+          //   'Finance',
+          //   () {},
+          //   svg: "assets/svg/account_balance.svg",
+          // ),
           SizedBox(width: 8),
           _buttonContainer(
             context,

@@ -7,6 +7,7 @@ class AppConfig {
   Uint8List? logo;
   String? dbVersion;
   String? productLastSyncDate;
+  String? priceLastSyncDate;
   bool? rememberPassword;
 
   AppConfig({
@@ -14,6 +15,8 @@ class AppConfig {
     this.logo,
     this.dbVersion,
     this.rememberPassword,
+    this.priceLastSyncDate,
+    this.productLastSyncDate,
   });
 
   AppConfig.fromJson(Map<String, dynamic> json) {
@@ -26,6 +29,7 @@ class AppConfig {
     }
     dbVersion = json['db_version'];
     productLastSyncDate = json['product_last_sync_date'];
+    priceLastSyncDate = json['price_last_sync_date'];
     rememberPassword = bool.tryParse(json['remember_password']);
   }
 
@@ -37,6 +41,7 @@ class AppConfig {
     }
     data['db_version'] = dbVersion;
     data['product_last_sync_date'] = productLastSyncDate;
+    data['price_last_sync_date'] = priceLastSyncDate;
     data['remember_password'] = rememberPassword.toString();
     return data;
   }

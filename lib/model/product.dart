@@ -17,6 +17,7 @@ class Product {
   String? barcode;
   int? onhandQuantity;
   PriceListItem? priceListItem;
+  bool? firstTime;
 
   Product({
     this.productId,
@@ -33,6 +34,7 @@ class Product {
     this.barcode,
     this.onhandQuantity,
     this.priceListItem,
+    this.firstTime,
   });
 
   Product.fromJson(Map<String, dynamic> json, {int? pId}) {

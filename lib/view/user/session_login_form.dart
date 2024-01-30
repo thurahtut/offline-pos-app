@@ -1,7 +1,7 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class UserLoginForm extends StatefulWidget {
-  const UserLoginForm({
+class SessionLoginForm extends StatefulWidget {
+  const SessionLoginForm({
     super.key,
     required this.mainContext,
     required this.bContext,
@@ -12,10 +12,10 @@ class UserLoginForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
 
   @override
-  State<UserLoginForm> createState() => _UserLoginFormState();
+  State<SessionLoginForm> createState() => _SessionLoginFormState();
 }
 
-class _UserLoginFormState extends State<UserLoginForm> {
+class _SessionLoginFormState extends State<SessionLoginForm> {
   ValueNotifier<bool> passwordVisibility = ValueNotifier(false);
 
   @override
@@ -48,7 +48,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
           children: [
             Divider(),
             SizedBox(height: MediaQuery.of(context).size.height / 13),
-            _emailWidget(textStyle),
+            _usernameWidget(textStyle),
             SizedBox(height: 20),
             _pinWidget(textStyle, context),
             SizedBox(height: MediaQuery.of(context).size.height / 13),
@@ -74,7 +74,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
     );
   }
 
-  TextFormField _emailWidget(TextStyle textStyle) {
+  TextFormField _usernameWidget(TextStyle textStyle) {
     return TextFormField(
       autofocus: true,
       style: TextStyle(
@@ -82,7 +82,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
         fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
-        label: Text('Email'),
+        label: Text('Username'),
         labelStyle: textStyle,
         contentPadding: EdgeInsets.all(20),
         border: OutlineInputBorder(
@@ -102,7 +102,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
       },
       validator: (value) {
         if (value == null) {
-          return "Please enter email!";
+          return "Please enter username!";
         }
         return null;
       },
@@ -122,7 +122,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
           ),
           keyboardType: TextInputType.visiblePassword, //to check
           decoration: InputDecoration(
-            label: Text('Password'),
+            label: Text('Pin'),
             labelStyle: textStyle,
             contentPadding: EdgeInsets.all(20),
             border: OutlineInputBorder(
@@ -151,14 +151,14 @@ class _UserLoginFormState extends State<UserLoginForm> {
           // ],
           obscureText: !passwordVisible,
           onFieldSubmitted: (value) {
-            loginUser(widget.bContext);
+            sessionLogin(widget.bContext);
           },
           onSaved: (newValue) {
             widget.mainContext.read<ViewController>().password = newValue;
           },
           validator: (value) {
             if (value == null) {
-              return "Please enter password!";
+              return "Please enter pin code!";
             }
             return null;
           },
@@ -202,31 +202,33 @@ class _UserLoginFormState extends State<UserLoginForm> {
       textSize: 18,
       radius: 8,
       onTap: () {
-        loginUser(widget.bContext);
+        sessionLogin(widget.bContext);
       },
     );
   }
 
-  void loginUser(BuildContext bContext) {
+  void sessionLogin(BuildContext bContext) {
     if (widget.formKey.currentState?.validate() ?? false) {
       widget.formKey.currentState?.save();
-      Api.login(
-        email: widget.mainContext.read<ViewController>().email,
-        password: widget.mainContext.read<ViewController>().password,
-      ).then((response) {
-        if (response != null &&
-            response.statusCode == 200 &&
-            response.data != null) {
-          context.read<LoginUserController>().loginUser =
-              User.fromJson(response.data);
-          LoginUserTable.insertOrUpdateUser(
-              context.read<LoginUserController>().loginUser!);
-          Navigator.pop(bContext, true);
+      LoginUserTable.checkRowExist(EMPLOYEE_DATA).then((value) {
+        if (value) {
+          LoginUserTable.getLoginUser().then((user) {
+            if (user != null &&
+                user.employeeData?.workEmail ==
+                    widget.mainContext.read<ViewController>().email &&
+                user.employeeData?.pin ==
+                    widget.mainContext.read<ViewController>().password) {
+              Navigator.pop(bContext, true);
+            } else {
+              CommonUtils.showSnackBar(
+                  context: widget.mainContext,
+                  message: 'Username and password is invalid!');
+            }
+          });
         } else {
           CommonUtils.showSnackBar(
-              context: widget.mainContext,
-              message: response?.statusMessage ?? 'Something was wrong!');
-        } 
+              context: widget.mainContext, message: 'Something was wrong!');
+        }
       });
     }
   }
