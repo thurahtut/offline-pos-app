@@ -90,28 +90,29 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                         ),
                         fit: pw.BoxFit.fitHeight)),
               pw.Text(
-                CommonUtils.companyList.first,
+                'SSS International Co.,ltd',
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),
                   fontSize: 20,
                 ),
               ),
               pw.Text(
-                'Tel : +959 123 456 789',
+                'contact@sssretail.com',
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),
                   fontSize: 20,
                 ),
               ),
               pw.Text(
-                'info@gmail.com',
+                'https://www.sssretail.com',
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),
                   fontSize: 20,
                 ),
               ),
               pw.Text(
-                'https://www.google.com',
+                context.read<LoginUserController>().posConfig?.receiptHeader ??
+                    '',
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),
                   fontSize: 20,
@@ -122,7 +123,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 child: pw.Divider(borderStyle: pw.BorderStyle.dashed),
               ),
               pw.Text(
-                'Date : ${DateTime.now().toString()}',
+                'Served by : ${context.read<LoginUserController>().loginUser?.employeeData?.name}',
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),
                   fontSize: 20,
@@ -418,29 +419,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     double size = 26;
     return [
       pw.Text(
-        "Thank you for shopping with us.",
-        style: pw.TextStyle(
-          color: PdfColor.fromHex("#262927"),
-          fontSize: size,
-        ),
-      ),
-      pw.Text(
-        "See you again.",
-        style: pw.TextStyle(
-          color: PdfColor.fromHex("#262927"),
-          fontSize: size,
-        ),
-      ),
-      pw.Text(
-        "(၀ယ်ပြီးပစ္စည်းပြန်မလဲပေးပါ။)",
-        style: pw.TextStyle(
-          color: PdfColor.fromHex("#262927"),
-          fontSize: size,
-          font: font != null ? pw.Font.ttf(font!) : null,
-        ),
-      ),
-      pw.Text(
-        "Customer Service Hotline: +959123456789",
+        context.read<LoginUserController>().posConfig?.receiptFooter ?? '',
         style: pw.TextStyle(
           color: PdfColor.fromHex("#262927"),
           fontSize: size,

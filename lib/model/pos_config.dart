@@ -6,15 +6,20 @@ class POSConfig {
   bool? shShowQtyLocation;
   int? shPosLocation;
   List<int>? paymentMethodIds;
+  String? receiptHeader;
+  String? receiptFooter;
 
-  POSConfig(
-      {this.id,
-      this.name,
-      this.pricelistId,
-      this.shDisplayStock,
-      this.shShowQtyLocation,
-      this.shPosLocation,
-      this.paymentMethodIds});
+  POSConfig({
+    this.id,
+    this.name,
+    this.pricelistId,
+    this.shDisplayStock,
+    this.shShowQtyLocation,
+    this.shPosLocation,
+    this.paymentMethodIds,
+    this.receiptHeader,
+    this.receiptFooter,
+  });
 
   POSConfig.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -24,6 +29,8 @@ class POSConfig {
     shShowQtyLocation = json['sh_show_qty_location'];
     shPosLocation = json['sh_pos_location'];
     paymentMethodIds = json['payment_method_ids'].cast<int>();
+    receiptHeader = json['receipt_header'];
+    receiptFooter = json['receipt_footer'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +42,8 @@ class POSConfig {
     data['sh_show_qty_location'] = shShowQtyLocation;
     data['sh_pos_location'] = shPosLocation;
     data['payment_method_ids'] = paymentMethodIds;
+    data['receipt_header'] = receiptHeader;
+    data['receipt_footer'] = receiptFooter;
     return data;
   }
 }

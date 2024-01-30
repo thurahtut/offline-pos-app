@@ -15,6 +15,8 @@ const SH_DISPLAY_STOCK = "sh_display_stock";
 const SH_SHOW_QTY_LOCATION = "sh_show_qty_location";
 const SH_POS_LOCATION = "sh_pos_location";
 const CONFIG_PAYMENT_METHOD_IDS = "payment_method_ids";
+const RECEIPT_HEADER = "receipt_header";
+const RECEIPT_FOOTER = "receipt_footer";
 
 class POSConfigTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -117,7 +119,11 @@ class POSConfigTable {
         } else if (data[POS_CONFIG_NAME] == CONFIG_PAYMENT_METHOD_IDS) {
           posConfig.paymentMethodIds =
               jsonDecode(data[POS_CONFIG_VALUE])?.cast<int>();
-        }
+        } else if (data[POS_CONFIG_NAME] == RECEIPT_HEADER) {
+          posConfig.receiptHeader = data[POS_CONFIG_VALUE];
+        } else if (data[POS_CONFIG_NAME] == RECEIPT_FOOTER) {
+          posConfig.receiptFooter = data[POS_CONFIG_VALUE];
+        } 
       }
     }
 
