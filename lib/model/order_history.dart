@@ -11,18 +11,34 @@ class OrderHistory {
   String? createDate;
   int? createUid;
   int? configId;
-  String? configName;
-  // int? companyId;
   int? amountTotal;
   String? sequenceNumber;
   String? writeDate;
   int? writeUid;
-  List<OrderLineID>? lineIds;
-  List<PaymentTransaction>? paymentIds;
   String? receiptNumber;
   String? state;
   String? orderCondition;
   String? partnerName;
+  String? employeeName;
+  int? amountPaid;
+  int? amountReturn;
+  double? amountTax;
+  int? loyaltyPoints;
+  int? nbPrint;
+  String? pointsWon;
+  String? posReference;
+  int? pricelistId;
+  String? qrDt;
+  String? returnStatus;
+  int? tipAmount;
+  bool? toInvoice;
+  bool? toShip;
+  int? totalItem;
+  int? totalQty;
+  int? userId;
+  int? sequenceId;
+  List<OrderLineID>? lineIds;
+  List<PaymentTransaction>? paymentIds;
 
   OrderHistory({
     this.id,
@@ -34,7 +50,6 @@ class OrderHistory {
     this.createDate,
     this.createUid,
     this.configId,
-    this.configName,
     // this.companyId,
     this.amountTotal,
     this.sequenceNumber,
@@ -46,6 +61,24 @@ class OrderHistory {
     this.state,
     this.orderCondition,
     this.partnerName,
+    this.employeeName,
+    this.amountPaid,
+    this.amountReturn,
+    this.amountTax,
+    this.loyaltyPoints,
+    this.nbPrint,
+    this.pointsWon,
+    this.posReference,
+    this.pricelistId,
+    this.qrDt,
+    this.returnStatus,
+    this.tipAmount,
+    this.toInvoice,
+    this.toShip,
+    this.totalItem,
+    this.totalQty,
+    this.userId,
+    this.sequenceId,
   });
 
   OrderHistory.fromJson(Map<String, dynamic> json) {
@@ -66,6 +99,23 @@ class OrderHistory {
     receiptNumber = json["pos_reference"];
     state = json["state"];
     orderCondition = json["order_condition"];
+    // amountPaid = int.tryParse(json['amount_paid']?.toString() ?? '');
+    // amountReturn = int.tryParse(json['amount_return']?.toString() ?? '');
+    // amountTax = double.tryParse(json['amount_tax']?.toString() ?? '');
+    // loyaltyPoints = int.tryParse(json['loyalty_points']?.toString() ?? '');
+    // nbPrint = int.tryParse(json['nb_print']?.toString() ?? '');
+    // pointsWon = json['points_won'];
+    // posReference = json['pos_reference'];
+    // pricelistId = int.tryParse(json['pricelist_id']?.toString() ?? '');
+    // qrDt = json['qr_dt'];
+    // returnStatus = json['return_status'];
+    // tipAmount = int.tryParse(json['tip_amount']?.toString() ?? '');
+    // toInvoice = json['to_invoice'];
+    // toShip = json['to_ship'];
+    // totalItem = int.tryParse(json['total_item']?.toString() ?? '');
+    // totalQty = int.tryParse(json['total_qty']?.toString() ?? '');
+    // userId = int.tryParse(json['user_id']?.toString() ?? '');
+    // sequenceId = int.tryParse(json['sequence_id']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -87,6 +137,23 @@ class OrderHistory {
     data["pos_reference"] = receiptNumber;
     data["state"] = state;
     data["order_condition"] = orderCondition;
+    // data['amount_paid'] = amountPaid;
+    // data['amount_return'] = amountReturn;
+    // data['amount_tax'] = amountTax;
+    // data['loyalty_points'] = loyaltyPoints;
+    // data['nb_print'] = nbPrint;
+    // data['points_won'] = pointsWon;
+    // data['pos_reference'] = posReference;
+    // data['pricelist_id'] = pricelistId;
+    // data['qr_dt'] = qrDt;
+    // data['return_status'] = returnStatus;
+    // data['tip_amount'] = tipAmount;
+    // data['to_invoice'] = toInvoice;
+    // data['to_ship'] = toShip;
+    // data['total_item'] = totalItem;
+    // data['total_qty'] = totalQty;
+    // data['user_id'] = userId;
+    // data['sequence_id'] = sequenceId;
     return data;
   }
 }

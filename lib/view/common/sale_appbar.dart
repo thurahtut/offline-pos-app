@@ -117,21 +117,14 @@ class _SaleAppBarState extends State<SaleAppBar> {
           return [
             PopupMenuItem<int>(
               value: 0,
-              child: CommonUtils.appBarActionButtonWithText(
-                  'assets/svg/account_circle.svg', 'Easy 3 A - Store Leader',
-                  fontSize: 16, onPressed: () {
-                Navigator.pop(bContext);
-                return ChooseCashierDialog.chooseCashierDialogWidget(
-                  context,
-                );
-              }),
+              child: _cashierWidget(bContext, true),
             ),
-            PopupMenuItem<int>(
-              value: 1,
-              child: CommonUtils.appBarActionButtonWithText(
-                  'assets/svg/network_wifi.svg', 'Wifi Address Name',
-                  fontSize: 16, onPressed: () {}),
-            ),
+            // PopupMenuItem<int>(
+            //   value: 1,
+            //   child: CommonUtils.appBarActionButtonWithText(
+            //       'assets/svg/network_wifi.svg', 'Wifi Address Name',
+            //       fontSize: 16, onPressed: () {}),
+            // ),
             PopupMenuItem<int>(
               value: 2,
               child: CommonUtils.appBarActionButtonWithText(
@@ -161,6 +154,49 @@ class _SaleAppBarState extends State<SaleAppBar> {
     ];
   }
 
+  Widget _cashierWidget(BuildContext bContext, bool isPopup) {
+    return CommonUtils.appBarActionButtonWithText(
+      'assets/svg/account_circle.svg',
+      context.watch<LoginUserController>().loginEmployee?.name != null
+          ? context.read<LoginUserController>().loginEmployee!.name!
+          : '',
+      fontSize: 16,
+      onPressed: () {
+        if (isPopup) {
+          Navigator.pop(bContext);
+        }
+        return ChooseCashierDialog.chooseCashierDialogWidget(
+          context,
+        ).then((value) {
+          if (value == true) {
+            LoginUserController controller =
+                context.read<LoginUserController>();
+            int? configId = controller.posConfig?.id;
+            Api.getPosSessionByID(configId: configId).then((sessionResponse) {
+              if (sessionResponse != null &&
+                  sessionResponse.statusCode == 200 &&
+                  sessionResponse.data != null &&
+                  sessionResponse.data is List &&
+                  (sessionResponse.data as List).isNotEmpty) {
+                controller.posSession =
+                    POSSession.fromJson((sessionResponse.data as List).first);
+                POSSessionTable.insertOrUpdatePOSSession(
+                    controller.posSession!);
+              } else {
+                return CreateSessionDialog.createSessionDialogWidget(context)
+                    .then((value) {
+                  if (value == true) {
+                    context.read<ThemeSettingController>().notify();
+                  }
+                });
+              }
+            });
+          }
+        });
+      },
+    );
+  }
+
   void _logOut() {
     DatabaseHelper.logOut().then(
       (value) => Navigator.pushAndRemoveUntil(
@@ -179,20 +215,11 @@ class _SaleAppBarState extends State<SaleAppBar> {
         child: _searchProductWidget(),
       ),
       spacer,
-      CommonUtils.appBarActionButtonWithText(
-        'assets/svg/account_circle.svg',
-        context.read<LoginUserController>().loginUser?.employeeData?.name ?? '',
-        fontSize: 16,
-        onPressed: () {
-          return ChooseCashierDialog.chooseCashierDialogWidget(
-            context,
-          );
-        },
-      ),
-      spacer,
-      CommonUtils.svgIconActionButton(
-        'assets/svg/network_wifi.svg',
-      ),
+      _cashierWidget(context, false),
+      // spacer,
+      // CommonUtils.svgIconActionButton(
+      //   'assets/svg/network_wifi.svg',
+      // ),
       spacer,
       CommonUtils.svgIconActionButton(
         'assets/svg/credit_card.svg',

@@ -174,7 +174,7 @@ class CustomerTable {
           filter != null ? ['%$filter%', '%${filter.toLowerCase()}%'] : null,
       // where: "$PRODUCT_NAME=?",
       // whereArgs: [filter],
-      orderBy: '$CUSTOMER_ID_IN_CT DESC',
+      orderBy: '$CUSTOMER_ID_IN_CT ASC',
       limit: limit,
       offset: offset,
     );

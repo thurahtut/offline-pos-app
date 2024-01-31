@@ -104,7 +104,6 @@ export '../view/sync/manual_sync_screen.dart';
 export '../view/theme/theme_setting_screen.dart';
 export '../view/user/choose_cashier_dialog.dart';
 export '../view/user/create_or_edit_user_screen.dart';
-export '../view/user/session_login_dialog.dart';
 export '../view/user/user_list_screen.dart';
 export '/components/constant.dart';
 export '/components/routers.dart';

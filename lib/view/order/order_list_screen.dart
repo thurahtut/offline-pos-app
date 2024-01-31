@@ -12,8 +12,6 @@ class OrderListScreen extends StatefulWidget {
 }
 
 class _OrderListScreenState extends State<OrderListScreen> {
-  int _limit = 20;
-  int _offset = 0;
   bool? _sortAscending = true;
   int? _sortColumnIndex;
   bool? isTabletMode;
@@ -37,8 +35,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   Future<void> updateOrderHistoryListToTable() async {
     context.read<OrderListController>().orderInfoDataSource =
-        DataSourceForOrderListScreen(context,
-            context.read<OrderListController>().orderList, _offset, () {});
+        DataSourceForOrderListScreen(
+            context,
+            context.read<OrderListController>().orderList,
+            context.read<OrderListController>().offset,
+            () {});
   }
 
   @override
@@ -54,7 +55,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.currentOrderDividerColor,
-      appBar: SaleAppBar(),
+      // appBar: SaleAppBar(),
       body: _bodyWidget(),
     );
   }
@@ -90,7 +91,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
           child: Container(
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width,
-              maxHeight: MediaQuery.of(context).size.height - 200,
+              maxHeight: MediaQuery.of(context).size.height - 100,
             ),
             child:
                 context.watch<OrderListController>().orderInfoDataSource != null
@@ -118,10 +119,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
               borderWithPrimaryColor: true,
               textColor: primaryColor,
               onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainScreen()),
-                    ModalRoute.withName("/Home"));
+                Navigator.pop(context);
               },
             ),
           ),
@@ -248,7 +246,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   headingRowHeight: 70,
                   dividerThickness: 0.0,
                   rowsPerPage: min(
-                      _limit,
+                      context.read<OrderListController>().limit,
                       max(context.read<OrderListController>().orderList.length,
                           1)),
                   minWidth: MediaQuery.of(context).size.width - 100,
@@ -297,10 +295,55 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       context.read<OrderListController>().orderInfoDataSource!,
                 ),
               ),
-        // _paginationWidget(),
+        _paginationWidget(),
       ],
     );
   }
+
+  Widget _paginationWidget() {
+    return Consumer<OrderListController>(builder: (_, controller, __) {
+      return Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          FlutterCustomPagination(
+            currentPage: controller.currentIndex,
+            limitPerPage: controller.limit,
+            totalDataCount: controller.total,
+            onPreviousPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllOrderHistory();
+            },
+            onBackToFirstPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllOrderHistory();
+            },
+            onNextPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllOrderHistory();
+            },
+            onGoToLastPage: (pageNo) {
+              controller.offset =
+                  (controller.limit * pageNo) - controller.limit;
+              controller.currentIndex = pageNo;
+              getAllOrderHistory();
+            },
+            backgroundColor: Theme.of(context).colorScheme.background,
+            previousPageIcon: Icons.keyboard_arrow_left,
+            backToFirstPageIcon: Icons.first_page,
+            nextPageIcon: Icons.keyboard_arrow_right,
+            goToLastPageIcon: Icons.last_page,
+          ),
+        ],
+      );
+    });
+  }
+
 }
 
 class DataSourceForOrderListScreen extends DataTableSource {
@@ -344,37 +387,40 @@ class DataSourceForOrderListScreen extends DataTableSource {
 
   DataRow _createRow(int index) {
     OrderHistory order = orderList[index];
+
+    onTap() {
+      Navigator.pushNamed(context, OrderDetailScreen.routeName,
+          arguments: OrderDetailScreen(orderId: order.id ?? 0));
+    }
+
     return DataRow(
       onSelectChanged: (value) {
-        // (NavigationService.navigatorKey.currentContext ?? context).goNamed(
-        //   EditUserScreen.routeName,
-        //   pathParameters: {
-        //     "id": userInfo.id.toString(),
-        //   },
-        // );
+        onTap();
       },
       cells: [
         DataCell(
           Text(order.createDate ?? ''),
-          onTap: () {
-            Navigator.pushNamed(context, OrderDetailScreen.routeName,
-                arguments: OrderDetailScreen(orderId: order.id ?? 0));
-          },
+          // onTap: onTap,
         ),
         DataCell(
           Text(order.receiptNumber ?? ''),
+          // onTap: onTap,
         ),
         DataCell(
-          Text(''), //order.customerId??
+          Text(order.partnerName ?? ''),
+          // onTap: onTap,
         ),
         DataCell(
-          Text(order.employeeId?.toString() ?? ''),
+          Text(order.employeeName ?? ''),
+          // onTap: onTap,
         ),
         DataCell(
           Text('${order.amountTotal?.toStringAsFixed(2) ?? '0.00'} Ks'),
+          // onTap: onTap,
         ),
         DataCell(
           Text(order.state ?? ''),
+          // onTap: onTap,
         ),
         DataCell(
           CommonUtils.svgIconActionButton('assets/svg/delete.svg'),

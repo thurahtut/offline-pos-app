@@ -37,6 +37,14 @@ class LoginUserController with ChangeNotifier {
     notifyListeners();
   }
 
+  Employee? _loginEmployee;
+  Employee? get loginEmployee => _loginEmployee;
+  set loginEmployee(Employee? loginEmployee) {
+    if (_loginEmployee == loginEmployee) return;
+    _loginEmployee = loginEmployee;
+    notifyListeners();
+  }
+
   // List<Employee> _employeeList = [];
   // List<Employee> get employeeList => _employeeList;
   // set employeeList(List<Employee> employeeList) {

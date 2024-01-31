@@ -68,7 +68,7 @@ class OrderListController with ChangeNotifier {
   }
 
   Future<void> getAllOrderHistory() async {
-    getTotalCustomerCount();
+    getAllOrderHistoryCount();
     await OrderHistoryTable.getOrderHistorysFiltering(
       filter: filterValue,
       limit: limit,
@@ -80,8 +80,8 @@ class OrderListController with ChangeNotifier {
     });
   }
 
-  Future<void> getTotalCustomerCount() async {
-    CustomerTable.getAllCustomerCount(
+  Future<void> getAllOrderHistoryCount() async {
+    OrderHistoryTable.getAllOrderHistoryCount(
       filter: filterValue,
     ).then((count) {
       total = count;

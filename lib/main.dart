@@ -1,9 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/order_detail_controller.dart';
-import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -67,6 +68,7 @@ class InitializePage extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           }
           return MaterialApp(
+            scrollBehavior: MyCustomScrollBehavior(),
             debugShowCheckedModeBanner: false,
             title: 'Offline POS',
             navigatorKey: NavigationService.navigatorKey,
@@ -92,4 +94,13 @@ class MyHttpOverrides extends HttpOverrides {
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
   }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

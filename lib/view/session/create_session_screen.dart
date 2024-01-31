@@ -58,13 +58,13 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                     createUid: userId,
                     date: date,
                     emailFrom:
-                        userController.loginUser?.employeeData?.workEmail ??
-                            userController.loginUser?.employeeData?.name ??
+                        userController.loginEmployee?.workEmail ??
+                        userController.loginEmployee?.name ??
                             '',
                     isInternal: true,
                     messageType: "notification",
                     model: "pos.session",
-                    replyTo: userController.loginUser?.employeeData?.name ?? '',
+                    replyTo: userController.loginEmployee?.name ?? '',
                   ));
               Api.createSession(createSession: createSession).then((response) {
                 if (response != null && response.statusCode == 200) {

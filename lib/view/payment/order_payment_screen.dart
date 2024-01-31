@@ -129,7 +129,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               OrderHistoryTable.updateValue(
                   db,
                   currentOrderController.orderHistory?.id ?? 0,
-                  ORDER_CONDITION,
+                  STATE_IN_OT,
                   OrderState.paid.text);
               var count = 0;
               Navigator.popUntil(context, (route) {

@@ -40,21 +40,46 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           minHeight: MediaQuery.of(context).size.height / 2,
           minWidth: (MediaQuery.of(context).size.width / 2) -
               MediaQuery.of(context).size.width / 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Constants.greyColor2.withOpacity(0.3),
-            blurRadius: 4,
-            offset: Offset(0, 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 4),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 30,
+            ),
+            child: BorderContainer(
+              text: 'Back',
+              width: 140,
+              borderWithPrimaryColor: true,
+              textColor: primaryColor,
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Constants.greyColor2.withOpacity(0.3),
+                    blurRadius: 4,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              margin: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width / 30,
+                  vertical: 10),
+              padding: EdgeInsets.all(20),
+              child: _childrenWidget(),
+            ),
           ),
         ],
       ),
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width / 30, vertical: 10),
-      padding: EdgeInsets.all(20),
-      child: _childrenWidget(),
     );
   }
 
@@ -157,7 +182,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Expanded(
                       flex: 2,
                       child: _textForDetailInfo(
-                          controller.orderHistory?.employeeId?.toString() ??
+                          controller.orderHistory?.employeeName ??
                               ''),
                     ),
                   ],

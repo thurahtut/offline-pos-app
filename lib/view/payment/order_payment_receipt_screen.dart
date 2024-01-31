@@ -124,7 +124,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 child: pw.Divider(borderStyle: pw.BorderStyle.dashed),
               ),
               pw.Text(
-                'Served by : ${context.read<LoginUserController>().loginUser?.employeeData?.name}',
+                'Served by : ${context.read<LoginUserController>().loginEmployee?.name}',
                 textAlign: pw.TextAlign.center,
                 style: pw.TextStyle(
                   color: PdfColor.fromInt(Constants.textColor.value),

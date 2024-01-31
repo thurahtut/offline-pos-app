@@ -8,6 +8,8 @@ class OrderLineID {
   double? priceSubtotalIncl;
   String? productName;
   String? barcode;
+  String? createDate;
+  int? createUid;
 
   OrderLineID({
     this.id,

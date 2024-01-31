@@ -546,8 +546,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
           partnerId: partnerId,
           employeeId:
-              context.read<LoginUserController>().loginUser?.employeeData?.id ??
-                  0,
+              context.read<LoginUserController>().loginEmployee?.id ?? 0,
           configId: context.read<LoginUserController>().posConfig?.id ?? 0,
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
           sequenceNumber: orderDate.millisecondsSinceEpoch.toString(),
@@ -557,6 +556,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
               .toInt(),
           name:
               "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.millisecondsSinceEpoch}",
+          state: OrderState.draft.text,
         );
     final Database db = await DatabaseHelper().db;
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
