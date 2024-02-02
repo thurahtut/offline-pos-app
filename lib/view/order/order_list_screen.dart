@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/order/order_detail_screen.dart';
 
@@ -400,11 +399,12 @@ class DataSourceForOrderListScreen extends DataTableSource {
       },
       cells: [
         DataCell(
-          Text((order.createDate != null)
-              ? (DateFormat("hh:mm:ss dd-MM-yyyy")
-                  .format(DateTime.parse(order.createDate!))
-                  .toString())
-              : ''),
+          Text(
+            CommonUtils.getLocaleDateTime(
+              "hh:mm:ss dd-MM-yyyy",
+              order.createDate,
+            ),
+          ),
           // onTap: onTap,
         ),
         DataCell(

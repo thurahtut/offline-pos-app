@@ -593,11 +593,12 @@ class DataSourceForOrderHistoryListScreen extends DataTableSource {
           Text(orderHistory.partnerId?.toString() ?? ''), 
         ),
         DataCell(
-          Text((orderHistory.createDate != null)
-              ? (DateFormat("hh:mm:ss dd-MM-yyyy")
-                  .format(DateTime.parse(orderHistory.createDate!))
-                  .toString())
-              : ''),
+          Text(
+            CommonUtils.getLocaleDateTime(
+              "hh:mm:ss dd-MM-yyyy",
+              orderHistory.createDate,
+            ),
+          ),
         ),
         DataCell(
           Text('${orderHistory.amountTotal?.toStringAsFixed(2) ?? '0.00'} Ks'),

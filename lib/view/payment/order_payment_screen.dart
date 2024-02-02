@@ -127,8 +127,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   totalPayAmt.toInt();
 
               OrderHistoryTable.update(
-                  db,
-                  currentOrderController.orderHistory!);
+                  db, currentOrderController.orderHistory!);
               var count = 0;
               Navigator.popUntil(context, (route) {
                 return count++ == 1;
@@ -193,6 +192,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       controller.getTotalQty(controller.currentOrderList).last;
                   double totalPayAmt = 0;
 
+                  DateTime pDate = DateTime.now().toUtc();
                   for (var data in controller.paymentTransactionList.values) {
                     totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
                   }
@@ -202,6 +202,17 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       PaymentTransaction(
                     paymentMethodId: e.id,
                     paymentMethodName: e.name,
+                    createDate: pDate.toString(),
+                    createUid: context
+                            .read<LoginUserController>()
+                            .loginUser
+                            ?.userData
+                            ?.id ??
+                        0,
+                    isChange: false,
+                    paymentStatus: "",
+                    sessionId:
+                        context.read<LoginUserController>().posSession?.id ?? 0,
                   );
                   controller.paymentTransactionList[e.id ?? -1]?.amount =
                       (totalPayAmt < totalAmt ? totalAmt - totalPayAmt : 0)
@@ -586,7 +597,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         if (paymentTransaction.firstTime == true) {
           price = "";
           paymentTransaction.firstTime = false;
-        } 
+        }
         price += value;
       }
       currentOrderController

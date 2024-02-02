@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/price/price_list_item_detail_create.dart';
 import 'package:offline_pos/view/price/price_list_item_detail_view.dart';
@@ -565,20 +564,21 @@ class DataSourceForPriceItemListScreen extends DataTableSource {
         ),
         DataCell(
           onTap: onTap,
-          Text((priceListItem.priceListItem?.dateStart != null)
-              ? (DateFormat("hh:mm:ss dd-MM-yyyy")
-                  .format(
-                      DateTime.parse(priceListItem.priceListItem!.dateStart!))
-                  .toString())
-              : ''),
+          Text(
+            CommonUtils.getLocaleDateTime(
+              "hh:mm:ss dd-MM-yyyy",
+              priceListItem.priceListItem?.dateStart,
+            ),
+          ),
         ),
         DataCell(
           onTap: onTap,
-          Text((priceListItem.priceListItem?.dateEnd != null)
-              ? (DateFormat("hh:mm:ss dd-MM-yyyy")
-                  .format(DateTime.parse(priceListItem.priceListItem!.dateEnd!))
-                  .toString())
-              : ''),
+          Text(
+            CommonUtils.getLocaleDateTime(
+              "hh:mm:ss dd-MM-yyyy",
+              priceListItem.priceListItem?.dateEnd,
+            ),
+          ),
         ),
         DataCell(
           onTap: onTap,

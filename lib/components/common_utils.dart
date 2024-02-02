@@ -1,10 +1,13 @@
 import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
+
 Color primaryColor = Color(0xFF207810); //007ACC
+
 class CommonUtils {
   static bool isTabletMode(BuildContext context) {
     return MediaQuery.of(context).size.width < 1080;
   }
+
   static bool isMobileMode(BuildContext context) {
     return MediaQuery.of(context).size.width < 500;
   }
@@ -175,7 +178,6 @@ class CommonUtils {
       ),
     );
   }
-
 
   static List sideBarList = [
     {
@@ -543,4 +545,10 @@ class CommonUtils {
     "Super Global Co., Ltd.",
     "SSS International Co.,ltd",
   ];
+
+  static String getLocaleDateTime(String dateFormat, String? dateTime) {
+    DateTime? date = dateTime != null ? DateTime.parse(dateTime) : null;
+    date = date?.add(Duration(hours: 6, minutes: 30));
+    return date != null ? (DateFormat(dateFormat).format(date).toString()) : '';
+  }
 }

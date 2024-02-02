@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -54,13 +53,12 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
 
   Widget _receiptWidget() {
     return PdfPreview(
-      initialPageFormat: PdfPageFormat.roll80,
+      // initialPageFormat: PdfPageFormat.roll80,
       allowSharing: false,
       allowPrinting: false,
       canChangeOrientation: false,
       canChangePageFormat: false,
       maxPageWidth: PdfPageFormat.roll80.width * 2,
-      pdfPreviewPageDecoration: BoxDecoration(boxShadow: []),
       build: (format) => _generatePdf(),
     );
   }
@@ -72,92 +70,99 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
 
     doc.addPage(
       pw.Page(
+        pageFormat: PdfPageFormat.roll80,
         margin: pw.EdgeInsets.all(8),
         build: (pw.Context bContext) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
-            mainAxisAlignment: pw.MainAxisAlignment.start,
-            children: [
-              if (context.read<ThemeSettingController>().appConfig?.logo !=
-                  null)
-                pw.SizedBox(
-                    height: 160,
-                    child: pw.Image(
-                        pw.MemoryImage(
-                          context
-                              .read<ThemeSettingController>()
-                              .appConfig!
-                              .logo!, //  Uint8List.fromList(byteList),
-                        ),
-                        fit: pw.BoxFit.fitHeight)),
-              pw.Text(
-                'SSS International Co.,ltd',
-                style: pw.TextStyle(
-                  color: PdfColor.fromInt(Constants.textColor.value),
-                  fontSize: 20,
-                ),
+          return pw.Container(
+              width: PdfPageFormat.roll80.width,
+              padding: pw.EdgeInsets.only(
+                right: 4,
               ),
-              pw.Text(
-                'contact@sssretail.com',
-                style: pw.TextStyle(
-                  color: PdfColor.fromInt(Constants.textColor.value),
-                  fontSize: 20,
-                ),
-              ),
-              pw.Text(
-                'https://www.sssretail.com',
-                style: pw.TextStyle(
-                  color: PdfColor.fromInt(Constants.textColor.value),
-                  fontSize: 20,
-                ),
-              ),
-              pw.Text(
-                context.read<LoginUserController>().posConfig?.receiptHeader ??
-                    '',
-                textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(
-                  color: PdfColor.fromInt(Constants.textColor.value),
-                  fontSize: 20,
-                ),
-              ),
-              pw.SizedBox(
-                width: 150,
-                child: pw.Divider(borderStyle: pw.BorderStyle.dashed),
-              ),
-              pw.Text(
-                'Served by : ${context.read<LoginUserController>().loginEmployee?.name}',
-                textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(
-                  color: PdfColor.fromInt(Constants.textColor.value),
-                  fontSize: 20,
-                ),
-              ),
-              pw.SizedBox(height: 20),
-              pw.SizedBox(
-                // width: 150,
-                child: pw.Divider(thickness: 2),
-              ),
-              getHeaderWidget(doc),
-              pw.SizedBox(
-                // width: 150,
-                child: pw.Divider(thickness: 2),
-              ),
-              ...getOrderItem(doc),
-              _totalWidget(),
-              pw.SizedBox(height: 20),
-              ..._transactionWidget(),
-              pw.SizedBox(height: 20),
-              _changeWidget(),
-              pw.SizedBox(height: 20),
-              _totalTaxWidget(),
-              pw.SizedBox(height: 20),
-              _totalQtyWidget(),
-              pw.SizedBox(height: 40),
-              ..._thankYouWidget(),
-              pw.SizedBox(height: 40),
-              ..._orderIdWidget(),
-            ],
-          );
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                mainAxisAlignment: pw.MainAxisAlignment.start,
+                mainAxisSize: pw.MainAxisSize.min,
+                children: [
+                  if (context.read<ThemeSettingController>().appConfig?.logo !=
+                      null)
+                    pw.SizedBox(
+                        height: 160,
+                        child: pw.Image(
+                            pw.MemoryImage(
+                              context
+                                  .read<ThemeSettingController>()
+                                  .appConfig!
+                                  .logo!, //  Uint8List.fromList(byteList),
+                            ),
+                            fit: pw.BoxFit.fitHeight)),
+                  pw.Text(
+                    'SSS International Co.,ltd',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(
+                      color: PdfColor.fromInt(Constants.textColor.value),
+                      fontSize: 8,
+                    ),
+                  ),
+                  pw.Text(
+                    'contact@sssretail.com',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(
+                      color: PdfColor.fromInt(Constants.textColor.value),
+                      fontSize: 8,
+                    ),
+                  ),
+                  pw.Text(
+                    'https://www.sssretail.com',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(
+                      color: PdfColor.fromInt(Constants.textColor.value),
+                      fontSize: 8,
+                    ),
+                  ),
+                  pw.Text(
+                    context
+                            .read<LoginUserController>()
+                            .posConfig
+                            ?.receiptHeader ??
+                        '',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(
+                      color: PdfColor.fromInt(Constants.textColor.value),
+                      fontSize: 8,
+                    ),
+                  ),
+                  pw.SizedBox(
+                    width: PdfPageFormat.roll80.width / 2,
+                    child: pw.Divider(borderStyle: pw.BorderStyle.dashed),
+                  ),
+                  pw.Text(
+                    'Served by : ${context.read<LoginUserController>().loginEmployee?.name}',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(
+                      color: PdfColor.fromInt(Constants.textColor.value),
+                      fontSize: 8,
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.SizedBox(child: pw.Divider()),
+                  getHeaderWidget(doc),
+                  pw.SizedBox(child: pw.Divider()),
+                  ...getOrderItem(doc),
+                  _totalWidget(),
+                  pw.SizedBox(height: 40),
+                  ..._transactionWidget(),
+                  pw.SizedBox(height: 40),
+                  _changeWidget(),
+                  pw.SizedBox(height: 40),
+                  _totalTaxWidget(),
+                  pw.SizedBox(height: 20),
+                  _totalQtyWidget(),
+                  pw.SizedBox(height: 40),
+                  ..._thankYouWidget(),
+                  pw.SizedBox(height: 40),
+                  ..._orderIdWidget(),
+                ],
+              ));
         },
       ),
     );
@@ -168,11 +173,11 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   pw.Widget getHeaderWidget(pw.Document doc) {
     pw.TextStyle textStyle = pw.TextStyle(
       color: PdfColors.black,
-      fontSize: 20,
+      fontSize: 8,
       fontWeight: pw.FontWeight.bold,
       // fontWeight: pw.FontWeight.w500,
     );
-    double maxPageWidth = PdfPageFormat.roll80.width * 2;
+    double maxPageWidth = PdfPageFormat.roll80.width;
     return pw.Row(children: [
       pw.Expanded(
         // width: (maxPageWidth / 8) * 3,
@@ -196,7 +201,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         ),
       ),
       pw.SizedBox(
-        width: (maxPageWidth / 8) * 2,
+        width: (maxPageWidth / 8) * 1.7,
         child: pw.Text(
           "Amount",
           style: textStyle,
@@ -220,11 +225,11 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   pw.Widget _eachWidget(Product e) {
     pw.TextStyle textStyle = pw.TextStyle(
       color: PdfColors.black,
-      fontSize: 20,
+      fontSize: 8,
       fontWeight: pw.FontWeight.bold,
       // fontWeight: pw.FontWeight.w500,
     );
-    double maxPageWidth = PdfPageFormat.roll80.width * 2;
+    double maxPageWidth = PdfPageFormat.roll80.width;
     return pw.Row(children: [
       pw.Expanded(
         // width: (maxPageWidth / 8) * 3,
@@ -255,7 +260,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         ),
       ),
       pw.SizedBox(
-        width: (maxPageWidth / 8) * 2,
+        width: (maxPageWidth / 8) * 1.7,
         child: pw.Text(
           "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks",
           style: textStyle,
@@ -276,7 +281,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         children: [
           pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [
             pw.SizedBox(
-              width: 150,
+              width: PdfPageFormat.roll80.width / 4,
               child: pw.Divider(
                 thickness: 0.6,
                 height: 6,
@@ -295,17 +300,17 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     "TOTAL",
                     style: pw.TextStyle(
                       color: PdfColor.fromHex("#171717"),
-                      fontSize: 35,
+                      fontSize: 12,
                     ),
                   ),
                 ),
               ),
-              pw.SizedBox(height: 4),
+              pw.SizedBox(width: 4),
               pw.Text(
                 "${list.last} Ks",
                 style: pw.TextStyle(
                   color: PdfColors.black,
-                  fontSize: 33,
+                  fontSize: 13,
                   // fontWeight: pw.FontWeight.w400,
                 ),
               ),
@@ -325,31 +330,36 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         .read<CurrentOrderController>()
         .paymentTransactionList
         .values) {
-      widgets.add(pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-        children: [
-          pw.Center(
-            child: pw.Text(
-              e.paymentMethodName ?? '',
-              style: pw.TextStyle(
-                color: PdfColor.fromHex("#171717"),
-                fontSize: 20,
+      widgets.add(
+        pw.SizedBox(
+          width: PdfPageFormat.roll80.width,
+          child: pw.Row(
+            children: [
+              pw.Center(
+                child: pw.Text(
+                  e.paymentMethodName ?? '',
+                  style: pw.TextStyle(
+                    color: PdfColor.fromHex("#171717"),
+                    fontSize: 8,
+                  ),
+                ),
               ),
-            ),
+              pw.Expanded(
+                child: pw.SizedBox(),
+              ),
+              pw.Text(
+                "${e.amount ?? 0} Ks",
+                style: pw.TextStyle(
+                  color: PdfColors.black,
+                  fontSize: 8,
+                  // fontWeight: pw.FontWeight.w400,
+                ),
+              ),
+              pw.SizedBox(width: 12),
+            ],
           ),
-          pw.Expanded(
-            child: pw.SizedBox(height: 4),
-          ),
-          pw.Text(
-            "${e.amount ?? 0} Ks",
-            style: pw.TextStyle(
-              color: PdfColors.black,
-              fontSize: 20,
-              // fontWeight: pw.FontWeight.w400,
-            ),
-          ),
-        ],
-      ));
+        ),
+      );
       widgets.add(pw.SizedBox(height: 8));
     }
     return widgets;
@@ -380,17 +390,17 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 "CHANGE",
                 style: pw.TextStyle(
                   color: PdfColor.fromHex("#171717"),
-                  fontSize: 35,
+                  fontSize: 12,
                 ),
               ),
             ),
           ),
-          pw.SizedBox(height: 4),
+          pw.SizedBox(width: 4),
           pw.Text(
-            totalPayAmt > totalAmt ? '${totalPayAmt - totalAmt} Ks' : "0.00K",
+            totalPayAmt > totalAmt ? '${totalPayAmt - totalAmt} Ks' : "0.00Ks",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#171717"),
-              fontSize: 33,
+              fontSize: 13,
               // fontWeight: pw.FontWeight.w400,
             ),
           ),
@@ -415,19 +425,20 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             textAlign: pw.TextAlign.start,
             style: pw.TextStyle(
               color: PdfColor.fromHex("#262927"),
-              fontSize: 26,
+              fontSize: 10,
             ),
           ),
         ),
-        pw.SizedBox(height: 4),
+        pw.SizedBox(width: 4),
         pw.Text(
           "$totalTax Ks",
           style: pw.TextStyle(
             color: PdfColor.fromHex("#171717"),
-            fontSize: 33,
+            fontSize: 11,
             // fontWeight: pw.FontWeight.w400,
           ),
         ),
+        pw.SizedBox(width: 12),
       ],
     );
   }
@@ -444,7 +455,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             "Total Items : ${context.read<CurrentOrderController>().currentOrderList.length} | Total Qty : ${list.first}",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#262927"),
-              fontSize: 26,
+              fontSize: 11,
             ),
           ),
         ),
@@ -454,21 +465,25 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   List<pw.Widget> _thankYouWidget() {
-    double size = 26;
+    double size = 10;
     return [
-      pw.Text(
-        context.read<LoginUserController>().posConfig?.receiptFooter ?? '',
-        textAlign: pw.TextAlign.center,
-        style: pw.TextStyle(
-          color: PdfColor.fromHex("#262927"),
-          fontSize: size,
+      pw.Container(
+        width: PdfPageFormat.roll80.width,
+        padding: pw.EdgeInsets.only(right: 8),
+        child: pw.Text(
+          context.read<LoginUserController>().posConfig?.receiptFooter ?? '',
+          textAlign: pw.TextAlign.center,
+          style: pw.TextStyle(
+            color: PdfColor.fromHex("#262927"),
+            fontSize: size,
+          ),
         ),
       ),
     ];
   }
 
   List<pw.Widget> _orderIdWidget() {
-    double size = 30;
+    double size = 12;
     return [
       pw.Text(
         context
@@ -485,15 +500,10 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         ),
       ),
       pw.Text(
-        (context.read<CurrentOrderController>().orderHistory?.createDate !=
-                null)
-            ? (DateFormat("dd-MM-yyyy hh:mm:ss")
-                .format(DateTime.parse(context
-                    .read<CurrentOrderController>()
-                    .orderHistory!
-                    .createDate!))
-                .toString())
-            : '',
+        CommonUtils.getLocaleDateTime(
+          "dd-MM-yyyy hh:mm:ss",
+          context.read<CurrentOrderController>().orderHistory?.createDate,
+        ),
         style: pw.TextStyle(
           color: PdfColor.fromHex("#262927"),
           fontSize: size,
