@@ -12,6 +12,12 @@ const QTY_IN_LINE = "qty";
 const PRICE_UNIT = "price_unit";
 const PRICE_SUBTOTAL = "price_subtotal";
 const PRICE_SUBTOTAL_INCL = "price_subtotal_incl";
+const FULL_PRODUCT_NAME = "full_product_name";
+const CREATE_DATE_IN_LINE = "create_date";
+const CREATE_UID_IN_LINE = "create_uid";
+const DISCOUNT_IN_LINE = "discount";
+const WRITE_DATE_IN_LINE = "write_date";
+const WRITE_UID_IN_LINE = "write_uid";
 
 class OrderLineIdTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -22,7 +28,13 @@ class OrderLineIdTable {
         "$QTY_IN_LINE INTEGER NOT NULL,"
         "$PRICE_UNIT REAL NOT NULL,"
         "$PRICE_SUBTOTAL REAL NOT NULL,"
-        "$PRICE_SUBTOTAL_INCL REAL NOT NULL"
+        "$PRICE_SUBTOTAL_INCL REAL NOT NULL,"
+        "$FULL_PRODUCT_NAME TEXT NOT NULL,"
+        "$CREATE_DATE_IN_LINE TEXT NOT NULL,"
+        "$CREATE_UID_IN_LINE INTEGER NOT NULL,"
+        "$DISCOUNT_IN_LINE INTEGER,"
+        "$WRITE_DATE_IN_LINE TEXT,"
+        "$WRITE_UID_IN_LINE INTEGER"
         ")");
   }
 

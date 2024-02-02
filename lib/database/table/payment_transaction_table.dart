@@ -9,6 +9,17 @@ const ORDER_ID_IN_TRAN = "order_id";
 const PAYMENT_DATE = "payment_date";
 const PAYMENT_METHOD_ID_TRAN = "payment_method_id";
 const AMOUNT_IN_TRAN = "amount";
+const CARD_TYPE = "card_type";
+const CARD_HOLDER_NAME = "cardholder_name";
+const CREATE_DATE_IN_TRAN = "create_date";
+const CREATE_UID_IN_TRAN = "create_uid";
+const IS_CHANGE = "is_change";
+const PAYMENT_STATUS = "payment_status";
+const SESSION_ID_IN_TRAN = "session_id";
+const TICKET = "ticket";
+const TRANSACTION_ID = "transaction_id";
+const WRITE_DATE_IN_TRAN = "write_date";
+const WRITE_UID_IN_TRAN = "write_uid";
 
 class PaymentTransactionTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -17,7 +28,18 @@ class PaymentTransactionTable {
         "$ORDER_ID_IN_TRAN INTEGER NOT NULL,"
         "$PAYMENT_DATE TEXT NOT NULL,"
         "$PAYMENT_METHOD_ID_TRAN INTEGER NOT NULL,"
-        "$AMOUNT_IN_TRAN REAL"
+        "$AMOUNT_IN_TRAN REAL,"
+        "$CARD_TYPE TEXT,"
+        "$CARD_HOLDER_NAME TEXT,"
+        "$CREATE_DATE_IN_TRAN TEXT NOT NULL,"
+        "$CREATE_UID_IN_TRAN INTEGER NOT NULL,"
+        "$IS_CHANGE TEXT,"
+        "$PAYMENT_STATUS TEXT,"
+        "$SESSION_ID_IN_TRAN INTEGER NOT NULL,"
+        "$TICKET TEXT,"
+        "$TRANSACTION_ID TEXT,"
+        "$WRITE_DATE_IN_TRAN TEXT,"
+        "$WRITE_UID_IN_TRAN INTEGER"
         ")");
   }
 

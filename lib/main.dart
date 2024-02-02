@@ -56,6 +56,7 @@ class InitializePage extends StatelessWidget {
   });
 
   Future<bool> checkLogin() async {
+    await LoginUserTable.getLoginUser();
     return await LoginUserTable.checkRowExist(USER_DATA);
   }
 

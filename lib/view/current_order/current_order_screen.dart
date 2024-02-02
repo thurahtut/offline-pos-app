@@ -461,8 +461,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           context.read<ViewController>().isCustomerView = true;
           CustomerListDialog.customerListDialogWidget(context).then((value) {
             context.read<ViewController>().isCustomerView = false;
-            if (value is int && value != 0) {
-              uploadOrderHistoryToDatabase(partnerId: value);
+            if (value != null && value is Customer) {
+              uploadOrderHistoryToDatabase(customer: value);
             }
           });
         },
@@ -528,7 +528,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   //   }
   // }
 
-  Future<void> uploadOrderHistoryToDatabase({int? partnerId}) async {
+  Future<void> uploadOrderHistoryToDatabase({Customer? customer}) async {
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
     DateTime orderDate = DateTime.now().toUtc();
@@ -536,27 +536,50 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       currentOrderController.orderHistory!.writeDate = orderDate.toString();
       currentOrderController.orderHistory!.writeUid =
           context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
-      currentOrderController.orderHistory!.partnerId = partnerId;
+      currentOrderController.orderHistory!.partnerId = customer?.id;
     }
+    List list = currentOrderController
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
     OrderHistory orderHistory = currentOrderController.orderHistory ??
         OrderHistory(
           dateOrder: orderDate.toString(),
           createDate: orderDate.toString(),
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          partnerId: partnerId,
+          partnerId: customer?.id,
+          partnerName: customer?.name,
           employeeId:
               context.read<LoginUserController>().loginEmployee?.id ?? 0,
+          employeeName:
+              context.read<LoginUserController>().loginEmployee?.name ?? '',
           configId: context.read<LoginUserController>().posConfig?.id ?? 0,
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
-          sequenceNumber: orderDate.millisecondsSinceEpoch.toString(),
-          amountTotal: currentOrderController
-              .getTotalQty(currentOrderController.currentOrderList)
-              .last
-              .toInt(),
+          sequenceNumber: "${orderDate.millisecondsSinceEpoch}",
+          amountTotal: list.last.toInt(),
           name:
               "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.millisecondsSinceEpoch}",
           state: OrderState.draft.text,
+          amountReturn: 0,
+          loyaltyPoints: 0,
+          nbPrint: 0,
+          pointsWon: "0.00",
+          pricelistId:
+              context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
+          qrDt: orderDate.toString(),
+          returnStatus: "nothing_return",
+          tipAmount: 0,
+          toInvoice: true,
+          toShip: true,
+          totalItem: currentOrderController.currentOrderList.length,
+          totalQty: list.first,
+          userId:
+              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
+          sequenceId: 0,
+          sequenceLineId:
+              context.read<LoginUserController>().posConfig?.sequenceLineId ??
+                  0,
+          amountPaid: 0,
+          amountTax: 0,
         );
     final Database db = await DatabaseHelper().db;
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
@@ -570,6 +593,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       currentOrderController.orderHistory = orderHistory;
       List<OrderLineID> orderLineIdList = [];
       OrderLineIdTable.deleteByOrderId(db, value);
+      double totalTax = 0;
       for (var data in currentOrderController.currentOrderList) {
         if ((data.onhandQuantity ?? 0) <= 0) {
           CommonUtils.showSnackBar(
@@ -587,9 +611,18 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                   (data.priceListItem?.fixedPrice ?? 0) * 0.05),
           priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
               (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+          fullProductName:
+              '${data.barcode != null ? '[data.barcode] ' : ''}${data.productName}',
+          createDate: orderDate.toString(),
+          createUid:
+              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
+          discount: 0,
         );
         orderLineIdList.add(orderLineID);
+        totalTax = (data.onhandQuantity?.toDouble() ?? 0) *
+            ((data.priceListItem?.fixedPrice ?? 0) * 0.05);
       }
+      currentOrderController.orderHistory?.amountTax = totalTax;
       insertOrderLines(db, orderLineIdList).then((lineValue) async {
         OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) {
           currentOrderController.orderHistory?.lineIds = lineIds;

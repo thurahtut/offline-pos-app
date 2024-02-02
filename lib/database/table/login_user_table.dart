@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
@@ -86,8 +87,9 @@ class LoginUserTable {
     final Database db = await DatabaseHelper().db;
     Map<String, dynamic> jsonOfUser = user.toJson();
     for (MapEntry<String, dynamic> element in jsonOfUser.entries) {
-      insertOrUpdateWithDB(db, element.key,
+      int result = await insertOrUpdateWithDB(db, element.key,
           element.value != null ? jsonEncode(element.value) : null);
+      log(result.toString());
     }
   }
 

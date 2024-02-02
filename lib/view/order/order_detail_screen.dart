@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/order_detail_controller.dart';
 import 'package:offline_pos/model/order_line_id.dart';
@@ -171,7 +172,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Expanded(
                       flex: 2,
                       child: _textForDetailInfo(
-                          controller.orderHistory?.createDate ?? ''),
+                          (controller.orderHistory?.createDate != null)
+                              ? (DateFormat("hh:mm:ss dd-MM-yyyy")
+                                  .format(DateTime.parse(
+                                      controller.orderHistory!.createDate!))
+                                  .toString())
+                              : ''),
                     ),
                   ],
                 ),
@@ -182,8 +188,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Expanded(
                       flex: 2,
                       child: _textForDetailInfo(
-                          controller.orderHistory?.employeeName ??
-                              ''),
+                          controller.orderHistory?.employeeName ?? ''),
                     ),
                   ],
                 ),
@@ -427,8 +432,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         DataCell(
           SizedBox(
             width: 300,
-            child:
-                _textForDetailInfo('[${data?.barcode}] ${data?.productName}'),
+            child: _textForDetailInfo(data?.fullProductName ?? ''),
           ),
         ),
         DataCell(_textForDetailInfo('')),

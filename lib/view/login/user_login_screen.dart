@@ -63,33 +63,14 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
         // AppConfigTable.deleteByColumnName(PRODUCT_LAST_SYNC_DATE);
         // context.read<ThemeSettingController>().appConfig?.productLastSyncDate =
         //     null;
-        context.read<ThemeSettingController>().notify();
+        // context.read<ThemeSettingController>().notify();
 
         Navigator.pushNamed(
           context,
           MorningSyncScreen.routeName,
           arguments: MorningSyncScreen(alreadyLogin: false),
         );
-      } else if (context.read<LoginUserController>().posSession?.id == null ||
-          context.read<LoginUserController>().posSession?.id == 0) {
-        return CreateSessionDialog.createSessionDialogWidget(context)
-            .then((value) {
-          if (value == true) {
-            // AppConfigTable.deleteByColumnName(PRODUCT_LAST_SYNC_DATE);
-            // context
-            //     .read<ThemeSettingController>()
-            //     .appConfig
-            //     ?.productLastSyncDate = null;
-            context.read<ThemeSettingController>().notify();
-
-            Navigator.pushNamed(
-              context,
-              MorningSyncScreen.routeName,
-              arguments: MorningSyncScreen(alreadyLogin: false),
-            );
-          }
-        });
-      }
+      } 
     });
   }
 

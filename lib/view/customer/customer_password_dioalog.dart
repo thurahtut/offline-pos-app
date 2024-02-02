@@ -108,7 +108,7 @@ class CustomerPasswordDialog {
                             bContext, customer, passwordTextController);
                       },
                       cancelCallback: () {
-                        Navigator.pop(context, 0);
+                        Navigator.pop(context, null);
                       },
                     ),
                     SizedBox(height: 26),
@@ -131,7 +131,7 @@ class CustomerPasswordDialog {
       customer.id ?? 0,
       passwordTextController.text,
     ).then((value) {
-      Navigator.pop(bContext, customer.id ?? 0);
+      Navigator.pop(bContext, customer);
     });
   }
 }

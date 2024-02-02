@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -148,6 +149,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
               pw.SizedBox(height: 20),
               _changeWidget(),
               pw.SizedBox(height: 20),
+              _totalTaxWidget(),
+              pw.SizedBox(height: 20),
               _totalQtyWidget(),
               pw.SizedBox(height: 40),
               ..._thankYouWidget(),
@@ -289,7 +292,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
               pw.Expanded(
                 child: pw.Center(
                   child: pw.Text(
-                    "Total",
+                    "TOTAL",
                     style: pw.TextStyle(
                       color: PdfColor.fromHex("#171717"),
                       fontSize: 35,
@@ -374,7 +377,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           pw.Expanded(
             child: pw.Center(
               child: pw.Text(
-                "Change",
+                "CHANGE",
                 style: pw.TextStyle(
                   color: PdfColor.fromHex("#171717"),
                   fontSize: 35,
@@ -396,6 +399,39 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     );
   }
 
+  pw.Widget _totalTaxWidget() {
+    double totalTax = 0;
+
+    for (var data in context.read<CurrentOrderController>().currentOrderList) {
+      totalTax += (data.onhandQuantity?.toDouble() ?? 0) *
+          ((data.priceListItem?.fixedPrice ?? 0) * 0.05);
+    }
+    return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        pw.Expanded(
+          child: pw.Text(
+            "Total Taxes",
+            textAlign: pw.TextAlign.start,
+            style: pw.TextStyle(
+              color: PdfColor.fromHex("#262927"),
+              fontSize: 26,
+            ),
+          ),
+        ),
+        pw.SizedBox(height: 4),
+        pw.Text(
+          "$totalTax Ks",
+          style: pw.TextStyle(
+            color: PdfColor.fromHex("#171717"),
+            fontSize: 33,
+            // fontWeight: pw.FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
   pw.Widget _totalQtyWidget() {
     List list = context
         .read<CurrentOrderController>()
@@ -405,7 +441,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       children: [
         pw.Center(
           child: pw.Text(
-            "Total Item : ${context.read<CurrentOrderController>().currentOrderList.length} | Total Qty : ${list.first}",
+            "Total Items : ${context.read<CurrentOrderController>().currentOrderList.length} | Total Qty : ${list.first}",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#262927"),
               fontSize: 26,
@@ -438,7 +474,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         context
                 .read<CurrentOrderController>()
                 .orderHistory
-                ?.sequenceNumber
+                ?.receiptNumber
                 ?.toString() ??
             '',
         textAlign: pw.TextAlign.center,
@@ -449,7 +485,15 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         ),
       ),
       pw.Text(
-        context.read<CurrentOrderController>().orderHistory?.createDate ?? '',
+        (context.read<CurrentOrderController>().orderHistory?.createDate !=
+                null)
+            ? (DateFormat("dd-MM-yyyy hh:mm:ss")
+                .format(DateTime.parse(context
+                    .read<CurrentOrderController>()
+                    .orderHistory!
+                    .createDate!))
+                .toString())
+            : '',
         style: pw.TextStyle(
           color: PdfColor.fromHex("#262927"),
           fontSize: size,

@@ -8,6 +8,8 @@ class POSConfig {
   List<int>? paymentMethodIds;
   String? receiptHeader;
   String? receiptFooter;
+  int? sequenceLineId;
+  int? sequenceId;
 
   POSConfig({
     this.id,
@@ -19,6 +21,8 @@ class POSConfig {
     this.paymentMethodIds,
     this.receiptHeader,
     this.receiptFooter,
+    this.sequenceLineId,
+    this.sequenceId,
   });
 
   POSConfig.fromJson(Map<String, dynamic> json) {
@@ -31,6 +35,8 @@ class POSConfig {
     paymentMethodIds = json['payment_method_ids'].cast<int>();
     receiptHeader = json['receipt_header'];
     receiptFooter = json['receipt_footer'];
+    sequenceLineId = json["sequence_line_id"];
+    sequenceId = json["sequence_id"];
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +50,8 @@ class POSConfig {
     data['payment_method_ids'] = paymentMethodIds;
     data['receipt_header'] = receiptHeader;
     data['receipt_footer'] = receiptFooter;
+    data["sequence_line_id"] = sequenceLineId;
+    data['sequence_id'] = sequenceId;
     return data;
   }
 }

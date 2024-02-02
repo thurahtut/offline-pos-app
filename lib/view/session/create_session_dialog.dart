@@ -4,14 +4,16 @@ class CreateSessionDialog {
   static Future<dynamic> createSessionDialogWidget(
     BuildContext mainContext,
   ) {
+    bool isMobileMode = CommonUtils.isMobileMode(mainContext);
     return CommonUtils.showGeneralDialogWidget(
       mainContext,
       (bContext, anim1, anim2) {
         return AlertDialog(
             contentPadding: EdgeInsets.all(16),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             insetPadding: EdgeInsets.zero,
-            title: const Text(
-              'Create Session',
+            title: Text(
+              'Opening Cash Control'.toUpperCase(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,
@@ -20,10 +22,14 @@ class CreateSessionDialog {
               ),
             ),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            content: CreateSessionScreen(
-              mainContext: mainContext,
-              bContext: bContext,
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            content: SizedBox(
+              width: MediaQuery.of(mainContext).size.width /
+                  (isMobileMode ? 1 : 2),
+              child: CreateSessionScreen(
+                mainContext: mainContext,
+                bContext: bContext,
+              ),
             ));
       },
     );

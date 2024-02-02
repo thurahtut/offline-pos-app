@@ -17,6 +17,8 @@ const SH_POS_LOCATION = "sh_pos_location";
 const CONFIG_PAYMENT_METHOD_IDS = "payment_method_ids";
 const RECEIPT_HEADER = "receipt_header";
 const RECEIPT_FOOTER = "receipt_footer";
+const SEQUENCE_ID_IN_CONFIG = "sequence_id";
+const SEQUENCE_LINE_ID_IN_CONFIG = "sequence_line_id";
 
 class POSConfigTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -123,6 +125,10 @@ class POSConfigTable {
           posConfig.receiptHeader = data[POS_CONFIG_VALUE];
         } else if (data[POS_CONFIG_NAME] == RECEIPT_FOOTER) {
           posConfig.receiptFooter = data[POS_CONFIG_VALUE];
+        } else if (data[POS_CONFIG_NAME] == SEQUENCE_LINE_ID_IN_CONFIG) {
+          posConfig.sequenceLineId = int.tryParse(data[POS_CONFIG_VALUE]);
+        } else if (data[POS_CONFIG_NAME] == SEQUENCE_ID_IN_CONFIG) {
+          posConfig.sequenceId = int.tryParse(data[POS_CONFIG_VALUE]);
         } 
       }
     }

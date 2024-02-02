@@ -6,10 +6,12 @@ class OrderLineID {
   double? priceUnit;
   double? priceSubtotal;
   double? priceSubtotalIncl;
-  String? productName;
-  String? barcode;
+  String? fullProductName;
   String? createDate;
   int? createUid;
+  int? discount;
+  String? writeDate;
+  int? writeUid;
 
   OrderLineID({
     this.id,
@@ -19,20 +21,29 @@ class OrderLineID {
     this.priceUnit,
     this.priceSubtotal,
     this.priceSubtotalIncl,
-    this.productName,
-    this.barcode,
+    this.fullProductName,
+    this.createDate,
+    this.createUid,
+    this.discount,
+    this.writeDate,
+    this.writeUid,
   });
 
   OrderLineID.fromJson(Map<String, dynamic> json) {
-    id = int.tryParse(json['id'].toString());
-    orderId = int.tryParse(json['order_id'].toString());
-    productId = int.tryParse(json['product_id'].toString());
+    id = int.tryParse(json['id']?.toString() ?? '');
+    orderId = int.tryParse(json['order_id']?.toString() ?? '');
+    productId = int.tryParse(json['product_id']?.toString() ?? '');
     qty = double.tryParse(json['qty']?.toString() ?? '');
-    priceUnit = double.tryParse(json['price_unit'].toString());
-    priceSubtotal = double.tryParse(json['price_subtotal'].toString());
-    priceSubtotalIncl = double.tryParse(json['price_subtotal_incl'].toString());
-    productName = json["product_name"];
-    barcode = json["barcode"];
+    priceUnit = double.tryParse(json['price_unit']?.toString() ?? '');
+    priceSubtotal = double.tryParse(json['price_subtotal']?.toString() ?? '');
+    priceSubtotalIncl =
+        double.tryParse(json['price_subtotal_incl']?.toString() ?? '');
+    fullProductName = json["full_product_name"];
+    createDate = json['create_date'];
+    createUid = int.tryParse(json['create_uid']?.toString() ?? '');
+    discount = int.tryParse(json['discount']?.toString() ?? '');
+    writeDate = json['write_date'];
+    writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -40,10 +51,16 @@ class OrderLineID {
     data['id'] = id?.toString();
     data['order_id'] = orderId?.toString();
     data['product_id'] = productId?.toString();
+    data['full_product_name'] = fullProductName;
     data['qty'] = qty?.toString();
     data['price_unit'] = priceUnit?.toString();
     data['price_subtotal'] = priceSubtotal?.toString();
     data['price_subtotal_incl'] = priceSubtotalIncl?.toString();
+    data['create_date'] = createDate;
+    data['create_uid'] = createUid;
+    data['discount'] = discount;
+    data['write_date'] = writeDate;
+    data['write_uid'] = writeUid;
     return data;
   }
 }

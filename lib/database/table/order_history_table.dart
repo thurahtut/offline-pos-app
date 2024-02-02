@@ -24,6 +24,23 @@ const SEQUENCE_NUMBER = "sequence_number";
 const RECEIPT_NUMBER = "pos_reference";
 const STATE_IN_OT = "state";
 const ORDER_CONDITION = "order_condition";
+const AMOUNT_PAID = "amount_paid";
+const AMOUNT_RETURN = "amount_return";
+const AMOUNT_TAX = "amount_tax";
+const LOYALTY_POINTS = "loyalty_points";
+const NB_PRINT = "nb_print";
+const POINTS_WON = "points_won";
+const PRICELIST_ID = "pricelist_id";
+const QR_DT = "qr_dt";
+const RETURN_STATUS = "return_status";
+const TIP_AMOUNT = "tip_amount";
+const TO_INVOICE = "to_invoice";
+const TO_SHIP = "to_ship";
+const TOTAL_ITEM = "total_item";
+const TOTAL_QTY = "total_qty";
+const USER_ID = "user_id";
+const SEQUENCE_ID = "sequence_id";
+const SEQUENCE_LINE_ID = "sequence_line_id";
 
 class OrderHistoryTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -45,6 +62,23 @@ class OrderHistoryTable {
         "$RECEIPT_NUMBER TEXT,"
         "$STATE_IN_OT TEXT,"
         "$ORDER_CONDITION TEXT,"
+        "$AMOUNT_PAID REAL NOT NULL,"
+        "$AMOUNT_RETURN REAL,"
+        "$AMOUNT_TAX REAL,"
+        "$LOYALTY_POINTS REAL,"
+        "$NB_PRINT INTEGER,"
+        "$POINTS_WON TEXT,"
+        "$PRICELIST_ID INTEGER NOT NULL,"
+        "$QR_DT TEXT,"
+        "$RETURN_STATUS TEXT,"
+        "$TIP_AMOUNT INTEGER,"
+        "$TO_INVOICE TEXT,"
+        "$TO_SHIP TEXT,"
+        "$TOTAL_ITEM INTEGER,"
+        "$TOTAL_QTY INTEGER,"
+        "$USER_ID INTEGER,"
+        "$SEQUENCE_ID INTEGER,"
+        "$SEQUENCE_LINE_ID INTEGER,"
         "unique ($NAME_IN_OH, $SESSION_ID, $SEQUENCE_NUMBER)"
         ")");
   }
