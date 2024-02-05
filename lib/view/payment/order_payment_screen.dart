@@ -90,7 +90,8 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             final Database db = await DatabaseHelper().db;
             double totalAmt = currentOrderController
                 .getTotalQty(currentOrderController.currentOrderList)
-                .last;
+                ["total"] ??
+                0;
             double totalPayAmt = 0;
             PaymentTransactionTable.deleteByOrderId(
                 db, currentOrderController.orderHistory?.id ?? 0);
@@ -121,7 +122,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                         .toList())
                 .then((value) {
               currentOrderController.orderHistory?.receiptNumber =
-                  'Order_${DateTime.now().millisecondsSinceEpoch}';
+                  'Order ${DateTime.now().millisecondsSinceEpoch}';
               currentOrderController.orderHistory?.state = OrderState.paid.text;
               currentOrderController.orderHistory?.amountPaid =
                   totalPayAmt.toInt();
@@ -189,7 +190,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 onTap: () {
                   _textNode.requestFocus();
                   double totalAmt =
-                      controller.getTotalQty(controller.currentOrderList).last;
+                      controller
+                          .getTotalQty(controller.currentOrderList)["total"] ??
+                      0;
                   double totalPayAmt = 0;
 
                   DateTime pDate = DateTime.now().toUtc();
@@ -298,7 +301,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
     return Consumer<CurrentOrderController>(
       builder: (_, controller, __) {
         double totalAmt =
-            controller.getTotalQty(controller.currentOrderList).last;
+            controller.getTotalQty(controller.currentOrderList)["total"] ?? 0;
         double totalPayAmt = 0;
         double remainingAmt = totalAmt;
 

@@ -23,10 +23,11 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
-  List getTotalQty(List<Product> cOrderList) {
-    List list = [0, 0];
+  Map<String, double> getTotalQty(List<Product> cOrderList) {
+    Map<String, double> map = {};
     double tQty = 0;
     double tTotal = 0;
+    double tTax = 0;
     for (var i = 0; i < cOrderList.length; i++) {
       tQty +=
           double.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0;
@@ -35,11 +36,15 @@ class CurrentOrderController with ChangeNotifier {
               0) *
           (double.tryParse(
                   cOrderList[i].priceListItem?.fixedPrice?.toString() ?? "0") ??
-              0); //int.tryParse(cOrderList[i].salePrice?.toString() ?? "0") ??
+              0);
+
+      tTax += (cOrderList[i].onhandQuantity?.toDouble() ?? 0) *
+          ((cOrderList[i].priceListItem?.fixedPrice ?? 0) * 0.05);
     }
-    list.first = tQty;
-    list.last = tTotal;
-    return list;
+    map["qty"] = tQty;
+    map["total"] = tTotal;
+    map["tax"] = tTax;
+    return map;
   }
 
   bool? _isContainCustomer = false;

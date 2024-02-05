@@ -67,6 +67,9 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     final doc = pw.Document(
       theme: myTheme,
     );
+    Map<String, double> map = context
+        .read<CurrentOrderController>()
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
 
     doc.addPage(
       pw.Page(
@@ -100,7 +103,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
                       color: PdfColor.fromInt(Constants.textColor.value),
-                      fontSize: 8,
+                      fontSize: 7,
                     ),
                   ),
                   pw.Text(
@@ -108,7 +111,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
                       color: PdfColor.fromInt(Constants.textColor.value),
-                      fontSize: 8,
+                      fontSize: 7,
                     ),
                   ),
                   pw.Text(
@@ -116,7 +119,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
                       color: PdfColor.fromInt(Constants.textColor.value),
-                      fontSize: 8,
+                      fontSize: 7,
                     ),
                   ),
                   pw.Text(
@@ -128,19 +131,23 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
                       color: PdfColor.fromInt(Constants.textColor.value),
-                      fontSize: 8,
+                      fontSize: 7,
                     ),
                   ),
                   pw.SizedBox(
                     width: PdfPageFormat.roll80.width / 2,
-                    child: pw.Divider(borderStyle: pw.BorderStyle.dashed),
+                    child: pw.Divider(
+                      borderStyle: pw.BorderStyle.dashed,
+                      thickness: 0.6,
+                      height: 2,
+                    ),
                   ),
                   pw.Text(
                     'Served by : ${context.read<LoginUserController>().loginEmployee?.name}',
                     textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
                       color: PdfColor.fromInt(Constants.textColor.value),
-                      fontSize: 8,
+                      fontSize: 7,
                     ),
                   ),
                   pw.SizedBox(height: 20),
@@ -148,15 +155,15 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   getHeaderWidget(doc),
                   pw.SizedBox(child: pw.Divider()),
                   ...getOrderItem(doc),
-                  _totalWidget(),
+                  _totalWidget(map),
                   pw.SizedBox(height: 40),
                   ..._transactionWidget(),
                   pw.SizedBox(height: 40),
                   _changeWidget(),
                   pw.SizedBox(height: 40),
-                  _totalTaxWidget(),
+                  _totalTaxWidget(map),
                   pw.SizedBox(height: 20),
-                  _totalQtyWidget(),
+                  _totalQtyWidget(map),
                   pw.SizedBox(height: 40),
                   ..._thankYouWidget(),
                   pw.SizedBox(height: 40),
@@ -173,7 +180,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   pw.Widget getHeaderWidget(pw.Document doc) {
     pw.TextStyle textStyle = pw.TextStyle(
       color: PdfColors.black,
-      fontSize: 8,
+      fontSize: 7,
       fontWeight: pw.FontWeight.bold,
       // fontWeight: pw.FontWeight.w500,
     );
@@ -225,8 +232,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   pw.Widget _eachWidget(Product e) {
     pw.TextStyle textStyle = pw.TextStyle(
       color: PdfColors.black,
-      fontSize: 8,
-      fontWeight: pw.FontWeight.bold,
+      fontSize: 7,
+      fontWeight: pw.FontWeight.normal,
       // fontWeight: pw.FontWeight.w500,
     );
     double maxPageWidth = PdfPageFormat.roll80.width;
@@ -262,17 +269,14 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       pw.SizedBox(
         width: (maxPageWidth / 8) * 1.7,
         child: pw.Text(
-          "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks",
+          "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)}",
           style: textStyle,
         ),
       ),
     ]);
   }
 
-  pw.Widget _totalWidget() {
-    List list = context
-        .read<CurrentOrderController>()
-        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
+  pw.Widget _totalWidget(Map<String, double> map) {
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(horizontal: 14.0),
       child: pw.Column(
@@ -281,10 +285,10 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         children: [
           pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [
             pw.SizedBox(
-              width: PdfPageFormat.roll80.width / 4,
+              width: PdfPageFormat.roll80.width / 6,
               child: pw.Divider(
                 thickness: 0.6,
-                height: 6,
+                height: 2,
                 color: PdfColors.black,
                 borderStyle: pw.BorderStyle.dashed,
               ),
@@ -300,17 +304,17 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     "TOTAL",
                     style: pw.TextStyle(
                       color: PdfColor.fromHex("#171717"),
-                      fontSize: 12,
+                      fontSize: 10.6,
                     ),
                   ),
                 ),
               ),
               pw.SizedBox(width: 4),
               pw.Text(
-                "${list.last} Ks",
+                "${CommonUtils.priceFormat.parse(map["total"]?.toString() ?? "")} Ks",
                 style: pw.TextStyle(
                   color: PdfColors.black,
-                  fontSize: 13,
+                  fontSize: 11.6,
                   // fontWeight: pw.FontWeight.w400,
                 ),
               ),
@@ -326,6 +330,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     if (context.read<CurrentOrderController>().paymentTransactionList.isEmpty) {
       return widgets;
     }
+
+    double? fontSize = 9;
     for (var e in context
         .read<CurrentOrderController>()
         .paymentTransactionList
@@ -340,7 +346,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   e.paymentMethodName ?? '',
                   style: pw.TextStyle(
                     color: PdfColor.fromHex("#171717"),
-                    fontSize: 8,
+                    fontSize: fontSize,
                   ),
                 ),
               ),
@@ -348,10 +354,10 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 child: pw.SizedBox(),
               ),
               pw.Text(
-                "${e.amount ?? 0} Ks",
+                "${CommonUtils.priceFormat.parse(e.amount?.toString() ?? "")}",
                 style: pw.TextStyle(
                   color: PdfColors.black,
-                  fontSize: 8,
+                  fontSize: fontSize,
                   // fontWeight: pw.FontWeight.w400,
                 ),
               ),
@@ -366,10 +372,10 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   pw.Widget _changeWidget() {
-    double totalAmt = context
+    Map<String, double> map = context
         .read<CurrentOrderController>()
-        .getTotalQty(context.read<CurrentOrderController>().currentOrderList)
-        .last;
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
+    double totalAmt = map["total"] ?? 0;
     double totalPayAmt = 0;
 
     // ;
@@ -390,7 +396,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 "CHANGE",
                 style: pw.TextStyle(
                   color: PdfColor.fromHex("#171717"),
-                  fontSize: 12,
+                  fontSize: 10.6,
                 ),
               ),
             ),
@@ -400,7 +406,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             totalPayAmt > totalAmt ? '${totalPayAmt - totalAmt} Ks' : "0.00Ks",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#171717"),
-              fontSize: 13,
+              fontSize: 11.6,
               // fontWeight: pw.FontWeight.w400,
             ),
           ),
@@ -409,13 +415,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     );
   }
 
-  pw.Widget _totalTaxWidget() {
-    double totalTax = 0;
-
-    for (var data in context.read<CurrentOrderController>().currentOrderList) {
-      totalTax += (data.onhandQuantity?.toDouble() ?? 0) *
-          ((data.priceListItem?.fixedPrice ?? 0) * 0.05);
-    }
+  pw.Widget _totalTaxWidget(Map<String, double> map) {
+    double? fontSize = 9;
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: [
@@ -425,16 +426,16 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             textAlign: pw.TextAlign.start,
             style: pw.TextStyle(
               color: PdfColor.fromHex("#262927"),
-              fontSize: 10,
+              fontSize: fontSize,
             ),
           ),
         ),
         pw.SizedBox(width: 4),
         pw.Text(
-          "$totalTax Ks",
+          "${map["tax"] ?? 0} Ks",
           style: pw.TextStyle(
             color: PdfColor.fromHex("#171717"),
-            fontSize: 11,
+            fontSize: fontSize,
             // fontWeight: pw.FontWeight.w400,
           ),
         ),
@@ -443,19 +444,16 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
     );
   }
 
-  pw.Widget _totalQtyWidget() {
-    List list = context
-        .read<CurrentOrderController>()
-        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
+  pw.Widget _totalQtyWidget(Map<String, double> map) {
     return pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: [
         pw.Center(
           child: pw.Text(
-            "Total Items : ${context.read<CurrentOrderController>().currentOrderList.length} | Total Qty : ${list.first}",
+            "Total Items : ${context.read<CurrentOrderController>().currentOrderList.length} | Total Qty : ${map["qty"] ?? 0}",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#262927"),
-              fontSize: 11,
+              fontSize: 9,
             ),
           ),
         ),
@@ -465,7 +463,6 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   List<pw.Widget> _thankYouWidget() {
-    double size = 10;
     return [
       pw.Container(
         width: PdfPageFormat.roll80.width,
@@ -475,7 +472,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           textAlign: pw.TextAlign.center,
           style: pw.TextStyle(
             color: PdfColor.fromHex("#262927"),
-            fontSize: size,
+            fontSize: 8.8,
           ),
         ),
       ),
@@ -483,7 +480,13 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   List<pw.Widget> _orderIdWidget() {
-    double size = 12;
+    pw.TextStyle textStyle = pw.TextStyle(
+      color: PdfColor.fromHex("#262927"),
+      fontSize: 11,
+      fontWeight: pw.FontWeight.normal,
+      height: 0.8,
+      decorationStyle: pw.TextDecorationStyle.double,
+    );
     return [
       pw.Text(
         context
@@ -493,22 +496,14 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 ?.toString() ??
             '',
         textAlign: pw.TextAlign.center,
-        style: pw.TextStyle(
-          color: PdfColor.fromHex("#262927"),
-          fontSize: size,
-          fontWeight: pw.FontWeight.bold,
-        ),
+        style: textStyle,
       ),
       pw.Text(
         CommonUtils.getLocaleDateTime(
           "dd-MM-yyyy hh:mm:ss",
           context.read<CurrentOrderController>().orderHistory?.createDate,
         ),
-        style: pw.TextStyle(
-          color: PdfColor.fromHex("#262927"),
-          fontSize: size,
-          fontWeight: pw.FontWeight.bold,
-        ),
+        style: textStyle,
       ),
     ];
   }

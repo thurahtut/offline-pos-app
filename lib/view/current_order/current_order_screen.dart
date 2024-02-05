@@ -220,7 +220,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
 
   Widget _totalWidget() {
     return Consumer<CurrentOrderController>(builder: (_, controller, __) {
-      List list = controller.getTotalQty(controller.currentOrderList);
+      Map<String, double> map =
+          controller.getTotalQty(controller.currentOrderList);
       return Container(
         width: widget.width,
         padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -239,14 +240,14 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                    "Total Item : ${controller.currentOrderList.length} | Total Qty : ${list.first}"),
+                    "Total Item : ${controller.currentOrderList.length} | Total Qty : ${map["qty"] ?? 0}"),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Total : ${list.last} Ks",
+                      "Total : ${map["total"] ?? 0} Ks",
                       style: TextStyle(
                         color: primaryColor,
                         fontSize: 16,
@@ -255,7 +256,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      "Taxes : 150 Ks",
+                      "Taxes : ${map["tax"] ?? 0} Ks",
                       style: TextStyle(
                         color: Constants.greyColor2,
                         fontSize: 15,
@@ -538,7 +539,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
       currentOrderController.orderHistory!.partnerId = customer?.id;
     }
-    List list = currentOrderController
+    Map<String, double> map = currentOrderController
         .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
     OrderHistory orderHistory = currentOrderController.orderHistory ??
         OrderHistory(
@@ -555,7 +556,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           configId: context.read<LoginUserController>().posConfig?.id ?? 0,
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
           sequenceNumber: "${orderDate.millisecondsSinceEpoch}",
-          amountTotal: list.last.toInt(),
+          amountTotal: map["total"]?.toInt() ?? 0,
           name:
               "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.millisecondsSinceEpoch}",
           state: OrderState.draft.text,
@@ -571,7 +572,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           toInvoice: true,
           toShip: true,
           totalItem: currentOrderController.currentOrderList.length,
-          totalQty: list.first,
+          totalQty: map["qty"]?.toInt() ?? 0,
           userId:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
           sequenceId: 0,
@@ -579,7 +580,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
               context.read<LoginUserController>().posConfig?.sequenceLineId ??
                   0,
           amountPaid: 0,
-          amountTax: 0,
+          amountTax: map["tax"] ?? 0,
         );
     final Database db = await DatabaseHelper().db;
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
