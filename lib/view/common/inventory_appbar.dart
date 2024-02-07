@@ -103,7 +103,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
       title: Row(
         mainAxisAlignment: isMobileMode || isTabletMode
             ? MainAxisAlignment.start
-            : MainAxisAlignment.spaceAround,
+            : MainAxisAlignment.start,
         mainAxisSize:
             isMobileMode || isTabletMode ? MainAxisSize.min : MainAxisSize.max,
         children: [
@@ -114,7 +114,10 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
             ),
           ),
           IconButton(
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width / 15,
+                left: MediaQuery.of(context).size.width / 15,
+              ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
@@ -127,7 +130,16 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
                 size: 35,
               )),
 
-          if (!isTabletMode) ..._titleList(),
+          if (!isTabletMode)
+            ..._titleList()
+                .map(
+                  (e) => Padding(
+                    padding: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.width / 15),
+                    child: e,
+                  ),
+                )
+                .toList(),
         ],
       ),
       actions: [
@@ -163,7 +175,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
       IconButton(
         onPressed: () {},
         icon: Text(
-          'SSS Int Co,Ltd.',
+          'SSS International Co.,ltd',
           style: TextStyle(
             color: Constants.textColor,
             // fontSize: 13,
@@ -239,18 +251,18 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
           fontSize: textStyle.fontSize,
         ),
       ),
-      Text(
-        'Wallet Management',
-        style: textStyle,
-      ),
-      Text(
-        'Point Management',
-        style: textStyle,
-      ),
-      Text(
-        'Reporting',
-        style: textStyle,
-      ),
+      // Text(
+      //   'Wallet Management',
+      //   style: textStyle,
+      // ),
+      // Text(
+      //   'Point Management',
+      //   style: textStyle,
+      // ),
+      // Text(
+      //   'Reporting',
+      //   style: textStyle,
+      // ),
       // PopupMenuButton(
       //   tooltip: "",
       //   itemBuilder: (bContext) {

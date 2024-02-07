@@ -311,7 +311,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
               ),
               pw.SizedBox(width: 4),
               pw.Text(
-                "${CommonUtils.priceFormat.parse(map["total"]?.toString() ?? "")} Ks",
+                "${CommonUtils.priceFormat.format(map["total"] ?? 0)} Ks",
                 style: pw.TextStyle(
                   color: PdfColors.black,
                   fontSize: 11.6,
@@ -354,7 +354,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 child: pw.SizedBox(),
               ),
               pw.Text(
-                "${CommonUtils.priceFormat.parse(e.amount?.toString() ?? "")}",
+                CommonUtils.priceFormat
+                    .format(double.tryParse(e.amount ?? "") ?? 0),
                 style: pw.TextStyle(
                   color: PdfColors.black,
                   fontSize: fontSize,

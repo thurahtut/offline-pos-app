@@ -17,6 +17,8 @@ class PaymentTransaction {
   String? transactionId;
   String? writeDate;
   int? writeUid;
+  String? payingAmount;
+
 
   PaymentTransaction({
     this.id,
@@ -37,6 +39,7 @@ class PaymentTransaction {
     this.transactionId,
     this.writeDate,
     this.writeUid,
+    this.payingAmount,
   });
 
   PaymentTransaction.fromJson(Map<String, dynamic> json) {
@@ -70,7 +73,7 @@ class PaymentTransaction {
     data['cardholder_name'] = cardholderName;
     data['create_date'] = createDate;
     data['create_uid'] = createUid;
-    data['is_change'] = isChange;
+    data['is_change'] = isChange?.toString();
     data['payment_status'] = paymentStatus;
     data['session_id'] = sessionId;
     data['ticket'] = ticket;

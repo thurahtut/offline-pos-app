@@ -267,4 +267,28 @@ class OrderHistoryTable {
     }
     return orderHistory;
   }
+
+  static Future<Map<String, double>> getTotalSummary(int sessionId) async {
+    final Database db = await DatabaseHelper().db;
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+        "select sum(ptt.tPaid) totalPaid, "
+        "count(oht.$ORDER_HISTORY_ID) as totalOrderHistory, "
+        "sum(CASE WHEN oht.$PARTNER_ID is not null AND oht.$PARTNER_ID != \"\" THEN ptt.tPaid ELSE 0 END) as totalCustomerAmt "
+        "from $ORDER_HISTORY_TABLE_NAME oht "
+        "left join "
+        "( "
+        "	select sum($AMOUNT_IN_TRAN) as tPaid , $ORDER_ID_IN_TRAN"
+        "	from $PAYMENT_TRANSACTION_TABLE_NAME"
+        "	where $SESSION_ID_IN_TRAN = \"$sessionId\""
+        "	group by $ORDER_ID_IN_TRAN"
+        ") ptt "
+        "on ptt.$ORDER_ID_IN_TRAN = oht.$ORDER_HISTORY_ID "
+        "where oht.$SESSION_ID = \"$sessionId\"");
+
+    Map<String, double> totalSummary = maps.isEmpty
+        ? {}
+        : maps.first.map((key, value) =>
+            MapEntry(key, double.tryParse(value?.toString() ?? '') ?? 0));
+    return totalSummary;
+  }
 }

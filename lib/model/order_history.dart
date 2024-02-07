@@ -109,8 +109,8 @@ class OrderHistory {
     qrDt = json['qr_dt'];
     returnStatus = json['return_status'];
     tipAmount = int.tryParse(json['tip_amount']?.toString() ?? '');
-    toInvoice = json['to_invoice'];
-    toShip = json['to_ship'];
+    toInvoice = bool.tryParse(json['to_invoice']?.toString() ?? '');
+    toShip = bool.tryParse(json['to_ship']?.toString() ?? '');
     totalItem = int.tryParse(json['total_item']?.toString() ?? '');
     totalQty = int.tryParse(json['total_qty']?.toString() ?? '');
     userId = int.tryParse(json['user_id']?.toString() ?? '');

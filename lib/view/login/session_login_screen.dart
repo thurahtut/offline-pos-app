@@ -84,19 +84,22 @@ class _SessionLoginScreenState extends State<SessionLoginScreen> {
                   POSSessionTable.insertOrUpdatePOSSession(
                       controller.posSession!);
 
-                  Navigator.pushNamed(
+                  Navigator.pushAndRemoveUntil(
                     context,
-                    MainScreen.routeName,
+                    MaterialPageRoute(builder: (context) => MainScreen()),
+                    ModalRoute.withName("/Home"),
                   );
                 } else {
-                  return CreateSessionDialog.createSessionDialogWidget(context)
+                  return CreateSessionDialog.createSessionDialogWidget(
+                          context, true)
                       .then((value) {
                     if (value == true) {
                       context.read<ThemeSettingController>().notify();
 
-                      Navigator.pushNamed(
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MainScreen.routeName,
+                        MaterialPageRoute(builder: (context) => MainScreen()),
+                        ModalRoute.withName("/Home"),
                       );
                     }
                   });

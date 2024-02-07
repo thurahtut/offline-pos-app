@@ -125,4 +125,27 @@ class PaymentTransactionTable {
       index++;
     }
   }
+
+  static Future<List<Map<String, dynamic>>> getTotalTransactionSummary(
+      int sessionId) async {
+    final Database db = await DatabaseHelper().db;
+    final List<Map<String, dynamic>> maps =
+        await db.rawQuery("select sum($AMOUNT_IN_TRAN) as tPaid, "
+            "$PAYMENT_METHOD_ID_TRAN as id "
+            // ",$PAYMENT_METHOD_NAME as name "
+            "from $PAYMENT_TRANSACTION_TABLE_NAME "
+            // "left join $PAYMENT_METHOD_TABLE_NAME pmt "
+            // "on pmt.$PAYMENT_METHOD_ID = ptt.$PAYMENT_METHOD_ID_TRAN "
+            "where $SESSION_ID_IN_TRAN = \"14324\" "
+            "group by $PAYMENT_METHOD_ID_TRAN");
+
+    // List<Map<String, double>> convertedList = maps.map((originalMap) {
+    //   return originalMap.map((key, value) {
+    //     return MapEntry(key,
+    //         value is double ? value : double.tryParse(value.toString()) ?? 0.0);
+    //   });
+    // }).toList();
+
+    return maps;
+  }
 }

@@ -113,6 +113,9 @@ class _SaleAppBarState extends State<SaleAppBar> {
       SizedBox(width: 4),
       PopupMenuButton(
         tooltip: "",
+        child: CommonUtils.svgIconActionButton(
+          'assets/svg/menu.svg',
+        ),
         itemBuilder: (bContext) {
           return [
             PopupMenuItem<int>(
@@ -141,23 +144,43 @@ class _SaleAppBarState extends State<SaleAppBar> {
             ),
             PopupMenuItem<int>(
               value: 4,
-              child: CommonUtils.appBarActionButtonWithText(
-                  'assets/svg/move_item.svg', 'Close',
-                  fontSize: 16, onPressed: () {}),
+              child: _closeSessionWidget(bContext, true),
             ),
           ];
         },
-        child: CommonUtils.svgIconActionButton(
-          'assets/svg/menu.svg',
-        ),
       ),
     ];
+  }
+
+  Widget _closeSessionWidget(BuildContext bContext, bool isPopup) {
+    return CommonUtils.appBarActionButtonWithText(
+      'assets/svg/move_item.svg',
+      'Close',
+      fontSize: 16,
+      onPressed: () {
+        if (isPopup) {
+          Navigator.pop(bContext);
+        }
+        return CreateSessionDialog.createSessionDialogWidget(context, false)
+            .then((value) {
+          if (value == true) {
+            // context.read<ThemeSettingController>().notify();
+
+            // Navigator.pushAndRemoveUntil(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => MainScreen()),
+            //   ModalRoute.withName("/Home"),
+            // );
+          }
+        });
+      },
+    );
   }
 
   Widget _cashierWidget(BuildContext bContext, bool isPopup) {
     return CommonUtils.appBarActionButtonWithText(
       'assets/svg/account_circle.svg',
-      context.watch<LoginUserController>().loginEmployee?.name != null
+      context.read<LoginUserController>().loginEmployee?.name != null
           ? context.read<LoginUserController>().loginEmployee!.name!
           : '',
       fontSize: 16,
@@ -183,7 +206,8 @@ class _SaleAppBarState extends State<SaleAppBar> {
                 POSSessionTable.insertOrUpdatePOSSession(
                     controller.posSession!);
               } else {
-                return CreateSessionDialog.createSessionDialogWidget(context)
+                return CreateSessionDialog.createSessionDialogWidget(
+                        context, true)
                     .then((value) {
                   if (value == true) {
                     context.read<ThemeSettingController>().notify();
@@ -230,12 +254,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
         _logOut();
       }),
       spacer,
-      CommonUtils.appBarActionButtonWithText(
-        'assets/svg/move_item.svg',
-        'Close',
-        fontSize: 16,
-        onPressed: () {},
-      ),
+      _closeSessionWidget(context, false),
     ];
   }
 
