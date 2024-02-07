@@ -533,14 +533,14 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
     DateTime orderDate = DateTime.now().toUtc();
+    Map<String, double> map = currentOrderController
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
     if (currentOrderController.orderHistory != null) {
       currentOrderController.orderHistory!.writeDate = orderDate.toString();
       currentOrderController.orderHistory!.writeUid =
           context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
       currentOrderController.orderHistory!.partnerId = customer?.id;
     }
-    Map<String, double> map = currentOrderController
-        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
     OrderHistory orderHistory = currentOrderController.orderHistory ??
         OrderHistory(
           dateOrder: orderDate.toString(),
@@ -556,7 +556,6 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           configId: context.read<LoginUserController>().posConfig?.id ?? 0,
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
           sequenceNumber: "${orderDate.millisecondsSinceEpoch}",
-          amountTotal: map["total"]?.toInt() ?? 0,
           name:
               "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.millisecondsSinceEpoch}",
           state: OrderState.draft.text,
@@ -571,8 +570,6 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           tipAmount: 0,
           toInvoice: true,
           toShip: true,
-          totalItem: currentOrderController.currentOrderList.length,
-          totalQty: map["qty"]?.toInt() ?? 0,
           userId:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
           sequenceId: 0,
@@ -580,8 +577,13 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
               context.read<LoginUserController>().posConfig?.sequenceLineId ??
                   0,
           amountPaid: 0,
-          amountTax: map["tax"] ?? 0,
         );
+
+    orderHistory.amountTotal = map["total"]?.toInt() ?? 0;
+    orderHistory.totalQty = map["total"]?.toInt() ?? 0;
+    orderHistory.totalItem = currentOrderController.currentOrderList.length;
+    orderHistory.amountTax = map["tax"] ?? 0;
+    
     final Database db = await DatabaseHelper().db;
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
       if (value <= 0) {

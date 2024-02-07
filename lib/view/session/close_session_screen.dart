@@ -53,10 +53,10 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
               .read<CloseSessionController>()
               .paymentTransactionList[
                   int.tryParse(element["id"]?.toString() ?? "") ?? 0]
-              ?.amount = element["tPaid"];
+              ?.amount = element["tPaid"]?.toString();
         }
+        context.read<CloseSessionController>().notify();
       });
-      context.read<CloseSessionController>().notify();
     });
   }
 
@@ -91,6 +91,8 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                         _transactionDetailsWidget(),
                         SizedBox(height: 10),
                         _noteWidget(),
+                        SizedBox(height: 4),
+                        _warningConfirmWidget(),
                         SizedBox(height: 10),
                       ],
                     ),
@@ -131,7 +133,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                     Expanded(
                         flex: 4,
                         child: Text(
-                          "${CommonUtils.priceFormat.format(controller.totalSummaryMap["totalOrderHistory"] ?? 0)} K",
+                          "${CommonUtils.priceFormat.format(controller.totalSummaryMap["totalAmt"] ?? 0)} Ks",
                           style: textStyle,
                         )),
                   ],
@@ -149,7 +151,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                     Expanded(
                         flex: 4,
                         child: Text(
-                          "${CommonUtils.priceFormat.format(controller.totalSummaryMap["totalPaid"] ?? 0)} K",
+                          "${CommonUtils.priceFormat.format(controller.totalSummaryMap["totalPaid"] ?? 0)} Ks",
                           style: textStyle,
                         )),
                   ],
@@ -167,7 +169,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                     Expanded(
                         flex: 4,
                         child: Text(
-                          "${CommonUtils.priceFormat.format(controller.totalSummaryMap["totalCustomerAmt"] ?? 0)} K",
+                          "${CommonUtils.priceFormat.format(controller.totalSummaryMap["totalCustomerAmt"] ?? 0)} Ks",
                           style: textStyle,
                         )),
                   ],
@@ -289,16 +291,17 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                       SizedBox(
                         width: width,
                         child: Text(
-                          '0 Ks',
+                          '${CommonUtils.priceFormat.format(double.tryParse(getAmount(e.paymentMethodName, e.amount) ?? '') ?? 0)} Ks',
                           style: textStyle,
                         ),
                       ),
                       SizedBox(
                         width: width,
-                        child: e.paymentMethodName
-                                    ?.toLowerCase()
-                                    .contains('cash') ??
-                                false
+                        child: (double.tryParse(getAmount(
+                                            e.paymentMethodName, e.amount) ??
+                                        '') ??
+                                    0) >
+                                0
                             ? TextField(
                                 style: TextStyle(
                                   color: Constants.textColor,
@@ -318,6 +321,9 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                                 ),
                                 onChanged: (value) {
                                   e.payingAmount = value;
+                                  context
+                                      .read<CloseSessionController>()
+                                      .notify();
                                 },
                               )
                             : Text(
@@ -328,7 +334,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                       SizedBox(
                         width: width,
                         child: Text(
-                          '',
+                          '${(double.tryParse(e.payingAmount ?? '') ?? 0) - (double.tryParse(getAmount(e.paymentMethodName, e.amount) ?? '') ?? 0)}',
                           style: textStyle,
                         ),
                       ),
@@ -350,7 +356,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                           child: Row(
                             children: [
                               SizedBox(
-                                width: (width - 6) * 2,
+                                width: (width - 3.5) * 2,
                                 child: Text(
                                   'Opening',
                                   style: textStyle,
@@ -359,7 +365,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                               SizedBox(
                                 width: width,
                                 child: Text(
-                                  CommonUtils.priceFormat.format(60000),
+                                  '${CommonUtils.priceFormat.format(60000)} Ks',
                                   style: textStyle,
                                 ),
                               ),
@@ -387,7 +393,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                           child: Row(
                             children: [
                               SizedBox(
-                                width: (width - 6) * 2,
+                                width: (width - 3.5) * 2,
                                 child: Text(
                                   '+ Payments in ${e.paymentMethodName ?? ''}',
                                   style: textStyle,
@@ -396,7 +402,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                               SizedBox(
                                 width: width,
                                 child: Text(
-                                  '0 Ks',
+                                  '${CommonUtils.priceFormat.format(double.tryParse(e.amount ?? '') ?? 0)} Ks',
                                   style: textStyle,
                                 ),
                               ),
@@ -425,6 +431,12 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
           }).toList();
   }
 
+  String? getAmount(String? paymentMethodName, String? amount) {
+    return paymentMethodName?.toLowerCase().contains('cash') ?? false
+        ? ((double.tryParse(amount ?? '') ?? 0) + 60000).toString()
+        : amount;
+  }
+
   Container _noteWidget() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -450,6 +462,20 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
           contentPadding: EdgeInsets.all(16),
         ),
       ),
+    );
+  }
+
+  Widget _warningConfirmWidget() {
+    return CheckboxListTile(
+      value: false,
+      onChanged: (bool? value) {},
+      controlAffinity: ListTileControlAffinity.leading,
+      side: MaterialStateBorderSide.resolveWith(
+          (_) => BorderSide(width: 2, color: primaryColor)),
+      checkColor: primaryColor,
+      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+      title: Text(
+          'Accept payments difference and post a profit/loss journal entry'),
     );
   }
 

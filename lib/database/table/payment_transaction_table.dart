@@ -136,7 +136,8 @@ class PaymentTransactionTable {
             "from $PAYMENT_TRANSACTION_TABLE_NAME "
             // "left join $PAYMENT_METHOD_TABLE_NAME pmt "
             // "on pmt.$PAYMENT_METHOD_ID = ptt.$PAYMENT_METHOD_ID_TRAN "
-            "where $SESSION_ID_IN_TRAN = \"14324\" "
+            "where $SESSION_ID_IN_TRAN=$sessionId "
+            // " where order_id =1 "
             "group by $PAYMENT_METHOD_ID_TRAN");
 
     // List<Map<String, double>> convertedList = maps.map((originalMap) {

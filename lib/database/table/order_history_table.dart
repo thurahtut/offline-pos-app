@@ -207,16 +207,19 @@ class OrderHistoryTable {
     final Database db = await DatabaseHelper().db;
     final List<Map<String, dynamic>> maps = await db.rawQuery(
         "select ot.*, ct.$CUSTOMER_NAME as customer_name, emt.$NAME_IN_ET as employee_name, "
-        "json_group_array(distinct json_extract(json_object('$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, '$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, 'product_name', olt.product_name , '$BARCODE_IN_PT', olt.$BARCODE_IN_PT , '$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL), '\$' )) as orderLines, "
+        "json_group_array(distinct json_extract(json_object('$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, '$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, 'full_product_name', olt.full_product_name , '$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL), '\$' )) as orderLines, " //'$BARCODE_IN_PT', olt.$BARCODE_IN_PT ,
         "json_group_array(distinct json_extract(json_object('$PAYMENT_TRANSACTION_ID', ptt.$PAYMENT_TRANSACTION_ID, '$ORDER_ID_IN_TRAN', ptt.$ORDER_ID_IN_TRAN, '$PAYMENT_DATE' , ptt.$PAYMENT_DATE, '$PAYMENT_METHOD_ID_TRAN', ptt.$PAYMENT_METHOD_ID_TRAN, 'name', pmt.$PAYMENT_METHOD_NAME, '$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN), '\$' )) as paymentLines "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         "left join "
-        "("
-        "select olt.* , pt.$PRODUCT_NAME as product_name, pt.$BARCODE_IN_PT as $BARCODE_IN_PT "
-        "from $ORDER_LINE_ID_TABLE_NAME olt "
-        "left join $PRODUCT_TABLE_NAME pt "
-        "on pt.$PRODUCT_ID = olt.$PRODUCT_ID_IN_LINE "
-        ") olt "
+        "$ORDER_LINE_ID_TABLE_NAME olt "
+        // "("
+        // "select olt.* , "
+        // // "pt.$PRODUCT_NAME as product_name, "
+        // "pt.$BARCODE_IN_PT as $BARCODE_IN_PT "
+        // "from $ORDER_LINE_ID_TABLE_NAME olt "
+        // "left join $PRODUCT_TABLE_NAME pt "
+        // "on pt.$PRODUCT_ID = olt.$PRODUCT_ID_IN_LINE "
+        // ") olt "
         // "$ORDER_LINE_ID_TABLE_NAME olt "
         "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
         "and olt.$ORDER_ID_IN_LINE = $orderHistoryId "
@@ -230,6 +233,7 @@ class OrderHistoryTable {
         "left join $PAYMENT_METHOD_TABLE_NAME pmt "
         "on pmt.$PAYMENT_METHOD_ID=ptt.$PAYMENT_METHOD_ID_TRAN "
         "where ot.$ORDER_HISTORY_ID = $orderHistoryId "
+        // "where ot.$SESSION_ID =14324 "
         "group by ot.$ORDER_HISTORY_ID ");
 
     OrderHistory? orderHistory;
@@ -270,20 +274,30 @@ class OrderHistoryTable {
 
   static Future<Map<String, double>> getTotalSummary(int sessionId) async {
     final Database db = await DatabaseHelper().db;
-    final List<Map<String, dynamic>> maps = await db.rawQuery(
-        "select sum(ptt.tPaid) totalPaid, "
+    String query =
+        "select sum(ptt.tPaid) totalPaid, sum(oht.$AMOUNT_TOTAL) as totalAmt, "
         "count(oht.$ORDER_HISTORY_ID) as totalOrderHistory, "
-        "sum(CASE WHEN oht.$PARTNER_ID is not null AND oht.$PARTNER_ID != \"\" THEN ptt.tPaid ELSE 0 END) as totalCustomerAmt "
+        "sum(CASE WHEN oht.$PARTNER_ID is not null AND oht.$PARTNER_ID<>'' THEN ptt.tPaid ELSE 0 END) as totalCustomerAmt "
         "from $ORDER_HISTORY_TABLE_NAME oht "
         "left join "
         "( "
         "	select sum($AMOUNT_IN_TRAN) as tPaid , $ORDER_ID_IN_TRAN"
         "	from $PAYMENT_TRANSACTION_TABLE_NAME"
-        "	where $SESSION_ID_IN_TRAN = \"$sessionId\""
+        "	where $SESSION_ID_IN_TRAN=$sessionId"
+        // " where order_id = 1 "
         "	group by $ORDER_ID_IN_TRAN"
         ") ptt "
-        "on ptt.$ORDER_ID_IN_TRAN = oht.$ORDER_HISTORY_ID "
-        "where oht.$SESSION_ID = \"$sessionId\"");
+        "on ptt.$ORDER_ID_IN_TRAN=oht.$ORDER_HISTORY_ID "
+        "where oht.$SESSION_ID=$sessionId";
+
+    List<Map<String, dynamic>> maps = [];
+    try {
+      maps = await db.rawQuery(query
+          // [sessionId, sessionId]
+          );
+    } catch (e) {
+      print(e.toString());
+    }
 
     Map<String, double> totalSummary = maps.isEmpty
         ? {}
