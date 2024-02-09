@@ -355,11 +355,13 @@ class OrderHistoryTable {
       isCloseSession: isCloseSession,
     );
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
-    for (var map in maps) {
-      map["line_ids"] =
-          map["line_ids"] != "" ? jsonDecode(map["line_ids"]) : [];
-      map["payment_ids"] =
-          map["payment_ids"] != "" ? jsonDecode(map["payment_ids"]) : [];
+    List<Map<String, dynamic>> cloneMaps = jsonDecode(jsonEncode(maps));
+    for (var cloneMap in cloneMaps) {
+      cloneMap["line_ids"] =
+          cloneMap["line_ids"] != "" ? jsonDecode(cloneMap["line_ids"]) : [];
+      cloneMap["payment_ids"] = cloneMap["payment_ids"] != ""
+          ? jsonDecode(cloneMap["payment_ids"])
+          : [];
     }
     // List<OrderHistory> orderHistoryList = [];
     // OrderHistory? orderHistory;
@@ -384,7 +386,7 @@ class OrderHistoryTable {
     //     }
     //   }
     // }
-    return maps;
+    return cloneMaps;
   }
 
   static Future<Map<String, double>> getTotalSummary(int sessionId) async {
