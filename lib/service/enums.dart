@@ -61,5 +61,14 @@ enum OrderState {
   final String text;
 }
 
+enum OrderCondition {
+  unsync("Unsynced"),
+  sync("Synced"),
+  rewrite("Rewrite");
+
+  const OrderCondition(this.text);
+  final String text;
+}
+
 
 enum CurrentOrderKeyboardState { disc, qty, price, refund }

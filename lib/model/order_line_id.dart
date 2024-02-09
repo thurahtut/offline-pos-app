@@ -12,6 +12,7 @@ class OrderLineID {
   int? discount;
   String? writeDate;
   int? writeUid;
+  String? barcode;
 
   OrderLineID({
     this.id,
@@ -27,6 +28,7 @@ class OrderLineID {
     this.discount,
     this.writeDate,
     this.writeUid,
+    this.barcode,
   });
 
   OrderLineID.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class OrderLineID {
     discount = int.tryParse(json['discount']?.toString() ?? '');
     writeDate = json['write_date'];
     writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
+    barcode = json["barcode"];
   }
 
   Map<String, dynamic> toJson() {

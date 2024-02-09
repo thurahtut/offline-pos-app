@@ -294,11 +294,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Widget _productLinesWidget() {
     return Consumer<OrderDetailController>(builder: (_, controller, __) {
       double totalTaxes = 0;
-      double netTotal = 0;
+      double totalPaidAmt = 0;
       for (OrderLineID orderLineID in controller.orderHistory?.lineIds ?? []) {
         totalTaxes = (orderLineID.priceSubtotalIncl ?? 0) -
             (orderLineID.priceSubtotal ?? 0);
-        netTotal += (orderLineID.priceSubtotalIncl ?? 0);
+        totalPaidAmt += (orderLineID.priceSubtotalIncl ?? 0);
       }
       return Column(
         children: [
@@ -386,7 +386,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         ),
                         Expanded(
                           child: _textForDetailInfo(
-                            '$netTotal Ks ',
+                            '${controller.orderHistory?.amountTotal ?? 0} Ks ',
                             textAlign: TextAlign.end,
                             fontWeight: FontWeight.bold,
                           ),
@@ -404,7 +404,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         ),
                         Expanded(
                           child: _textForDetailInfo(
-                            "${netTotal.toStringAsFixed(2)} Ks",
+                            "${totalPaidAmt.toStringAsFixed(2)} Ks",
                             textAlign: TextAlign.end,
                             fontWeight: FontWeight.bold,
                           ),

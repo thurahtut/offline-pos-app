@@ -385,4 +385,20 @@ class Api {
       onReceiveProgress: onReceiveProgress,
     );
   }
+
+  static Future<Response?> closeSession({
+    int? sessionId,
+    required Map<String, dynamic> closeSession,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/posconfig/session/$sessionId'.onEndPoint(),
+      method: Method.PUT.name,
+      data: closeSession,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
 }

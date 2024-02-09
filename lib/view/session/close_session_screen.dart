@@ -1,5 +1,6 @@
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/close_session_controller.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CloseSessionScreen extends StatefulWidget {
   const CloseSessionScreen({
@@ -492,6 +493,9 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             containerColor: primaryColor,
             width: MediaQuery.of(context).size.width / 8,
             textSize: 15,
+            onTap: () {
+              Navigator.pop(widget.bContext);
+            },
           ),
           SizedBox(width: 8),
           BorderContainer(
@@ -508,9 +512,51 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             containerColor: primaryColor,
             width: MediaQuery.of(context).size.width / 8,
             textSize: 15,
+            onTap: () async {
+              int sessionId =
+                  context.read<LoginUserController>().posSession?.id ?? 0;
+
+              final Database db = await DatabaseHelper().db;
+              OrderHistoryTable.getOrderHistoryList(
+                      db: db, isCloseSession: true)
+                  .then((value) async {
+                if (value.isNotEmpty) {
+                  _syncOrderHistory(value: value, sessionId: sessionId, db: db)
+                      .then((value) => Navigator.pop(widget.bContext));
+                }
+              });
+            },
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _syncOrderHistory(
+      {required List<Map<String, dynamic>> value,
+      required int sessionId,
+      Database? db}) async {
+    for (var mapArg in value) {
+      await Api.closeSession(
+        closeSession: mapArg,
+        sessionId: sessionId,
+      ).then((closeResult) {
+        if (closeResult != null &&
+            closeResult.statusCode == 200 &&
+            closeResult.data != null) {
+          OrderHistoryTable.updateValue(
+            db: db,
+            whereColumnName: SEQUENCE_NUMBER,
+            whereValue: mapArg[SEQUENCE_NUMBER],
+            columnName: ORDER_CONDITION,
+            value: OrderCondition.sync.text,
+          );
+        } else if (closeResult == null || closeResult.statusCode != 200) {
+          CommonUtils.showSnackBar(
+              context: widget.mainContext,
+              message: closeResult!.statusMessage ?? 'Something was wrong!');
+        }
+      });
+    }
   }
 }

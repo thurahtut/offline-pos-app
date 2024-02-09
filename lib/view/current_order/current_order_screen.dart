@@ -572,11 +572,13 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           toShip: true,
           userId:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          sequenceId: 0,
+          sequenceId:
+              context.read<LoginUserController>().posConfig?.sequenceId ?? 0,
           sequenceLineId:
               context.read<LoginUserController>().posConfig?.sequenceLineId ??
                   0,
           amountPaid: 0,
+          orderCondition: OrderCondition.unsync.text,
         );
 
     orderHistory.amountTotal = map["total"]?.toInt() ?? 0;
@@ -615,7 +617,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
               (data.priceListItem?.fixedPrice ?? 0).toDouble(),
           fullProductName:
-              '${data.barcode != null ? '[data.barcode] ' : ''}${data.productName}',
+              '${data.barcode != null ? '[${data.barcode}] ' : ''}${data.productName}',
           createDate: orderDate.toString(),
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,

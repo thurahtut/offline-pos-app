@@ -147,11 +147,17 @@ class OrderHistoryTable {
     );
   }
 
-  static Future<int> updateValue(
-      final Database db, int orderId, String columnName, String? value) async {
+  static Future<int> updateValue({
+    Database? db,
+    required String whereColumnName,
+    String? whereValue,
+    required String columnName,
+    String? value,
+  }) async {
+    db ??= await DatabaseHelper().db;
     String sql = "UPDATE $ORDER_HISTORY_TABLE_NAME "
         "SET $columnName = '$value'"
-        " Where $ORDER_HISTORY_ID = $orderId";
+        " Where $whereColumnName = $whereColumnName";
     return db.rawInsert(sql);
   }
 
@@ -199,16 +205,56 @@ class OrderHistoryTable {
             ? ['%$filter%', '%${filter.toLowerCase()}%']
             : null);
     final count = Sqflite.firstIntValue(result);
-
     return count ?? 0;
   }
 
-  static Future<OrderHistory?> getOrderById(int orderHistoryId) async {
-    final Database db = await DatabaseHelper().db;
-    final List<Map<String, dynamic>> maps = await db.rawQuery(
-        "select ot.*, ct.$CUSTOMER_NAME as customer_name, emt.$NAME_IN_ET as employee_name, "
-        "json_group_array(distinct json_extract(json_object('$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, '$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, 'full_product_name', olt.full_product_name , '$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL), '\$' )) as orderLines, " //'$BARCODE_IN_PT', olt.$BARCODE_IN_PT ,
-        "json_group_array(distinct json_extract(json_object('$PAYMENT_TRANSACTION_ID', ptt.$PAYMENT_TRANSACTION_ID, '$ORDER_ID_IN_TRAN', ptt.$ORDER_ID_IN_TRAN, '$PAYMENT_DATE' , ptt.$PAYMENT_DATE, '$PAYMENT_METHOD_ID_TRAN', ptt.$PAYMENT_METHOD_ID_TRAN, 'name', pmt.$PAYMENT_METHOD_NAME, '$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN), '\$' )) as paymentLines "
+  static String getOrderHistorySelectKeys({
+    String? initialKey,
+    List<String>? toRemoveKeys,
+  }) {
+    Map<String, dynamic> map = OrderHistory().toJson();
+    for (var data in toRemoveKeys ?? []) {
+      map.remove(data);
+    }
+    List<String> list = initialKey != null
+        ? map.keys.map((e) => "$initialKey$e").toList()
+        : map.keys.toList();
+
+    String str = list.join(",");
+    return str;
+  }
+
+  static String getOrderHistoryQuery(
+    int? orderHistoryId, {
+    bool? includedCustomerName = true,
+    bool? includedEmployeeName = true,
+    bool? includedPaymentMethodName = true,
+    String? orderHistoryKeys,
+    bool? isCloseSession,
+  }) {
+    return "select ${orderHistoryKeys ?? "ot.*"}, "
+        "${includedCustomerName == true ? "ct.$CUSTOMER_NAME as customer_name, " : ""}"
+        "${includedEmployeeName == true ? "emt.$NAME_IN_ET as employee_name, " : ""}"
+        "json_group_array(distinct json_extract(json_object("
+        "${isCloseSession != true ? "'$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, " : ""}"
+        "'$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, '$FULL_PRODUCT_NAME', ${getValueWithCase("olt.$FULL_PRODUCT_NAME")}, "
+        "'$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL, "
+        "'$DISCOUNT_IN_LINE', 0.0, '$CREATE_DATE_IN_LINE', olt.$CREATE_DATE_IN_LINE, '$CREATE_UID_IN_LINE', olt.$CREATE_UID_IN_LINE), '\$' )) as line_ids, " //'$BARCODE_IN_PT', olt.$BARCODE_IN_PT ,
+        "${isCloseSession == true ? "case when ptt.$PAYMENT_TRANSACTION_ID is not null then " : ""}"
+        "json_group_array("
+        "distinct json_extract("
+        "json_object("
+        "${isCloseSession != true ? "'$PAYMENT_TRANSACTION_ID', ptt.$PAYMENT_TRANSACTION_ID, '$ORDER_ID_IN_TRAN', ptt.$ORDER_ID_IN_TRAN, " : ""}"
+        "'$PAYMENT_DATE' , ptt.$PAYMENT_DATE, '$PAYMENT_METHOD_ID_TRAN', ptt.$PAYMENT_METHOD_ID_TRAN, "
+        "${includedPaymentMethodName == true ? "'name', ${getValueWithCase("olt.$FULL_PRODUCT_NAME")}, " : ""}"
+        "'$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN, '$CARD_TYPE', ${getValueWithCase("ptt.$CARD_TYPE")}, '$CARD_HOLDER_NAME', ${getValueWithCase("ptt.$CARD_HOLDER_NAME")}, "
+        "'$CREATE_DATE_IN_TRAN', ptt.$CREATE_DATE_IN_TRAN, '$CREATE_UID_IN_TRAN', ptt.$CREATE_UID_IN_TRAN, '$TICKET', ${getValueWithCase("ptt.$TICKET")}, "
+        "'$PAYMENT_STATUS', ${getValueWithCase("ptt.$PAYMENT_STATUS")}, '$SESSION_ID_IN_TRAN', ptt.$SESSION_ID_IN_TRAN, '$TRANSACTION_ID', '', "
+        "'$IS_CHANGE', ${bool.tryParse("ptt.$IS_CHANGE") ?? false})"
+        ", '\$' )"
+        ")"
+        "${isCloseSession == true ? " else '' end" : ""}"
+        " as payment_ids "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         "left join "
         "$ORDER_LINE_ID_TABLE_NAME olt "
@@ -222,19 +268,30 @@ class OrderHistoryTable {
         // ") olt "
         // "$ORDER_LINE_ID_TABLE_NAME olt "
         "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
-        "and olt.$ORDER_ID_IN_LINE = $orderHistoryId "
+        "${orderHistoryId != null ? "and olt.$ORDER_ID_IN_LINE = $orderHistoryId " : ""}"
         "left join $PAYMENT_TRANSACTION_TABLE_NAME ptt "
         "on ptt.$ORDER_ID_IN_TRAN = ot.$ORDER_HISTORY_ID "
-        "and ptt.$ORDER_ID_IN_TRAN = $orderHistoryId "
-        "left join $CUSTOMER_TABLE_NAME ct "
-        "on ct.$CUSTOMER_ID_IN_CT=ot.$PARTNER_ID "
-        "left join $EMPLOYEE_TABLE_NAME emt "
-        "on emt.$EMPLOYEE_ID=ot.$EMPLOYEE_ID_IN_OH "
-        "left join $PAYMENT_METHOD_TABLE_NAME pmt "
-        "on pmt.$PAYMENT_METHOD_ID=ptt.$PAYMENT_METHOD_ID_TRAN "
-        "where ot.$ORDER_HISTORY_ID = $orderHistoryId "
-        // "where ot.$SESSION_ID =14324 "
-        "group by ot.$ORDER_HISTORY_ID ");
+        "${orderHistoryId != null ? "and ptt.$ORDER_ID_IN_TRAN = $orderHistoryId " : ""}"
+        "${includedCustomerName == true ? "left join $CUSTOMER_TABLE_NAME ct "
+            "on ct.$CUSTOMER_ID_IN_CT=ot.$PARTNER_ID " : " "}"
+        "${includedEmployeeName == true ? "left join $EMPLOYEE_TABLE_NAME emt "
+            "on emt.$EMPLOYEE_ID=ot.$EMPLOYEE_ID_IN_OH " : " "}"
+        "${includedPaymentMethodName == true ? "left join $PAYMENT_METHOD_TABLE_NAME pmt "
+            "on pmt.$PAYMENT_METHOD_ID=ptt.$PAYMENT_METHOD_ID_TRAN " : ""}"
+        " where 1=1 "
+        "${orderHistoryId != null ? " and ot.$ORDER_HISTORY_ID = $orderHistoryId " : ""}"
+        "${isCloseSession == true ? " and ot.$STATE_IN_OT='Paid' " : ""}"
+        "group by ot.$ORDER_HISTORY_ID ";
+  }
+
+  static String getValueWithCase(String trt) {
+    return "case when $trt is not null then $trt else '' end ";
+  }
+
+  static Future<OrderHistory?> getOrderById(int? orderHistoryId) async {
+    final Database db = await DatabaseHelper().db;
+    String query = getOrderHistoryQuery(orderHistoryId);
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
     OrderHistory? orderHistory;
     if (maps.isNotEmpty) {
@@ -242,7 +299,7 @@ class OrderHistoryTable {
       orderHistory.partnerName = maps.first["customer_name"];
       orderHistory.employeeName = maps.first["employee_name"];
       List<OrderLineID> orderLines = [];
-      List<dynamic>? list = jsonDecode(maps.first["orderLines"]);
+      List<dynamic>? list = jsonDecode(maps.first["line_ids"]);
       for (var data in list ?? []) {
         OrderLineID orderLineID = OrderLineID.fromJson(data);
 
@@ -256,7 +313,7 @@ class OrderHistoryTable {
       }
 
       List<PaymentTransaction> paymentLines = [];
-      list = jsonDecode(maps.first["paymentLines"]);
+      list = jsonDecode(maps.first["payment_ids"]);
       for (var data in list ?? []) {
         PaymentTransaction paymentLine = PaymentTransaction.fromJson(data);
 
@@ -270,6 +327,58 @@ class OrderHistoryTable {
       }
     }
     return orderHistory;
+  }
+
+  static Future<List<Map<String, dynamic>>> getOrderHistoryList({
+    Database? db,
+    int? orderHistoryId,
+    bool? isCloseSession,
+  }) async {
+    db ??= await DatabaseHelper().db;
+    String ohKeys = getOrderHistorySelectKeys(
+      initialKey: "ot.",
+      toRemoveKeys: [
+        ORDER_HISTORY_ID,
+        NAME_IN_OH,
+        ORDER_CONDITION,
+        SEQUENCE_NUMBER,
+        WRITE_DATE_IN_OH,
+        WRITE_UID_IN_OH,
+      ],
+    );
+    String query = getOrderHistoryQuery(
+      orderHistoryId,
+      orderHistoryKeys: ohKeys,
+      includedCustomerName: false,
+      includedEmployeeName: false,
+      includedPaymentMethodName: true,
+      isCloseSession: isCloseSession,
+    );
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
+    // List<OrderHistory> orderHistoryList = [];
+    // OrderHistory? orderHistory;
+    // if (maps.isNotEmpty) {
+    //   for (var data in maps) {
+    //     orderHistory = OrderHistory.fromJson(data);
+    //     List<OrderLineID> orderLines = [];
+    //     List<dynamic>? list = jsonDecode(data["orderLines"]);
+    //     for (var data in list ?? []) {
+    //       orderLines.add(OrderLineID.fromJson(data));
+    //     }
+    //     if (orderLines.isNotEmpty) {
+    //       orderHistory.lineIds ??= orderLines;
+    //     }
+    //     List<PaymentTransaction> paymentLines = [];
+    //     list = jsonDecode(data["paymentLines"]);
+    //     for (var data in list ?? []) {
+    //       paymentLines.add(PaymentTransaction.fromJson(data));
+    //     }
+    //     if (paymentLines.isNotEmpty) {
+    //       orderHistory.paymentIds ??= paymentLines;
+    //     }
+    //   }
+    // }
+    return maps;
   }
 
   static Future<Map<String, double>> getTotalSummary(int sessionId) async {
