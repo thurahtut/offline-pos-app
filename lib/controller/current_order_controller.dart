@@ -41,9 +41,9 @@ class CurrentOrderController with ChangeNotifier {
       tTax += (cOrderList[i].onhandQuantity?.toDouble() ?? 0) *
           ((cOrderList[i].priceListItem?.fixedPrice ?? 0) * 0.05);
     }
-    map["qty"] = tQty;
-    map["total"] = tTotal;
-    map["tax"] = tTax;
+    map["qty"] = double.tryParse(tQty.toStringAsFixed(2)) ?? 0;
+    map["total"] = double.tryParse(tTotal.toStringAsFixed(2)) ?? 0;
+    map["tax"] = double.tryParse(tTax.toStringAsFixed(2)) ?? 0;
     return map;
   }
 

@@ -521,8 +521,8 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                       db: db, isCloseSession: true)
                   .then((value) async {
                 if (value.isNotEmpty) {
-                  _syncOrderHistory(value: value, sessionId: sessionId, db: db)
-                      .then((value) => Navigator.pop(widget.bContext));
+                  // _syncOrderHistory(value: value, sessionId: sessionId, db: db)
+                  //     .then((value) => Navigator.pop(widget.bContext));
                 }
               });
             },

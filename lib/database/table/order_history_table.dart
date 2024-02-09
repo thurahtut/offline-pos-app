@@ -250,7 +250,7 @@ class OrderHistoryTable {
         "'$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN, '$CARD_TYPE', ${getValueWithCase("ptt.$CARD_TYPE")}, '$CARD_HOLDER_NAME', ${getValueWithCase("ptt.$CARD_HOLDER_NAME")}, "
         "'$CREATE_DATE_IN_TRAN', ptt.$CREATE_DATE_IN_TRAN, '$CREATE_UID_IN_TRAN', ptt.$CREATE_UID_IN_TRAN, '$TICKET', ${getValueWithCase("ptt.$TICKET")}, "
         "'$PAYMENT_STATUS', ${getValueWithCase("ptt.$PAYMENT_STATUS")}, '$SESSION_ID_IN_TRAN', ptt.$SESSION_ID_IN_TRAN, '$TRANSACTION_ID', '', "
-        "'$IS_CHANGE', ${bool.tryParse("ptt.$IS_CHANGE") ?? false})"
+        "'$IS_CHANGE', null)"
         ", '\$' )"
         ")"
         "${isCloseSession == true ? " else '' end" : ""}"
@@ -355,6 +355,12 @@ class OrderHistoryTable {
       isCloseSession: isCloseSession,
     );
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
+    for (var map in maps) {
+      map["line_ids"] =
+          map["line_ids"] != "" ? jsonDecode(map["line_ids"]) : [];
+      map["payment_ids"] =
+          map["payment_ids"] != "" ? jsonDecode(map["payment_ids"]) : [];
+    }
     // List<OrderHistory> orderHistoryList = [];
     // OrderHistory? orderHistory;
     // if (maps.isNotEmpty) {
