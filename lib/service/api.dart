@@ -171,7 +171,8 @@ class Api {
       callback?.call();
       return response;
     } on DioException catch (dioException) {
-      final error = ApiServiceConfig.dioErrorHandler(dioException);
+      ApiServiceConfig.dioErrorHandler(dioException);
+      // final error = ApiServiceConfig.dioErrorHandler(dioException);
 
       // if (error == DioExceptionType.badCertificate) {
       //   refreshToken().then((reponse) async {
@@ -262,15 +263,21 @@ class Api {
   }
 
   static Future<Response?> getAllCustomer({
+    String? lastSyncDate,
     void Function(int, int)? onReceiveProgress,
   }) async {
     dio.options.headers = {
       'Content-Type': 'application/json',
     };
+    Map<String, dynamic> map = {};
+    if (lastSyncDate != null) {
+      map.putIfAbsent("last_sync_date", () => lastSyncDate);
+    }
     return request(
       endpoint: '/customers'.onEndPoint(),
       method: Method.GET.name,
       onReceiveProgress: onReceiveProgress,
+      queryParameters: map,
       receiveTimeout: Duration(milliseconds: 900000),
       sendTimeout: Duration(milliseconds: 900000),
     );
@@ -386,9 +393,25 @@ class Api {
     );
   }
 
-  static Future<Response?> closeSession({
+  static Future<Response?> syncOrders({
     int? sessionId,
-    required Map<String, dynamic> closeSession,
+    required Map<String, dynamic> orderMap,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/order'.onEndPoint(),
+      method: Method.POST.name,
+      data: orderMap,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
+
+  static Future<Response?> closeSessionAndCloseCashRegister({
+    int? sessionId,
+    required CloseSession closeSession,
     void Function(int, int)? onReceiveProgress,
   }) async {
     dio.options.headers = {

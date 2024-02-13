@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/close_session_controller.dart';
 import 'package:sqflite/sqflite.dart';
@@ -190,7 +193,9 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
           Expanded(
             flex: 2,
             child: Text(
-              CommonUtils.priceFormat.format(60000),
+              CommonUtils.priceFormat.format(
+                  context.read<LoginUserController>().posConfig?.startingAmt ??
+                      0),
               style: textStyle,
             ),
           ),
@@ -366,7 +371,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                               SizedBox(
                                 width: width,
                                 child: Text(
-                                  '${CommonUtils.priceFormat.format(60000)} Ks',
+                                  '${CommonUtils.priceFormat.format(context.read<LoginUserController>().posConfig?.startingAmt ?? 0)} Ks',
                                   style: textStyle,
                                 ),
                               ),
@@ -434,7 +439,10 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
 
   String? getAmount(String? paymentMethodName, String? amount) {
     return paymentMethodName?.toLowerCase().contains('cash') ?? false
-        ? ((double.tryParse(amount ?? '') ?? 0) + 60000).toString()
+        ? ((double.tryParse(amount ?? '') ?? 0) +
+                (context.read<LoginUserController>().posConfig?.startingAmt ??
+                    0))
+            .toString()
         : amount;
   }
 
@@ -513,17 +521,63 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             width: MediaQuery.of(context).size.width / 8,
             textSize: 15,
             onTap: () async {
-              int sessionId =
-                  context.read<LoginUserController>().posSession?.id ?? 0;
-
+              var date = DateTime.now().toString();
               final Database db = await DatabaseHelper().db;
               OrderHistoryTable.getOrderHistoryList(
                       db: db, isCloseSession: true)
                   .then((value) async {
-                if (value.isNotEmpty) {
-                  // _syncOrderHistory(value: value, sessionId: sessionId, db: db)
-                  //     .then((value) => Navigator.pop(widget.bContext));
-                }
+                _syncOrderHistory(value: value, db: db).then((value) {
+                  int configId =
+                      context.read<LoginUserController>().posConfig?.id ?? 0;
+
+                  int writeUID = context
+                          .read<LoginUserController>()
+                          .loginUser
+                          ?.userData
+                          ?.id ??
+                      0;
+
+                  PaymentTransaction cashResult = context
+                      .read<CloseSessionController>()
+                      .paymentTransactionList
+                      .values
+                      .firstWhere(
+                          (e) =>
+                              e.paymentMethodName
+                                  ?.toLowerCase()
+                                  .contains('cash') ??
+                              false,
+                          orElse: () => PaymentTransaction());
+                  CloseSession closeSession = CloseSession(
+                      configId: configId,
+                      accountBankStatement: AccountBankStatement(
+                        writeDate: date,
+                        writeUid: writeUID,
+                        balanceEnd: cashResult.payingAmount,
+                        balanceEndReal: getAmount(
+                            cashResult.paymentMethodName, cashResult.amount),
+                        difference:
+                            ((double.tryParse(cashResult.payingAmount ?? '') ??
+                                        0) -
+                                    ((double.tryParse(getAmount(
+                                                cashResult.paymentMethodName,
+                                                cashResult.amount) ??
+                                            '')) ??
+                                        0))
+                                .toString(),
+                      ),
+                      posSession: ClosePosSession(
+                        state: "closing_control",
+                        stopAt: date,
+                        writeDate: date,
+                        writeUid: writeUID,
+                      ));
+                  int sessionId =
+                      context.read<LoginUserController>().posSession?.id ?? 0;
+                  Api.closeSessionAndCloseCashRegister(
+                          sessionId: sessionId, closeSession: closeSession)
+                      .then((value) => Navigator.pop(widget.bContext));
+                });
               });
             },
           ),
@@ -533,28 +587,26 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
   }
 
   Future<void> _syncOrderHistory(
-      {required List<Map<String, dynamic>> value,
-      required int sessionId,
-      Database? db}) async {
+      {required List<Map<String, dynamic>> value, Database? db}) async {
     for (var mapArg in value) {
-      await Api.closeSession(
-        closeSession: mapArg,
-        sessionId: sessionId,
-      ).then((closeResult) {
-        if (closeResult != null &&
-            closeResult.statusCode == 200 &&
-            closeResult.data != null) {
+      log(jsonEncode(mapArg));
+      await Api.syncOrders(
+        orderMap: mapArg,
+      ).then((syncedResult) {
+        if (syncedResult != null &&
+            syncedResult.statusCode == 200 &&
+            syncedResult.data != null) {
           OrderHistoryTable.updateValue(
             db: db,
-            whereColumnName: SEQUENCE_NUMBER,
-            whereValue: mapArg[SEQUENCE_NUMBER],
+            whereColumnName: RECEIPT_NUMBER,
+            whereValue: mapArg[RECEIPT_NUMBER],
             columnName: ORDER_CONDITION,
             value: OrderCondition.sync.text,
           );
-        } else if (closeResult == null || closeResult.statusCode != 200) {
+        } else if (syncedResult == null || syncedResult.statusCode != 200) {
           CommonUtils.showSnackBar(
               context: widget.mainContext,
-              message: closeResult!.statusMessage ?? 'Something was wrong!');
+              message: syncedResult!.statusMessage ?? 'Something was wrong!');
         }
       });
     }

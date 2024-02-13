@@ -260,6 +260,12 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   columns: [
                     CommonUtils.dataColumn(
                       fixedWidth: isTabletMode == true ? 300 : 300,
+                      text: 'Order Condition',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      fixedWidth: isTabletMode == true ? 300 : 300,
                       text: 'Date',
                       // onSort: (columnIndex, ascending) =>
                       //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
@@ -398,6 +404,39 @@ class DataSourceForOrderListScreen extends DataTableSource {
         onTap();
       },
       cells: [
+        DataCell(
+          Stack(
+            alignment: Alignment.center,
+            children: order.orderCondition != OrderCondition.sync.text
+                ? [
+                    Text(
+                      "_",
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ]
+                : [
+                    Icon(
+                      Icons.label_rounded,
+                      color: primaryColor,
+                      size: 80,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        OrderCondition.sync.text,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+          ),
+          // onTap: onTap,
+        ),
         DataCell(
           Text(
             CommonUtils.getLocaleDateTime(

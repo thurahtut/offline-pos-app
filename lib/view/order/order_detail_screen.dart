@@ -222,6 +222,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     ),
                   ],
                 ),
+                spacer,
+                Row(
+                  children: [
+                    Expanded(child: _textForDetailInfoTitle("Order Condition")),
+                    Expanded(
+                      flex: 2,
+                      child: _textForDetailInfo(
+                          controller.orderHistory?.orderCondition ?? ''),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

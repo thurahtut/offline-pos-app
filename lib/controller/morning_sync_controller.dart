@@ -81,10 +81,11 @@ class MorningsyncController with ChangeNotifier {
     });
   }
 
-  void getAllCustomerFromApi(Function()? callback) {
+  void getAllCustomerFromApi(String? lastSyncDate, Function()? callback) {
     currentTaskTitle = "Customer List Sync....";
     currentReachTask = 2;
     Api.getAllCustomer(
+      lastSyncDate: lastSyncDate,
       onReceiveProgress: (sent, total) {
         double value = min(((sent / total) * 100), 100);
         percentage = value > 100 ? null : value;

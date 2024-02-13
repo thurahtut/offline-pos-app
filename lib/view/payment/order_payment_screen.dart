@@ -123,7 +123,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 .then((value) {
               currentOrderController.orderHistory?.receiptNumber =
                   'Order ${DateTime.now().millisecondsSinceEpoch}';
-              currentOrderController.orderHistory?.state = OrderState.paid.text;
+              currentOrderController.orderHistory?.state = OrderState.paid.name;
               currentOrderController.orderHistory?.amountPaid =
                   totalPayAmt.toInt();
 

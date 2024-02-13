@@ -70,7 +70,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
           MorningSyncScreen.routeName,
           arguments: MorningSyncScreen(alreadyLogin: false),
         );
-      } 
+      }
     });
   }
 

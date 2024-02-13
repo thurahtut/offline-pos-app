@@ -1,7 +1,7 @@
 class CloseSession {
   int? configId;
   AccountBankStatement? accountBankStatement;
-  PosSession? posSession;
+  ClosePosSession? posSession;
 
   CloseSession({this.configId, this.accountBankStatement, this.posSession});
 
@@ -11,7 +11,7 @@ class CloseSession {
         ? AccountBankStatement.fromJson(json['account_bank_statement'])
         : null;
     posSession = json['pos_session'] != null
-        ? PosSession.fromJson(json['pos_session'])
+        ? ClosePosSession.fromJson(json['pos_session'])
         : null;
   }
 
@@ -61,15 +61,15 @@ class AccountBankStatement {
   }
 }
 
-class PosSession {
+class ClosePosSession {
   String? state;
   String? stopAt;
   String? writeDate;
   int? writeUid;
 
-  PosSession({this.state, this.stopAt, this.writeDate, this.writeUid});
+  ClosePosSession({this.state, this.stopAt, this.writeDate, this.writeUid});
 
-  PosSession.fromJson(Map<String, dynamic> json) {
+  ClosePosSession.fromJson(Map<String, dynamic> json) {
     state = json['state'];
     stopAt = json['stop_at'];
     writeDate = json['write_date'];

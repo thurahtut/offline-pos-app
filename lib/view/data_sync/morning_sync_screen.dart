@@ -98,8 +98,23 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                 .read<ThemeSettingController>()
                 .appConfig
                 ?.productLastSyncDate);
-        context.read<MorningsyncController>().getAllCustomerFromApi(() {
+        context.read<MorningsyncController>().getAllCustomerFromApi(
+            context
+                .read<ThemeSettingController>()
+                .appConfig
+                ?.customerLastSyncDate, () {
           //customer
+
+          context
+              .read<ThemeSettingController>()
+              .appConfig
+              ?.customerLastSyncDate = DateTime.now().toUtc().toString();
+          AppConfigTable.insertOrUpdate(
+              CUSTOMER_LAST_SYNC_DATE,
+              context
+                  .read<ThemeSettingController>()
+                  .appConfig
+                  ?.customerLastSyncDate);
           context.read<MorningsyncController>().getAllPriceListItemFromApi(
               //price
               context

@@ -20,6 +20,21 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
   final TextEditingController amountTextController = TextEditingController();
   final TextEditingController noteTextController = TextEditingController();
 
+  
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      amountTextController.text = context
+              .read<LoginUserController>()
+              .posConfig
+              ?.startingAmt
+              ?.toString() ??
+          '';
+    });
+    super.initState();
+  }
+
   @override
   void dispose() {
     amountTextController.dispose();

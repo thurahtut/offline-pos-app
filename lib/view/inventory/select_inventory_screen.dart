@@ -48,14 +48,9 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                 onTap: () async {
                   LoginUserController controller =
                       widget.mainContext.read<LoginUserController>();
-                  CommonUtils.showSnackBar(
-                      context: widget.mainContext,
-                      message:
-                          'Config Length : ${controller.loginUser?.configData?.length ?? 0}');
                   for (var i = 0;
                       i < (controller.loginUser?.configData?.length ?? 0);
                       i++) {
-                    try {
                     if (_inventoryIdNotifier.value == 0 ||
                         controller.loginUser!.configData![i].id ==
                             _inventoryIdNotifier.value) {
@@ -93,10 +88,6 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                         }
                       });
                       break;
-                      }
-                    } catch (e) {
-                      CommonUtils.showSnackBar(
-                          context: widget.mainContext, message: e.toString());
                     }
                   }
                 },

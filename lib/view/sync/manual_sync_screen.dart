@@ -147,6 +147,10 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
       percentage: controller.processingPercentage[DataSync.customer.name],
       onSync: () {
         context.read<MorningsyncController>().getAllCustomerFromApi(
+          context
+              .read<ThemeSettingController>()
+              .appConfig
+              ?.customerLastSyncDate,
           () {
             controller.doneActionList.add(DataSync.customer.name);
             controller.notify();

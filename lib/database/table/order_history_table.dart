@@ -246,7 +246,7 @@ class OrderHistoryTable {
         "json_object("
         "${isCloseSession != true ? "'$PAYMENT_TRANSACTION_ID', ptt.$PAYMENT_TRANSACTION_ID, '$ORDER_ID_IN_TRAN', ptt.$ORDER_ID_IN_TRAN, " : ""}"
         "'$PAYMENT_DATE' , ptt.$PAYMENT_DATE, '$PAYMENT_METHOD_ID_TRAN', ptt.$PAYMENT_METHOD_ID_TRAN, "
-        "${includedPaymentMethodName == true ? "'name', ${getValueWithCase("olt.$FULL_PRODUCT_NAME")}, " : ""}"
+        "${includedPaymentMethodName == true ? "'name', ${getValueWithCase("pmt.$PAYMENT_METHOD_NAME")}, " : ""}"
         "'$AMOUNT_IN_TRAN', ptt.$AMOUNT_IN_TRAN, '$CARD_TYPE', ${getValueWithCase("ptt.$CARD_TYPE")}, '$CARD_HOLDER_NAME', ${getValueWithCase("ptt.$CARD_HOLDER_NAME")}, "
         "'$CREATE_DATE_IN_TRAN', ptt.$CREATE_DATE_IN_TRAN, '$CREATE_UID_IN_TRAN', ptt.$CREATE_UID_IN_TRAN, '$TICKET', ${getValueWithCase("ptt.$TICKET")}, "
         "'$PAYMENT_STATUS', ${getValueWithCase("ptt.$PAYMENT_STATUS")}, '$SESSION_ID_IN_TRAN', ptt.$SESSION_ID_IN_TRAN, '$TRANSACTION_ID', '', "
@@ -280,7 +280,8 @@ class OrderHistoryTable {
             "on pmt.$PAYMENT_METHOD_ID=ptt.$PAYMENT_METHOD_ID_TRAN " : ""}"
         " where 1=1 "
         "${orderHistoryId != null ? " and ot.$ORDER_HISTORY_ID = $orderHistoryId " : ""}"
-        "${isCloseSession == true ? " and ot.$STATE_IN_OT='Paid' " : ""}"
+        "${isCloseSession == true ? " and ot.$STATE_IN_OT='${OrderState.paid.name}' " : ""}"
+        "${isCloseSession == true ? " and ot.$ORDER_CONDITION<>'${OrderCondition.sync.text}' " : ""}"
         "group by ot.$ORDER_HISTORY_ID ";
   }
 
@@ -355,13 +356,19 @@ class OrderHistoryTable {
       isCloseSession: isCloseSession,
     );
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
-    List<Map<String, dynamic>> cloneMaps = jsonDecode(jsonEncode(maps));
+    List<Map<String, dynamic>> cloneMaps =
+        jsonDecode(jsonEncode(maps)).cast<Map<String, dynamic>>();
     for (var cloneMap in cloneMaps) {
       cloneMap["line_ids"] =
           cloneMap["line_ids"] != "" ? jsonDecode(cloneMap["line_ids"]) : [];
       cloneMap["payment_ids"] = cloneMap["payment_ids"] != ""
           ? jsonDecode(cloneMap["payment_ids"])
           : [];
+      for (Map<String, dynamic> tran in cloneMap["payment_ids"] ?? []) {
+        tran['is_change'] = bool.tryParse(tran['is_change'] ?? '') ?? false;
+      }
+      cloneMap[TO_INVOICE] = bool.tryParse(cloneMap[TO_INVOICE]) ?? false;
+      cloneMap[TO_SHIP] = bool.tryParse(cloneMap[TO_SHIP]) ?? false;
     }
     // List<OrderHistory> orderHistoryList = [];
     // OrderHistory? orderHistory;
@@ -405,7 +412,8 @@ class OrderHistoryTable {
         "	group by $ORDER_ID_IN_TRAN"
         ") ptt "
         "on ptt.$ORDER_ID_IN_TRAN=oht.$ORDER_HISTORY_ID "
-        "where oht.$SESSION_ID=$sessionId";
+        "where oht.$SESSION_ID=$sessionId "
+        "and oht.$ORDER_CONDITION<>'${OrderCondition.sync.text}'";
 
     List<Map<String, dynamic>> maps = [];
     try {

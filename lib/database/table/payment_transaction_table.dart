@@ -133,10 +133,13 @@ class PaymentTransactionTable {
         await db.rawQuery("select sum($AMOUNT_IN_TRAN) as tPaid, "
             "$PAYMENT_METHOD_ID_TRAN as id "
             // ",$PAYMENT_METHOD_NAME as name "
-            "from $PAYMENT_TRANSACTION_TABLE_NAME "
+            "from $PAYMENT_TRANSACTION_TABLE_NAME ptt "
             // "left join $PAYMENT_METHOD_TABLE_NAME pmt "
             // "on pmt.$PAYMENT_METHOD_ID = ptt.$PAYMENT_METHOD_ID_TRAN "
-            "where $SESSION_ID_IN_TRAN=$sessionId "
+            "left join $ORDER_HISTORY_TABLE_NAME oht "
+            "on oht.$ORDER_HISTORY_ID = $ORDER_ID_IN_TRAN "
+            "where ptt.$SESSION_ID_IN_TRAN=$sessionId "
+            "and oht.$ORDER_CONDITION<>'${OrderCondition.sync.text}' "
             // " where order_id =1 "
             "group by $PAYMENT_METHOD_ID_TRAN");
 

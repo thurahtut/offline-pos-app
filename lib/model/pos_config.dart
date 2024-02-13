@@ -10,6 +10,7 @@ class POSConfig {
   String? receiptFooter;
   int? sequenceLineId;
   int? sequenceId;
+  double? startingAmt;
 
   POSConfig({
     this.id,
@@ -23,6 +24,7 @@ class POSConfig {
     this.receiptFooter,
     this.sequenceLineId,
     this.sequenceId,
+    this.startingAmt,
   });
 
   POSConfig.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class POSConfig {
     receiptFooter = json['receipt_footer'];
     sequenceLineId = json["sequence_line_id"];
     sequenceId = json["sequence_id"];
+    startingAmt = double.tryParse(json["starting_amt"]?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +55,7 @@ class POSConfig {
     data['receipt_footer'] = receiptFooter;
     data["sequence_line_id"] = sequenceLineId;
     data['sequence_id'] = sequenceId;
+    data["starting_amt"] = startingAmt;
     return data;
   }
 }

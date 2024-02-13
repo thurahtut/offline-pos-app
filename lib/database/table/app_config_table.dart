@@ -13,6 +13,7 @@ const LOGO = "logo";
 const DB_VERSION = "db_version";
 const PRODUCT_LAST_SYNC_DATE = "product_last_sync_date";
 const PRICE_LAST_SYNC_DATE = "price_last_sync_date";
+const CUSTOMER_LAST_SYNC_DATE = "customer_last_sync_date";
 const REMEMBER_PASSWORD = "remember_password";
 
 class AppConfigTable {

@@ -1,3 +1,5 @@
+
+
 enum ViewMode { view, create, edit }
 
 enum ReInvoiceExpenses {
@@ -69,6 +71,5 @@ enum OrderCondition {
   const OrderCondition(this.text);
   final String text;
 }
-
 
 enum CurrentOrderKeyboardState { disc, qty, price, refund }

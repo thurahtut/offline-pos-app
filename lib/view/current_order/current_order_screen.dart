@@ -582,7 +582,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         );
 
     orderHistory.amountTotal = map["total"]?.toInt() ?? 0;
-    orderHistory.totalQty = map["total"]?.toInt() ?? 0;
+    orderHistory.totalQty = map["qty"]?.toInt() ?? 0;
     orderHistory.totalItem = currentOrderController.currentOrderList.length;
     orderHistory.amountTax = map["tax"] ?? 0;
     
