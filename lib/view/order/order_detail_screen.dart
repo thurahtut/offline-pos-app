@@ -307,7 +307,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       double totalTaxes = 0;
       double totalPaidAmt = 0;
       for (OrderLineID orderLineID in controller.orderHistory?.lineIds ?? []) {
-        totalTaxes = (orderLineID.priceSubtotalIncl ?? 0) -
+        totalTaxes += (orderLineID.priceSubtotalIncl ?? 0) -
             (orderLineID.priceSubtotal ?? 0);
         totalPaidAmt += (orderLineID.priceSubtotalIncl ?? 0);
       }

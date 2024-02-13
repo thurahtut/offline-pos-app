@@ -88,6 +88,13 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                 ),
               ),
               _paymentMethodSyncWidget(controller),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 0.3,
+                ),
+              ),
+              _categorySyncWidget(controller),
             ],
           );
         }),
@@ -177,6 +184,22 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
               "",
           () {
             controller.doneActionList.add(DataSync.paymentMethod.name);
+            controller.notify();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _categorySyncWidget(MorningsyncController controller) {
+    return _syncWidget(
+      'Category List Sync',
+      controller.doneActionList.contains(DataSync.posCategory.name),
+      percentage: controller.processingPercentage[DataSync.posCategory.name],
+      onSync: () {
+        context.read<MorningsyncController>().getAllPosCategory(
+          () {
+            controller.doneActionList.add(DataSync.posCategory.name);
             controller.notify();
           },
         );

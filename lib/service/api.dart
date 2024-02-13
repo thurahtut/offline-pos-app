@@ -283,6 +283,26 @@ class Api {
     );
   }
 
+  static Future<Response?> getAllAmountTax({
+    // String? lastSyncDate,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    // Map<String, dynamic> map = {};
+    // if (lastSyncDate != null) {
+    //   map.putIfAbsent("last_sync_date", () => lastSyncDate);
+    // }
+    return request(
+      endpoint: '/accounttaxes'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
+    );
+  }
+
   static Future<Response?> getPosConfigByID({
     int? inventoryId,
     void Function(int, int)? onReceiveProgress,
