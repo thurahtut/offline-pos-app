@@ -573,7 +573,8 @@ class CommonUtils {
       "dd-MM-yyyy",
       DateTime.now().toString(),
     );
-    var filePath = '${externalDir?.path}/${customDate}_excel_file.xlsx';
+    var filePath =
+        '${externalDir?.path}/${customDate}_deleted_products_excel_file.xlsx';
     File deletedLogExcel = File(filePath);
     Map<String, dynamic> map = {};
     exl.Excel excel;
@@ -604,11 +605,10 @@ class CommonUtils {
   static Map<String, dynamic> addDataToExcel(
     exl.Excel? excel,
     bool isNew,
-    List<DeletedProductLog> logLists,
+    List<DeletedProductLog> deletedProductLogs,
   ) {
     bool isUpdated = false;
-    if (excel != null && logLists.isNotEmpty) {
-      List deletedProductLogs = logLists.map((e) => e.toJson()).toList();
+    if (excel != null && deletedProductLogs.isNotEmpty) {
       exl.Sheet sheetObject = excel['Sheet1'];
 
       if (isNew) {
@@ -631,19 +631,22 @@ class CommonUtils {
             exl.TextCellValue('Date');
       }
 
-      int nextRowIndex = sheetObject.maxRows + 1;
-      // for (var eachData in deletedProductLogs) {
-      //   for (var eachKey in eachData.toJson().values) {
+      int nextRowIndex = sheetObject.maxRows;
       for (int row = 0; row < deletedProductLogs.length; row++) {
-        String eachData = deletedProductLogs[row]?.toString() ?? '';
-        for (int col = 0;
-            col < deletedProductLogs[row].length;
-            // eachData.toJson().values.length;
-            col++) {
+        DeletedProductLog eachData = deletedProductLogs[row];
+        //for (var eachData in deletedProductLogs) {
+        List list = eachData.toJson().values.toList();
+        for (int col = 0; col < list.length; col++) {
+          // for (int row = 0; row < deletedProductLogs.length; row++) {
+          //   String eachData = deletedProductLogs[row]?.toString() ?? '';
+          // for (int col = 0;
+          //   col < deletedProductLogs[row].length;
+          // // eachData.toJson().values.length;
+          //  col++) {
           if (!isUpdated) {
             isUpdated = true;
           }
-          var eachKey = eachData[row][col];
+          String eachKey = list[col]?.toString() ?? '';
           sheetObject
               .cell(exl.CellIndex.indexByColumnRow(
                   rowIndex: nextRowIndex + row, columnIndex: col))
