@@ -49,7 +49,7 @@ class DatabaseHelper {
           ));
     } else {
       databaseFactory = databaseFactoryFfi;
-      var databasesPath = await getDatabasesPath();
+      var databasesPath = await checkPath();
       path = join(databasesPath, _databaseName);
       // await deleteDatabase(path);
       return await databaseFactory.openDatabase(path,
@@ -65,6 +65,52 @@ class DatabaseHelper {
     // await deleteDatabase(path);
 
     // Open the database
+  }
+
+  Future<int> backupDatabase(BuildContext context) async {
+    if (kIsWeb) {
+      CommonUtils.showSnackBar(
+          context: context, message: "Web is not supported");
+      return 0;
+    }
+    String databasesPath;
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+      var dir = await getApplicationDocumentsDirectory();
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+      databasesPath = join(dir.path, _databaseName);
+    } else {
+      databasesPath = await checkPath();
+    }
+    File dbFile = File(databasesPath);
+
+    if (await dbFile.exists()) {
+      // Database file exists, so create a backup file
+      String externalDir = await CommonUtils.externalDirectoryPath();
+      String customDate = CommonUtils.getLocaleDateTime(
+        "dd-MM-yyyy hh:mm:ss",
+        DateTime.now().toString(),
+      );
+      String backupPath =
+          join(externalDir, "offline_pos_backup_$customDate.db");
+      await dbFile.copy(backupPath);
+      return 1;
+    }
+    return 0; // Database file doesn't exist
+  }
+
+  Future<String> checkPath() async {
+    var databasePath = await getDatabasesPath();
+    String path = join(databasePath, _databaseName);
+    if (!await Directory(dirname(path)).exists()) {
+      try {
+        await Directory(dirname(path)).create(recursive: true);
+      } catch (e) {
+        print(e);
+      }
+    }
+    return path;
   }
 
   void _onCreate(Database db, int version) async {

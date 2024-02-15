@@ -551,30 +551,14 @@ class CommonUtils {
 
   static Future<void> saveDeletedItemLogs(
       List<DeletedProductLog> deletedProductLogs) async {
-    Directory? externalDir;
-    // Check if external storage is available
-    if (!kIsWeb && Platform.isWindows) {
-      if (await Directory('D:/').exists()) {
-        String folderName = "Offline Pos Deleted Product Log";
-        String path = "D:/$folderName"; // Path to the folder you want to create
-        Directory(path)
-            .create(recursive: true) // Create the folder recursively
-            .then((Directory directory) {
-          externalDir = directory;
-        }).catchError((error) {
-          externalDir = Directory('D:/');
-        });
-      }
-    }
-    // If external storage is not available or not supported, save in the user directory
-    externalDir ??= await getApplicationDocumentsDirectory();
+    String externalDir = await externalDirectoryPath();
 
     String customDate = CommonUtils.getLocaleDateTime(
       "dd-MM-yyyy",
       DateTime.now().toString(),
     );
     var filePath =
-        '${externalDir?.path}/${customDate}_deleted_products_excel_file.xlsx';
+        '$externalDir/${customDate}_deleted_products_excel_file.xlsx';
     File deletedLogExcel = File(filePath);
     Map<String, dynamic> map = {};
     exl.Excel excel;
@@ -600,6 +584,27 @@ class CommonUtils {
 
     // Open file (using third-party package like `open_file`)
     // await OpenFile.open(file.path);
+  }
+
+  static Future<String> externalDirectoryPath() async {
+    Directory? externalDir;
+    // Check if external storage is available
+    if (!kIsWeb && Platform.isWindows) {
+      if (await Directory('D:/').exists()) {
+        String folderName = "Offline Pos Deleted Product Log";
+        String path = "D:/$folderName"; // Path to the folder you want to create
+        Directory(path)
+            .create(recursive: true) // Create the folder recursively
+            .then((Directory directory) {
+          externalDir = directory;
+        }).catchError((error) {
+          externalDir = Directory('D:/');
+        });
+      }
+    }
+    // If external storage is not available or not supported, save in the user directory
+    externalDir ??= await getApplicationDocumentsDirectory();
+    return externalDir!.path;
   }
 
   static Map<String, dynamic> addDataToExcel(
