@@ -1,5 +1,8 @@
+import 'package:excel/excel.dart' as exl;
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:path_provider/path_provider.dart';
 
 Color primaryColor = Color(0xFF207810); //007ACC
 
@@ -540,15 +543,110 @@ class CommonUtils {
     "APPETON",
   ];
 
-  static List<String> companyList = [
-    "MZ Company",
-    "Super Global Co., Ltd.",
-    "SSS International Co.,ltd",
-  ];
-
   static String getLocaleDateTime(String dateFormat, String? dateTime) {
     DateTime? date = dateTime != null ? DateTime.parse(dateTime) : null;
     date = date?.add(Duration(hours: 6, minutes: 30));
     return date != null ? (DateFormat(dateFormat).format(date).toString()) : '';
+  }
+
+  static Future<void> saveDeletedItemLogs(
+      List<DeletedProductLog> deletedProductLogs) async {
+    Directory? externalDir;
+    // Check if external storage is available
+    if (!kIsWeb && Platform.isWindows) {
+      final List<Directory>? windowsDirs =
+          await getExternalStorageDirectories();
+      if (windowsDirs?.isNotEmpty ?? false) {
+        externalDir = windowsDirs!.first;
+      }
+    }
+    // If external storage is not available or not supported, save in the user directory
+    externalDir ??= await getApplicationDocumentsDirectory();
+
+    String customDate = CommonUtils.getLocaleDateTime(
+      "dd-MM-yyyy",
+      DateTime.now().toString(),
+    );
+    var filePath = '${externalDir.path}/${customDate}_excel_file.xlsx';
+    File deletedLogExcel = File(filePath);
+    Map<String, dynamic> map = {};
+    exl.Excel excel;
+    if (await deletedLogExcel.exists()) {
+      var bytes = deletedLogExcel.readAsBytesSync();
+      excel = exl.Excel.decodeBytes(bytes);
+      map = addDataToExcel(excel, false, deletedProductLogs);
+    } else {
+      excel = exl.Excel.createExcel();
+      map = addDataToExcel(excel, true, deletedProductLogs);
+    }
+    if (map["isUpdated"]) {
+      excel = map["excel"];
+      // excel.encode()?.then((onValue) {
+      //   File(filePath).writeAsBytesSync(onValue);
+      //   print("New data added to existing Excel file: $filePath");
+      // });
+      var bytes = excel.encode();
+      if (bytes?.isNotEmpty ?? false) {
+        await deletedLogExcel.writeAsBytes(bytes!);
+      }
+    }
+
+    // Open file (using third-party package like `open_file`)
+    // await OpenFile.open(file.path);
+  }
+
+  static Map<String, dynamic> addDataToExcel(
+    exl.Excel? excel,
+    bool isNew,
+    List<DeletedProductLog> logLists,
+  ) {
+    bool isUpdated = false;
+    if (excel != null && logLists.isNotEmpty) {
+      List deletedProductLogs = logLists.map((e) => e.toJson()).toList();
+      exl.Sheet sheetObject = excel['Sheet1'];
+
+      if (isNew) {
+        // Add data to cells
+        sheetObject.cell(exl.CellIndex.indexByString('A1')).value =
+            'Product Id' as exl.CellValue;
+        sheetObject.cell(exl.CellIndex.indexByString('B1')).value =
+            'Product Name' as exl.CellValue;
+        sheetObject.cell(exl.CellIndex.indexByString('C1')).value =
+            'Employee Id' as exl.CellValue;
+        sheetObject.cell(exl.CellIndex.indexByString('D1')).value =
+            'Employee Name' as exl.CellValue;
+        sheetObject.cell(exl.CellIndex.indexByString('E1')).value =
+            'Original Quantity' as exl.CellValue;
+        sheetObject.cell(exl.CellIndex.indexByString('F1')).value =
+            'Updated Quantity' as exl.CellValue;
+        sheetObject.cell(exl.CellIndex.indexByString('G1')).value =
+            'Session Id' as exl.CellValue;
+        sheetObject.cell(exl.CellIndex.indexByString('H1')).value =
+            'Date' as exl.CellValue;
+      }
+
+      int nextRowIndex = sheetObject.maxRows + 1;
+      // for (var eachData in deletedProductLogs) {
+      //   for (var eachKey in eachData.toJson().values) {
+      for (int row = 0; row < deletedProductLogs.length; row++) {
+        var eachData = deletedProductLogs[row];
+        for (int col = 0;
+            col < deletedProductLogs[row].length;
+            // eachData.toJson().values.length;
+            col++) {
+          if (!isUpdated) {
+            isUpdated = true;
+          }
+          var eachKey = eachData[row][col];
+          sheetObject
+              .cell(exl.CellIndex.indexByColumnRow(
+                  rowIndex: nextRowIndex + row, columnIndex: col))
+              .value = eachKey;
+          //   }
+          // }
+        }
+      }
+    }
+    return {"isUpdated": isUpdated, "excel": excel};
   }
 }

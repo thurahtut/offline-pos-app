@@ -156,14 +156,46 @@ class CurrentOrderController with ChangeNotifier {
         String qty = product.onhandQuantity?.toString() ?? "";
         bool isDelete = false;
         if (isBack == true) {
+          int? employeeId;
+          String? employeeName;
+          int? sessionId;
+          if (NavigationService.navigatorKey.currentContext != null) {
+            employeeId = NavigationService.navigatorKey.currentContext!
+                    .read<LoginUserController>()
+                    .loginEmployee
+                    ?.id ??
+                0;
+            employeeName = NavigationService.navigatorKey.currentContext!
+                    .read<LoginUserController>()
+                    .loginEmployee
+                    ?.name ??
+                '';
+            sessionId = NavigationService.navigatorKey.currentContext!
+                    .read<LoginUserController>()
+                    .posSession
+                    ?.id ??
+                0;
+          }
+          DeletedProductLog deletedProductLog = DeletedProductLog(
+            productId: product.productId,
+            productName: product.productName,
+            employeeId: employeeId,
+            employeeName: employeeName,
+            originalQty: qty,
+            sessionId: sessionId,
+            date: DateTime.now().toString(),
+          );
           if (product.onhandQuantity == 1) {
             isDelete = true;
+            deletedProductLog.updatedQty = "0";
           } else {
             qty = qty.substring(0, qty.length - 1);
             if (qty.isEmpty) {
               qty = "1";
             }
+            deletedProductLog.updatedQty = qty;
           }
+          CommonUtils.saveDeletedItemLogs([deletedProductLog]);
         } else {
           if (product.firstTime == true) {
             qty = (qty == "1" && value != "0" ? "" : qty);

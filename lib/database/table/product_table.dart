@@ -207,6 +207,27 @@ class ProductTable {
         query,
         objects);
 
+    // String query2 = "SELECT pt.id productId, * from $PRODUCT_TABLE_NAME pt "
+    //     "where 1=1 "
+    //     "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
+    //     "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
+    //     "ORDER by pt.$PRODUCT_ID DESC "
+    //     "${limit != null ? "limit $limit " : " "}"
+    //     "${offset != null ? "offset $offset " : " "}";
+    // List<Object?>? objects2;
+    // if ((filter != null && filter.isNotEmpty) ||
+    //     (categoryId != null && categoryId != -1)) {
+    //   objects2 = [];
+    //   if (filter != null && filter.isNotEmpty) {
+    //     objects = ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'];
+    //   }
+    //   if (categoryId != null && categoryId != -1) {
+    //     objects2.add(categoryId);
+    //   }
+    // }
+    // final List<Map<String, dynamic>> maps2 =
+    //     await db.rawQuery(query2, objects2);
+
     // Convert the List<Map<String, dynamic> into a List<Category>.
     return List.generate(maps.length, (i) {
       Product product = Product.fromJson(maps[i], pId: maps[i]["productId"]);
