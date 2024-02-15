@@ -554,10 +554,16 @@ class CommonUtils {
     Directory? externalDir;
     // Check if external storage is available
     if (!kIsWeb && Platform.isWindows) {
-      final List<Directory>? windowsDirs =
-          await getExternalStorageDirectories();
-      if (windowsDirs?.isNotEmpty ?? false) {
-        externalDir = windowsDirs!.first;
+      if (await Directory('D:/').exists()) {
+        String folderName = "Offline Pos Deleted Product Log";
+        String path = "D:/$folderName"; // Path to the folder you want to create
+        Directory(path)
+            .create(recursive: true) // Create the folder recursively
+            .then((Directory directory) {
+          externalDir = directory;
+        }).catchError((error) {
+          externalDir = Directory('D:/');
+        });
       }
     }
     // If external storage is not available or not supported, save in the user directory
@@ -567,7 +573,7 @@ class CommonUtils {
       "dd-MM-yyyy",
       DateTime.now().toString(),
     );
-    var filePath = '${externalDir.path}/${customDate}_excel_file.xlsx';
+    var filePath = '${externalDir?.path}/${customDate}_excel_file.xlsx';
     File deletedLogExcel = File(filePath);
     Map<String, dynamic> map = {};
     exl.Excel excel;
@@ -608,28 +614,28 @@ class CommonUtils {
       if (isNew) {
         // Add data to cells
         sheetObject.cell(exl.CellIndex.indexByString('A1')).value =
-            'Product Id' as exl.CellValue;
+            exl.TextCellValue('Product Id');
         sheetObject.cell(exl.CellIndex.indexByString('B1')).value =
-            'Product Name' as exl.CellValue;
+            exl.TextCellValue('Product Name');
         sheetObject.cell(exl.CellIndex.indexByString('C1')).value =
-            'Employee Id' as exl.CellValue;
+            exl.TextCellValue('Employee Id');
         sheetObject.cell(exl.CellIndex.indexByString('D1')).value =
-            'Employee Name' as exl.CellValue;
+            exl.TextCellValue('Employee Name');
         sheetObject.cell(exl.CellIndex.indexByString('E1')).value =
-            'Original Quantity' as exl.CellValue;
+            exl.TextCellValue('Original Quantity');
         sheetObject.cell(exl.CellIndex.indexByString('F1')).value =
-            'Updated Quantity' as exl.CellValue;
+            exl.TextCellValue('Updated Quantity');
         sheetObject.cell(exl.CellIndex.indexByString('G1')).value =
-            'Session Id' as exl.CellValue;
+            exl.TextCellValue('Session Id');
         sheetObject.cell(exl.CellIndex.indexByString('H1')).value =
-            'Date' as exl.CellValue;
+            exl.TextCellValue('Date');
       }
 
       int nextRowIndex = sheetObject.maxRows + 1;
       // for (var eachData in deletedProductLogs) {
       //   for (var eachKey in eachData.toJson().values) {
       for (int row = 0; row < deletedProductLogs.length; row++) {
-        var eachData = deletedProductLogs[row];
+        String eachData = deletedProductLogs[row]?.toString() ?? '';
         for (int col = 0;
             col < deletedProductLogs[row].length;
             // eachData.toJson().values.length;
@@ -641,7 +647,7 @@ class CommonUtils {
           sheetObject
               .cell(exl.CellIndex.indexByColumnRow(
                   rowIndex: nextRowIndex + row, columnIndex: col))
-              .value = eachKey;
+              .value = exl.TextCellValue(eachKey);
           //   }
           // }
         }
