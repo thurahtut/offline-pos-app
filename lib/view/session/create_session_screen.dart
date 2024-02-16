@@ -67,6 +67,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
             SizedBox(width: 20),
             Expanded(
               child: TextField(
+                enabled: false,
                 controller: amountTextController,
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.end,
@@ -82,7 +83,8 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                   fontWeight: FontWeight.w800,
                 ),
                 decoration: InputDecoration(
-                  hintText: "Ks",
+                  hintText:
+                      "${CommonUtils.priceFormat.format(context.read<LoginUserController>().posConfig?.startingAmt ?? 0)} Ks",
                   hintStyle: TextStyle(
                     color: Constants.disableColor.withOpacity(0.9),
                     fontSize: 18,

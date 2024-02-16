@@ -607,6 +607,11 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
               .then((closeResponse) {
             if (closeResponse != null && closeResponse.statusCode == 200) {
               Navigator.pop(widget.bContext);
+
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                  ModalRoute.withName("/Home"));
             }
           });
         } else if (syncedResult == null || syncedResult.statusCode != 200) {
