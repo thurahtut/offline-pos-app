@@ -83,17 +83,17 @@ class DatabaseHelper {
     } else {
       databasesPath = await checkPath();
     }
-    File dbFile = File(databasesPath);
+    File dbFile = File("$databasesPath\\$_databaseName");
 
     if (await dbFile.exists()) {
       // Database file exists, so create a backup file
       String externalDir = await CommonUtils.externalDirectoryPath();
       String customDate = CommonUtils.getLocaleDateTime(
-        "dd-MM-yyyy hh:mm:ss",
+        "dd-MM-yyyy-hh-mm-ss",
         DateTime.now().toString(),
       );
       String backupPath =
-          join(externalDir, "offline_pos_backup_$customDate.db");
+          join(externalDir, "offline-pos-backup-$customDate.db");
       await dbFile.copy(backupPath);
       return 1;
     }
