@@ -608,7 +608,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
 
         OrderLineID orderLineID = OrderLineID(
           orderId: value,
-          productId: data.productId,
+          productId: data.productVariantIds?.first ?? 0,
           qty: data.onhandQuantity?.toDouble(),
           priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
           priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *

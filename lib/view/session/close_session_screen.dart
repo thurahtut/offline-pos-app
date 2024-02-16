@@ -521,63 +521,16 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             width: MediaQuery.of(context).size.width / 8,
             textSize: 15,
             onTap: () async {
-              var date = DateTime.now().toString();
+              int sessionId =
+                  context.read<LoginUserController>().posSession?.id ?? 0;
               final Database db = await DatabaseHelper().db;
               OrderHistoryTable.getOrderHistoryList(
-                      db: db, isCloseSession: true)
+                db: db,
+                isCloseSession: true,
+                sessionId: sessionId,
+              )
                   .then((value) async {
-                _syncOrderHistory(value: value, db: db).then((value) {
-                  int configId =
-                      context.read<LoginUserController>().posConfig?.id ?? 0;
-
-                  int writeUID = context
-                          .read<LoginUserController>()
-                          .loginUser
-                          ?.userData
-                          ?.id ??
-                      0;
-
-                  PaymentTransaction cashResult = context
-                      .read<CloseSessionController>()
-                      .paymentTransactionList
-                      .values
-                      .firstWhere(
-                          (e) =>
-                              e.paymentMethodName
-                                  ?.toLowerCase()
-                                  .contains('cash') ??
-                              false,
-                          orElse: () => PaymentTransaction());
-                  CloseSession closeSession = CloseSession(
-                      configId: configId,
-                      accountBankStatement: AccountBankStatement(
-                        writeDate: date,
-                        writeUid: writeUID,
-                        balanceEnd: cashResult.payingAmount,
-                        balanceEndReal: getAmount(
-                            cashResult.paymentMethodName, cashResult.amount),
-                        difference:
-                            ((double.tryParse(cashResult.payingAmount ?? '') ??
-                                        0) -
-                                    ((double.tryParse(getAmount(
-                                                cashResult.paymentMethodName,
-                                                cashResult.amount) ??
-                                            '')) ??
-                                        0))
-                                .toString(),
-                      ),
-                      posSession: ClosePosSession(
-                        state: "closing_control",
-                        stopAt: date,
-                        writeDate: date,
-                        writeUid: writeUID,
-                      ));
-                  int sessionId =
-                      context.read<LoginUserController>().posSession?.id ?? 0;
-                  Api.closeSessionAndCloseCashRegister(
-                          sessionId: sessionId, closeSession: closeSession)
-                      .then((value) => Navigator.pop(widget.bContext));
-                });
+                _syncOrderHistory(value: value, db: db);
               });
             },
           ),
@@ -603,6 +556,59 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             columnName: ORDER_CONDITION,
             value: OrderCondition.sync.text,
           );
+          var date = DateTime.now().toString();
+          int configId = context.read<LoginUserController>().posConfig?.id ?? 0;
+
+          int authorId =
+              context.read<LoginUserController>().loginUser?.partnerData?.id ??
+                  0;
+
+          int writeUID =
+              context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
+
+          PaymentTransaction cashResult = context
+              .read<CloseSessionController>()
+              .paymentTransactionList
+              .values
+              .firstWhere(
+                  (e) =>
+                      e.paymentMethodName?.toLowerCase().contains('cash') ??
+                      false,
+                  orElse: () => PaymentTransaction());
+          CloseSession closeSession = CloseSession(
+              configId: configId,
+              closingNote: noteTextController.text,
+              authorId: authorId,
+              accountBankStatement: AccountBankStatement(
+                writeDate: date,
+                writeUid: writeUID,
+                balanceEnd: cashResult.payingAmount,
+                balanceEndReal:
+                    getAmount(cashResult.paymentMethodName, cashResult.amount),
+                difference:
+                    ((double.tryParse(cashResult.payingAmount ?? '') ?? 0) -
+                            ((double.tryParse(getAmount(
+                                        cashResult.paymentMethodName,
+                                        cashResult.amount) ??
+                                    '')) ??
+                                0))
+                        .toString(),
+              ),
+              posSession: ClosePosSession(
+                state: "closing_control",
+                stopAt: date,
+                writeDate: date,
+                writeUid: writeUID,
+              ));
+          int sessionId =
+              context.read<LoginUserController>().posSession?.id ?? 0;
+          Api.closeSessionAndCloseCashRegister(
+                  sessionId: sessionId, closeSession: closeSession)
+              .then((closeResponse) {
+            if (closeResponse != null && closeResponse.statusCode == 200) {
+              Navigator.pop(widget.bContext);
+            }
+          });
         } else if (syncedResult == null || syncedResult.statusCode != 200) {
           CommonUtils.showSnackBar(
               context: widget.mainContext,

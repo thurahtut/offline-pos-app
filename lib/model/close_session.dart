@@ -1,12 +1,22 @@
 class CloseSession {
   int? configId;
+  String? closingNote;
+  int? authorId;
   AccountBankStatement? accountBankStatement;
   ClosePosSession? posSession;
 
-  CloseSession({this.configId, this.accountBankStatement, this.posSession});
+  CloseSession({
+    this.configId,
+    this.accountBankStatement,
+    this.posSession,
+    this.closingNote,
+    this.authorId,
+  });
 
   CloseSession.fromJson(Map<String, dynamic> json) {
     configId = json['config_id'];
+    closingNote = json['closing_note'];
+    authorId = json['author_id'];
     accountBankStatement = json['account_bank_statement'] != null
         ? AccountBankStatement.fromJson(json['account_bank_statement'])
         : null;
@@ -24,6 +34,8 @@ class CloseSession {
     if (posSession != null) {
       data['pos_session'] = posSession!.toJson();
     }
+    data['closing_note'] = closingNote;
+    data['author_id'] = authorId;
     return data;
   }
 }

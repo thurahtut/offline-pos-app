@@ -224,8 +224,9 @@ class OrderHistoryTable {
     return str;
   }
 
-  static String getOrderHistoryQuery(
-    int? orderHistoryId, {
+  static String getOrderHistoryQuery({
+    int? orderHistoryId,
+    int? sessionId,
     bool? includedCustomerName = true,
     bool? includedEmployeeName = true,
     bool? includedPaymentMethodName = true,
@@ -272,6 +273,7 @@ class OrderHistoryTable {
         "left join $PAYMENT_TRANSACTION_TABLE_NAME ptt "
         "on ptt.$ORDER_ID_IN_TRAN = ot.$ORDER_HISTORY_ID "
         "${orderHistoryId != null ? "and ptt.$ORDER_ID_IN_TRAN = $orderHistoryId " : ""}"
+        "${sessionId != null ? "and ptt.$SESSION_ID_IN_TRAN = $sessionId " : ""}"
         "${includedCustomerName == true ? "left join $CUSTOMER_TABLE_NAME ct "
             "on ct.$CUSTOMER_ID_IN_CT=ot.$PARTNER_ID " : " "}"
         "${includedEmployeeName == true ? "left join $EMPLOYEE_TABLE_NAME emt "
@@ -282,6 +284,7 @@ class OrderHistoryTable {
         "${orderHistoryId != null ? " and ot.$ORDER_HISTORY_ID = $orderHistoryId " : ""}"
         "${isCloseSession == true ? " and ot.$STATE_IN_OT='${OrderState.paid.name}' " : ""}"
         "${isCloseSession == true ? " and ot.$ORDER_CONDITION<>'${OrderCondition.sync.text}' " : ""}"
+        "${sessionId != null ? " and ot.$SESSION_ID='$sessionId' " : ""}"
         "group by ot.$ORDER_HISTORY_ID ";
   }
 
@@ -291,7 +294,7 @@ class OrderHistoryTable {
 
   static Future<OrderHistory?> getOrderById(int? orderHistoryId) async {
     final Database db = await DatabaseHelper().db;
-    String query = getOrderHistoryQuery(orderHistoryId);
+    String query = getOrderHistoryQuery(orderHistoryId: orderHistoryId);
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
     OrderHistory? orderHistory;
@@ -333,6 +336,7 @@ class OrderHistoryTable {
   static Future<List<Map<String, dynamic>>> getOrderHistoryList({
     Database? db,
     int? orderHistoryId,
+    int? sessionId,
     bool? isCloseSession,
   }) async {
     db ??= await DatabaseHelper().db;
@@ -348,7 +352,8 @@ class OrderHistoryTable {
       ],
     );
     String query = getOrderHistoryQuery(
-      orderHistoryId,
+      orderHistoryId: orderHistoryId,
+      sessionId: sessionId,
       orderHistoryKeys: ohKeys,
       includedCustomerName: false,
       includedEmployeeName: false,
