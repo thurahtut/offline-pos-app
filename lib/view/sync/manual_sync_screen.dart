@@ -95,6 +95,13 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                 ),
               ),
               _categorySyncWidget(controller),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 0.3,
+                ),
+              ),
+              _backUpWidget(controller),
             ],
           );
         }),
@@ -247,13 +254,75 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                   ),
                 )
               : IconButton(
-                  onPressed: //isDone ? null :
-                      onSync,
+                  onPressed: isDone ? null : onSync,
                   icon: Icon(
                     isDone ? Icons.check_rounded : Icons.replay_rounded,
                     size: isDone ? 40 : 34,
                     color:
                         isDone ? primaryColor : Colors.black.withOpacity(0.62),
+                  )),
+        ],
+      ),
+    );
+  }
+
+  Widget _backUpWidget(MorningsyncController controller) {
+    onSync() {
+      DatabaseHelper().backupDatabase(context).then((value) {
+        if (value == 1) {
+          controller.doneActionList.add(DataSync.databaseBackup.name);
+          controller.notify();
+        } else {
+          CommonUtils.showSnackBar(
+              context: context, message: "Backup database is not successful!");
+          controller.doneActionList.remove(DataSync.databaseBackup.name);
+          controller.notify();
+        }
+      });
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      height: 70,
+      child: Row(
+        children: [
+          Text(
+            'Database Backup',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          Expanded(child: SizedBox()),
+          !controller.doneActionList.contains(DataSync.databaseBackup.name) &&
+                  (controller.processingPercentage[
+                              DataSync.databaseBackup.name] ??
+                          0) >
+                      0 &&
+                  (controller.processingPercentage[
+                              DataSync.databaseBackup.name] ??
+                          0) <=
+                      100
+              ? CircularProgressIndicator(color: primaryColor)
+              : IconButton(
+                  onPressed: controller.doneActionList
+                          .contains(DataSync.databaseBackup.name)
+                      ? null
+                      : onSync,
+                  icon: Icon(
+                    controller.doneActionList
+                            .contains(DataSync.databaseBackup.name)
+                        ? Icons.check_rounded
+                        : Icons.download_rounded,
+                    size: controller.doneActionList
+                            .contains(DataSync.databaseBackup.name)
+                        ? 40
+                        : 34,
+                    color: controller.doneActionList
+                            .contains(DataSync.databaseBackup.name)
+                        ? primaryColor
+                        : Colors.black.withOpacity(0.62),
                   )),
         ],
       ),

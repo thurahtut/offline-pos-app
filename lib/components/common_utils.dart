@@ -590,15 +590,16 @@ class CommonUtils {
     Directory? externalDir;
     // Check if external storage is available
     if (!kIsWeb && Platform.isWindows) {
-      if (await Directory('D:/').exists()) {
+      //bool isExist = await Directory('C:/').exists();
+      if (await Directory('C:/').exists()) {
         String folderName = "Offline Pos Deleted Product Log";
-        String path = "D:/$folderName"; // Path to the folder you want to create
-        Directory(path)
+        String path = "C:/$folderName"; // Path to the folder you want to create
+        await Directory(path)
             .create(recursive: true) // Create the folder recursively
             .then((Directory directory) {
           externalDir = directory;
         }).catchError((error) {
-          externalDir = Directory('D:/');
+          externalDir = Directory('C:/');
         });
       }
     }
