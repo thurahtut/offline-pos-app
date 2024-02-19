@@ -69,7 +69,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
       title: "Please login again",
       content: "Your previous login data is something wrong!.",
       callback: () {
-        DatabaseHelper.logOut().then(
+        DatabaseHelper.userLogOut().then(
           (value) => Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => UserLoginScreen()),

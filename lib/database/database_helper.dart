@@ -158,11 +158,10 @@ class DatabaseHelper {
     await db.delete(AMOUNT_TAX_TABLE_NAME);
   }
 
-  static Future<void> logOut() async {
+  static Future<void> userLogOut() async {
     final db = await DatabaseHelper().db;
     await db.delete(LOGIN_USER_TABLE_NAME);
     await db.delete(POS_CONFIG_TABLE_NAME);
-    await db.delete(POS_SESSION_TABLE_NAME);
     await db.delete(POS_SESSION_TABLE_NAME);
     await db.delete(EMPLOYEE_TABLE_NAME);
   }

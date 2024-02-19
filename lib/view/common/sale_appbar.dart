@@ -195,10 +195,11 @@ class _SaleAppBarState extends State<SaleAppBar> {
   }
 
   void _logOut() {
-    DatabaseHelper.logOut().then(
+    context.read<LoginUserController>().posSession = null;
+    POSSessionTable.deleteAll(null).then(
       (value) => Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => UserLoginScreen()),
+        MaterialPageRoute(builder: (context) => WelcomeScreen()),
         ModalRoute.withName("/Home"),
       ),
     );
