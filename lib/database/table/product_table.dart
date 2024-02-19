@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../components/export_files.dart';
@@ -165,12 +166,15 @@ class ProductTable {
     final Database db = await DatabaseHelper().db;
 
     String query =
-        "SELECT pt.id productId, pli.id priceListItemId,* from $PRODUCT_TABLE_NAME pt "
+        "SELECT pt.id productId, pt.$PRODUCT_NAME productName, pli.id priceListItemId, amt.id amountTaxId, amt.$AMOUNT_TAX_NAME amountTaxName, * "
+        "from $PRODUCT_TABLE_NAME pt "
         "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
         "and pli.$APPLIED_ON='1_product' "
         "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
         "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
+        "left join $AMOUNT_TAX_TABLE_NAME amt "
+        "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
         "where 1=1 "
         "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
         "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
@@ -215,10 +219,14 @@ class ProductTable {
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
     return List.generate(maps.length, (i) {
-      Product product = Product.fromJson(maps[i], pId: maps[i]["productId"]);
+      Product product = Product.fromJson(maps[i],
+          pId: maps[i]["productId"], pName: maps[i]["productName"]);
       PriceListItem priceListItem = PriceListItem.fromJson(maps[i],
           priceListItemId: maps[i]["priceListItemId"]);
       product.priceListItem = priceListItem;
+      AmountTax amountTax = AmountTax.fromJson(maps[i],
+          amId: maps[i]["amountTaxId"], amName: maps[i]["amountTaxName"]);
+      product.amountTax = amountTax;
       return product;
     });
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
 
@@ -39,7 +40,11 @@ class CurrentOrderController with ChangeNotifier {
               0);
 
       tTax += (cOrderList[i].onhandQuantity?.toDouble() ?? 0) *
-          ((cOrderList[i].priceListItem?.fixedPrice ?? 0) * 0.05);
+          (CommonUtils.getPercentAmountTaxOnProduct(cOrderList[i]) > 0
+              ? ((cOrderList[i].priceListItem?.fixedPrice ?? 0) *
+                  CommonUtils.getPercentAmountTaxOnProduct(cOrderList[i]))
+              : 0);
+      log(tTax);
     }
     map["qty"] = double.tryParse(tQty.toStringAsFixed(2)) ?? 0;
     map["total"] = double.tryParse(tTotal.toStringAsFixed(2)) ?? 0;
@@ -121,6 +126,10 @@ class CurrentOrderController with ChangeNotifier {
         ? PriceListItem.fromJson(jsonDecode(jsonEncode(product.priceListItem)))
         : null;
     orderProduct.priceListItem = priceListItem;
+    AmountTax? amountTax = product.amountTax != null
+        ? AmountTax.fromJson(jsonDecode(jsonEncode(product.amountTax)))
+        : null;
+    orderProduct.amountTax = amountTax;
     int index = currentOrderList
         .indexWhere((e) => e.productId == orderProduct.productId);
     if (index >= 0) {

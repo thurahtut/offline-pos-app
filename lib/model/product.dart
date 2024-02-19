@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:offline_pos/model/price_list_item.dart';
+import 'package:offline_pos/components/export_files.dart';
 
 class Product {
   int? productId;
@@ -19,7 +19,7 @@ class Product {
   int? onhandQuantity;
   PriceListItem? priceListItem;
   bool? firstTime;
-  int? taxPercent;
+  AmountTax? amountTax;
 
   Product({
     this.productId,
@@ -38,12 +38,12 @@ class Product {
     this.onhandQuantity,
     this.priceListItem,
     this.firstTime,
-    this.taxPercent,
+    this.amountTax,
   });
 
-  Product.fromJson(Map<String, dynamic> json, {int? pId}) {
+  Product.fromJson(Map<String, dynamic> json, {int? pId, String? pName}) {
     productId = pId ?? json['id'];
-    productName = json['name'];
+    productName = pName ?? json['name'];
     categoryId = int.tryParse(json['categ_id'].toString());
     isRoundingProduct =
         json['is_rounding_product'] == 1 || json['is_rounding_product'] == true
@@ -70,10 +70,14 @@ class Product {
     if ((json['taxes_id']?.isNotEmpty ?? false) && json['taxes_id'] != "null") {
       if (json['taxes_id'] is List) {
         try {
-          taxesId = json['taxes_id'].cast<int>();
+          taxesId = json['taxes_id'].map((e) => e ?? 0).toList().cast<int>();
+          // json['product_variant_ids'].cast<int>();
         } catch (_) {}
       } else if (json['taxes_id'] is String) {
-        taxesId = jsonDecode(json['taxes_id']).cast<int>();
+        taxesId = jsonDecode(json['taxes_id'])
+            .map((e) => e ?? 0)
+            .toList()
+            .cast<int>();
       }
     }
     barcode = json['barcode'];
@@ -96,7 +100,7 @@ class Product {
     if (productVariantIds != null) {
       data['product_variant_ids'] = jsonEncode(productVariantIds);
     }
-    if (taxesId != null) {
+    if (taxesId != null && taxesId!.isNotEmpty && taxesId!.first != null) {
       data['taxes_id'] = jsonEncode(taxesId);
     }
     data['barcode'] = barcode;
@@ -104,7 +108,7 @@ class Product {
     return data;
   }
 
-Product cloneProduct() {
+  Product cloneProduct() {
     return Product.fromJson(jsonDecode(jsonEncode(this)));
   }
 }

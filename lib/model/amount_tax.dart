@@ -14,9 +14,9 @@ class AmountTax {
       this.description,
       this.companyId});
 
-  AmountTax.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
+  AmountTax.fromJson(Map<String, dynamic> json, {int? amId, String? amName}) {
+    id = amId ?? json['id'];
+    name = amName ?? json['name'];
     typeTaxUse = json['type_tax_use'];
     taxScope = json['tax_scope'];
     description = json['description'];

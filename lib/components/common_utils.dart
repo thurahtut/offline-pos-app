@@ -664,4 +664,18 @@ class CommonUtils {
     }
     return {"isUpdated": isUpdated, "excel": excel};
   }
+
+  static double getPercentAmountTaxOnProduct(Product? product) {
+    double taxPercent = 0;
+    if (product != null &&
+        product.amountTax != null &&
+        (double.tryParse(product.amountTax!.description?.replaceAll('%', "") ??
+                    '') ??
+                0) >
+            0) {
+      taxPercent =
+          double.parse(product.amountTax!.description!.replaceAll('%', ""));
+    }
+    return taxPercent / 100;
+  }
 }

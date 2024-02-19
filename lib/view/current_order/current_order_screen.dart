@@ -613,7 +613,10 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
           priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *
               ((data.priceListItem?.fixedPrice ?? 0) -
-                  (data.priceListItem?.fixedPrice ?? 0) * 0.05),
+                  (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                      ? ((data.priceListItem?.fixedPrice ?? 0) *
+                          CommonUtils.getPercentAmountTaxOnProduct(data))
+                      : 0)),
           priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
               (data.priceListItem?.fixedPrice ?? 0).toDouble(),
           fullProductName:
@@ -625,7 +628,10 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         );
         orderLineIdList.add(orderLineID);
         totalTax = (data.onhandQuantity?.toDouble() ?? 0) *
-            ((data.priceListItem?.fixedPrice ?? 0) * 0.05);
+            (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                ? ((data.priceListItem?.fixedPrice ?? 0) *
+                    CommonUtils.getPercentAmountTaxOnProduct(data))
+                : 0);
       }
       currentOrderController.orderHistory?.amountTax = totalTax;
       insertOrderLines(db, orderLineIdList).then((lineValue) async {
