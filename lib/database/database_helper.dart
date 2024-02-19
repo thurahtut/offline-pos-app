@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/order_and_order_line_table.dart';
 import 'package:offline_pos/database/table/order_and_transaction_table.dart';
 import 'package:offline_pos/database/table/order_line_id_table.dart';
@@ -129,6 +130,7 @@ class DatabaseHelper {
     await OrderAndPaymentTransactionTable.onCreate(db, version);
     await OrderHistoryTable.onCreate(db, version);
     await POSCategoryTable.onCreate(db, version);
+    await AmountTaxTable.onCreate(db, version);
 
     await DBUpgrade.uploadAppConfigForVersion1(db);
   }
@@ -153,6 +155,7 @@ class DatabaseHelper {
     await db.delete(ORDER_AND_PAYMENT_TRANSACTION_ID);
     await db.delete(ORDER_HISTORY_TABLE_NAME);
     await db.delete(POS_CATEGORY_TABLE_NAME);
+    await db.delete(AMOUNT_TAX_TABLE_NAME);
   }
 
   static Future<void> logOut() async {

@@ -1,7 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'dart:convert';
-
 import 'package:sqflite/sqflite.dart';
 
 import '../../components/export_files.dart';
@@ -18,6 +16,7 @@ const WRITE_UID_IN_PT = "write_uid";
 const WRITE_DATE_IN_PT = "write_date";
 const PRODUCT_TYPE = "type";
 const PRODUCT_VARIANT_IDS = "product_variant_ids";
+const TAXES_ID = "taxes_id";
 const BARCODE_IN_PT = "barcode";
 const ON_HAND_QUANTITY = "onhand_quantity";
 
@@ -35,6 +34,7 @@ class ProductTable {
         "$WRITE_DATE_IN_PT TEXT,"
         "$PRODUCT_TYPE TEXT,"
         "$PRODUCT_VARIANT_IDS TEXT,"
+        "$TAXES_ID TEXT,"
         "$BARCODE_IN_PT TEXT,"
         "$ON_HAND_QUANTITY TEXT"
         ")");
@@ -43,22 +43,7 @@ class ProductTable {
   static Future<int> insert(Product product) async {
     final Database db = await DatabaseHelper().db;
 
-    String sql = "INSERT INTO $PRODUCT_TABLE_NAME("
-        "${product.productId != null && product.productId != 0 ? "$PRODUCT_ID," : ""}"
-        "$PRODUCT_NAME, $CATEGORY_ID_IN_PT, $IS_ROUNDING_PRODUCT, "
-        "$SH_IS_BUNDLE, $SH_SECONDARY_UOM, $POS_CATEG_ID_IN_PT, "
-        "$WRITE_UID_IN_PT, $WRITE_DATE_IN_PT, $PRODUCT_TYPE, $PRODUCT_VARIANT_IDS, "
-        "$BARCODE_IN_PT, $ON_HAND_QUANTITY"
-        ")"
-        " VALUES("
-        "${product.productId != null && product.productId != 0 ? "${product.productId}," : ""}"
-        "'${product.productName}', ${product.categoryId}, '${product.isRoundingProduct}', "
-        "'${product.shIsBundle}', '${product.shSecondaryUom}', ${product.posCategId}, "
-        "${product.writeUid}, '${product.writeDate}', '${product.productType}', '${product.productVariantIds != null && product.productVariantIds!.isNotEmpty ? jsonEncode(product.productVariantIds!) : ""}', "
-        "'${product.barcode}', '${product.onhandQuantity ?? "0"}', "
-        ")";
-
-    return db.rawInsert(sql);
+    return db.insert(PRODUCT_TABLE_NAME, product.toJson());
   }
 
   static Future<void> insertOrUpdate(List<dynamic> data) async {

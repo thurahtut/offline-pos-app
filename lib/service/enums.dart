@@ -52,6 +52,7 @@ enum DataSync {
   customer,
   paymentMethod,
   posCategory,
+  amountTax,
   databaseBackup,
 }
 

@@ -151,9 +151,14 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                       .addAll(posCategorys);
                   context.read<PosCategoryController>().notify();
                 });
-                context.read<MorningsyncController>().currentTaskTitle = "";
-                Navigator.pushReplacementNamed(
-                    context, WelcomeScreen.routeName);
+                context
+                    .read<MorningsyncController>()
+                    .getAllAmountTax(// amount tax
+                        () {
+                  context.read<MorningsyncController>().currentTaskTitle = "";
+                  Navigator.pushReplacementNamed(
+                      context, WelcomeScreen.routeName);
+                });
               });
             });
           });

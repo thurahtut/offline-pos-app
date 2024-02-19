@@ -14,10 +14,12 @@ class Product {
   String? writeDate;
   String? productType;
   List<int>? productVariantIds;
+  List<int>? taxesId;
   String? barcode;
   int? onhandQuantity;
   PriceListItem? priceListItem;
   bool? firstTime;
+  int? taxPercent;
 
   Product({
     this.productId,
@@ -31,10 +33,12 @@ class Product {
     this.writeDate,
     this.productType,
     this.productVariantIds,
+    this.taxesId,
     this.barcode,
     this.onhandQuantity,
     this.priceListItem,
     this.firstTime,
+    this.taxPercent,
   });
 
   Product.fromJson(Map<String, dynamic> json, {int? pId}) {
@@ -63,6 +67,15 @@ class Product {
         productVariantIds = jsonDecode(json['product_variant_ids']).cast<int>();
       }
     }
+    if ((json['taxes_id']?.isNotEmpty ?? false) && json['taxes_id'] != "null") {
+      if (json['taxes_id'] is List) {
+        try {
+          taxesId = json['taxes_id'].cast<int>();
+        } catch (_) {}
+      } else if (json['taxes_id'] is String) {
+        taxesId = jsonDecode(json['taxes_id']).cast<int>();
+      }
+    }
     barcode = json['barcode'];
     onhandQuantity =
         double.tryParse(json['onhand_quantity'].toString())?.toInt() ?? 0;
@@ -82,6 +95,9 @@ class Product {
     data['type'] = productType;
     if (productVariantIds != null) {
       data['product_variant_ids'] = jsonEncode(productVariantIds);
+    }
+    if (taxesId != null) {
+      data['taxes_id'] = jsonEncode(taxesId);
     }
     data['barcode'] = barcode;
     data['onhand_quantity'] = onhandQuantity?.toString();
