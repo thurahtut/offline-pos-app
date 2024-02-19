@@ -349,7 +349,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
       );
     });
   }
-
 }
 
 class DataSourceForOrderListScreen extends DataTableSource {

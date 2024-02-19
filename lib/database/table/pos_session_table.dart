@@ -141,4 +141,9 @@ class POSSessionTable {
 
     return posSession;
   }
+
+  static Future<void> deleteAll(Database? db) async {
+    db ??= await DatabaseHelper().db;
+    db.rawQuery("delete from $POS_SESSION_TABLE_NAME");
+  }
 }

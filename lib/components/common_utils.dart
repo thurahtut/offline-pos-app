@@ -678,4 +678,35 @@ class CommonUtils {
     }
     return taxPercent / 100;
   }
+
+  static sessionLoginMethod(BuildContext context, bool navigate) {
+    return ChooseCashierDialog.chooseCashierDialogWidget(context).then((value) {
+      if (value == true) {
+        LoginUserController controller = context.read<LoginUserController>();
+        if (controller.posSession != null) {
+          if (navigate) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              ModalRoute.withName("/Home"),
+            );
+          }
+        } else {
+          return CreateSessionDialog.createSessionDialogWidget(context, true)
+              .then((value) {
+            if (value == true) {
+              context.read<ThemeSettingController>().notify();
+              if (navigate) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainScreen()),
+                  ModalRoute.withName("/Home"),
+                );
+              }
+            }
+          });
+        }
+      }
+    });
+  }
 }

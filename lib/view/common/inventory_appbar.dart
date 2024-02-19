@@ -129,7 +129,6 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
                 color: primaryColor,
                 size: 35,
               )),
-
           if (!isTabletMode)
             ..._titleList()
                 .map(
@@ -208,7 +207,13 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
       if (isMobileMode) ..._actionButtonsWidget(),
       InkWell(
         onTap: () {
-          Navigator.pushNamed(context, MainScreen.routeName);
+          POSSessionTable.getAppSession().then((posSession) {
+            if (posSession == null) {
+              CommonUtils.sessionLoginMethod(context, true);
+            } else {
+              Navigator.pushNamed(context, MainScreen.routeName);
+            }
+          });
         },
         child: Text(
           'Dashboard',

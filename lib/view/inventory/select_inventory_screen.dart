@@ -82,7 +82,35 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                             EmployeeTable.insertOrUpdateWithDB(
                                 db, employeeList);
                           }
-                          Navigator.pop(widget.bContext, true);
+                          int? configId = controller.posConfig?.id;
+                          Api.getPosSessionByID(configId: configId)
+                              .then((sessionResponse) {
+                            if (sessionResponse != null &&
+                                sessionResponse.statusCode == 200 &&
+                                sessionResponse.data != null &&
+                                sessionResponse.data is List &&
+                                (sessionResponse.data as List).isNotEmpty) {
+                              controller.posSession = POSSession.fromJson(
+                                  (sessionResponse.data as List).first);
+                              POSSessionTable.insertOrUpdatePOSSession(
+                                  controller.posSession!);
+                              Navigator.pop(widget.bContext, true);
+                            } else {
+                              return CreateSessionDialog
+                                      .createSessionDialogWidget(context, true)
+                                  .then((value) {
+                                if (value == true) {
+                                  context
+                                      .read<ThemeSettingController>()
+                                      .notify();
+
+                                  Navigator.pop(widget.bContext, true);
+                                } else {
+                                  Navigator.pop(widget.bContext, false);
+                                }
+                              });
+                            }
+                          });
                         } else {
                           Navigator.pop(widget.bContext, false);
                         }

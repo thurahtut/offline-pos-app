@@ -36,6 +36,38 @@ class _SessionLoginScreenState extends State<SessionLoginScreen> {
               size: 30,
             ),
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: PopupMenuButton(
+                tooltip: "",
+                child: CommonUtils.iconActionButton(
+                  Icons.more_vert_rounded,
+                  iconColor: Colors.white,
+                  size: 30,
+                ),
+                itemBuilder: (bContext) {
+                  return [
+                    PopupMenuItem<int>(
+                      value: 4,
+                      child: Text(
+                        'Order',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          OrderListScreen.routeName,
+                        );
+                      },
+                    ),
+                  ];
+                },
+              ),
+            )
+          ],
         ),
         body: bodyWidget(context),
       );
@@ -67,87 +99,7 @@ class _SessionLoginScreenState extends State<SessionLoginScreen> {
       BorderContainer(
         text: 'Login',
         onTap: () {
-          return ChooseCashierDialog.chooseCashierDialogWidget(context)
-              .then((value) {
-            if (value == true) {
-              LoginUserController controller =
-                  context.read<LoginUserController>();
-              int? configId = controller.posConfig?.id;
-              Api.getPosSessionByID(configId: configId).then((sessionResponse) {
-                if (sessionResponse != null &&
-                    sessionResponse.statusCode == 200 &&
-                    sessionResponse.data != null &&
-                    sessionResponse.data is List &&
-                    (sessionResponse.data as List).isNotEmpty) {
-                  controller.posSession =
-                      POSSession.fromJson((sessionResponse.data as List).first);
-                  POSSessionTable.insertOrUpdatePOSSession(
-                      controller.posSession!);
-
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainScreen()),
-                    ModalRoute.withName("/Home"),
-                  );
-                } else {
-                  return CreateSessionDialog.createSessionDialogWidget(
-                          context, true)
-                      .then((value) {
-                    if (value == true) {
-                      context.read<ThemeSettingController>().notify();
-
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainScreen()),
-                        ModalRoute.withName("/Home"),
-                      );
-                    }
-                  });
-                }
-              });
-            }
-          });
-
-          // return SessionLoginDialog.sessionLoginDialogWidget(
-          //   context,
-          // ).then((value) {
-          //   if (value == true) {
-          //     LoginUserController controller =
-          //         context.read<LoginUserController>();
-          //     int? configId = controller.posConfig?.id;
-          //     Api.getPosSessionByID(configId: configId).then((sessionResponse) {
-          //       if (sessionResponse != null &&
-          //           sessionResponse.statusCode == 200 &&
-          //           sessionResponse.data != null &&
-          //           sessionResponse.data is List &&
-          //           (sessionResponse.data as List).isNotEmpty) {
-          //         controller.posSession =
-          //             POSSession.fromJson((sessionResponse.data as List).first);
-          //         POSSessionTable.insertOrUpdatePOSSession(
-          //             controller.posSession!);
-
-          //         Navigator.pushNamed(
-          //           context,
-          //           MorningSyncScreen.routeName,
-          //           arguments: MorningSyncScreen(alreadyLogin: false),
-          //         );
-          //       } else {
-          //         return CreateSessionDialog.createSessionDialogWidget(context)
-          //             .then((value) {
-          //           if (value == true) {
-          //             context.read<ThemeSettingController>().notify();
-
-          //             Navigator.pushNamed(
-          //               context,
-          //               MorningSyncScreen.routeName,
-          //               arguments: MorningSyncScreen(alreadyLogin: false),
-          //             );
-          //           }
-          //         });
-          //       }
-          //     });
-          //   }
-          // });
+          CommonUtils.sessionLoginMethod(context, true);
         },
       ),
     ];

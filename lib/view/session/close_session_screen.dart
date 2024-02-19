@@ -528,8 +528,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                 db: db,
                 isCloseSession: true,
                 sessionId: sessionId,
-              )
-                  .then((value) async {
+              ).then((value) async {
                 _syncOrderHistory(value: value, db: db);
               });
             },
@@ -600,18 +599,22 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                 writeDate: date,
                 writeUid: writeUID,
               ));
-          int sessionId =
-              context.read<LoginUserController>().posSession?.id ?? 0;
+          LoginUserController loginUserController =
+              context.read<LoginUserController>();
           Api.closeSessionAndCloseCashRegister(
-                  sessionId: sessionId, closeSession: closeSession)
+                  sessionId: loginUserController.posSession?.id ?? 0,
+                  closeSession: closeSession)
               .then((closeResponse) {
             if (closeResponse != null && closeResponse.statusCode == 200) {
-              Navigator.pop(widget.bContext);
+              loginUserController.posSession = null;
+              POSSessionTable.deleteAll(db).then((value) {
+                Navigator.pop(widget.bContext);
 
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                  ModalRoute.withName("/Home"));
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                    ModalRoute.withName("/Home"));
+              });
             }
           });
         } else if (syncedResult == null || syncedResult.statusCode != 200) {
