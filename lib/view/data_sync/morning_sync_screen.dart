@@ -37,27 +37,34 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
           return;
         }
         controller.posConfig = posConfig;
-        POSSessionTable.getAppSession().then((posSession) {
-          if (posSession == null) {
+        Api.getPosSessionByID(configId: posConfig.id ?? 0)
+            .then((sessionResponse) {
+          if (sessionResponse != null &&
+              sessionResponse.statusCode == 200 &&
+              sessionResponse.data != null &&
+              sessionResponse.data is List &&
+              (sessionResponse.data as List).isNotEmpty) {
+            controller.posSession =
+                POSSession.fromJson((sessionResponse.data as List).first);
+            POSSessionTable.insertOrUpdatePOSSession(controller.posSession!);
+            POSCategoryTable.getAllPosCategory().then((posCategorys) {
+              if (posCategorys.isEmpty) {
+                _alreadyLoginError();
+                return;
+              }
+              context.read<PosCategoryController>().posCategoryList = [
+                PosCategory(id: -1, name: "All")
+              ];
+              context
+                  .read<PosCategoryController>()
+                  .posCategoryList
+                  .addAll(posCategorys);
+              context.read<PosCategoryController>().notify();
+              Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+            });
+          } else {
             _alreadyLoginError();
-            return;
           }
-          controller.posSession = posSession;
-          POSCategoryTable.getAllPosCategory().then((posCategorys) {
-            if (posCategorys.isEmpty) {
-              _alreadyLoginError();
-              return;
-            }
-            context.read<PosCategoryController>().posCategoryList = [
-              PosCategory(id: -1, name: "All")
-            ];
-            context
-                .read<PosCategoryController>()
-                .posCategoryList
-                .addAll(posCategorys);
-            context.read<PosCategoryController>().notify();
-            Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
-          });
         });
       });
     });

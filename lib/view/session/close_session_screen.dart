@@ -540,6 +540,10 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
 
   Future<void> _syncOrderHistory(
       {required List<Map<String, dynamic>> value, Database? db}) async {
+    if (value.isEmpty) {
+      _closeSessionAndCloseCashRegister(db);
+      return;
+    }
     for (var mapArg in value) {
       log(jsonEncode(mapArg));
       await Api.syncOrders(
@@ -555,68 +559,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             columnName: ORDER_CONDITION,
             value: OrderCondition.sync.text,
           );
-          var date = DateTime.now().toString();
-          int configId = context.read<LoginUserController>().posConfig?.id ?? 0;
-
-          int authorId =
-              context.read<LoginUserController>().loginUser?.partnerData?.id ??
-                  0;
-
-          int writeUID =
-              context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
-
-          PaymentTransaction cashResult = context
-              .read<CloseSessionController>()
-              .paymentTransactionList
-              .values
-              .firstWhere(
-                  (e) =>
-                      e.paymentMethodName?.toLowerCase().contains('cash') ??
-                      false,
-                  orElse: () => PaymentTransaction());
-          CloseSession closeSession = CloseSession(
-              configId: configId,
-              closingNote: noteTextController.text,
-              authorId: authorId,
-              accountBankStatement: AccountBankStatement(
-                writeDate: date,
-                writeUid: writeUID,
-                balanceEnd: cashResult.payingAmount,
-                balanceEndReal:
-                    getAmount(cashResult.paymentMethodName, cashResult.amount),
-                difference:
-                    ((double.tryParse(cashResult.payingAmount ?? '') ?? 0) -
-                            ((double.tryParse(getAmount(
-                                        cashResult.paymentMethodName,
-                                        cashResult.amount) ??
-                                    '')) ??
-                                0))
-                        .toString(),
-              ),
-              posSession: ClosePosSession(
-                state: "closing_control",
-                stopAt: date,
-                writeDate: date,
-                writeUid: writeUID,
-              ));
-          LoginUserController loginUserController =
-              context.read<LoginUserController>();
-          Api.closeSessionAndCloseCashRegister(
-                  sessionId: loginUserController.posSession?.id ?? 0,
-                  closeSession: closeSession)
-              .then((closeResponse) {
-            if (closeResponse != null && closeResponse.statusCode == 200) {
-              loginUserController.posSession = null;
-              POSSessionTable.deleteAll(db).then((value) {
-                Navigator.pop(widget.bContext);
-
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                    ModalRoute.withName("/Home"));
-              });
-            }
-          });
+          _closeSessionAndCloseCashRegister(db);
         } else if (syncedResult == null || syncedResult.statusCode != 200) {
           CommonUtils.showSnackBar(
               context: widget.mainContext,
@@ -624,5 +567,66 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
         }
       });
     }
+  }
+
+  void _closeSessionAndCloseCashRegister(Database? db) {
+    
+    var date = DateTime.now().toString();
+    int configId = context.read<LoginUserController>().posConfig?.id ?? 0;
+
+    int authorId =
+        context.read<LoginUserController>().loginUser?.partnerData?.id ?? 0;
+
+    int writeUID =
+        context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
+
+    PaymentTransaction cashResult = context
+        .read<CloseSessionController>()
+        .paymentTransactionList
+        .values
+        .firstWhere(
+            (e) => e.paymentMethodName?.toLowerCase().contains('cash') ?? false,
+            orElse: () => PaymentTransaction());
+    CloseSession closeSession = CloseSession(
+        configId: configId,
+        closingNote: noteTextController.text,
+        authorId: authorId,
+        accountBankStatement: AccountBankStatement(
+          writeDate: date,
+          writeUid: writeUID,
+          balanceEnd: cashResult.payingAmount,
+          balanceEndReal:
+              getAmount(cashResult.paymentMethodName, cashResult.amount),
+          difference: ((double.tryParse(cashResult.payingAmount ?? '') ?? 0) -
+                  ((double.tryParse(getAmount(cashResult.paymentMethodName,
+                              cashResult.amount) ??
+                          '')) ??
+                      0))
+              .toString(),
+        ),
+        posSession: ClosePosSession(
+          state: "closing_control",
+          stopAt: date,
+          writeDate: date,
+          writeUid: writeUID,
+        ));
+    LoginUserController loginUserController =
+        context.read<LoginUserController>();
+    Api.closeSessionAndCloseCashRegister(
+            sessionId: loginUserController.posSession?.id ?? 0,
+            closeSession: closeSession)
+        .then((closeResponse) {
+      if (closeResponse != null && closeResponse.statusCode == 200) {
+        loginUserController.posSession = null;
+        POSSessionTable.deleteAll(db).then((value) {
+          Navigator.pop(widget.bContext);
+
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => WelcomeScreen()),
+              ModalRoute.withName("/Home"));
+        });
+      }
+    });
   }
 }

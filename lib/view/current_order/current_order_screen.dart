@@ -569,7 +569,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           returnStatus: "nothing_return",
           tipAmount: 0,
           toInvoice: true,
-          toShip: true,
+          toShip: false,
           userId:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
           sequenceId:

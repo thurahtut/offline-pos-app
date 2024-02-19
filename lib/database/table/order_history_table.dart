@@ -168,8 +168,7 @@ class OrderHistoryTable {
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
-
-    final List<Map<String, dynamic>> maps = await db.rawQuery(
+    String query = 
         "select ot.*, ct.$CUSTOMER_NAME as customer_name, emt.$NAME_IN_ET as employee_name "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         "left join $CUSTOMER_TABLE_NAME ct "
@@ -180,13 +179,14 @@ class OrderHistoryTable {
         "group by ot.$ORDER_HISTORY_ID "
         "order by ot.$ORDER_HISTORY_ID DESC"
         "${limit != null ? " limit $limit " : " "}"
-        "${offset != null ? " offset $offset " : " "}");
+        "${offset != null ? " offset $offset " : " "}";
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
     // Convert the List<Map<String, dynamic> into a List<Category>.
     return List.generate(maps.length, (i) {
       OrderHistory orderHistory = OrderHistory.fromJson(maps[i]);
       orderHistory.partnerName = maps[i]["customer_name"];
-      orderHistory.employeeName = maps.first["employee_name"];
+      orderHistory.employeeName = maps[i]["employee_name"];
       return orderHistory;
     });
   }
@@ -418,7 +418,8 @@ class OrderHistoryTable {
         ") ptt "
         "on ptt.$ORDER_ID_IN_TRAN=oht.$ORDER_HISTORY_ID "
         "where oht.$SESSION_ID=$sessionId "
-        "and oht.$ORDER_CONDITION<>'${OrderCondition.sync.text}'";
+        // "and oht.$ORDER_CONDITION<>'${OrderCondition.sync.text}'"
+        ;
 
     List<Map<String, dynamic>> maps = [];
     try {

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import '../../components/export_files.dart';
 
 class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -143,6 +146,14 @@ class _SaleAppBarState extends State<SaleAppBar> {
               }),
             ),
             PopupMenuItem<int>(
+              value: 3,
+              child: CommonUtils.appBarActionButtonWithText(
+                  'assets/svg/sync.svg', 'Sync Order History', fontSize: 16,
+                  onPressed: () {
+                _syncOrderHistory();
+              }),
+            ),
+            PopupMenuItem<int>(
               value: 4,
               child: _closeSessionWidget(bContext, true),
             ),
@@ -161,18 +172,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
         if (isPopup) {
           Navigator.pop(bContext);
         }
-        return CreateSessionDialog.createSessionDialogWidget(context, false)
-            .then((value) {
-          if (value == true) {
-            // context.read<ThemeSettingController>().notify();
-
-            // Navigator.pushAndRemoveUntil(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => MainScreen()),
-            //   ModalRoute.withName("/Home"),
-            // );
-          }
-        });
+        return CreateSessionDialog.createSessionDialogWidget(context, false);
       },
     );
   }
@@ -195,14 +195,42 @@ class _SaleAppBarState extends State<SaleAppBar> {
   }
 
   void _logOut() {
-    context.read<LoginUserController>().posSession = null;
-    POSSessionTable.deleteAll(null).then(
-      (value) => Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => WelcomeScreen()),
-        ModalRoute.withName("/Home"),
-      ),
+    context.read<LoginUserController>().loginEmployee = null;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => WelcomeScreen()),
+      ModalRoute.withName("/Home"),
     );
+  }
+
+  void _syncOrderHistory() {
+    int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
+    OrderHistoryTable.getOrderHistoryList(
+      isCloseSession: true,
+      sessionId: sessionId,
+    ).then((value) async {
+      for (var mapArg in value) {
+        log(jsonEncode(mapArg));
+        await Api.syncOrders(
+          orderMap: mapArg,
+        ).then((syncedResult) {
+          if (syncedResult != null &&
+              syncedResult.statusCode == 200 &&
+              syncedResult.data != null) {
+            OrderHistoryTable.updateValue(
+              whereColumnName: RECEIPT_NUMBER,
+              whereValue: mapArg[RECEIPT_NUMBER],
+              columnName: ORDER_CONDITION,
+              value: OrderCondition.sync.text,
+            );
+          } else if (syncedResult == null || syncedResult.statusCode != 200) {
+            CommonUtils.showSnackBar(
+                context: context,
+                message: syncedResult!.statusMessage ?? 'Something was wrong!');
+          }
+        });
+      }
+    });
   }
 
   List<Widget> get _forWindowView {
@@ -226,6 +254,11 @@ class _SaleAppBarState extends State<SaleAppBar> {
       CommonUtils.svgIconActionButton('assets/svg/lock_open_right.svg',
           onPressed: () {
         _logOut();
+      }),
+      spacer,
+      CommonUtils.svgIconActionButton('assets/svg/sync.svg',
+          width: 30, height: 30, onPressed: () {
+        _syncOrderHistory();
       }),
       spacer,
       _closeSessionWidget(context, false),
