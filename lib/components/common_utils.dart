@@ -551,7 +551,8 @@ class CommonUtils {
 
   static Future<void> saveDeletedItemLogs(
       List<DeletedProductLog> deletedProductLogs) async {
-    String externalDir = await externalDirectoryPath();
+    String externalDir =
+        await externalDirectoryPath("Offline Pos Deleted Product Log");
 
     String customDate = CommonUtils.getLocaleDateTime(
       "dd-MM-yyyy",
@@ -586,13 +587,12 @@ class CommonUtils {
     // await OpenFile.open(file.path);
   }
 
-  static Future<String> externalDirectoryPath() async {
+  static Future<String> externalDirectoryPath(String folderName) async {
     Directory? externalDir;
     // Check if external storage is available
     if (!kIsWeb && Platform.isWindows) {
       //bool isExist = await Directory('C:/').exists();
       if (await Directory('C:/').exists()) {
-        String folderName = "Offline Pos Deleted Product Log";
         String path = "C:/$folderName"; // Path to the folder you want to create
         await Directory(path)
             .create(recursive: true) // Create the folder recursively
@@ -640,15 +640,8 @@ class CommonUtils {
       int nextRowIndex = sheetObject.maxRows;
       for (int row = 0; row < deletedProductLogs.length; row++) {
         DeletedProductLog eachData = deletedProductLogs[row];
-        //for (var eachData in deletedProductLogs) {
         List list = eachData.toJson().values.toList();
         for (int col = 0; col < list.length; col++) {
-          // for (int row = 0; row < deletedProductLogs.length; row++) {
-          //   String eachData = deletedProductLogs[row]?.toString() ?? '';
-          // for (int col = 0;
-          //   col < deletedProductLogs[row].length;
-          // // eachData.toJson().values.length;
-          //  col++) {
           if (!isUpdated) {
             isUpdated = true;
           }
@@ -657,8 +650,6 @@ class CommonUtils {
               .cell(exl.CellIndex.indexByColumnRow(
                   rowIndex: nextRowIndex + row, columnIndex: col))
               .value = exl.TextCellValue(eachKey);
-          //   }
-          // }
         }
       }
     }
@@ -708,5 +699,65 @@ class CommonUtils {
         }
       }
     });
+  }
+
+  static Future<void> saveAPIErrorLogs(String logs) async {
+    String externalDir =
+        await externalDirectoryPath("Offline Pos Api Error Log");
+
+    String customDate = CommonUtils.getLocaleDateTime(
+      "dd-MM-yyyy",
+      DateTime.now().toString(),
+    );
+    var filePath = '$externalDir/${customDate}_api_error_log_excel_file.xlsx';
+    File deletedLogExcel = File(filePath);
+    Map<String, dynamic> map = {};
+    exl.Excel excel;
+    if (await deletedLogExcel.exists()) {
+      var bytes = deletedLogExcel.readAsBytesSync();
+      excel = exl.Excel.decodeBytes(bytes);
+      map = addApiErrorDataToExcel(excel, false, logs);
+    } else {
+      excel = exl.Excel.createExcel();
+      map = addApiErrorDataToExcel(excel, true, logs);
+    }
+    if (map["isUpdated"]) {
+      excel = map["excel"];
+      var bytes = excel.encode();
+      if (bytes?.isNotEmpty ?? false) {
+        await deletedLogExcel.writeAsBytes(bytes!);
+      }
+    }
+  }
+
+  static Map<String, dynamic> addApiErrorDataToExcel(
+    exl.Excel? excel,
+    bool isNew,
+    String logs,
+  ) {
+    bool isUpdated = false;
+    if (excel != null && logs.isNotEmpty) {
+      exl.Sheet sheetObject = excel['Sheet1'];
+
+      if (isNew) {
+        sheetObject.cell(exl.CellIndex.indexByString('A1')).value =
+            exl.TextCellValue('Time');
+        sheetObject.cell(exl.CellIndex.indexByString('B1')).value =
+            exl.TextCellValue('Error');
+      }
+
+      int nextRowIndex = sheetObject.maxRows;
+
+      sheetObject
+          .cell(exl.CellIndex.indexByColumnRow(
+              rowIndex: nextRowIndex, columnIndex: 0))
+          .value = exl.TextCellValue(DateTime.now().toString());
+
+      sheetObject
+          .cell(exl.CellIndex.indexByColumnRow(
+              rowIndex: nextRowIndex, columnIndex: 1))
+          .value = exl.TextCellValue(logs);
+    }
+    return {"isUpdated": isUpdated, "excel": excel};
   }
 }

@@ -17,12 +17,23 @@ class CloseSessionController with ChangeNotifier {
     notifyListeners();
   }
 
+  bool _accessPaymentDiff = false;
+  bool get accessPaymentDiff => _accessPaymentDiff;
+  set accessPaymentDiff(bool accessPaymentDiff) {
+    if (_accessPaymentDiff == accessPaymentDiff) return;
+    _accessPaymentDiff = accessPaymentDiff;
+    notifyListeners();
+  }
+
+
   notify() {
     notifyListeners();
   }
 
   resetCloseSessionController() {
     _paymentTransactionList = {};
+    _totalSummaryMap = {};
+    _accessPaymentDiff = false;
     notifyListeners();
   }
 }

@@ -475,17 +475,21 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
   }
 
   Widget _warningConfirmWidget() {
-    return CheckboxListTile(
-      value: false,
-      onChanged: (bool? value) {},
-      controlAffinity: ListTileControlAffinity.leading,
-      side: MaterialStateBorderSide.resolveWith(
-          (_) => BorderSide(width: 2, color: primaryColor)),
-      checkColor: primaryColor,
-      fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
-      title: Text(
-          'Accept payments difference and post a profit/loss journal entry'),
-    );
+    return Consumer<CloseSessionController>(builder: (_, controller, __) {
+      return CheckboxListTile(
+        value: controller.accessPaymentDiff,
+        onChanged: (bool? value) {
+          controller.accessPaymentDiff = value ?? false;
+        },
+        controlAffinity: ListTileControlAffinity.leading,
+        side: MaterialStateBorderSide.resolveWith(
+            (_) => BorderSide(width: 2, color: primaryColor)),
+        checkColor: primaryColor,
+        fillColor: MaterialStateColor.resolveWith((states) => Colors.white),
+        title: Text(
+            'Accept payments difference and post a profit/loss journal entry'),
+      );
+    });
   }
 
   Container _actionWidget() {
@@ -521,6 +525,22 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             width: MediaQuery.of(context).size.width / 8,
             textSize: 15,
             onTap: () async {
+              bool allowCloseSession = true;
+              if (!context.read<CloseSessionController>().accessPaymentDiff) {
+                for (var paymentTransaction in context
+                    .read<CloseSessionController>()
+                    .paymentTransactionList
+                    .values) {
+                  if (double.tryParse(paymentTransaction.amount ?? '') !=
+                      double.tryParse(paymentTransaction.payingAmount ?? '')) {
+                    allowCloseSession = false;
+                    break;
+                  }
+                }
+                if (!allowCloseSession) {
+                  return;
+                }
+              }
               int sessionId =
                   context.read<LoginUserController>().posSession?.id ?? 0;
               final Database db = await DatabaseHelper().db;
@@ -570,7 +590,6 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
   }
 
   void _closeSessionAndCloseCashRegister(Database? db) {
-    
     var date = DateTime.now().toString();
     int configId = context.read<LoginUserController>().posConfig?.id ?? 0;
 

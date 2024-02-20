@@ -88,7 +88,8 @@ class DatabaseHelper {
 
     if (await dbFile.exists()) {
       // Database file exists, so create a backup file
-      String externalDir = await CommonUtils.externalDirectoryPath();
+      String externalDir = await CommonUtils.externalDirectoryPath(
+          "Offline Pos Backup Database");
       String customDate = CommonUtils.getLocaleDateTime(
         "dd-MM-yyyy-hh-mm-ss",
         DateTime.now().toString(),
