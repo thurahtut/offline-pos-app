@@ -430,7 +430,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             return;
           }
           context.read<CurrentOrderController>().isContainCustomer = false;
-          uploadOrderHistoryToDatabase();
+          uploadOrderHistoryToDatabase(
+              customer:
+                  context.read<CurrentOrderController>().selectedCustomer);
 
           // Navigator.pushNamed(context, OrderPaymentScreen.routeName);
         },
@@ -454,7 +456,13 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
             currentOrderController.updateCurrentOrder("", isBack: true);
           }),
       CommonUtils.eachCalculateButtonWidget(
-        text: "Customer",
+        text: currentOrderController.selectedCustomer != null
+            ? currentOrderController.selectedCustomer!.name
+            : "Customer",
+        icon: currentOrderController.selectedCustomer != null
+            ? Icons.person_outline
+            : null,
+        iconColor: Colors.white,
         containerColor: primaryColor,
         textColor: Colors.white,
         width: 100,
@@ -530,6 +538,9 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   // }
 
   Future<void> uploadOrderHistoryToDatabase({Customer? customer}) async {
+
+    Navigator.pushNamed(context, OrderPaymentScreen.routeName);
+    return;
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
     DateTime orderDate = DateTime.now().toUtc();
@@ -585,7 +596,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     orderHistory.totalQty = map["qty"]?.toInt() ?? 0;
     orderHistory.totalItem = currentOrderController.currentOrderList.length;
     orderHistory.amountTax = map["tax"] ?? 0;
-    
+
     final Database db = await DatabaseHelper().db;
     OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
       if (value <= 0) {

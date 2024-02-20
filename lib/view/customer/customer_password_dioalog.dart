@@ -4,6 +4,7 @@ class CustomerPasswordDialog {
   static Future<Object?> enterCustomerPasswordWidget(
     BuildContext context,
     Customer customer,
+    bool isSelectedCus,
     TextEditingController passwordTextController,
   ) {
     ValueNotifier<bool> passwordVisibility = ValueNotifier(false);
@@ -131,7 +132,7 @@ class CustomerPasswordDialog {
       customer.id ?? 0,
       passwordTextController.text,
     ).then((value) {
-      Navigator.pop(bContext, customer);
+      Navigator.pop(bContext, value != null ? customer : null);
     });
   }
 }

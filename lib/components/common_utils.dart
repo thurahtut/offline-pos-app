@@ -306,6 +306,8 @@ class CommonUtils {
     double? height,
     double? iconSize,
     double? textSize,
+    int? maxLines,
+
     Function()? onPressed,
   }) {
     return InkWell(
@@ -333,18 +335,24 @@ class CommonUtils {
                 iconColor: svgColor,
               ),
             if (prefixSvg != null) SizedBox(width: 4),
-            icon != null
-                ? Icon(
+            if (icon != null)
+              Icon(
                     icon,
                     size: iconSize ?? 24,
                     color: iconColor ?? primaryColor,
-                  )
-                : Text(
-                    text ?? '',
-                    style: TextStyle(
-                      color: textColor ?? Constants.textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: textSize ?? 16,
+              ),
+            if (text != null)
+              Expanded(
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: maxLines ?? 1,
+                  style: TextStyle(
+                    color: textColor ?? Constants.textColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: textSize ?? 16,
+                  ),
                     ),
                   ),
           ],

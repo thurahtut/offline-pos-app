@@ -120,6 +120,22 @@ class CurrentOrderController with ChangeNotifier {
     });
   }
 
+  Customer? _selectedCustomer;
+  Customer? get selectedCustomer => _selectedCustomer;
+  set selectedCustomer(Customer? selectedCustomer) {
+    if (_selectedCustomer == selectedCustomer) return;
+    _selectedCustomer = selectedCustomer;
+    notifyListeners();
+  }
+
+  Customer? _selectingCustomer;
+  Customer? get selectingCustomer => _selectingCustomer;
+  set selectingCustomer(Customer? selectingCustomer) {
+    if (_selectingCustomer == selectingCustomer) return;
+    _selectingCustomer = selectingCustomer;
+    notifyListeners();
+  }
+
   void addItemToList(Product product) {
     Product orderProduct = Product.fromJson(jsonDecode(jsonEncode(product)));
     PriceListItem? priceListItem = product.priceListItem != null
@@ -315,6 +331,8 @@ class CurrentOrderController with ChangeNotifier {
     _paymentTransactionList = {};
     _selectedPaymentMethodId = -1;
     _orderHistory = null;
+    _selectedCustomer = null;
+    _selectingCustomer = null;
     notifyListeners();
   }
 }

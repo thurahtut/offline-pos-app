@@ -470,7 +470,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   Widget _paymentsWidget() {
-    final double width = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width -
+        (MediaQuery.of(context).size.width / 15);
     return Consumer<OrderDetailController>(builder: (_, controller, __) {
       return SingleChildScrollView(
         child: DataTable(
@@ -517,7 +518,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       PaymentTransaction? data = controller.orderHistory?.paymentIds?[i];
       dataRow.add(DataRow(cells: [
         DataCell(_textForDetailInfo('${i + 1}')),
-        DataCell(_textForDetailInfo('${data?.paymentDate}')),
+        DataCell(_textForDetailInfo(CommonUtils.getLocaleDateTime(
+          "dd-MM-yyyy hh:mm:ss",
+          data?.paymentDate,
+        ))),
         DataCell(_textForDetailInfo('${data?.paymentMethodName}')),
         DataCell(_textForDetailInfo('${data?.amount}')),
       ]));

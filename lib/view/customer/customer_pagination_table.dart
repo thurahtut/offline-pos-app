@@ -24,6 +24,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
   void dispose() {
     passwordTextController.dispose();
     scrollController.dispose();
+    context.read<CurrentOrderController>().selectingCustomer = null;
     super.dispose();
   }
 
@@ -53,29 +54,41 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
   Future<void> updateCustomerListToTable() async {
     widget.mainContext.read<CustomerListController>().customerInfoDataSource =
         CustomerInfoDataSourceForCustomerListScreen(
-      widget.mainContext,
-      widget.mainContext.read<CustomerListController>().customerList,
-      passwordTextController,
-      () {},
-      (customer) {
-        if (widget.mainContext
-            .read<CurrentOrderController>()
-            .currentOrderList
-            .isEmpty) {
-          CommonUtils.showSnackBar(
-              context: widget.mainContext, message: 'There is no order items.');
-          return;
-        }
-        widget.mainContext.read<CurrentOrderController>().isContainCustomer =
-            true;
-        CustomerPasswordDialog.enterCustomerPasswordWidget(
-                widget.mainContext, customer, passwordTextController)
-            .then((value) {
-            passwordTextController.clear();
+            widget.mainContext,
+            widget.mainContext.read<CustomerListController>().customerList,
+            passwordTextController,
+            () {}, (customer, isSelectedCus) {
+      if (!isSelectedCus &&
+          widget.mainContext
+              .read<CurrentOrderController>()
+              .currentOrderList
+              .isEmpty) {
+        CommonUtils.showSnackBar(
+            context: widget.mainContext, message: 'There is no order items.');
+        return;
+      }
+      widget.mainContext.read<CurrentOrderController>().isContainCustomer =
+          true;
+      CustomerPasswordDialog.enterCustomerPasswordWidget(widget.mainContext,
+              customer, isSelectedCus, passwordTextController)
+          .then((value) {
+        if (!isSelectedCus) {
+          passwordTextController.clear();
+          if (value is Customer) {
+            widget.mainContext
+                .read<CurrentOrderController>()
+                .selectingCustomer = value;
+            widget.mainContext.read<CurrentOrderController>().selectedCustomer =
+                value;
+          }
           Navigator.pop(widget.bContext, value);
-        });
-      },
-    );
+        }
+      });
+    }, (customer) {
+      context.read<CurrentOrderController>().selectingCustomer = customer;
+      context.read<CurrentOrderController>().selectedCustomer = null;
+      updateCustomerListToTable();
+    });
   }
 
   @override
@@ -136,23 +149,58 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                       children: [
                         Expanded(child: _searchCustomerWidget(mainContext)),
                         Expanded(
-                          child: CommonUtils.okCancelWidget(
-                            okLabel: 'Create',
-                            switchBtns: true,
-                            cancelContainerColor: Colors.white,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            textSize: 16,
-                            okCallback: () {
-                              Navigator.pop(widget.bContext, true);
-                              CreateCustomerDialog.createCustomerDialogWidget(
-                                  mainContext);
-                            },
-                            cancelLabel: 'Discard',
-                            cancelCallback: () {
-                              Navigator.pop(widget.bContext, false);
-                            },
-                          ),
+                          child: Consumer<CurrentOrderController>(
+                              builder: (_, controller, __) {
+                            return CommonUtils.okCancelWidget(
+                              okLabel: controller.selectedCustomer != null
+                                  ? 'Discard Customer'
+                                  : controller.selectingCustomer != null
+                                      ? 'Set Customer'
+                                      : 'Create',
+                              switchBtns: true,
+                              cancelContainerColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              textSize: 16,
+                              okCallback: () {
+                                if (controller.selectedCustomer != null) {
+                                  controller.selectedCustomer = null;
+                                  controller.selectingCustomer = null;
+                                  Navigator.pop(widget.bContext, true);
+                                } else if (controller.selectingCustomer !=
+                                    null) {
+                                  widget.mainContext
+                                      .read<CurrentOrderController>()
+                                      .isContainCustomer = true;
+                                  CustomerPasswordDialog
+                                          .enterCustomerPasswordWidget(
+                                              widget.mainContext,
+                                              controller.selectingCustomer!,
+                                              true,
+                                              passwordTextController)
+                                      .then((value) {
+                                    if (value is Customer) {
+                                      controller.selectedCustomer = value;
+                                      Navigator.pop(widget.bContext, true);
+                                    } else {
+                                      passwordTextController.clear();
+                                      controller.selectingCustomer = null;
+                                      controller.selectedCustomer = null;
+                                      updateCustomerListToTable();
+                                    }
+                                  });
+                                } else {
+                                  Navigator.pop(widget.bContext, true);
+                                  CreateCustomerDialog
+                                      .createCustomerDialogWidget(mainContext);
+                                }
+                              },
+                              cancelLabel: 'Discard',
+                              cancelCallback: () {
+                                Navigator.pop(widget.bContext, false);
+                              },
+                            );
+                          }),
                         ),
                       ],
                     ),
@@ -383,7 +431,8 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   late List<Customer> customerInfoList;
   TextEditingController passwordTextController;
   Function() reloadDataCallback;
-  Function(Customer) cartCallback;
+  Function(Customer, bool) cartCallback;
+  Function(Customer) selectingCustomerCallback;
 
   CustomerInfoDataSourceForCustomerListScreen(
     this.context,
@@ -391,6 +440,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
     this.passwordTextController,
     this.reloadDataCallback,
     this.cartCallback,
+    this.selectingCustomerCallback,
   );
   @override
   DataRow? getRow(int index) {
@@ -419,14 +469,17 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
 
   DataRow _createRow(int index) {
     Customer customerInfo = customerInfoList[index];
+    Customer? selectedCustomer =
+        context.read<CurrentOrderController>().selectedCustomer ??
+            context.read<CurrentOrderController>().selectingCustomer;
+
     return DataRow(
+      color: selectedCustomer != null && selectedCustomer.id == customerInfo.id
+          ? MaterialStateColor.resolveWith(
+              (states) => primaryColor.withOpacity(0.6))
+          : null,
       onSelectChanged: (value) {
-        // (NavigationService.navigatorKey.currentContext ?? context).goNamed(
-        //   EditUserScreen.routeName,
-        //   pathParameters: {
-        //     "id": userInfo.id.toString(),
-        //   },
-        // );
+        selectingCustomerCallback(customerInfo);
       },
       cells: [
         DataCell(
@@ -457,7 +510,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/shopping_cart.svg',
                   onPressed: () {
-                cartCallback(customerInfo);
+                cartCallback(customerInfo, false);
               }),
               SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/share_windows.svg'),

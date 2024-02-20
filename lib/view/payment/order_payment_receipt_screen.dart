@@ -164,7 +164,35 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   _totalTaxWidget(map),
                   pw.SizedBox(height: 20),
                   _totalQtyWidget(map),
-                  pw.SizedBox(height: 40),
+                  pw.SizedBox(height: 10),
+                  if (context.read<CurrentOrderController>().selectedCustomer !=
+                      null)
+                    pw.SizedBox(
+                      width: PdfPageFormat.roll80.width / 2,
+                      child: pw.Divider(
+                        borderStyle: pw.BorderStyle.dashed,
+                        thickness: 0.6,
+                        height: 2,
+                      ),
+                    ),
+                  if (context.read<CurrentOrderController>().selectedCustomer !=
+                      null)
+                    pw.SizedBox(height: 10),
+                  if (context.read<CurrentOrderController>().selectedCustomer !=
+                      null)
+                    pw.Text(
+                      context
+                              .read<CurrentOrderController>()
+                              .selectedCustomer!
+                              .name ??
+                          '',
+                      textAlign: pw.TextAlign.center,
+                      style: pw.TextStyle(
+                        color: PdfColor.fromInt(Constants.textColor.value),
+                        fontSize: 9,
+                      ),
+                    ),
+                  pw.SizedBox(height: 30),
                   ..._thankYouWidget(),
                   pw.SizedBox(height: 40),
                   ..._orderIdWidget(),
