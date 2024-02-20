@@ -538,9 +538,6 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   // }
 
   Future<void> uploadOrderHistoryToDatabase({Customer? customer}) async {
-
-    Navigator.pushNamed(context, OrderPaymentScreen.routeName);
-    return;
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
     DateTime orderDate = DateTime.now().toUtc();

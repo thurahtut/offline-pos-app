@@ -85,8 +85,6 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           containerColor: primaryColor,
           textColor: Colors.white,
           onTap: () async {
-            Navigator.pushNamed(context, OrderPaymentReceiptScreen.routeName);
-            return;
             CurrentOrderController currentOrderController =
                 context.read<CurrentOrderController>();
             final Database db = await DatabaseHelper().db;
