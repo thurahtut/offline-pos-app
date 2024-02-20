@@ -249,7 +249,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       context.read<OrderListController>().limit,
                       max(context.read<OrderListController>().orderList.length,
                           1)),
-                  minWidth: MediaQuery.of(context).size.width - 100,
+                  minWidth: MediaQuery.of(context).size.width + 400,
                   showCheckboxColumn: false,
                   fit: FlexFit.tight,
                   hidePaginator: true,
@@ -259,13 +259,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       MaterialStateColor.resolveWith((states) => primaryColor),
                   columns: [
                     CommonUtils.dataColumn(
-                      fixedWidth: isTabletMode == true ? 300 : 300,
+                      // fixedWidth: isTabletMode == true ? 300 : 300,
                       text: 'Order Condition',
                       // onSort: (columnIndex, ascending) =>
                       //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
                     ),
                     CommonUtils.dataColumn(
-                      fixedWidth: isTabletMode == true ? 300 : 300,
+                      // fixedWidth: isTabletMode == true ? 300 : 300,
                       text: 'Date',
                       // onSort: (columnIndex, ascending) =>
                       //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
