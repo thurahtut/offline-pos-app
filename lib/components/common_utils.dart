@@ -757,6 +757,7 @@ class CommonUtils {
           .cell(exl.CellIndex.indexByColumnRow(
               rowIndex: nextRowIndex, columnIndex: 1))
           .value = exl.TextCellValue(logs);
+      isUpdated = true;
     }
     return {"isUpdated": isUpdated, "excel": excel};
   }

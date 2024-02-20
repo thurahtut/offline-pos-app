@@ -202,8 +202,11 @@ class Api {
       // } else {}
 
       callback?.call();
-      if (dioException.response?.statusMessage?.isNotEmpty ?? false) {
-        CommonUtils.saveAPIErrorLogs(dioException.response!.statusMessage!);
+      if (dioException.response?.data["error"]?.isNotEmpty ??
+          dioException.response?.statusMessage?.isNotEmpty ??
+          false) {
+        CommonUtils.saveAPIErrorLogs(dioException.response?.data["error"] ??
+            dioException.response!.statusMessage!);
       }
       return dioException.response;
     } catch (e) {
