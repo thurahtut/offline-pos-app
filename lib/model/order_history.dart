@@ -92,15 +92,18 @@ class OrderHistory {
     createUid = int.tryParse(json['create_uid']?.toString() ?? '');
     configId = int.tryParse(json['config_id']?.toString() ?? '');
     // companyId = int.tryParse(json['company_id'].toString());
-    amountTotal = int.tryParse(json['amount_total']?.toString() ?? '');
+    amountTotal =
+        double.tryParse(json['amount_total']?.toString() ?? '')?.toInt();
     sequenceNumber = json['sequence_number']?.toString();
     writeDate = json['write_date']?.toString();
     writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
     receiptNumber = json["pos_reference"];
     state = json["state"];
     orderCondition = json["order_condition"];
-    amountPaid = int.tryParse(json['amount_paid']?.toString() ?? '');
-    amountReturn = int.tryParse(json['amount_return']?.toString() ?? '');
+    amountPaid =
+        double.tryParse(json['amount_paid']?.toString() ?? '')?.toInt();
+    amountReturn =
+        double.tryParse(json['amount_return']?.toString() ?? '')?.toInt();
     amountTax = double.tryParse(json['amount_tax']?.toString() ?? '');
     loyaltyPoints = int.tryParse(json['loyalty_points']?.toString() ?? '');
     nbPrint = int.tryParse(json['nb_print']?.toString() ?? '');
