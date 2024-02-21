@@ -382,30 +382,6 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 ),
               ),
               Expanded(child: SizedBox(height: 6)),
-              if (controller.selectedCustomer != null)
-                RichText(
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(text: "", children: [
-                    TextSpan(
-                      text: "Customer : ",
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.8),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
-                    ),
-                    TextSpan(
-                      text: controller.selectedCustomer!.name,
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.8),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ]),
-                ),
-              SizedBox(height: 10),
               Text(
                 controller.paymentTransactionList.isEmpty &&
                         controller
@@ -462,7 +438,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               ),
               context.watch<CurrentOrderController>().isContainCustomer == true
                   ? CommonUtils.eachCalculateButtonWidget(
-                      text: "BG Bakerys",
+                      text: currentOrderController.selectedCustomer != null
+                          ? currentOrderController.selectedCustomer!.name
+                          : "Customer",
                       width: 150,
                       prefixSvg: "assets/svg/account_circle.svg",
                       svgColor: primaryColor,

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/category/product_category_list_screen.dart';
-import 'package:offline_pos/view/data_sync/morning_sync_screen.dart';
 import 'package:offline_pos/view/login/session_login_screen.dart';
 import 'package:offline_pos/view/order/order_detail_screen.dart';
 

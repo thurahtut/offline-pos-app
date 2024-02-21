@@ -58,13 +58,17 @@ class _SaleAppBarState extends State<SaleAppBar> {
                 )
               : SizedBox(),
           isTabletMode ? SizedBox(width: 10) : spacer,
-          CommonUtils.appBarActionButtonWithText(
-            'assets/svg/Cash.svg',
-            'Cash In/Out',
-            fontSize: 16,
-            onPressed: () {
-              CashInOutDialog.cashInOutDialogWidget(context);
-            },
+          // CommonUtils.appBarActionButtonWithText(
+          //   'assets/svg/Cash.svg',
+          //   'Cash In/Out',
+          //   fontSize: 16,
+          //   onPressed: () {
+          //     CashInOutDialog.cashInOutDialogWidget(context);
+          //   },
+          // ),
+          Text(
+            context.read<LoginUserController>().posSession?.name ?? '',
+            style: TextStyle(fontSize: 16),
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,
           CommonUtils.appBarActionButtonWithText(

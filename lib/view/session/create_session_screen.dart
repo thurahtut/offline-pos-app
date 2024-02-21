@@ -204,6 +204,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
               balanceEnd: 0.0,
               difference: 0.0,
               balanceEndReal: 0.0,
+              openingNotes: noteTextController.text,
             );
             Api.cashRegister(cashRegister: cashRegister)
                 .then((cshResponse) async {

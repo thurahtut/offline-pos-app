@@ -307,7 +307,6 @@ class CommonUtils {
     double? iconSize,
     double? textSize,
     int? maxLines,
-
     Function()? onPressed,
   }) {
     return InkWell(
@@ -337,9 +336,9 @@ class CommonUtils {
             if (prefixSvg != null) SizedBox(width: 4),
             if (icon != null)
               Icon(
-                    icon,
-                    size: iconSize ?? 24,
-                    color: iconColor ?? primaryColor,
+                icon,
+                size: iconSize ?? 24,
+                color: iconColor ?? primaryColor,
               ),
             if (text != null)
               Expanded(
@@ -353,8 +352,8 @@ class CommonUtils {
                     fontWeight: FontWeight.bold,
                     fontSize: textSize ?? 16,
                   ),
-                    ),
-                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -678,7 +677,10 @@ class CommonUtils {
     return taxPercent / 100;
   }
 
-  static sessionLoginMethod(BuildContext context, bool navigate) {
+  static sessionLoginMethod(
+    BuildContext context,
+    bool navigate,
+  ) {
     return ChooseCashierDialog.chooseCashierDialogWidget(context).then((value) {
       if (value == true) {
         LoginUserController controller = context.read<LoginUserController>();

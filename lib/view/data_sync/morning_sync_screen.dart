@@ -60,7 +60,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                   .posCategoryList
                   .addAll(posCategorys);
               context.read<PosCategoryController>().notify();
-              Navigator.pushReplacementNamed(context, MainScreen.routeName);
+              Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
             });
           } else {
             _alreadyLoginError();

@@ -207,13 +207,14 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
       if (isMobileMode) ..._actionButtonsWidget(),
       InkWell(
         onTap: () {
-          POSSessionTable.getAppSession().then((posSession) {
-            if (posSession == null) {
-              CommonUtils.sessionLoginMethod(context, true);
-            } else {
-              Navigator.pushNamed(context, MainScreen.routeName);
-            }
-          });
+          CommonUtils.sessionLoginMethod(context, true);
+          // POSSessionTable.getAppSession().then((posSession) {
+          //   if (posSession == null) {
+          //     CommonUtils.sessionLoginMethod(context, true);
+          //   } else {
+          //     Navigator.pushNamed(context, MainScreen.routeName);
+          //   }
+          // });
         },
         child: Text(
           'Dashboard',

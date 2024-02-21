@@ -1,5 +1,6 @@
 class CashRegister {
   int? configId;
+  String? openingNotes;
   String? createDate;
   int? createUid;
   String? date;
@@ -16,6 +17,7 @@ class CashRegister {
 
   CashRegister(
       {this.configId,
+      this.openingNotes,
       this.createDate,
       this.createUid,
       this.date,
@@ -32,6 +34,7 @@ class CashRegister {
 
   CashRegister.fromJson(Map<String, dynamic> json) {
     configId = json['config_id'];
+    openingNotes = json['opening_notes'];
     createDate = json['create_date'];
     createUid = json['create_uid'];
     date = json['date'];
@@ -50,6 +53,7 @@ class CashRegister {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['config_id'] = configId;
+    data['opening_notes'] = openingNotes;
     data['create_date'] = createDate;
     data['create_uid'] = createUid;
     data['date'] = date;
