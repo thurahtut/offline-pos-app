@@ -29,17 +29,21 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   void getAllOrderHistory() async {
     context.read<OrderListController>().loading = true;
-    context.read<OrderListController>().getAllOrderHistory().then((value) {
+    await context
+        .read<OrderListController>()
+        .getAllOrderHistory()
+        .then((value) {
       updateOrderHistoryListToTable();
       context.read<OrderListController>().loading = false;
     });
   }
 
   Future<void> updateOrderHistoryListToTable() async {
+    List<OrderHistory> list = context.read<OrderListController>().orderList;
     context.read<OrderListController>().orderInfoDataSource =
         DataSourceForOrderListScreen(
       context,
-      context.read<OrderListController>().orderList,
+      list,
       context.read<OrderListController>().offset,
       () {},
       () {
@@ -94,15 +98,18 @@ class _OrderListScreenState extends State<OrderListScreen> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: AlwaysScrollableScrollPhysics(),
-          child: Container(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width,
-              maxHeight: MediaQuery.of(context).size.height - 100,
-            ),
-            child:
-                context.watch<OrderListController>().orderInfoDataSource != null
-                    ? _orderHistoryListWidget()
-                    : SizedBox(),
+          child: Consumer<OrderListController>(builder: (_, controller, __) {
+            return Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width,
+                maxHeight: MediaQuery.of(context).size.height - 100,
+              ),
+              child:
+                    controller.orderInfoDataSource != null
+                  ? _orderHistoryListWidget(controller)
+                  : SizedBox(),
+            );
+          }
           ),
         ),
       ),
@@ -230,11 +237,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
     );
   }
 
-  Widget _orderHistoryListWidget() {
+  Widget _orderHistoryListWidget(OrderListController controller) {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        context.read<OrderListController>().orderInfoDataSource == null
+        controller.orderInfoDataSource == null
             ? SizedBox()
             : Theme(
                 data: Theme.of(context).copyWith(
@@ -248,13 +255,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   ),
                 ),
                 child: PaginatedDataTable2(
+                  key: UniqueKey(),
                   dataRowHeight: 70,
                   headingRowHeight: 70,
                   dividerThickness: 0.0,
                   rowsPerPage: math.min(
-                      context.read<OrderListController>().limit,
+                      controller.limit,
                       math.max(
-                          context.read<OrderListController>().orderList.length,
+                          controller.orderList.length,
                           1)),
                   minWidth: MediaQuery.of(context).size.width + 400,
                   showCheckboxColumn: false,
@@ -305,17 +313,16 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     ),
                   ],
                   source:
-                      context.read<OrderListController>().orderInfoDataSource!,
+                      controller.orderInfoDataSource!,
                 ),
               ),
-        _paginationWidget(),
+        _paginationWidget(controller),
       ],
     );
   }
 
-  Widget _paginationWidget() {
-    return Consumer<OrderListController>(builder: (_, controller, __) {
-      return Wrap(
+  Widget _paginationWidget(OrderListController controller) {
+    return Wrap(
         alignment: WrapAlignment.center,
         children: [
           FlutterCustomPagination(
@@ -353,8 +360,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
             goToLastPageIcon: Icons.last_page,
           ),
         ],
-      );
-    });
+    );
   }
 }
 
@@ -425,6 +431,8 @@ class DataSourceForOrderListScreen extends DataTableSource {
                     if (product.productVariantIds?.contains(data.productId) ??
                         false) {
                       product.onhandQuantity = data.qty?.toInt();
+                      product.priceListItem?.fixedPrice =
+                          data.priceUnit?.toInt() ?? 0;
                     }
                   }
                 }
