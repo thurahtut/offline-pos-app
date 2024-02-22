@@ -100,7 +100,7 @@ class Product {
     if (productVariantIds != null) {
       data['product_variant_ids'] = jsonEncode(productVariantIds);
     }
-    if (taxesId != null && taxesId!.isNotEmpty && taxesId!.first != null) {
+    if (taxesId != null && taxesId!.isNotEmpty) {
       data['taxes_id'] = jsonEncode(taxesId);
     }
     data['barcode'] = barcode;

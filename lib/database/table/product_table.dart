@@ -192,9 +192,7 @@ class ProductTable {
         objects.add(categoryId);
       }
     }
-    final List<Map<String, dynamic>> maps = await db.rawQuery(
-        query,
-        objects);
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query, objects);
 
     // String query2 = "SELECT pt.id productId, * from $PRODUCT_TABLE_NAME pt "
     //     "where 1=1 "
@@ -284,5 +282,35 @@ class ProductTable {
       where: "$PRODUCT_ID=?",
       whereArgs: [product.productId],
     );
+  }
+
+  static Future<List<Product>> getProductListByIds(List<int> productIds) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+
+    String query =
+        "SELECT pt.id productId, pt.$PRODUCT_NAME productName, pli.id priceListItemId, amt.id amountTaxId, amt.$AMOUNT_TAX_NAME amountTaxName, * "
+        "from $PRODUCT_TABLE_NAME pt "
+        "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
+        "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
+        "and pli.$APPLIED_ON='1_product' "
+        "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
+        "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
+        "left join $AMOUNT_TAX_TABLE_NAME amt "
+        "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
+        "WHERE $PRODUCT_VARIANT_IDS in (${productIds.map((e) => "'[$e]'").join(",")})";
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
+
+    return List.generate(maps.length, (i) {
+      Product product = Product.fromJson(maps[i],
+          pId: maps[i]["productId"], pName: maps[i]["productName"]);
+      PriceListItem priceListItem = PriceListItem.fromJson(maps[i],
+          priceListItemId: maps[i]["priceListItemId"]);
+      product.priceListItem = priceListItem;
+      AmountTax amountTax = AmountTax.fromJson(maps[i],
+          amId: maps[i]["amountTaxId"], amName: maps[i]["amountTaxName"]);
+      product.amountTax = amountTax;
+      return product;
+    });
   }
 }

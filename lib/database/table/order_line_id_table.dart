@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/model/order_line_id.dart';
 import 'package:sqflite/sqflite.dart';
 
 const ORDER_LINE_ID_TABLE_NAME = "order_line_id_table";
@@ -38,15 +37,9 @@ class OrderLineIdTable {
         ")");
   }
 
-  static Future<int> insert(OrderLineID orderLine) async {
-    final Database db = await DatabaseHelper().db;
-    return db.insert(ORDER_LINE_ID_TABLE_NAME, orderLine.toJson());
-  }
-
-  static Future<int> insertWithDb(
-    final Database db,
-    OrderLineID orderLine,
-  ) async {
+  static Future<int> insert(
+      {Database? db, required OrderLineID orderLine}) async {
+    Database db = await DatabaseHelper().db;
     return db.insert(ORDER_LINE_ID_TABLE_NAME, orderLine.toJson());
   }
 
@@ -67,8 +60,9 @@ class OrderLineIdTable {
     });
   }
 
-  static Future<int> update(OrderLineID orderLineID) async {
-    final Database db = await DatabaseHelper().db;
+  static Future<int> update(
+      {Database? db, required OrderLineID orderLineID}) async {
+    db ??= await DatabaseHelper().db;
 
     return db.update(
       ORDER_LINE_ID_TABLE_NAME,
@@ -88,15 +82,28 @@ class OrderLineIdTable {
     );
   }
 
-  static Future<int> deleteByOrderId(final Database db, int orderID) async {
-    return db.delete(
-      ORDER_LINE_ID_TABLE_NAME,
-      where: "$ORDER_ID_IN_LINE=?",
-      whereArgs: [orderID],
-    );
+  static Future<int> deleteByOrderId({
+    Database? db,
+    Transaction? txn,
+    required int orderID,
+  }) async {
+    if (txn != null) {
+      return txn.delete(
+        ORDER_LINE_ID_TABLE_NAME,
+        where: "$ORDER_ID_IN_LINE=?",
+        whereArgs: [orderID],
+      );
+    } else {
+      db ??= await DatabaseHelper().db;
+      return db.delete(
+        ORDER_LINE_ID_TABLE_NAME,
+        where: "$ORDER_ID_IN_LINE=?",
+        whereArgs: [orderID],
+      );
+    }
   }
 
-  static Future<void> insertOrUpdate(List<dynamic> data) async {
+  static Future<void> insertOrUpdateBatch(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     Batch batch = db.batch();
     // var time = DateTime.now();
@@ -114,6 +121,30 @@ class OrderLineIdTable {
         batch = db.batch();
       }
       index++;
+    }
+  }
+
+  static Future<bool> checkRowExist(
+    Database? db,
+    int orderLineId,
+  ) async {
+    db ??= await DatabaseHelper().db;
+    bool isExist = false;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+        ORDER_LINE_ID_TABLE_NAME,
+        where: "$ORDER_LINE_ID=?",
+        whereArgs: [orderLineId]);
+    isExist = maps.isNotEmpty;
+    return isExist;
+  }
+
+  static Future<int> insertOrUpdate(
+      {Database? db, required OrderLineID orderLineID}) async {
+    if (await checkRowExist(db, orderLineID.id ?? 0)) {
+      return update(db: db, orderLineID: orderLineID);
+    } else {
+      return insert(db: db, orderLine: orderLineID);
     }
   }
 }

@@ -94,7 +94,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 0;
             double totalPayAmt = 0;
             PaymentTransactionTable.deleteByOrderId(
-                db, currentOrderController.orderHistory?.id ?? 0);
+                db: db, orderID: currentOrderController.orderHistory?.id ?? 0);
             for (var data
                 in currentOrderController.paymentTransactionList.values) {
               totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
@@ -123,7 +123,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 .then((value) {
               currentOrderController.orderHistory?.receiptNumber =
                   'Order ${DateTime.now().millisecondsSinceEpoch}';
-              currentOrderController.orderHistory?.state = OrderState.paid.name;
+              currentOrderController.orderHistory?.state = OrderState.paid.text;
               currentOrderController.orderHistory?.amountPaid =
                   totalPayAmt.toInt();
 
@@ -436,7 +436,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       valueAdding: true);
                 },
               ),
-              context.watch<CurrentOrderController>().isContainCustomer == true
+              context.watch<CurrentOrderController>().selectedCustomer != null
                   ? CommonUtils.eachCalculateButtonWidget(
                       text: currentOrderController.selectedCustomer != null
                           ? currentOrderController.selectedCustomer!.name
@@ -482,7 +482,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     _updatePayAmount(currentOrderController, "20",
                         valueAdding: true);
                   }),
-              context.watch<CurrentOrderController>().isContainCustomer == true
+              context.watch<CurrentOrderController>().selectedCustomer != null
                   ? CommonUtils.eachCalculateButtonWidget(
                       text: "Invoice",
                       width: 150,

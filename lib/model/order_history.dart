@@ -5,6 +5,7 @@ class OrderHistory {
   int? id;
   String? name;
   int? sessionId;
+  String? sessionName;
   String? dateOrder;
   int? employeeId;
   int? partnerId;
@@ -44,6 +45,7 @@ class OrderHistory {
     this.id,
     this.name,
     this.sessionId,
+    this.sessionName,
     this.dateOrder,
     this.employeeId,
     this.partnerId,
@@ -85,6 +87,7 @@ class OrderHistory {
     id = int.tryParse(json['id']?.toString() ?? '');
     name = json['name'];
     sessionId = int.tryParse(json['session_id']?.toString() ?? '');
+    sessionName = json['session_name'];
     dateOrder = json['date_order'];
     employeeId = int.tryParse(json['employee_id']?.toString() ?? '');
     partnerId = int.tryParse(json['partner_id']?.toString() ?? '');
@@ -126,6 +129,7 @@ class OrderHistory {
     data['id'] = id;
     data['name'] = name;
     data['session_id'] = sessionId;
+    data['session_name'] = sessionName;
     data['date_order'] = dateOrder;
     data['employee_id'] = employeeId;
     data['partner_id'] = partnerId;

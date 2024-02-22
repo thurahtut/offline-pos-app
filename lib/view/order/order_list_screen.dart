@@ -1,7 +1,9 @@
-import 'dart:math';
+import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/view/order/order_detail_screen.dart';
+import 'package:sqflite/sqflite.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -36,10 +38,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
   Future<void> updateOrderHistoryListToTable() async {
     context.read<OrderListController>().orderInfoDataSource =
         DataSourceForOrderListScreen(
-            context,
-            context.read<OrderListController>().orderList,
-            context.read<OrderListController>().offset,
-            () {});
+      context,
+      context.read<OrderListController>().orderList,
+      context.read<OrderListController>().offset,
+      () {},
+      () {
+        getAllOrderHistory();
+      },
+    );
   }
 
   @override
@@ -245,9 +251,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   dataRowHeight: 70,
                   headingRowHeight: 70,
                   dividerThickness: 0.0,
-                  rowsPerPage: min(
+                  rowsPerPage: math.min(
                       context.read<OrderListController>().limit,
-                      max(context.read<OrderListController>().orderList.length,
+                      math.max(
+                          context.read<OrderListController>().orderList.length,
                           1)),
                   minWidth: MediaQuery.of(context).size.width + 400,
                   showCheckboxColumn: false,
@@ -356,12 +363,14 @@ class DataSourceForOrderListScreen extends DataTableSource {
   late List<OrderHistory> orderList;
   int offset;
   Function() reloadDataCallback;
+  Function() deletedCallback;
 
   DataSourceForOrderListScreen(
     this.context,
     this.orderList,
     this.offset,
     this.reloadDataCallback,
+    this.deletedCallback,
   );
 
   @override
@@ -394,8 +403,49 @@ class DataSourceForOrderListScreen extends DataTableSource {
     OrderHistory order = orderList[index];
 
     onTap() {
-      Navigator.pushNamed(context, OrderDetailScreen.routeName,
-          arguments: OrderDetailScreen(orderId: order.id ?? 0));
+      if (order.state == OrderState.draft.text) {
+        OrderHistoryTable.getOrderById(order.id).then(
+          (value) {
+            if (value != null) {
+              context.read<CurrentOrderController>().orderHistory = value;
+              context.read<CurrentOrderController>().selectedCustomer =
+                  (value.partnerId != 0
+                      ? Customer(
+                          id: value.partnerId,
+                          name: value.partnerName,
+                        )
+                      : null);
+              List<int> productIds = [];
+              for (OrderLineID data in value.lineIds ?? []) {
+                productIds.add(data.productId ?? 0);
+              }
+              ProductTable.getProductListByIds(productIds).then((products) {
+                for (OrderLineID data in value.lineIds ?? []) {
+                  for (Product product in products) {
+                    if (product.productVariantIds?.contains(data.productId) ??
+                        false) {
+                      product.onhandQuantity = data.qty?.toInt();
+                    }
+                  }
+                }
+                context.read<CurrentOrderController>().currentOrderList =
+                    products;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MainScreen(
+                            resetController: false,
+                          )),
+                  ModalRoute.withName("/Home"),
+                );
+              });
+            }
+          },
+        );
+      } else {
+        Navigator.pushNamed(context, OrderDetailScreen.routeName,
+            arguments: OrderDetailScreen(orderId: order.id ?? 0));
+      }
     }
 
     return DataRow(
@@ -466,7 +516,39 @@ class DataSourceForOrderListScreen extends DataTableSource {
           // onTap: onTap,
         ),
         DataCell(
-          CommonUtils.svgIconActionButton('assets/svg/delete.svg'),
+          order.state == OrderState.draft.text
+              ? CommonUtils.svgIconActionButton(
+                  'assets/svg/delete.svg',
+                  onPressed: () async {
+                    if (order.state != OrderState.draft.text) {
+                      CommonUtils.showSnackBar(
+                        context: context,
+                        message: 'This order is not allowed to delete!',
+                      );
+                      return;
+                    }
+                    OrderHistoryTable.getOrderHistoryList(
+                      isCloseSession: false,
+                      orderHistoryId: order.id ?? 0,
+                    ).then((value) async {
+                      for (var mapArg in value) {
+                        String orderStr = jsonEncode(mapArg);
+                        CommonUtils.saveOrderDeleteLogs(orderStr);
+                      }
+                      final Database db = await DatabaseHelper().db;
+                      db.transaction((txn) async {
+                        await PaymentTransactionTable.deleteByOrderId(
+                            txn: txn, orderID: order.id ?? 0);
+                        await OrderLineIdTable.deleteByOrderId(
+                            txn: txn, orderID: order.id ?? 0);
+                        await OrderHistoryTable.deleteByOrderId(
+                            txn: txn, orderHistoryId: order.id ?? 0);
+                        deletedCallback();
+                      });
+                    });
+                  },
+                )
+              : Text(""),
         ),
       ],
     );

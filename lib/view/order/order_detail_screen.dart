@@ -84,7 +84,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   Widget _childrenWidget() {
-    var spacer = SizedBox(height: 15);
+    var spacer = SizedBox(height: 10);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -100,7 +100,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   Widget _orderWidget() {
-    var spacer = SizedBox(height: 15);
+    var spacer = SizedBox(height: 8);
     return Consumer<OrderDetailController>(builder: (_, controller, __) {
       return Row(
         children: [
@@ -124,7 +124,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Expanded(
                       flex: 2,
                       child: _textForDetailInfo(
-                          controller.orderHistory?.sessionId?.toString() ?? ''),
+                          controller.orderHistory?.sessionName ?? ''),
                     ),
                   ],
                 ),
@@ -315,118 +315,133 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 20.0,
-                  horizontalMargin: 20,
-                  headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => Constants.greyColor),
-                  columns: [
-                    DataColumn(label: _textForDetailInfoTitle('#Session')),
-                    DataColumn(
-                      label: SizedBox(
-                        width: 300,
-                        child: _textForDetailInfoTitle('Full Product Name'),
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columnSpacing: 20.0,
+                      horizontalMargin: 20,
+                      headingRowColor: MaterialStateColor.resolveWith(
+                          (states) => Constants.greyColor),
+                      columns: [
+                        DataColumn(label: _textForDetailInfoTitle('#Session')),
+                        DataColumn(
+                          label: SizedBox(
+                            width: 300,
+                            child: _textForDetailInfoTitle('Full Product Name'),
+                          ),
+                        ),
+                        // DataColumn(
+                        //     label: _textForDetailInfoTitle('Unit of measure')),
+                        // DataColumn(
+                        //     label: _textForDetailInfoTitle('Lot/serial Number')),
+                        // DataColumn(label: _textForDetailInfoTitle('Line Note')),
+                        DataColumn(label: _textForDetailInfoTitle('Quantity')),
+                        // DataColumn(label: _textForDetailInfoTitle('Bag Qty')),
+                        // DataColumn(label: _textForDetailInfoTitle('Return Qty')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle('Customer Note')),
+                        DataColumn(label: _textForDetailInfoTitle('UoM')),
+                        DataColumn(label: _textForDetailInfoTitle('Packaging')),
+                        // DataColumn(
+                        //     label: _textForDetailInfoTitle('Secondary Qty')),
+                        // DataColumn(
+                        //     label: _textForDetailInfoTitle('Secondary UoM')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle('Unit Price')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle('Discount(%)')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle('Total Cost')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle('Discount Code')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle('Discount Reason')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle('Taxes to Apply')),
+                        DataColumn(
+                            label: _textForDetailInfoTitle(
+                                'SubTotal without Tax')),
+                        DataColumn(label: _textForDetailInfoTitle('SubTotal')),
+                        DataColumn(
+                            label:
+                                _textForDetailInfoTitle('Refunded Quantity')),
+                      ],
+                      rows: _productLinesDataRow(controller),
                     ),
-                    // DataColumn(
-                    //     label: _textForDetailInfoTitle('Unit of measure')),
-                    // DataColumn(
-                    //     label: _textForDetailInfoTitle('Lot/serial Number')),
-                    // DataColumn(label: _textForDetailInfoTitle('Line Note')),
-                    DataColumn(label: _textForDetailInfoTitle('Quantity')),
-                    // DataColumn(label: _textForDetailInfoTitle('Bag Qty')),
-                    // DataColumn(label: _textForDetailInfoTitle('Return Qty')),
-                    DataColumn(label: _textForDetailInfoTitle('Customer Note')),
-                    DataColumn(label: _textForDetailInfoTitle('UoM')),
-                    DataColumn(label: _textForDetailInfoTitle('Packaging')),
-                    DataColumn(label: _textForDetailInfoTitle('Secondary Qty')),
-                    DataColumn(label: _textForDetailInfoTitle('Secondary UoM')),
-                    DataColumn(label: _textForDetailInfoTitle('Unit Price')),
-                    DataColumn(label: _textForDetailInfoTitle('Discount(%)')),
-                    DataColumn(label: _textForDetailInfoTitle('Total Cost')),
-                    DataColumn(label: _textForDetailInfoTitle('Discount Code')),
-                    DataColumn(
-                        label: _textForDetailInfoTitle('Discount Reason')),
-                    DataColumn(
-                        label: _textForDetailInfoTitle('Taxes to Apply')),
-                    DataColumn(
-                        label: _textForDetailInfoTitle('SubTotal without Tax')),
-                    DataColumn(label: _textForDetailInfoTitle('SubTotal')),
-                    DataColumn(
-                        label: _textForDetailInfoTitle('Refunded Quantity')),
-                  ],
-                  rows: _productLinesDataRow(controller),
-                ),
+                  ),
+                  SizedBox(height: 30),
+                  Row(
+                    children: [
+                      Expanded(flex: 2, child: SizedBox()),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Divider(),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _textForDetailInfoTitle(
+                                    "Taxes: ",
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: _textForDetailInfo(
+                                    '$totalTaxes Ks',
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _textForDetailInfoTitle(
+                                    "Total: ",
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: _textForDetailInfo(
+                                    '${controller.orderHistory?.amountTotal ?? 0} Ks ',
+                                    textAlign: TextAlign.end,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 150, child: Divider()),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _textForDetailInfoTitle(
+                                    "Total Paid (with rounding): ",
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: _textForDetailInfo(
+                                    "${totalPaidAmt.toStringAsFixed(2)} Ks",
+                                    textAlign: TextAlign.end,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
-          Row(
-            children: [
-              Expanded(flex: 2, child: SizedBox()),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Divider(),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _textForDetailInfoTitle(
-                            "Taxes: ",
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                        Expanded(
-                          child: _textForDetailInfo(
-                            '$totalTaxes Ks',
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _textForDetailInfoTitle(
-                            "Total: ",
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                        Expanded(
-                          child: _textForDetailInfo(
-                            '${controller.orderHistory?.amountTotal ?? 0} Ks ',
-                            textAlign: TextAlign.end,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(width: 150, child: Divider()),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _textForDetailInfoTitle(
-                            "Total Paid (with rounding): ",
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                        Expanded(
-                          child: _textForDetailInfo(
-                            "${totalPaidAmt.toStringAsFixed(2)} Ks",
-                            textAlign: TextAlign.end,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
         ],
       );
     });
@@ -453,8 +468,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         DataCell(_textForDetailInfo('Unit')),
         DataCell(_textForDetailInfo('')),
         DataCell(_textForDetailInfo('')),
-        DataCell(_textForDetailInfo('1.00')),
-        DataCell(_textForDetailInfo('')),
+        // DataCell(_textForDetailInfo('1.00')),
+        // DataCell(_textForDetailInfo('')),
         DataCell(_textForDetailInfo('${data?.priceUnit}')),
         DataCell(_textForDetailInfo('0.00')),
         DataCell(_textForDetailInfo('0.00 Ks')),

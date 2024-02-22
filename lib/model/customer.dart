@@ -19,7 +19,8 @@ class Customer {
   String? ref;
 
   Customer(
-    this.id, {
+     {
+    this.id,
     this.name,
     this.blockingStage,
     this.street,

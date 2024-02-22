@@ -1,8 +1,9 @@
 import '/components/export_files.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, this.resetController});
   static const String routeName = "/main_screen";
+  final bool? resetController;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -28,7 +29,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           .read<CurrentOrderController>()
           .productTextFieldFocusNode
           .requestFocus();
-      context.read<CurrentOrderController>().resetCurrentOrderController();
+      if (widget.resetController != false) {
+        context.read<CurrentOrderController>().resetCurrentOrderController();
+      }
       context.read<ViewController>().isCustomerView = false;
       context.read<ViewController>().searchProductFocusNode.addListener(() {
         if (!context.read<ViewController>().searchProductFocusNode.hasFocus) {

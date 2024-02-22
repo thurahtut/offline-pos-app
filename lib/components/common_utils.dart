@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 Color primaryColor = Color(0xFF207810); //007ACC
 
@@ -713,7 +714,7 @@ class CommonUtils {
 
   static Future<void> saveAPIErrorLogs(String logs) async {
     String externalDir =
-        await externalDirectoryPath("Offline Pos Api Error Log");
+        await externalDirectoryPath("Offline Pos Api Error Logs");
 
     String customDate = CommonUtils.getLocaleDateTime(
       "dd-MM-yyyy",
@@ -770,5 +771,222 @@ class CommonUtils {
       isUpdated = true;
     }
     return {"isUpdated": isUpdated, "excel": excel};
+  }
+
+  static Future<void> saveOrderDeleteLogs(String logs) async {
+    String externalDir =
+        await externalDirectoryPath("Offline Pos Deleted Order Logs");
+
+    String customDate = CommonUtils.getLocaleDateTime(
+      "dd-MM-yyyy",
+      DateTime.now().toString(),
+    );
+    var filePath =
+        '$externalDir/${customDate}_order_history_log_excel_file.xlsx';
+    File deletedLogExcel = File(filePath);
+    Map<String, dynamic> map = {};
+    exl.Excel excel;
+    if (await deletedLogExcel.exists()) {
+      var bytes = deletedLogExcel.readAsBytesSync();
+      excel = exl.Excel.decodeBytes(bytes);
+      map = addOrderDeletedDataToExcel(excel, false, logs);
+    } else {
+      excel = exl.Excel.createExcel();
+      map = addOrderDeletedDataToExcel(excel, true, logs);
+    }
+    if (map["isUpdated"]) {
+      excel = map["excel"];
+      var bytes = excel.encode();
+      if (bytes?.isNotEmpty ?? false) {
+        await deletedLogExcel.writeAsBytes(bytes!);
+      }
+    }
+  }
+
+  static Map<String, dynamic> addOrderDeletedDataToExcel(
+    exl.Excel? excel,
+    bool isNew,
+    String logs,
+  ) {
+    bool isUpdated = false;
+    if (excel != null && logs.isNotEmpty) {
+      exl.Sheet sheetObject = excel['Sheet1'];
+
+      if (isNew) {
+        sheetObject.cell(exl.CellIndex.indexByString('A1')).value =
+            exl.TextCellValue('Time');
+        sheetObject.cell(exl.CellIndex.indexByString('B1')).value =
+            exl.TextCellValue('Deleted Orders');
+      }
+
+      int nextRowIndex = sheetObject.maxRows;
+
+      sheetObject
+          .cell(exl.CellIndex.indexByColumnRow(
+              rowIndex: nextRowIndex, columnIndex: 0))
+          .value = exl.TextCellValue(DateTime.now().toString());
+
+      sheetObject
+          .cell(exl.CellIndex.indexByColumnRow(
+              rowIndex: nextRowIndex, columnIndex: 1))
+          .value = exl.TextCellValue(logs);
+      isUpdated = true;
+    }
+    return {"isUpdated": isUpdated, "excel": excel};
+  }
+
+  static String splitTimeToReadable(DateTime dateTime) {
+    String time = dateTime.millisecondsSinceEpoch.toString();
+    List<String> list = [];
+    String first = time.substring(0, 5);
+    String second = time.replaceFirst(first, '').substring(0, 3);
+    String remainingStr = time.replaceFirst(first, '').replaceFirst(second, '');
+    String splittedStr = remainingStr;
+    for (int i = 0; i < remainingStr.length; i += 4) {
+      if (splittedStr.length > 4) {
+        String toSplitStr = splittedStr.substring(0, 4);
+        list.add(toSplitStr);
+        splittedStr = splittedStr.replaceFirst(toSplitStr, '');
+      } else {
+        list.add(splittedStr);
+        break;
+      }
+    }
+    return "${first}_${second}_${list.join("_")}";
+  }
+
+  static Future<void> uploadOrderHistoryToDatabase(BuildContext context,
+      {bool? isNavigate = true}) async {
+    CurrentOrderController currentOrderController =
+        context.read<CurrentOrderController>();
+    DateTime orderDate = DateTime.now().toUtc();
+    String changedTimeToReadable = CommonUtils.splitTimeToReadable(orderDate);
+    Map<String, double> map = currentOrderController
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
+    if (currentOrderController.orderHistory != null) {
+      currentOrderController.orderHistory!.writeDate = orderDate.toString();
+      currentOrderController.orderHistory!.writeUid =
+          context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
+      currentOrderController.orderHistory!.partnerId =
+          currentOrderController.selectedCustomer?.id;
+    }
+    OrderHistory orderHistory = currentOrderController.orderHistory ??
+        OrderHistory(
+          dateOrder: orderDate.toString(),
+          createDate: orderDate.toString(),
+          createUid:
+              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
+          partnerId: currentOrderController.selectedCustomer?.id,
+          partnerName: currentOrderController.selectedCustomer?.name,
+          employeeId:
+              context.read<LoginUserController>().loginEmployee?.id ?? 0,
+          employeeName:
+              context.read<LoginUserController>().loginEmployee?.name ?? '',
+          configId: context.read<LoginUserController>().posConfig?.id ?? 0,
+          sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
+          sessionName:
+              context.read<LoginUserController>().posSession?.name ?? '',
+          sequenceNumber: changedTimeToReadable,
+          name:
+              "${context.read<LoginUserController>().posConfig?.name}/ $changedTimeToReadable",
+          state: OrderState.draft.text,
+          amountReturn: 0,
+          loyaltyPoints: 0,
+          nbPrint: 0,
+          pointsWon: "0.00",
+          pricelistId:
+              context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
+          qrDt: orderDate.toString(),
+          returnStatus: "nothing_return",
+          tipAmount: 0,
+          toInvoice: true,
+          toShip: false,
+          userId:
+              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
+          sequenceId:
+              context.read<LoginUserController>().posConfig?.sequenceId ?? 0,
+          sequenceLineId:
+              context.read<LoginUserController>().posConfig?.sequenceLineId ??
+                  0,
+          amountPaid: 0,
+          orderCondition: OrderCondition.unsync.text,
+        );
+
+    orderHistory.amountTotal = map["total"]?.toInt() ?? 0;
+    orderHistory.totalQty = map["qty"]?.toInt() ?? 0;
+    orderHistory.totalItem = currentOrderController.currentOrderList.length;
+    orderHistory.amountTax = map["tax"] ?? 0;
+
+    final Database db = await DatabaseHelper().db;
+    await OrderHistoryTable.insertOrUpdate(db, orderHistory)
+        .then((value) async {
+      if (value <= 0) {
+        CommonUtils.showSnackBar(
+            context: context,
+            message: "Creating/Updating order : something was wrong!");
+        return;
+      }
+      orderHistory.id = value;
+      currentOrderController.orderHistory = orderHistory;
+      List<OrderLineID> orderLineIdList = [];
+
+      await OrderLineIdTable.deleteByOrderId(db: db, orderID: value)
+          .then((deletedValue) async {
+        double totalTax = 0;
+        for (var data in currentOrderController.currentOrderList) {
+          if ((data.onhandQuantity ?? 0) <= 0) {
+            CommonUtils.showSnackBar(
+                context: context,
+                message: '${data.productName} is something wrong!');
+          }
+
+          OrderLineID orderLineID = OrderLineID(
+            orderId: value,
+            productId: data.productVariantIds?.first ?? 0,
+            qty: data.onhandQuantity?.toDouble(),
+            priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+            priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *
+                ((data.priceListItem?.fixedPrice ?? 0) -
+                    (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                        ? ((data.priceListItem?.fixedPrice ?? 0) *
+                            CommonUtils.getPercentAmountTaxOnProduct(data))
+                        : 0)),
+            priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
+                (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+            fullProductName:
+                '${data.barcode != null ? '[${data.barcode}] ' : ''}${data.productName}',
+            createDate: orderDate.toString(),
+            createUid:
+                context.read<LoginUserController>().loginUser?.userData?.id ??
+                    0,
+            discount: 0,
+          );
+          orderLineIdList.add(orderLineID);
+          totalTax = (data.onhandQuantity?.toDouble() ?? 0) *
+              (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                  ? ((data.priceListItem?.fixedPrice ?? 0) *
+                      CommonUtils.getPercentAmountTaxOnProduct(data))
+                  : 0);
+        }
+        currentOrderController.orderHistory?.amountTax = totalTax;
+        await insertOrderLines(db, orderLineIdList).then((lineValue) async {
+          await OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) {
+            currentOrderController.orderHistory?.lineIds = lineIds;
+            if (isNavigate == true) {
+              Navigator.pushNamed(context, OrderPaymentScreen.routeName);
+            }
+          });
+        });
+      });
+    });
+  }
+
+  static Future<void> insertOrderLines(
+    final Database db,
+    List<OrderLineID> orderLineIdList,
+  ) async {
+    for (var data in orderLineIdList) {
+      await OrderLineIdTable.insertOrUpdate(db: db, orderLineID: data);
+    }
   }
 }

@@ -2,14 +2,13 @@
 import 'dart:convert';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/database/table/order_line_id_table.dart';
-import 'package:offline_pos/model/order_line_id.dart';
 import 'package:sqflite/sqflite.dart';
 
 const ORDER_HISTORY_TABLE_NAME = "order_history_table";
 const ORDER_HISTORY_ID = "id";
 const NAME_IN_OH = "name";
 const SESSION_ID = "session_id";
+const SESSION_NAME_IN_OH = "session_name";
 const DATE_ORDER = "date_order";
 const EMPLOYEE_ID_IN_OH = "employee_id";
 const PARTNER_ID = "partner_id";
@@ -48,6 +47,7 @@ class OrderHistoryTable {
         "$ORDER_HISTORY_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
         "$NAME_IN_OH TEXT NOT NULL,"
         "$SESSION_ID INTEGER NOT NULL,"
+        "$SESSION_NAME_IN_OH TEXT NOT NULL,"
         "$DATE_ORDER TEXT NOT NULL,"
         "$EMPLOYEE_ID_IN_OH INTEGER NOT NULL,"
         "$PARTNER_ID INTEGER,"
@@ -127,14 +127,26 @@ class OrderHistoryTable {
     return isExist;
   }
 
-  static Future<int> delete(int orderHistoryId) async {
-    final Database db = await DatabaseHelper().db;
+  static Future<int> deleteByOrderId({
+    Database? db,
+    Transaction? txn,
+    required int orderHistoryId,
+  }) async {
+    if (txn != null) {
+      return txn.delete(
+        ORDER_HISTORY_TABLE_NAME,
+        where: "$ORDER_HISTORY_ID=?",
+        whereArgs: [orderHistoryId],
+      );
+    } else {
+      db ??= await DatabaseHelper().db;
 
-    return db.delete(
-      ORDER_HISTORY_TABLE_NAME,
-      where: "$ORDER_HISTORY_ID=?",
-      whereArgs: [orderHistoryId],
-    );
+      return db.delete(
+        ORDER_HISTORY_TABLE_NAME,
+        where: "$ORDER_HISTORY_ID=?",
+        whereArgs: [orderHistoryId],
+      );
+    }
   }
 
   static Future<int> update(
@@ -168,7 +180,7 @@ class OrderHistoryTable {
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
-    String query = 
+    String query =
         "select ot.*, ct.$CUSTOMER_NAME as customer_name, emt.$NAME_IN_ET as employee_name "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         "left join $CUSTOMER_TABLE_NAME ct "

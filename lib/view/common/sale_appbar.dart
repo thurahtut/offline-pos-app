@@ -76,10 +76,28 @@ class _SaleAppBarState extends State<SaleAppBar> {
             'Order',
             fontSize: 16,
             onPressed: () {
-              Navigator.pushNamed(
-                context,
-                OrderListScreen.routeName,
-              );
+              if (context
+                  .read<CurrentOrderController>()
+                  .currentOrderList
+                  .isNotEmpty) {
+                CommonUtils.uploadOrderHistoryToDatabase(
+                  context,
+                  isNavigate: false,
+                ).then((value) {
+                  context
+                      .read<CurrentOrderController>()
+                      .resetCurrentOrderController();
+                  Navigator.pushNamed(
+                    context,
+                    OrderListScreen.routeName,
+                  );
+                });
+              } else {
+                Navigator.pushNamed(
+                  context,
+                  OrderListScreen.routeName,
+                );
+              }
             },
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,

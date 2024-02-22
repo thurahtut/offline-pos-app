@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/database/table/order_line_id_table.dart';
-import 'package:offline_pos/model/order_line_id.dart';
-import 'package:sqflite/sqflite.dart';
 
 class CurrentOrderScreen extends StatefulWidget {
   const CurrentOrderScreen({super.key, required this.width});
@@ -429,10 +426,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                 context: context, message: 'There is no order items.');
             return;
           }
-          context.read<CurrentOrderController>().isContainCustomer = false;
-          uploadOrderHistoryToDatabase(
-              customer:
-                  context.read<CurrentOrderController>().selectedCustomer);
+          CommonUtils.uploadOrderHistoryToDatabase(context);
 
           // Navigator.pushNamed(context, OrderPaymentScreen.routeName);
         },
@@ -470,9 +464,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           context.read<ViewController>().isCustomerView = true;
           CustomerListDialog.customerListDialogWidget(context).then((value) {
             context.read<ViewController>().isCustomerView = false;
-            if (value != null && value is Customer) {
-              uploadOrderHistoryToDatabase(customer: value);
-            }
+            CommonUtils.uploadOrderHistoryToDatabase(context);
           });
         },
       ),
@@ -536,128 +528,4 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   //     currentOrderController.notify();
   //   }
   // }
-
-  Future<void> uploadOrderHistoryToDatabase({Customer? customer}) async {
-    CurrentOrderController currentOrderController =
-        context.read<CurrentOrderController>();
-    DateTime orderDate = DateTime.now().toUtc();
-    Map<String, double> map = currentOrderController
-        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
-    if (currentOrderController.orderHistory != null) {
-      currentOrderController.orderHistory!.writeDate = orderDate.toString();
-      currentOrderController.orderHistory!.writeUid =
-          context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
-      currentOrderController.orderHistory!.partnerId = customer?.id;
-    }
-    OrderHistory orderHistory = currentOrderController.orderHistory ??
-        OrderHistory(
-          dateOrder: orderDate.toString(),
-          createDate: orderDate.toString(),
-          createUid:
-              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          partnerId: customer?.id,
-          partnerName: customer?.name,
-          employeeId:
-              context.read<LoginUserController>().loginEmployee?.id ?? 0,
-          employeeName:
-              context.read<LoginUserController>().loginEmployee?.name ?? '',
-          configId: context.read<LoginUserController>().posConfig?.id ?? 0,
-          sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
-          sequenceNumber: "${orderDate.millisecondsSinceEpoch}",
-          name:
-              "${context.read<LoginUserController>().posConfig?.name}/ ${orderDate.millisecondsSinceEpoch}",
-          state: OrderState.draft.text,
-          amountReturn: 0,
-          loyaltyPoints: 0,
-          nbPrint: 0,
-          pointsWon: "0.00",
-          pricelistId:
-              context.read<LoginUserController>().posConfig?.pricelistId ?? 0,
-          qrDt: orderDate.toString(),
-          returnStatus: "nothing_return",
-          tipAmount: 0,
-          toInvoice: true,
-          toShip: false,
-          userId:
-              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          sequenceId:
-              context.read<LoginUserController>().posConfig?.sequenceId ?? 0,
-          sequenceLineId:
-              context.read<LoginUserController>().posConfig?.sequenceLineId ??
-                  0,
-          amountPaid: 0,
-          orderCondition: OrderCondition.unsync.text,
-        );
-
-    orderHistory.amountTotal = map["total"]?.toInt() ?? 0;
-    orderHistory.totalQty = map["qty"]?.toInt() ?? 0;
-    orderHistory.totalItem = currentOrderController.currentOrderList.length;
-    orderHistory.amountTax = map["tax"] ?? 0;
-
-    final Database db = await DatabaseHelper().db;
-    OrderHistoryTable.insertOrUpdate(db, orderHistory).then((value) {
-      if (value <= 0) {
-        CommonUtils.showSnackBar(
-            context: context,
-            message: "Creating/Updating order : something was wrong!");
-        return;
-      }
-      orderHistory.id = value;
-      currentOrderController.orderHistory = orderHistory;
-      List<OrderLineID> orderLineIdList = [];
-      OrderLineIdTable.deleteByOrderId(db, value);
-      double totalTax = 0;
-      for (var data in currentOrderController.currentOrderList) {
-        if ((data.onhandQuantity ?? 0) <= 0) {
-          CommonUtils.showSnackBar(
-              context: context,
-              message: '${data.productName} is something wrong!');
-        }
-
-        OrderLineID orderLineID = OrderLineID(
-          orderId: value,
-          productId: data.productVariantIds?.first ?? 0,
-          qty: data.onhandQuantity?.toDouble(),
-          priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
-          priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *
-              ((data.priceListItem?.fixedPrice ?? 0) -
-                  (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
-                      ? ((data.priceListItem?.fixedPrice ?? 0) *
-                          CommonUtils.getPercentAmountTaxOnProduct(data))
-                      : 0)),
-          priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
-              (data.priceListItem?.fixedPrice ?? 0).toDouble(),
-          fullProductName:
-              '${data.barcode != null ? '[${data.barcode}] ' : ''}${data.productName}',
-          createDate: orderDate.toString(),
-          createUid:
-              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          discount: 0,
-        );
-        orderLineIdList.add(orderLineID);
-        totalTax = (data.onhandQuantity?.toDouble() ?? 0) *
-            (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
-                ? ((data.priceListItem?.fixedPrice ?? 0) *
-                    CommonUtils.getPercentAmountTaxOnProduct(data))
-                : 0);
-      }
-      currentOrderController.orderHistory?.amountTax = totalTax;
-      insertOrderLines(db, orderLineIdList).then((lineValue) async {
-        OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) {
-          currentOrderController.orderHistory?.lineIds = lineIds;
-
-          Navigator.pushNamed(context, OrderPaymentScreen.routeName);
-        });
-      });
-    });
-  }
-
-  Future<void> insertOrderLines(
-    final Database db,
-    List<OrderLineID> orderLineIdList,
-  ) async {
-    for (var data in orderLineIdList) {
-      OrderLineIdTable.insertWithDb(db, data);
-    }
-  }
 }

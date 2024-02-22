@@ -15,9 +15,12 @@ class Routers {
           builder: (_) => WelcomeScreen(),
         );
       case MainScreen.routeName:
+        final MainScreen? args = settings.arguments as MainScreen?;
         return MaterialPageRoute(
           // settings: RouteSettings(name: 'Home'),
-          builder: (_) => MainScreen(),
+          builder: (_) => MainScreen(
+            resetController: args?.resetController,
+          ),
         );
       case OrderPaymentScreen.routeName:
         return MaterialPageRoute(

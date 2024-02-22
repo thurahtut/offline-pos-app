@@ -67,8 +67,6 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
             context: widget.mainContext, message: 'There is no order items.');
         return;
       }
-      widget.mainContext.read<CurrentOrderController>().isContainCustomer =
-          true;
       CustomerPasswordDialog.enterCustomerPasswordWidget(widget.mainContext,
               customer, isSelectedCus, passwordTextController)
           .then((value) {
@@ -169,9 +167,6 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                                   Navigator.pop(widget.bContext, true);
                                 } else if (controller.selectingCustomer !=
                                     null) {
-                                  widget.mainContext
-                                      .read<CurrentOrderController>()
-                                      .isContainCustomer = true;
                                   CustomerPasswordDialog
                                           .enterCustomerPasswordWidget(
                                               widget.mainContext,

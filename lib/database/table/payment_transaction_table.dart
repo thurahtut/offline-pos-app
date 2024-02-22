@@ -90,12 +90,25 @@ class PaymentTransactionTable {
     );
   }
 
-  static Future<int> deleteByOrderId(final Database db, int orderID) async {
+  static Future<int> deleteByOrderId({
+    Database? db,
+    Transaction? txn,
+    required int orderID,
+  }) async {
+    if (txn != null) {
+      return txn.delete(
+        PAYMENT_TRANSACTION_TABLE_NAME,
+        where: "$ORDER_ID_IN_TRAN=?",
+        whereArgs: [orderID],
+      );
+    } else {
+      db ??= await DatabaseHelper().db;
     return db.delete(
       PAYMENT_TRANSACTION_TABLE_NAME,
       where: "$ORDER_ID_IN_TRAN=?",
       whereArgs: [orderID],
-    );
+      );
+    }
   }
 
   static Future<void> insertOrUpdate(List<dynamic> data) async {

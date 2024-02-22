@@ -52,14 +52,6 @@ class CurrentOrderController with ChangeNotifier {
     return map;
   }
 
-  bool? _isContainCustomer = false;
-  bool? get isContainCustomer => _isContainCustomer;
-  set isContainCustomer(bool? isContainCustomer) {
-    if (_isContainCustomer == isContainCustomer) return;
-    _isContainCustomer = isContainCustomer;
-    notifyListeners();
-  }
-
   double? _paymentAmount;
   double? get paymentAmount => _paymentAmount;
   set paymentAmount(double? paymentAmount) {
