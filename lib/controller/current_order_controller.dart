@@ -323,6 +323,15 @@ class CurrentOrderController with ChangeNotifier {
     // }
   }
 
+  bool _chooseCusFromCart = false;
+  bool get chooseCusFromCart => _chooseCusFromCart;
+  set chooseCusFromCart(bool chooseCusFromCart) {
+    if (_chooseCusFromCart == chooseCusFromCart) return;
+    _chooseCusFromCart = chooseCusFromCart;
+    notifyListeners();
+  }
+  
+
   final FocusNode productTextFieldFocusNode = FocusNode();
 
   resetCurrentOrderController() {
@@ -335,6 +344,7 @@ class CurrentOrderController with ChangeNotifier {
     _orderHistory = null;
     _selectedCustomer = null;
     _selectingCustomer = null;
+    _chooseCusFromCart = false;
     notifyListeners();
   }
 }

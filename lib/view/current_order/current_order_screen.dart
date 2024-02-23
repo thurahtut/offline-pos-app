@@ -464,7 +464,11 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           context.read<ViewController>().isCustomerView = true;
           CustomerListDialog.customerListDialogWidget(context).then((value) {
             context.read<ViewController>().isCustomerView = false;
-            CommonUtils.createOrderHistory(context);
+            if (context.read<CurrentOrderController>().chooseCusFromCart) {
+              CommonUtils.uploadOrderHistoryToDatabase(context);
+            } else {
+              CommonUtils.createOrderHistory(context);
+            }
           });
         },
       ),

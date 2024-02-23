@@ -59,8 +59,13 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                   .read<PosCategoryController>()
                   .posCategoryList
                   .addAll(posCategorys);
+              context
+                  .read<MorningsyncController>()
+                  .getAllAmountTax(// amount tax
+                      () {
               context.read<PosCategoryController>().notify();
               Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+            });
             });
           } else {
             _alreadyLoginError();

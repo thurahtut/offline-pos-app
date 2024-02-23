@@ -160,7 +160,9 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   ..._transactionWidget(),
                   pw.SizedBox(height: 40),
                   _changeWidget(),
-                  pw.SizedBox(height: 40),
+                  if ((map["tax"] ?? 0) > 0) pw.SizedBox(height: 20),
+                  if ((map["tax"] ?? 0) > 0) _s5TaxWidget(map),
+                  pw.SizedBox(height: 20),
                   _totalTaxWidget(map),
                   pw.SizedBox(height: 20),
                   _totalQtyWidget(map),
@@ -452,6 +454,35 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         pw.Expanded(
           child: pw.Text(
             "Total Taxes",
+            textAlign: pw.TextAlign.start,
+            style: pw.TextStyle(
+              color: PdfColor.fromHex("#262927"),
+              fontSize: fontSize,
+            ),
+          ),
+        ),
+        pw.SizedBox(width: 4),
+        pw.Text(
+          "${map["tax"] ?? 0} Ks",
+          style: pw.TextStyle(
+            color: PdfColor.fromHex("#171717"),
+            fontSize: fontSize,
+            // fontWeight: pw.FontWeight.w400,
+          ),
+        ),
+        pw.SizedBox(width: 12),
+      ],
+    );
+  }
+
+  pw.Widget _s5TaxWidget(Map<String, double> map) {
+    double? fontSize = 9;
+    return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        pw.Expanded(
+          child: pw.Text(
+            "S5",
             textAlign: pw.TextAlign.start,
             style: pw.TextStyle(
               color: PdfColor.fromHex("#262927"),

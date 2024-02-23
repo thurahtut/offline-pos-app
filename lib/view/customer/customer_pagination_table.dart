@@ -78,6 +78,9 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                 .selectingCustomer = value;
             widget.mainContext.read<CurrentOrderController>().selectedCustomer =
                 value;
+            widget.mainContext
+                .read<CurrentOrderController>()
+                .chooseCusFromCart = true;
           }
           Navigator.pop(widget.bContext, value);
         }
