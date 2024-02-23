@@ -186,7 +186,11 @@ class ProductTable {
         (categoryId != null && categoryId != -1)) {
       objects = [];
       if (filter != null && filter.isNotEmpty) {
-        objects = ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'];
+        if (barcodeOnly == true) {
+          objects = [filter];
+        } else {
+          objects = ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'];
+        }
       }
       if (categoryId != null && categoryId != -1) {
         objects.add(categoryId);
