@@ -628,20 +628,22 @@ class CommonUtils {
       if (isNew) {
         // Add data to cells
         sheetObject.cell(exl.CellIndex.indexByString('A1')).value =
-            exl.TextCellValue('Product Id');
+            exl.TextCellValue('Order Id');
         sheetObject.cell(exl.CellIndex.indexByString('B1')).value =
-            exl.TextCellValue('Product Name');
+            exl.TextCellValue('Product Id');
         sheetObject.cell(exl.CellIndex.indexByString('C1')).value =
-            exl.TextCellValue('Employee Id');
+            exl.TextCellValue('Product Name');
         sheetObject.cell(exl.CellIndex.indexByString('D1')).value =
-            exl.TextCellValue('Employee Name');
+            exl.TextCellValue('Employee Id');
         sheetObject.cell(exl.CellIndex.indexByString('E1')).value =
-            exl.TextCellValue('Original Quantity');
+            exl.TextCellValue('Employee Name');
         sheetObject.cell(exl.CellIndex.indexByString('F1')).value =
-            exl.TextCellValue('Updated Quantity');
+            exl.TextCellValue('Original Quantity');
         sheetObject.cell(exl.CellIndex.indexByString('G1')).value =
-            exl.TextCellValue('Session Id');
+            exl.TextCellValue('Updated Quantity');
         sheetObject.cell(exl.CellIndex.indexByString('H1')).value =
+            exl.TextCellValue('Session Id');
+        sheetObject.cell(exl.CellIndex.indexByString('I1')).value =
             exl.TextCellValue('Date');
       }
 
@@ -855,21 +857,14 @@ class CommonUtils {
     return "${first}_${second}_${list.join("_")}";
   }
 
-  static Future<void> uploadOrderHistoryToDatabase(BuildContext context,
-      {bool? isNavigate = true}) async {
+  static Future<void> createOrderHistory(BuildContext context) async {
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
     DateTime orderDate = DateTime.now().toUtc();
     String changedTimeToReadable = CommonUtils.splitTimeToReadable(orderDate);
     Map<String, double> map = currentOrderController
         .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
-    if (currentOrderController.orderHistory != null) {
-      currentOrderController.orderHistory!.writeDate = orderDate.toString();
-      currentOrderController.orderHistory!.writeUid =
-          context.read<LoginUserController>().loginUser?.userData?.id ?? 0;
-      currentOrderController.orderHistory!.partnerId =
-          currentOrderController.selectedCustomer?.id;
-    }
+
     OrderHistory orderHistory = currentOrderController.orderHistory ??
         OrderHistory(
           dateOrder: orderDate.toString(),
@@ -928,49 +923,96 @@ class CommonUtils {
       }
       orderHistory.id = value;
       currentOrderController.orderHistory = orderHistory;
-      List<OrderLineID> orderLineIdList = [];
+    });
+  }
 
-      await OrderLineIdTable.deleteByOrderId(db: db, orderID: value)
-          .then((deletedValue) async {
-        double totalTax = 0;
-        for (var data in currentOrderController.currentOrderList) {
-          if ((data.onhandQuantity ?? 0) <= 0) {
-            CommonUtils.showSnackBar(
-                context: context,
-                message: '${data.productName} is something wrong!');
-          }
+  static Future<void> uploadOrderHistoryToDatabase(BuildContext context,
+      {bool? isNavigate = true}) async {
+    LoginUserController loginUserController =
+        context.read<LoginUserController>();
+    CurrentOrderController currentOrderController =
+        context.read<CurrentOrderController>();
+    DateTime orderDate = DateTime.now().toUtc();
 
-          OrderLineID orderLineID = OrderLineID(
-            orderId: value,
-            productId: data.productVariantIds?.first ?? 0,
-            qty: data.onhandQuantity?.toDouble(),
-            priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
-            priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *
-                ((data.priceListItem?.fixedPrice ?? 0) -
-                    (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
-                        ? ((data.priceListItem?.fixedPrice ?? 0) *
-                            CommonUtils.getPercentAmountTaxOnProduct(data))
-                        : 0)),
-            priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
-                (data.priceListItem?.fixedPrice ?? 0).toDouble(),
-            fullProductName:
-                '${data.barcode != null ? '[${data.barcode}] ' : ''}${data.productName}',
-            createDate: orderDate.toString(),
-            createUid:
-                context.read<LoginUserController>().loginUser?.userData?.id ??
-                    0,
-            discount: 0,
-          );
-          orderLineIdList.add(orderLineID);
-          totalTax = (data.onhandQuantity?.toDouble() ?? 0) *
-              (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
-                  ? ((data.priceListItem?.fixedPrice ?? 0) *
-                      CommonUtils.getPercentAmountTaxOnProduct(data))
-                  : 0);
+    Map<String, double> map = currentOrderController
+        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
+    if (currentOrderController.orderHistory == null) {
+      await createOrderHistory(context);
+    }
+
+    currentOrderController.orderHistory!.writeDate = orderDate.toString();
+    currentOrderController.orderHistory!.writeUid =
+        loginUserController.loginUser?.userData?.id ?? 0;
+    currentOrderController.orderHistory!.partnerId =
+        currentOrderController.selectedCustomer?.id;
+
+    currentOrderController.orderHistory?.amountTotal =
+        map["total"]?.toInt() ?? 0;
+    currentOrderController.orderHistory?.totalQty = map["qty"]?.toInt() ?? 0;
+    currentOrderController.orderHistory?.totalItem =
+        currentOrderController.currentOrderList.length;
+    currentOrderController.orderHistory?.amountTax = map["tax"] ?? 0;
+    List<OrderLineID> orderLineIdList = [];
+
+    final Database db = await DatabaseHelper().db;
+    await OrderLineIdTable.deleteByOrderId(
+            db: db, orderID: currentOrderController.orderHistory?.id ?? 0)
+        .then((deletedValue) async {
+      double totalTax = 0;
+      for (var data in currentOrderController.currentOrderList) {
+        if ((data.onhandQuantity ?? 0) <= 0) {
+          CommonUtils.showSnackBar(
+              context: context,
+              message: '${data.productName} is something wrong!');
         }
-        currentOrderController.orderHistory?.amountTax = totalTax;
+
+        OrderLineID orderLineID = OrderLineID(
+          orderId: currentOrderController.orderHistory?.id ?? 0,
+          productId: data.productVariantIds?.first ?? 0,
+          qty: data.onhandQuantity?.toDouble(),
+          priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+          priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *
+              ((data.priceListItem?.fixedPrice ?? 0) -
+                  (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                      ? ((data.priceListItem?.fixedPrice ?? 0) *
+                          CommonUtils.getPercentAmountTaxOnProduct(data))
+                      : 0)),
+          priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
+              (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+          fullProductName:
+              '${data.barcode != null ? '[${data.barcode}] ' : ''}${data.productName}',
+          createDate: orderDate.toString(),
+          createUid:
+              context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
+          discount: 0,
+        );
+        orderLineIdList.add(orderLineID);
+        totalTax = (data.onhandQuantity?.toDouble() ?? 0) *
+            (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                ? ((data.priceListItem?.fixedPrice ?? 0) *
+                    CommonUtils.getPercentAmountTaxOnProduct(data))
+                : 0);
+      }
+      currentOrderController.orderHistory?.amountTax = totalTax;
+      if (currentOrderController.orderHistory == null) {
+        CommonUtils.showSnackBar(
+            context: context,
+            message: "Creating/Updating order : something was wrong!");
+        return;
+      }
+      await OrderHistoryTable.insertOrUpdate(
+              db, currentOrderController.orderHistory!)
+          .then((value) async {
+        if (value <= 0) {
+          CommonUtils.showSnackBar(
+              context: context,
+              message: "Creating/Updating order : something was wrong!");
+          return;
+        }
         await insertOrderLines(db, orderLineIdList).then((lineValue) async {
-          await OrderLineIdTable.getOrderLinesByOrderId(value).then((lineIds) {
+          await OrderLineIdTable.getOrderLinesByOrderId(
+                  currentOrderController.orderHistory?.id ?? 0)
+              .then((lineIds) {
             currentOrderController.orderHistory?.lineIds = lineIds;
             if (isNavigate == true) {
               Navigator.pushNamed(context, OrderPaymentScreen.routeName);

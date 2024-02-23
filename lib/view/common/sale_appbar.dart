@@ -251,6 +251,10 @@ class _SaleAppBarState extends State<SaleAppBar> {
                 message: syncedResult!.statusMessage ?? 'Something was wrong!');
           }
         });
+        if (mounted) {
+          CommonUtils.showSnackBar(
+              context: context, message: 'Order synced successful!');
+        }
       }
     });
   }

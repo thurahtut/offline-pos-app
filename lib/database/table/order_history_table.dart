@@ -106,11 +106,14 @@ class OrderHistoryTable {
 
   static Future<int> insertOrUpdate(
       final Database db, OrderHistory orderHistory) async {
+    int id = 0;
     if (await checkRowExist(db, orderHistory.id ?? 0)) {
-      return update(db, orderHistory);
+      await update(db, orderHistory);
+      id = orderHistory.id ?? 0;
     } else {
-      return insert(db, orderHistory);
+      id = await insert(db, orderHistory);
     }
+    return id;
   }
 
   static Future<bool> checkRowExist(
@@ -294,9 +297,9 @@ class OrderHistoryTable {
             "on pmt.$PAYMENT_METHOD_ID=ptt.$PAYMENT_METHOD_ID_TRAN " : ""}"
         " where 1=1 "
         "${orderHistoryId != null ? " and ot.$ORDER_HISTORY_ID = $orderHistoryId " : ""}"
-        "${isCloseSession == true ? " and ot.$STATE_IN_OT='${OrderState.paid.name}' " : ""}"
+        "${isCloseSession == true ? " and ot.$STATE_IN_OT='${OrderState.paid.text}' " : ""}"
         "${isCloseSession == true ? " and ot.$ORDER_CONDITION<>'${OrderCondition.sync.text}' " : ""}"
-        "${sessionId != null ? " and ot.$SESSION_ID='$sessionId' " : ""}"
+        "${sessionId != null ? " and ot.$SESSION_ID=$sessionId " : ""}"
         "group by ot.$ORDER_HISTORY_ID ";
   }
 
@@ -361,6 +364,7 @@ class OrderHistoryTable {
         SEQUENCE_NUMBER,
         WRITE_DATE_IN_OH,
         WRITE_UID_IN_OH,
+        SESSION_NAME_IN_OH,
       ],
     );
     String query = getOrderHistoryQuery(

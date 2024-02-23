@@ -17,13 +17,13 @@ class OrderPaymentReceiptScreen extends StatefulWidget {
 class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   var myTheme;
 
-  ByteData? font;
+  // ByteData? font;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      font = await rootBundle.load("assets/font/Padauk-Regular.ttf");
-      setState(() {});
+      // font = await rootBundle.load("assets/font/Py.ttf");
+      // setState(() {});
     });
     super.initState();
   }
@@ -53,12 +53,12 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
 
   Widget _receiptWidget() {
     return PdfPreview(
-      // initialPageFormat: PdfPageFormat.roll80,
+      initialPageFormat: PdfPageFormat.roll80,
       allowSharing: false,
       allowPrinting: false,
       canChangeOrientation: false,
       canChangePageFormat: false,
-      maxPageWidth: PdfPageFormat.roll80.width * 2,
+      maxPageWidth: PdfPageFormat.roll80.width * 2.2,
       build: (format) => _generatePdf(),
     );
   }

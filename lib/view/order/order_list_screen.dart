@@ -153,6 +153,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
             ),
           ),
           Expanded(flex: 4, child: SizedBox()),
+          CommonUtils.iconActionButton(Icons.refresh_rounded, onPressed: () {
+            context.read<OrderListController>().offset = 0;
+            context.read<OrderListController>().currentIndex = 1;
+            getAllOrderHistory();
+          }),
           Expanded(flex: 4, child: _searchCustomerWidget()),
         ],
       ),

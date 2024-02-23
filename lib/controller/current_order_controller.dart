@@ -128,7 +128,16 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
-  void addItemToList(Product product) {
+  Future<void> addItemToList(Product product) async {
+    if (NavigationService.navigatorKey.currentContext != null) {
+      if (NavigationService.navigatorKey.currentContext!
+              .read<CurrentOrderController>()
+              .orderHistory ==
+          null) {
+        await CommonUtils.createOrderHistory(
+            NavigationService.navigatorKey.currentContext!);
+      }
+    }
     Product orderProduct = Product.fromJson(jsonDecode(jsonEncode(product)));
     PriceListItem? priceListItem = product.priceListItem != null
         ? PriceListItem.fromJson(jsonDecode(jsonEncode(product.priceListItem)))
@@ -194,6 +203,7 @@ class CurrentOrderController with ChangeNotifier {
                 0;
           }
           DeletedProductLog deletedProductLog = DeletedProductLog(
+            orderId: orderHistory?.id ?? 0,
             productId: product.productId,
             productName: product.productName,
             employeeId: employeeId,

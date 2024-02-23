@@ -2,6 +2,7 @@ class DeletedProductLog {
   int? productId;
   String? productName;
   int? employeeId;
+  int? orderId;
   String? employeeName;
   String? originalQty;
   String? updatedQty;
@@ -9,16 +10,20 @@ class DeletedProductLog {
   String? date;
 
   DeletedProductLog(
-      {this.productId,
+      {
+    this.orderId,
+    this.productId,
       this.productName,
       this.employeeId,
       this.employeeName,
       this.originalQty,
       this.updatedQty,
       this.sessionId,
-      this.date});
+    this.date,
+  });
 
   DeletedProductLog.fromJson(Map<String, dynamic> json) {
+    orderId = json['order_id'];
     productId = json['product_id'];
     productName = json['product_name'];
     employeeId = json['employee_id'];
@@ -31,6 +36,7 @@ class DeletedProductLog {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['order_id'] = orderId;
     data['product_id'] = productId;
     data['product_name'] = productName;
     data['employee_id'] = employeeId;

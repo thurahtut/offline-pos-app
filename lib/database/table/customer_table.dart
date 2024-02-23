@@ -222,10 +222,10 @@ class CustomerTable {
     final Database db = await DatabaseHelper().db;
 
     // Query the table for all The Categories.
-    final List<Map<String, dynamic>> maps =
-        await db.rawQuery("select * from $CUSTOMER_TABLE_NAME "
+    String query = "select * from $CUSTOMER_TABLE_NAME "
             "where $CUSTOMER_ID_IN_CT='$customerId' "
-            "and $REF='$password'");
+        "and ($REF='$password' or ($REF is null and '$password'=''))";
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
     return maps.isEmpty ? null : Customer.fromJson(maps.first);
   }
