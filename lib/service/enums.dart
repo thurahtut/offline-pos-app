@@ -54,6 +54,7 @@ enum DataSync {
   posCategory,
   amountTax,
   databaseBackup,
+  reset,
 }
 
 enum OrderState {

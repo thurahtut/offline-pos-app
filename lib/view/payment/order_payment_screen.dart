@@ -121,8 +121,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     currentOrderController.paymentTransactionList.values
                         .toList())
                 .then((value) {
+
+              String changedTimeToReadable =
+                  CommonUtils.splitTimeToReadable(DateTime.now());
               currentOrderController.orderHistory?.receiptNumber =
-                  'Order ${DateTime.now().millisecondsSinceEpoch}';
+                  'Order $changedTimeToReadable';
               currentOrderController.orderHistory?.state = OrderState.paid.text;
               currentOrderController.orderHistory?.amountPaid =
                   totalPayAmt.toInt();

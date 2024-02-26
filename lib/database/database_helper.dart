@@ -3,7 +3,6 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/order_and_order_line_table.dart';
 import 'package:offline_pos/database/table/order_and_transaction_table.dart';
-import 'package:offline_pos/database/table/order_line_id_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -68,7 +67,7 @@ class DatabaseHelper {
     // Open the database
   }
 
-  Future<int> backupDatabase(BuildContext context) async {
+  Future<int> backupDatabase(BuildContext context, {bool? toDelete}) async {
     if (kIsWeb) {
       CommonUtils.showSnackBar(
           context: context, message: "Web is not supported");
@@ -97,6 +96,14 @@ class DatabaseHelper {
       String backupPath =
           join(externalDir, "offline-pos-backup-$customDate.db");
       await dbFile.copy(backupPath);
+      if (toDelete == true) {
+        try {
+          // Delete the file
+          dbFile.deleteSync();
+        } catch (e) {
+          print('Error while deleting the file: $e');
+        }
+      }
       return 1;
     }
     return 0; // Database file doesn't exist

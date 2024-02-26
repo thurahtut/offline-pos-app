@@ -168,10 +168,18 @@ class CustomerTable {
     final List<Map<String, dynamic>> maps = await db.query(
       CUSTOMER_TABLE_NAME,
       where: filter != null
-          ? "$CUSTOMER_ID_IN_CT LIKE ? or lower($CUSTOMER_NAME) LIKE ?"
+          ? "$CUSTOMER_ID_IN_CT LIKE ? or lower($CUSTOMER_NAME) LIKE ? or $BARCODE_IN_CT LIKE ? or $EMAIL LIKE ? or $CUSTOMER_PHONE LIKE ?"
           : null,
       whereArgs:
-          filter != null ? ['%$filter%', '%${filter.toLowerCase()}%'] : null,
+          filter != null
+          ? [
+              '%$filter%',
+              '%${filter.toLowerCase()}%',
+              '%$filter%',
+              '%$filter%',
+              '%$filter%'
+            ]
+          : null,
       // where: "$PRODUCT_NAME=?",
       // whereArgs: [filter],
       orderBy: '$CUSTOMER_ID_IN_CT ASC',

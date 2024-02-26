@@ -102,6 +102,13 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                 ),
               ),
               _backUpWidget(controller),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Divider(
+                  thickness: 0.3,
+                ),
+              ),
+              _resetWidget(controller)
             ],
           );
         }),
@@ -323,6 +330,69 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                             .contains(DataSync.databaseBackup.name)
                         ? primaryColor
                         : Colors.black.withOpacity(0.62),
+                  )),
+        ],
+      ),
+    );
+  }
+
+  Widget _resetWidget(MorningsyncController controller) {
+    onSync() {
+      DatabaseHelper().backupDatabase(context, toDelete: true).then((value) {
+        if (value == 1) {
+          controller.doneActionList.add(DataSync.reset.name);
+          controller.notify();
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => UserLoginScreen()),
+            ModalRoute.withName("/Home"),
+          );
+        } else {
+          CommonUtils.showSnackBar(
+              context: context, message: "Reset database is not successful!");
+          controller.doneActionList.remove(DataSync.reset.name);
+          controller.notify();
+        }
+      });
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      height: 70,
+      child: Row(
+        children: [
+          Text(
+            'Reset Data',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          Expanded(child: SizedBox()),
+          !controller.doneActionList.contains(DataSync.reset.name) &&
+                  (controller.processingPercentage[DataSync.reset.name] ?? 0) >
+                      0 &&
+                  (controller.processingPercentage[DataSync.reset.name] ?? 0) <=
+                      100
+              ? CircularProgressIndicator(color: primaryColor)
+              : IconButton(
+                  onPressed:
+                      controller.doneActionList.contains(DataSync.reset.name)
+                          ? null
+                          : onSync,
+                  icon: Icon(
+                    controller.doneActionList.contains(DataSync.reset.name)
+                        ? Icons.check_rounded
+                        : Icons.delete_forever_outlined,
+                    size:
+                        controller.doneActionList.contains(DataSync.reset.name)
+                            ? 40
+                            : 34,
+                    color:
+                        controller.doneActionList.contains(DataSync.reset.name)
+                            ? primaryColor
+                            : Colors.black.withOpacity(0.62),
                   )),
         ],
       ),
