@@ -99,7 +99,10 @@ class DatabaseHelper {
       if (toDelete == true) {
         try {
           // Delete the file
-          dbFile.deleteSync();
+          await _db?.close();
+          File("$databasesPath\\$_databaseName").deleteSync();
+          _db = null;
+          print('success');
         } catch (e) {
           print('Error while deleting the file: $e');
         }
