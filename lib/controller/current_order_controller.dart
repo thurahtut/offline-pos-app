@@ -210,7 +210,7 @@ class CurrentOrderController with ChangeNotifier {
             employeeName: employeeName,
             originalQty: qty,
             sessionId: sessionId,
-            date: DateTime.now().toString(),
+            date: CommonUtils.getDateTimeNow().toString(),
           );
           if (product.onhandQuantity == 1) {
             isDelete = true;

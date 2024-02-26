@@ -142,7 +142,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
   }
 
   void _openSession() {
-    String date = DateTime.now().toUtc().toString();
+    String date = CommonUtils.getDateTimeNow().toString();
     LoginUserController userController =
         widget.mainContext.read<LoginUserController>();
     int userId = userController.loginUser?.userData?.id ?? 0;

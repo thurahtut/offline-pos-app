@@ -17,9 +17,9 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
   int? _sortColumnIndex;
   bool? isTabletMode;
   String headerString = "";
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = CommonUtils.getDateTimeNow();
   final ValueNotifier<DateTime> _dateTimeNotifier =
-      ValueNotifier(DateTime.now());
+      ValueNotifier(CommonUtils.getDateTimeNow());
   final scrollController = ScrollController();
 
   void getAllOrderHistory() async {
@@ -45,7 +45,9 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      headerString = DateFormat('MMMM yyyy').format(DateTime.now()).toString();
+      headerString = DateFormat('MMMM yyyy')
+          .format(CommonUtils.getDateTimeNow())
+          .toString();
       isTabletMode = CommonUtils.isTabletMode(context);
       getAllOrderHistory();
     });
@@ -269,7 +271,8 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              _dateTimeNotifier.value = DateTime.now();
+                              _dateTimeNotifier.value =
+                                  CommonUtils.getDateTimeNow();
                             },
                             child: Text(
                               'Today',
@@ -299,7 +302,7 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
         builder: (_, dateTime, __) {
           return TableCalendar(
             firstDay: DateTime.utc(2010, 10, 16),
-            lastDay: DateTime(DateTime.now().year + 100, 1),
+            lastDay: DateTime(CommonUtils.getDateTimeNow().year + 100, 1),
             focusedDay: dateTime,
             pageJumpingEnabled: true,
             headerStyle: HeaderStyle(
@@ -369,8 +372,8 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
             width: 300,
             height: 300,
             child: YearPicker(
-              firstDate: DateTime(DateTime.now().year - 100, 1),
-              lastDate: DateTime(DateTime.now().year + 100, 1),
+              firstDate: DateTime(CommonUtils.getDateTimeNow().year - 100, 1),
+              lastDate: DateTime(CommonUtils.getDateTimeNow().year + 100, 1),
               selectedDate: _dateTimeNotifier.value,
               onChanged: (DateTime dateTime) {
                 _dateTimeNotifier.value = DateTime(dateTime.year);

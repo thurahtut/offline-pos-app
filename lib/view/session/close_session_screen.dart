@@ -41,7 +41,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             .paymentTransactionList[e.id ?? 0] = PaymentTransaction(
           paymentMethodId: e.id,
           paymentMethodName: e.name,
-          createDate: DateTime.now().toString(),
+          createDate: CommonUtils.getDateTimeNow().toString(),
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
           isChange: false,
@@ -590,7 +590,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
   }
 
   void _closeSessionAndCloseCashRegister(Database? db) {
-    var date = DateTime.now().toString();
+    var date = CommonUtils.getDateTimeNow().toString();
     int configId = context.read<LoginUserController>().posConfig?.id ?? 0;
 
     int authorId =

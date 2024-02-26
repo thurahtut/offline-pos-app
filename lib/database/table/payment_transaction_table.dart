@@ -120,7 +120,6 @@ class PaymentTransactionTable {
       final Database db, List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     Batch batch = db.batch();
-    // var time = DateTime.now();
     int index = 0;
     for (final element in data) {
       PaymentTransaction paymentTransaction = element is PaymentTransaction

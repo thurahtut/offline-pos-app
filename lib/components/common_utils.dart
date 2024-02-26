@@ -564,7 +564,7 @@ class CommonUtils {
 
     String customDate = CommonUtils.getLocaleDateTime(
       "dd-MM-yyyy",
-      DateTime.now().toString(),
+      CommonUtils.getDateTimeNow().toString(),
     );
     var filePath =
         '$externalDir/${customDate}_deleted_products_excel_file.xlsx';
@@ -720,7 +720,7 @@ class CommonUtils {
 
     String customDate = CommonUtils.getLocaleDateTime(
       "dd-MM-yyyy",
-      DateTime.now().toString(),
+      CommonUtils.getDateTimeNow().toString(),
     );
     var filePath = '$externalDir/${customDate}_api_error_log_excel_file.xlsx';
     File deletedLogExcel = File(filePath);
@@ -764,7 +764,7 @@ class CommonUtils {
       sheetObject
           .cell(exl.CellIndex.indexByColumnRow(
               rowIndex: nextRowIndex, columnIndex: 0))
-          .value = exl.TextCellValue(DateTime.now().toString());
+          .value = exl.TextCellValue(CommonUtils.getDateTimeNow().toString());
 
       sheetObject
           .cell(exl.CellIndex.indexByColumnRow(
@@ -781,7 +781,7 @@ class CommonUtils {
 
     String customDate = CommonUtils.getLocaleDateTime(
       "dd-MM-yyyy",
-      DateTime.now().toString(),
+      CommonUtils.getDateTimeNow().toString(),
     );
     var filePath =
         '$externalDir/${customDate}_order_history_log_excel_file.xlsx';
@@ -826,7 +826,7 @@ class CommonUtils {
       sheetObject
           .cell(exl.CellIndex.indexByColumnRow(
               rowIndex: nextRowIndex, columnIndex: 0))
-          .value = exl.TextCellValue(DateTime.now().toString());
+          .value = exl.TextCellValue(CommonUtils.getDateTimeNow().toString());
 
       sheetObject
           .cell(exl.CellIndex.indexByColumnRow(
@@ -860,7 +860,7 @@ class CommonUtils {
   static Future<void> createOrderHistory(BuildContext context) async {
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
-    DateTime orderDate = DateTime.now().toUtc();
+    DateTime orderDate = CommonUtils.getDateTimeNow();
     String changedTimeToReadable = CommonUtils.splitTimeToReadable(orderDate);
     Map<String, double> map = currentOrderController
         .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
@@ -932,7 +932,7 @@ class CommonUtils {
         context.read<LoginUserController>();
     CurrentOrderController currentOrderController =
         context.read<CurrentOrderController>();
-    DateTime orderDate = DateTime.now().toUtc();
+    DateTime orderDate = CommonUtils.getDateTimeNow();
 
     Map<String, double> map = currentOrderController
         .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
@@ -1030,5 +1030,9 @@ class CommonUtils {
     for (var data in orderLineIdList) {
       await OrderLineIdTable.insertOrUpdate(db: db, orderLineID: data);
     }
+  }
+
+  static DateTime getDateTimeNow() {
+    return DateTime.now().toUtc();
   }
 }

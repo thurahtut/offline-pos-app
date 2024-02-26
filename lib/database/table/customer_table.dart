@@ -95,7 +95,6 @@ class CustomerTable {
   static Future<void> insertOrUpdate(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     Batch batch = db.batch();
-    // var time = DateTime.now();
     int index = 0;
     for (final element in data) {
       Customer customer = Customer.fromJson(element);
@@ -110,10 +109,6 @@ class CustomerTable {
       }
       index++;
     }
-
-    // var time2 = DateTime.now();
-    // var d = time2.difference(time);
-    // print("Finished ${data.length} in $d");
     await batch.commit(noResult: true);
   }
 

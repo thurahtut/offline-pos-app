@@ -35,7 +35,6 @@ class POSCategoryTable {
   static Future<void> insertOrUpdateWithList(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     Batch batch = db.batch();
-    // var time = DateTime.now();
     int index = 0;
     for (final element in data) {
       PosCategory posCategory = PosCategory.fromJson(element);
@@ -50,10 +49,6 @@ class POSCategoryTable {
       }
       index++;
     }
-
-    // var time2 = DateTime.now();
-    // var d = time2.difference(time);
-    // print("Finished ${data.length} in $d");
     await batch.commit(noResult: true);
   }
 

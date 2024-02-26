@@ -123,7 +123,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 .then((value) {
 
               String changedTimeToReadable =
-                  CommonUtils.splitTimeToReadable(DateTime.now());
+                  CommonUtils.splitTimeToReadable(CommonUtils.getDateTimeNow());
               currentOrderController.orderHistory?.receiptNumber =
                   'Order $changedTimeToReadable';
               currentOrderController.orderHistory?.state = OrderState.paid.text;
@@ -198,7 +198,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       0;
                   double totalPayAmt = 0;
 
-                  DateTime pDate = DateTime.now().toUtc();
+                  DateTime pDate = CommonUtils.getDateTimeNow();
                   for (var data in controller.paymentTransactionList.values) {
                     totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
                   }

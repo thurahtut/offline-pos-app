@@ -59,7 +59,6 @@ class PriceListItemTable {
   static Future<void> insertOrUpdate(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     Batch batch = db.batch();
-    // var time = DateTime.now();
     int index = 0;
     for (final element in data) {
       PriceListItem priceListItem = PriceListItem.fromJson(element);
@@ -74,10 +73,6 @@ class PriceListItemTable {
       }
       index++;
     }
-
-    // var time2 = DateTime.now();
-    // var d = time2.difference(time);
-    // print("Finished ${data.length} in $d");
     await batch.commit(noResult: true);
   }
 
@@ -162,8 +157,8 @@ class PriceListItemTable {
         "${filter?.isNotEmpty ?? false ? "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)" : ''} "
         "where 1=1 "
         "and pli.$APPLIED_ON='1_product' "
-        "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
-        "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
+        "and (datetime($DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
+        "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "ORDER by pli.$PRICE_LIST_ITEM_ID DESC"
         "${limit != null ? " limit $limit " : " "}"
         "${offset != null ? " offset $offset " : " "}";

@@ -134,9 +134,10 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
             context
                 .read<ThemeSettingController>()
                 .appConfig
-                ?.productLastSyncDate = DateTime.now().toUtc().toString();
+                ?.productLastSyncDate = CommonUtils.getDateTimeNow().toString();
             AppConfigTable.insertOrUpdate(
-                PRODUCT_LAST_SYNC_DATE, DateTime.now().toString());
+                PRODUCT_LAST_SYNC_DATE,
+                CommonUtils.getDateTimeNow().toString());
           },
         );
       },

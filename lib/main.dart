@@ -52,14 +52,49 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class InitializePage extends StatelessWidget {
+class InitializePage extends StatefulWidget {
   const InitializePage({
     super.key,
   });
 
+  @override
+  State<InitializePage> createState() => _InitializePageState();
+}
+
+class _InitializePageState extends State<InitializePage>
+    with WidgetsBindingObserver {
   Future<bool> checkLogin() async {
     await LoginUserTable.getLoginUser();
     return await LoginUserTable.checkRowExist(USER_DATA);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // The app has come to the foreground.
+      print('App resumed');
+    } else if (state == AppLifecycleState.paused) {
+      // The app has been pushed to the background by the user or the system.
+      // This might also happen when the device screen is turned off.
+      print('App paused');
+    } else if (state == AppLifecycleState.detached) {
+      // The app is in a state where the framework is no longer maintaining its state.
+      // This is likely when the app is being closed.
+      print('App detached (closed)');
+    }
   }
 
   @override

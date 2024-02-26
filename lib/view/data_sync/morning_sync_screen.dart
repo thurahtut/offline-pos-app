@@ -103,7 +103,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
           context.read<ThemeSettingController>().appConfig = AppConfig();
         }
         context.read<ThemeSettingController>().appConfig?.productLastSyncDate =
-            DateTime.now().toUtc().toString();
+            CommonUtils.getDateTimeNow().toString();
         AppConfigTable.insertOrUpdate(
             PRODUCT_LAST_SYNC_DATE,
             context
@@ -120,7 +120,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
           context
               .read<ThemeSettingController>()
               .appConfig
-              ?.customerLastSyncDate = DateTime.now().toUtc().toString();
+              ?.customerLastSyncDate = CommonUtils.getDateTimeNow().toString();
           AppConfigTable.insertOrUpdate(
               CUSTOMER_LAST_SYNC_DATE,
               context
@@ -138,7 +138,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
             context
                 .read<ThemeSettingController>()
                 .appConfig
-                ?.priceLastSyncDate = DateTime.now().toUtc().toString();
+                ?.priceLastSyncDate = CommonUtils.getDateTimeNow().toString();
             AppConfigTable.insertOrUpdate(
                 PRICE_LAST_SYNC_DATE,
                 context

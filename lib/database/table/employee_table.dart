@@ -31,7 +31,6 @@ class EmployeeTable {
   static Future<void> insertOrUpdateWithDB(
       final Database db, List<dynamic> data) async {
     Batch batch = db.batch();
-    // var time = DateTime.now();
     int index = 0;
     for (final element in data) {
       Employee employee =
@@ -47,10 +46,6 @@ class EmployeeTable {
       }
       index++;
     }
-
-    // var time2 = DateTime.now();
-    // var d = time2.difference(time);
-    // print("Finished ${data.length} in $d");
     await batch.commit(noResult: true);
   }
 

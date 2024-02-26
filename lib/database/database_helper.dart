@@ -91,7 +91,7 @@ class DatabaseHelper {
           "Offline Pos Backup Database");
       String customDate = CommonUtils.getLocaleDateTime(
         "dd-MM-yyyy-hh-mm-ss",
-        DateTime.now().toString(),
+        CommonUtils.getDateTimeNow().toString(),
       );
       String backupPath =
           join(externalDir, "offline-pos-backup-$customDate.db");

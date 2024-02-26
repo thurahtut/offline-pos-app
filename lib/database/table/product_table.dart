@@ -50,7 +50,6 @@ class ProductTable {
   static Future<void> insertOrUpdate(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     Batch batch = db.batch();
-    // var time = DateTime.now();
     int index = 0;
     for (final element in data) {
       Product product = Product.fromJson(element);
@@ -65,10 +64,6 @@ class ProductTable {
       }
       index++;
     }
-
-    // var time2 = DateTime.now();
-    // var d = time2.difference(time);
-    // print("Finished ${data.length} in $d");
     await batch.commit(noResult: true);
   }
 
@@ -171,8 +166,8 @@ class ProductTable {
         "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
         "and pli.$APPLIED_ON='1_product' "
-        "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
-        "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
+        "and (datetime($DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
+        "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "left join $AMOUNT_TAX_TABLE_NAME amt "
         "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
         "where 1=1 "
@@ -298,8 +293,8 @@ class ProductTable {
         "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
         "and pli.$APPLIED_ON='1_product' "
-        "and (datetime($DATE_START) < datetime('${DateTime.now().toUtc().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
-        "and (datetime($DATE_END)>=  datetime('${DateTime.now().toUtc().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
+        "and (datetime($DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
+        "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "left join $AMOUNT_TAX_TABLE_NAME amt "
         "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
         "WHERE $PRODUCT_VARIANT_IDS in (${productIds.map((e) => "'[$e]'").join(",")})";
