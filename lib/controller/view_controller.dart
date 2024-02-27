@@ -41,6 +41,14 @@ class ViewController with ChangeNotifier {
     notifyListeners();
   }
 
+  bool _connectedWifi = false;
+  bool get connectedWifi => _connectedWifi;
+  set connectedWifi(bool connectedWifi) {
+    if (_connectedWifi == connectedWifi) return;
+    _connectedWifi = connectedWifi;
+    notifyListeners();
+  }
+
   // int _userId = 0;
   // int get userId => _userId;
   // set userId(int userId) {

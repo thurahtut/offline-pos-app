@@ -82,14 +82,14 @@ class POSSessionTable {
     }
   }
 
-  static Future<void> insertOrUpdatePOSSession(POSSession posConfig) async {
+  static Future<void> insertOrUpdatePOSSession(POSSession posSession) async {
     final Database db = await DatabaseHelper().db;
-    return insertOrUpdatePOSSessionWithDB(db, posConfig);
+    return insertOrUpdatePOSSessionWithDB(db, posSession);
   }
 
   static Future<void> insertOrUpdatePOSSessionWithDB(
-      final Database db, POSSession posConfig) async {
-    Map<String, dynamic> jsonOfConfig = posConfig.toJson();
+      final Database db, POSSession posSession) async {
+    Map<String, dynamic> jsonOfConfig = posSession.toJson();
     for (MapEntry<String, dynamic> element in jsonOfConfig.entries) {
       if (element.value is int ||
           element.value is double ||

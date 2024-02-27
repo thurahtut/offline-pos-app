@@ -31,6 +31,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           .requestFocus();
       if (widget.resetController != false) {
         context.read<CurrentOrderController>().resetCurrentOrderController();
+        context.read<ItemListController>().resetItemListController();
       }
       context.read<ViewController>().isCustomerView = false;
       context.read<ViewController>().searchProductFocusNode.addListener(() {
@@ -78,7 +79,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               },
               child: SizedBox(height: 8)),
           if (context.watch<ViewController>().hideCategory == false)
-            _headerWidget(),
+            _categoryWidget(),
           GestureDetector(
               onTap: () {
                 context
@@ -141,7 +142,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget _headerWidget() {
+  Widget _categoryWidget() {
     Widget spacer = SizedBox(width: 14);
     return GestureDetector(
       onTap: () {

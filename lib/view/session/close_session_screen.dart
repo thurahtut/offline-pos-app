@@ -525,6 +525,13 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             width: MediaQuery.of(context).size.width / 8,
             textSize: 15,
             onTap: () async {
+              if (!context.read<ViewController>().connectedWifi) {
+                CommonUtils.showAlertDialogWithOkButton(context,
+                    title: "No Internet Connection!",
+                    content:
+                        "You can't sync data cause no internet connection.");
+                return;
+              }
               bool allowCloseSession = true;
               if (!context.read<CloseSessionController>().accessPaymentDiff) {
                 for (var paymentTransaction in context

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 import '../../components/export_files.dart';
 
 class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -19,6 +21,23 @@ class _SaleAppBarState extends State<SaleAppBar> {
       TextEditingController();
   final spacer = Expanded(flex: 1, child: SizedBox());
   final ValueNotifier<bool> _showSearchBox = ValueNotifier(false);
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      ConnectivityResult connectivityResult =
+          await (Connectivity().checkConnectivity());
+      if (mounted) {
+        context.read<ViewController>().connectedWifi =
+            (connectivityResult != ConnectivityResult.none);
+      }
+      Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+        context.read<ViewController>().connectedWifi =
+            (result != ConnectivityResult.none);
+      });
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -136,6 +155,13 @@ class _SaleAppBarState extends State<SaleAppBar> {
         },
       ),
       SizedBox(width: 4),
+      Consumer<ViewController>(builder: (_, controller, __) {
+        return CommonUtils.iconActionButton(
+          controller.connectedWifi ? Icons.wifi : Icons.signal_wifi_0_bar,
+          size: 30,
+        );
+      }),
+      SizedBox(width: 4),
       PopupMenuButton(
         tooltip: "",
         child: CommonUtils.svgIconActionButton(
@@ -225,7 +251,13 @@ class _SaleAppBarState extends State<SaleAppBar> {
     );
   }
 
-  void _syncOrderHistory() {
+  _syncOrderHistory() {
+    if (!context.read<ViewController>().connectedWifi) {
+      CommonUtils.showAlertDialogWithOkButton(context,
+          title: "No Internet Connection!",
+          content: "You can't sync data cause no internet connection.");
+      return;
+    }
     int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
     OrderHistoryTable.getOrderHistoryList(
       isCloseSession: true,
@@ -280,6 +312,13 @@ class _SaleAppBarState extends State<SaleAppBar> {
       CommonUtils.svgIconActionButton('assets/svg/lock_open_right.svg',
           onPressed: () {
         _logOut();
+      }),
+      spacer,
+      Consumer<ViewController>(builder: (_, controller, __) {
+        return CommonUtils.iconActionButton(
+          controller.connectedWifi ? Icons.wifi : Icons.signal_wifi_0_bar,
+          size: 30,
+        );
       }),
       spacer,
       CommonUtils.svgIconActionButton('assets/svg/sync.svg',
