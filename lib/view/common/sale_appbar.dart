@@ -349,7 +349,11 @@ class _SaleAppBarState extends State<SaleAppBar> {
             itemListController.filterValue = value;
             itemListController.offset = 0;
             itemListController.currentIndex = 1;
-            itemListController.getAllProduct(context);
+            itemListController.getAllProduct(
+              context,
+              sessionId:
+                  context.read<LoginUserController>().posSession?.id ?? 0,
+            );
           },
         ),
       ),
@@ -363,6 +367,9 @@ class _SaleAppBarState extends State<SaleAppBar> {
     itemListController.filterValue = null;
     itemListController.offset = 0;
     itemListController.currentIndex = 1;
-    itemListController.getAllProduct(context);
+    itemListController.getAllProduct(
+      context,
+      sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
+    );
   }
 }

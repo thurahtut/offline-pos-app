@@ -69,13 +69,14 @@ class ProductListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllProduct({Function()? callback}) async {
+  Future<void> getAllProduct({Function()? callback, int? sessionId}) async {
     productList = [];
     getTotalProductCount();
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       limit: limit,
       offset: offset,
+      sessionId: sessionId,
     ).then((list) {
       productList.addAll(list);
       notifyListeners();

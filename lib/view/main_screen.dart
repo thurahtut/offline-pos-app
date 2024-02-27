@@ -236,7 +236,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                   1;
                               context
                                   .read<ItemListController>()
-                                  .getAllProduct(context);
+                                  .getAllProduct(
+                                    context,
+                                    sessionId: context
+                                            .read<LoginUserController>()
+                                            .posSession
+                                            ?.id ??
+                                        0,
+                                  );
                             },
                             child: Row(
                               children: [

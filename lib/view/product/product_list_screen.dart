@@ -41,6 +41,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   void getAllProduct() {
     context.read<ProductListController>().loading = true;
     context.read<ProductListController>().getAllProduct(
+          sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
       callback: () {
         updateProductListToTable();
         context.read<ProductListController>().loading = false;

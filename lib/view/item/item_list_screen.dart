@@ -23,7 +23,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<ItemListController>().resetItemListController();
 
-      context.read<ItemListController>().getAllProduct(context);
+      context.read<ItemListController>().getAllProduct(
+            context,
+            sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
+          );
     });
     super.initState();
   }
@@ -98,7 +101,13 @@ class _ItemListScreenState extends State<ItemListScreen> {
                           context.read<ItemListController>();
                       itemListController.filterValue =
                           _searchProductTextController.text;
-                      itemListController.searchProduct(callback: (product) {
+                      itemListController.searchProduct(
+                          sessionId: context
+                                  .read<LoginUserController>()
+                                  .posSession
+                                  ?.id ??
+                              0,
+                          callback: (product) {
                         if (product != null) {
                           context
                               .read<CurrentOrderController>()
@@ -380,25 +389,41 @@ class _ItemListScreenState extends State<ItemListScreen> {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct(context);
+              controller.getAllProduct(
+                context,
+                sessionId:
+                    context.read<LoginUserController>().posSession?.id ?? 0,
+              );
             },
             onBackToFirstPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct(context);
+              controller.getAllProduct(
+                context,
+                sessionId:
+                    context.read<LoginUserController>().posSession?.id ?? 0,
+              );
             },
             onNextPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct(context);
+              controller.getAllProduct(
+                context,
+                sessionId:
+                    context.read<LoginUserController>().posSession?.id ?? 0,
+              );
             },
             onGoToLastPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              controller.getAllProduct(context);
+              controller.getAllProduct(
+                context,
+                sessionId:
+                    context.read<LoginUserController>().posSession?.id ?? 0,
+              );
             },
             backgroundColor: Theme.of(context).colorScheme.background,
             previousPageIcon: Icons.keyboard_arrow_left,

@@ -60,13 +60,17 @@ class ItemListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllProduct(BuildContext context) async {
+  Future<void> getAllProduct(
+    BuildContext context, {
+    int? sessionId,
+  }) async {
     getTotalProductCount(context);
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       categoryId: context.read<PosCategoryController>().selectedCategory,
       limit: limit,
       offset: offset,
+      sessionId: sessionId,
     ).then((list) {
       productList = [];
       productList.addAll(list);
@@ -83,12 +87,16 @@ class ItemListController with ChangeNotifier {
     });
   }
 
-  Future<void> searchProduct({Function(Product?)? callback}) async {
+  Future<void> searchProduct({
+    Function(Product?)? callback,
+    int? sessionId,
+  }) async {
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       limit: 1,
       offset: 0,
       barcodeOnly: true,
+      sessionId: sessionId,
     ).then((list) {
       Product? product = list.isNotEmpty ? list.first : null;
       callback?.call(product);
