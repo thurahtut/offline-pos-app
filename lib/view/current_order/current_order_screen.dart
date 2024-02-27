@@ -23,21 +23,29 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   @override
   Widget build(BuildContext context) {
     isTabletMode = CommonUtils.isTabletMode(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        (context.watch<CurrentOrderController>().currentOrderList.isEmpty)
-            ? Expanded(
-                // flex: 2,
-                child: _noOrderWidget(),
-              )
-            : Expanded(
-                // flex: 2,
-                child: _currentOrderListWidget(),
-              ),
-        _keyboardAndSummaryWidget(),
-        SizedBox(height: 8),
-      ],
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<CurrentOrderController>()
+            .productTextFieldFocusNode
+            .requestFocus();
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          (context.watch<CurrentOrderController>().currentOrderList.isEmpty)
+              ? Expanded(
+                  // flex: 2,
+                  child: _noOrderWidget(),
+                )
+              : Expanded(
+                  // flex: 2,
+                  child: _currentOrderListWidget(),
+                ),
+          _keyboardAndSummaryWidget(),
+          SizedBox(height: 8),
+        ],
+      ),
     );
   }
 
@@ -104,6 +112,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                             //         event, context.read<ItemListController>());
                             //   },
                             //   child:
+
 
                             Column(
                           mainAxisSize: MainAxisSize.min,
@@ -271,31 +280,39 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   }
 
   Widget _noOrderWidget() {
-    return SizedBox(
-      width: widget.width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CommonUtils.svgIconActionButton("assets/svg/no_order.svg",
-              height: 60,
-              onPressed: null,
-              iconColor: Constants.disableColor.withOpacity(
-                0.77,
-              )),
-          Center(
-            child: Text(
-              'This Order is Empty',
-              style: TextStyle(
-                color: Constants.disableColor.withOpacity(
-                  0.87,
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<CurrentOrderController>()
+            .productTextFieldFocusNode
+            .requestFocus();
+      },
+      child: SizedBox(
+        width: widget.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CommonUtils.svgIconActionButton("assets/svg/no_order.svg",
+                height: 60,
+                onPressed: null,
+                iconColor: Constants.disableColor.withOpacity(
+                  0.77,
+                )),
+            Center(
+              child: Text(
+                'This Order is Empty',
+                style: TextStyle(
+                  color: Constants.disableColor.withOpacity(
+                    0.87,
+                  ),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

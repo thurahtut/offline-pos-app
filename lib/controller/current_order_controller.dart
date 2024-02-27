@@ -129,6 +129,13 @@ class CurrentOrderController with ChangeNotifier {
   }
 
   Future<void> addItemToList(Product product) async {
+    if (product.productType == "product" &&
+        (product.onhandQuantity ?? 0) <= 0) {
+      CommonUtils.showSnackBar(
+        message: 'Stock out Item',
+      );
+      return;
+    }
     if (NavigationService.navigatorKey.currentContext != null) {
       if (NavigationService.navigatorKey.currentContext!
               .read<CurrentOrderController>()
@@ -233,6 +240,7 @@ class CurrentOrderController with ChangeNotifier {
         if (isDelete) {
           currentOrderList.removeAt(selectedIndex!);
           selectedIndex = null;
+          productTextFieldFocusNode.requestFocus();
         } else {
           product.onhandQuantity = int.tryParse(qty);
         }
@@ -330,7 +338,6 @@ class CurrentOrderController with ChangeNotifier {
     _chooseCusFromCart = chooseCusFromCart;
     notifyListeners();
   }
-  
 
   final FocusNode productTextFieldFocusNode = FocusNode();
 

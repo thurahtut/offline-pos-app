@@ -67,88 +67,88 @@ class ProductTable {
     await batch.commit(noResult: true);
   }
 
-  static Future<List<Product>> getAll({
-    int? limit,
-    int? offset,
-  }) async {
-    // Get a reference to the database.
-    final Database db = await DatabaseHelper().db;
+  // static Future<List<Product>> getAll({
+  //   int? limit,
+  //   int? offset,
+  // }) async {
+  //   // Get a reference to the database.
+  //   final Database db = await DatabaseHelper().db;
 
-    // Query the table for all The Categories.
-    final List<Map<String, dynamic>> maps = await db.query(
-      PRODUCT_TABLE_NAME,
-      orderBy: '$PRODUCT_ID DESC',
-      limit: limit,
-      offset: offset,
-    );
+  //   // Query the table for all The Categories.
+  //   final List<Map<String, dynamic>> maps = await db.query(
+  //     PRODUCT_TABLE_NAME,
+  //     orderBy: '$PRODUCT_ID DESC',
+  //     limit: limit,
+  //     offset: offset,
+  //   );
 
-    // Convert the List<Map<String, dynamic> into a List<Category>.
-    return List.generate(maps.length, (i) {
-      return Product.fromJson(maps[i]);
-    });
-  }
+  //   // Convert the List<Map<String, dynamic> into a List<Category>.
+  //   return List.generate(maps.length, (i) {
+  //     return Product.fromJson(maps[i]);
+  //   });
+  // }
 
-  static Future<Product?> getProductByProductId(int productId) async {
-    // Get a reference to the database.
-    final Database db = await DatabaseHelper().db;
+  // static Future<Product?> getProductByProductId(int productId) async {
+  //   // Get a reference to the database.
+  //   final Database db = await DatabaseHelper().db;
 
-    // Query the table for all The Categories.
-    final List<Map<String, dynamic>> maps = await db.query(
-      PRODUCT_TABLE_NAME,
-      where: "$PRODUCT_ID=?",
-      whereArgs: [productId],
-      limit: 1,
-    );
+  //   // Query the table for all The Categories.
+  //   final List<Map<String, dynamic>> maps = await db.query(
+  //     PRODUCT_TABLE_NAME,
+  //     where: "$PRODUCT_ID=?",
+  //     whereArgs: [productId],
+  //     limit: 1,
+  //   );
 
-    return Product.fromJson(maps.first);
-  }
+  //   return Product.fromJson(maps.first);
+  // }
 
-  static Future<List<Product>> getProductsFiltering({
-    String? filter,
-    int? limit,
-    int? offset,
-  }) async {
-    // Get a reference to the database.
-    final Database db = await DatabaseHelper().db;
+  // static Future<List<Product>> getProductsFiltering({
+  //   String? filter,
+  //   int? limit,
+  //   int? offset,
+  // }) async {
+  //   // Get a reference to the database.
+  //   final Database db = await DatabaseHelper().db;
 
-    // Query the table for all The Categories.
-    final List<Map<String, dynamic>> maps = await db.query(
-      PRODUCT_TABLE_NAME,
-      where: filter != null
-          ? "$PRODUCT_ID LIKE ? or lower($PRODUCT_NAME) LIKE ?"
-          : null,
-      whereArgs:
-          filter != null ? ['%$filter%', '%${filter.toLowerCase()}%'] : null,
-      // where: "$PRODUCT_NAME=?",
-      // whereArgs: [filter],
-      orderBy: '$PRODUCT_ID DESC',
-      limit: limit,
-      offset: offset,
-    );
+  //   // Query the table for all The Categories.
+  //   final List<Map<String, dynamic>> maps = await db.query(
+  //     PRODUCT_TABLE_NAME,
+  //     where: filter != null
+  //         ? "$PRODUCT_ID LIKE ? or lower($PRODUCT_NAME) LIKE ?"
+  //         : null,
+  //     whereArgs:
+  //         filter != null ? ['%$filter%', '%${filter.toLowerCase()}%'] : null,
+  //     // where: "$PRODUCT_NAME=?",
+  //     // whereArgs: [filter],
+  //     orderBy: '$PRODUCT_ID DESC',
+  //     limit: limit,
+  //     offset: offset,
+  //   );
 
-    // Convert the List<Map<String, dynamic> into a List<Category>.
-    return List.generate(maps.length, (i) {
-      return Product.fromJson(maps[i]);
-    });
-  }
+  //   // Convert the List<Map<String, dynamic> into a List<Category>.
+  //   return List.generate(maps.length, (i) {
+  //     return Product.fromJson(maps[i]);
+  //   });
+  // }
 
-  static Future<Product?> getLastProduct() async {
-    // Get a reference to the database.
-    final Database db = await DatabaseHelper().db;
+  // static Future<Product?> getLastProduct() async {
+  //   // Get a reference to the database.
+  //   final Database db = await DatabaseHelper().db;
 
-    // Query the table for all The Categories.
-    final List<Map<String, dynamic>> maps = await
-        //  db.query(
-        //   PRODUCT_TABLE_NAME,
-        //   orderBy: '$PRODUCT_ID DESC',
-        //   limit: 1,
-        // );
+  //   // Query the table for all The Categories.
+  //   final List<Map<String, dynamic>> maps = await
+  //       //  db.query(
+  //       //   PRODUCT_TABLE_NAME,
+  //       //   orderBy: '$PRODUCT_ID DESC',
+  //       //   limit: 1,
+  //       // );
 
-        db.rawQuery(
-            "select * from $PRODUCT_TABLE_NAME where id=(select max(id) from $PRODUCT_TABLE_NAME, []");
+  //       db.rawQuery(
+  //           "select * from $PRODUCT_TABLE_NAME where id=(select max(id) from $PRODUCT_TABLE_NAME, []");
 
-    return Product.fromJson(maps.first);
-  }
+  //   return Product.fromJson(maps.first);
+  // }
 
   static Future<List<Product>> getProductByFilteringWithPrice({
     String? filter,
@@ -156,12 +156,14 @@ class ProductTable {
     int? limit,
     int? offset,
     bool? barcodeOnly,
+    int? sessionId,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
 
     String query =
-        "SELECT pt.id productId, pt.$PRODUCT_NAME productName, pli.id priceListItemId, amt.id amountTaxId, amt.$AMOUNT_TAX_NAME amountTaxName, * "
+        "SELECT pt.id productId, pt.$PRODUCT_NAME productName, pli.id priceListItemId, amt.id amountTaxId, amt.$AMOUNT_TAX_NAME amountTaxName, * ,"
+        "pt.$ON_HAND_QUANTITY - (case when line.totalQty is not null then line.totalQty else 0 end) as remainingQty "
         "from $PRODUCT_TABLE_NAME pt "
         "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
         "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
@@ -170,9 +172,19 @@ class ProductTable {
         "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "left join $AMOUNT_TAX_TABLE_NAME amt "
         "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
+        "left JOIN "
+        "( "
+        "select sum(qty) as totalQty, $PRODUCT_ID_IN_LINE "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        " left join $ORDER_LINE_ID_TABLE_NAME olt "
+        " on $ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
+        " and $SESSION_ID =$sessionId "
+        ") line "
+        "on '[' || line.$PRODUCT_ID_IN_LINE || ']'= pt.product_variant_ids "
         "where 1=1 "
         "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
-        "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
+        "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "  
+        "Group by pt.id "
         "ORDER by pt.$PRODUCT_ID DESC "
         "${limit != null ? "limit $limit " : " "}"
         "${offset != null ? "offset $offset " : " "}";
@@ -218,6 +230,8 @@ class ProductTable {
     return List.generate(maps.length, (i) {
       Product product = Product.fromJson(maps[i],
           pId: maps[i]["productId"], pName: maps[i]["productName"]);
+      product.onhandQuantity =
+          double.tryParse(maps[i]['remainingQty'].toString())?.toInt() ?? 0;
       PriceListItem priceListItem = PriceListItem.fromJson(maps[i],
           priceListItemId: maps[i]["priceListItemId"]);
       product.priceListItem = priceListItem;
@@ -297,7 +311,8 @@ class ProductTable {
         "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "left join $AMOUNT_TAX_TABLE_NAME amt "
         "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
-        "WHERE $PRODUCT_VARIANT_IDS in (${productIds.map((e) => "'[$e]'").join(",")})";
+        "WHERE $PRODUCT_VARIANT_IDS in (${productIds.map((e) => "'[$e]'").join(",")}) "
+        "Group by pt.id";
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
     return List.generate(maps.length, (i) {

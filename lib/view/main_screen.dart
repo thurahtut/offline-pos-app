@@ -69,10 +69,24 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          SizedBox(height: 8),
+          GestureDetector(
+              onTap: () {
+                context
+                    .read<CurrentOrderController>()
+                    .productTextFieldFocusNode
+                    .requestFocus();
+              },
+              child: SizedBox(height: 8)),
           if (context.watch<ViewController>().hideCategory == false)
             _headerWidget(),
-          SizedBox(height: 16),
+          GestureDetector(
+              onTap: () {
+                context
+                    .read<CurrentOrderController>()
+                    .productTextFieldFocusNode
+                    .requestFocus();
+              },
+              child: SizedBox(height: 16)),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,134 +143,144 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   Widget _headerWidget() {
     Widget spacer = SizedBox(width: 14);
-    return RawScrollbar(
-      controller: scrollController,
-      thumbVisibility: true,
-      trackVisibility: true,
-      thumbColor: primaryColor,
-      radius: Radius.circular(20),
-      thickness: 6,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              CommonUtils.svgIconActionButton(
-                'assets/svg/grid_view.svg',
-                withContianer: true,
-                containerColor: !context.watch<ViewController>().isList
-                    ? primaryColor
-                    : Constants.unselectedColor,
-                iconColor: !context.watch<ViewController>().isList
-                    ? Colors.white
-                    : primaryColor,
-                onPressed: () {
-                  context.read<ViewController>().isList = false;
-                },
-              ),
-              spacer,
-              CommonUtils.iconActionButton(
-                Icons.view_list_outlined,
-                withContianer: true,
-                containerColor: context.watch<ViewController>().isList
-                    ? primaryColor
-                    : Constants.unselectedColor,
-                iconColor: context.watch<ViewController>().isList
-                    ? Colors.white
-                    : primaryColor,
-                onPressed: () {
-                  context.read<ViewController>().isList = true;
-                },
-              ),
-              spacer,
-              CommonUtils.svgIconActionButton(
-                'assets/svg/home.svg',
-                withContianer: true,
-                containerColor: context.watch<ViewController>().isHome
-                    ? primaryColor
-                    : Constants.unselectedColor,
-                iconColor: context.watch<ViewController>().isHome
-                    ? Colors.white
-                    : primaryColor,
-              ),
-              // spacer,
-              // CommonUtils.svgIconActionButton(
-              //   'assets/svg/home.svg',
-              //   withContianer: true,
-              //   containerColor: context.watch<ViewController>().isHome
-              //       ? primaryColor
-              //       : Constants.unselectedColor,
-              //   iconColor: context.watch<ViewController>().isHome
-              //       ? Colors.white
-              //       : primaryColor,
-              // ),
-              spacer,
-              ...context
-                  .read<PosCategoryController>()
-                  .posCategoryList
-                  .asMap()
-                  .map(
-                    (i, e) => MapEntry(
-                        i,
-                        InkWell(
-                          onTap: () {
-                            context
-                                    .read<PosCategoryController>()
-                                    .selectedCategory =
-                                context
-                                    .read<PosCategoryController>()
-                                    .posCategoryList[i]
-                                    .id;
+    return GestureDetector(
+      onTap: () {
+        context
+            .read<CurrentOrderController>()
+            .productTextFieldFocusNode
+            .requestFocus();
+      },
+      child: RawScrollbar(
+        controller: scrollController,
+        thumbVisibility: true,
+        trackVisibility: true,
+        thumbColor: primaryColor,
+        radius: Radius.circular(20),
+        thickness: 6,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                CommonUtils.svgIconActionButton(
+                  'assets/svg/grid_view.svg',
+                  withContianer: true,
+                  containerColor: !context.watch<ViewController>().isList
+                      ? primaryColor
+                      : Constants.unselectedColor,
+                  iconColor: !context.watch<ViewController>().isList
+                      ? Colors.white
+                      : primaryColor,
+                  onPressed: () {
+                    context.read<ViewController>().isList = false;
+                  },
+                ),
+                spacer,
+                CommonUtils.iconActionButton(
+                  Icons.view_list_outlined,
+                  withContianer: true,
+                  containerColor: context.watch<ViewController>().isList
+                      ? primaryColor
+                      : Constants.unselectedColor,
+                  iconColor: context.watch<ViewController>().isList
+                      ? Colors.white
+                      : primaryColor,
+                  onPressed: () {
+                    context.read<ViewController>().isList = true;
+                  },
+                ),
+                spacer,
+                CommonUtils.svgIconActionButton(
+                  'assets/svg/home.svg',
+                  withContianer: true,
+                  containerColor: context.watch<ViewController>().isHome
+                      ? primaryColor
+                      : Constants.unselectedColor,
+                  iconColor: context.watch<ViewController>().isHome
+                      ? Colors.white
+                      : primaryColor,
+                ),
+                // spacer,
+                // CommonUtils.svgIconActionButton(
+                //   'assets/svg/home.svg',
+                //   withContianer: true,
+                //   containerColor: context.watch<ViewController>().isHome
+                //       ? primaryColor
+                //       : Constants.unselectedColor,
+                //   iconColor: context.watch<ViewController>().isHome
+                //       ? Colors.white
+                //       : primaryColor,
+                // ),
+                spacer,
+                ...context
+                    .read<PosCategoryController>()
+                    .posCategoryList
+                    .asMap()
+                    .map(
+                      (i, e) => MapEntry(
+                          i,
+                          InkWell(
+                            onTap: () {
+                              context
+                                      .read<PosCategoryController>()
+                                      .selectedCategory =
+                                  context
+                                      .read<PosCategoryController>()
+                                      .posCategoryList[i]
+                                      .id;
 
-                            context.read<ItemListController>().offset = 0;
-                            context.read<ItemListController>().currentIndex = 1;
-                            context
-                                .read<ItemListController>()
-                                .getAllProduct(context);
-                          },
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18),
-                                  color: context
-                                              .watch<PosCategoryController>()
-                                              .selectedCategory ==
-                                          context
-                                              .read<PosCategoryController>()
-                                              .posCategoryList[i]
-                                              .id
-                                      ? primaryColor
-                                      : primaryColor.withOpacity(0.76),
+                              context.read<ItemListController>().offset = 0;
+                              context.read<ItemListController>().currentIndex =
+                                  1;
+                              context
+                                  .read<ItemListController>()
+                                  .getAllProduct(context);
+                            },
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    color: context
+                                                .watch<PosCategoryController>()
+                                                .selectedCategory ==
+                                            context
+                                                .read<PosCategoryController>()
+                                                .posCategoryList[i]
+                                                .id
+                                        ? primaryColor
+                                        : primaryColor.withOpacity(0.76),
+                                  ),
+                                  child: Text(
+                                    e.name ?? '',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: context
+                                                    .watch<
+                                                        PosCategoryController>()
+                                                    .selectedCategory ==
+                                                context
+                                                    .read<
+                                                        PosCategoryController>()
+                                                    .posCategoryList[i]
+                                                    .id
+                                            ? FontWeight.bold
+                                            : FontWeight.w300),
+                                  ),
                                 ),
-                                child: Text(
-                                  e.name ?? '',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: context
-                                                  .watch<
-                                                      PosCategoryController>()
-                                                  .selectedCategory ==
-                                              context
-                                                  .read<PosCategoryController>()
-                                                  .posCategoryList[i]
-                                                  .id
-                                          ? FontWeight.bold
-                                          : FontWeight.w300),
-                                ),
-                              ),
-                              spacer,
-                            ],
-                          ),
-                        )),
-                  )
-                  .values
-                  .toList(),
-            ],
+                                spacer,
+                              ],
+                            ),
+                          )),
+                    )
+                    .values
+                    .toList(),
+              ],
+            ),
           ),
         ),
       ),

@@ -9,6 +9,15 @@ class ItemListScreen extends StatefulWidget {
 }
 
 class _ItemListScreenState extends State<ItemListScreen> {
+  final TextEditingController _searchProductTextController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _searchProductTextController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -21,7 +30,14 @@ class _ItemListScreenState extends State<ItemListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _itemListWidget();
+    return GestureDetector(
+        onTap: () {
+          context
+              .read<CurrentOrderController>()
+              .productTextFieldFocusNode
+              .requestFocus();
+        },
+        child: _itemListWidget());
   }
 
   Widget _itemListWidget() {
@@ -63,7 +79,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     focusNode: context
                         .read<CurrentOrderController>()
                         .productTextFieldFocusNode,
-                    // controller: _searchProductTextController,
+                    controller: _searchProductTextController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -73,33 +89,38 @@ class _ItemListScreenState extends State<ItemListScreen> {
                         ),
                       ),
                       contentPadding: EdgeInsets.all(16),
-                      hintText: 'Search Products...',
+                      hintText: 'Search with barcode ...',
                       hintStyle: TextStyle(fontSize: 14),
                       filled: true,
                     ),
-                    onChanged: (value) {
+                    onEditingComplete: () {
                       ItemListController itemListController =
                           context.read<ItemListController>();
-                      itemListController.filterValue = value;
+                      itemListController.filterValue =
+                          _searchProductTextController.text;
                       itemListController.searchProduct(callback: (product) {
                         if (product != null) {
-                          // if ((e.onhandQuantity ?? 0) > 0) {
                           context
                               .read<CurrentOrderController>()
                               .addItemToList(product);
+                          _searchProductTextController.clear();
                           itemListController.filterValue = null;
-                          // } else {
-                          //   CommonUtils.showSnackBar(
-                          //     message: 'Stock out',
-                          //   );
-                          // }
+                          context
+                              .read<CurrentOrderController>()
+                              .productTextFieldFocusNode
+                              .requestFocus();
+                        } else {
+                          _searchProductTextController.clear();
+                          context
+                              .read<CurrentOrderController>()
+                              .productTextFieldFocusNode
+                              .requestFocus();
                         }
                       });
                     },
                   ),
                 ),
               ),
-        
               _itemListHeaderWidget(),
               Expanded(
                 child: Row(
@@ -200,15 +221,9 @@ class _ItemListScreenState extends State<ItemListScreen> {
                         .productList
                         .map((e) => InkWell(
                               onTap: () {
-                                // if ((e.onhandQuantity ?? 0) > 0) {
                                 context
                                     .read<CurrentOrderController>()
                                     .addItemToList(e);
-                                // } else {
-                                //   CommonUtils.showSnackBar(
-                                //     message: 'Stock out',
-                                //   );
-                                // }
                               },
                               child: Card(
                                 shape: RoundedRectangleBorder(
@@ -307,13 +322,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return InkWell(
       onTap: () {
-        // if ((product.onhandQuantity ?? 0) > 0) {
         context.read<CurrentOrderController>().addItemToList(product);
-        // } else {
-        //   CommonUtils.showSnackBar(
-        //     message: 'Stock out',
-        //   );
-        // }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),

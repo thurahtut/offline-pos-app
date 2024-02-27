@@ -89,9 +89,9 @@ flutter:
   assets:
     - assets/svg/
     - assets/png/
-    - assets/font/Pyidaungsu 2.5.3 Bold.ttf
-    - assets/font/Pyidaungsu 2.5.ttf
-    - assets/font/Pyidaungsu Regular 2.5.3.ttf
+    - assets/font/PyidaungsuBold.ttf
+    - assets/font/Pyidaungsu.ttf
+    - assets/font/PyidaungsuRegular.ttf
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -109,9 +109,9 @@ flutter:
   fonts:
     - family: Pyidaungsu
       fonts:
-        - asset: assets/font/Pyidaungsu 2.5.3 Bold.ttf
-        - asset: assets/font/Pyidaungsu 2.5.ttf
-        - asset: assets/font/Pyidaungsu Regular 2.5.3.ttf
+        - asset: assets/font/PyidaungsuBold.ttf
+        - asset: assets/font/Pyidaungsu.ttf
+        - asset: assets/font/PyidaungsuRegular.ttf
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

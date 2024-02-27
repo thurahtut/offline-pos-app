@@ -17,12 +17,12 @@ class OrderPaymentReceiptScreen extends StatefulWidget {
 class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   var myTheme;
 
-  // ByteData? font;
+  ByteData? fontData;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      // font = await rootBundle.load("assets/font/Py.ttf");
+      fontData = await rootBundle.load("assets/font/PyidaungsuRegular.ttf");
       // setState(() {});
     });
     super.initState();
@@ -264,6 +264,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       color: PdfColors.black,
       fontSize: 7,
       fontWeight: pw.FontWeight.normal,
+      font: fontData != null ? pw.Font.ttf(fontData!) : null,
       // fontWeight: pw.FontWeight.w500,
     );
     double maxPageWidth = PdfPageFormat.roll80.width;
