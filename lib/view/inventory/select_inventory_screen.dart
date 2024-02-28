@@ -69,6 +69,13 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                           Map<String, dynamic> map =
                               (configResponse.data as List).first;
                           controller.posConfig = POSConfig.fromJson(map);
+                          if (controller.posConfig is! POSConfig) {
+                            CommonUtils.showSnackBar(
+                                message: 'Something was wrong!');
+
+                            Navigator.pop(widget.bContext, false);
+                            return;
+                          }
                           POSConfigTable.insertOrUpdatePosConfigWithDB(
                               db, controller.posConfig!);
                           List<Employee> employeeList = [];
@@ -92,6 +99,13 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                                 (sessionResponse.data as List).isNotEmpty) {
                               controller.posSession = POSSession.fromJson(
                                   (sessionResponse.data as List).first);
+                              if (controller.posSession is! POSSession) {
+                                CommonUtils.showSnackBar(
+                                    message: 'Something was wrong!');
+
+                                Navigator.pop(widget.bContext, false);
+                                return 0;
+                              }
                               POSSessionTable.insertOrUpdatePOSSession(
                                   controller.posSession!);
                               Navigator.pop(widget.bContext, true);

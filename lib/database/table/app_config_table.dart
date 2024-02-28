@@ -19,7 +19,7 @@ const REMEMBER_PASSWORD = "remember_password";
 class AppConfigTable {
   static Future<void> onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE $APP_CONFIG_TABLE_NAME("
-        "$APP_CONFIG_NAME TEXT,"
+        "$APP_CONFIG_NAME TEXT UNIQUE,"
         "$APP_CONFIG_VALUE TEXT"
         ")");
   }
@@ -70,8 +70,8 @@ class AppConfigTable {
       final Database db, String columnName, String? value) async {
     if (await checkRowExist(db, columnName)) {
       String sql = "UPDATE $APP_CONFIG_TABLE_NAME "
-          "SET $APP_CONFIG_NAME = '$columnName',"
-          " $APP_CONFIG_VALUE = '$value'";
+          "SET $APP_CONFIG_VALUE = '$value' "
+          "WHERE $APP_CONFIG_NAME = '$columnName'";
       return db.rawInsert(sql);
     } else {
       return insert(db, columnName, value);

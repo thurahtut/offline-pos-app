@@ -23,7 +23,7 @@ const SESSION_PAYMENT_METHOD_IDS = "payment_method_ids";
 class POSSessionTable {
   static Future<void> onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE $POS_SESSION_TABLE_NAME("
-        "$POS_SESSION_NAME TEXT,"
+        "$POS_SESSION_NAME TEXT UNIQUE,"
         "$POS_SESSION_VALUE TEXT"
         ")");
   }
@@ -65,17 +65,13 @@ class POSSessionTable {
     return isExist;
   }
 
-  static Future<int> insertOrUpdate(String columnName, String? value) async {
-    final Database db = await DatabaseHelper().db;
-    return insertOrUpdateWithDB(db, columnName, value);
-  }
-
   static Future<int> insertOrUpdateWithDB(
-      final Database db, String columnName, String? value) async {
+      Database? db, String columnName, String? value) async {
+    db ??= await DatabaseHelper().db;
     if (await checkRowExist(db, columnName)) {
       String sql = "UPDATE $POS_SESSION_TABLE_NAME "
-          "SET $POS_SESSION_NAME = '$columnName',"
-          " $POS_SESSION_VALUE = '$value'";
+          "SET $POS_SESSION_VALUE = '$value' "
+          "WHERE $POS_SESSION_NAME = '$columnName'";
       return db.rawInsert(sql);
     } else {
       return insert(db, columnName, value);

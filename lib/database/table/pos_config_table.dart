@@ -23,7 +23,7 @@ const SEQUENCE_LINE_ID_IN_CONFIG = "sequence_line_id";
 class POSConfigTable {
   static Future<void> onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE $POS_CONFIG_TABLE_NAME("
-        "$POS_CONFIG_NAME TEXT,"
+        "$POS_CONFIG_NAME TEXT UNIQUE,"
         "$POS_CONFIG_VALUE TEXT"
         ")");
   }
@@ -65,17 +65,13 @@ class POSConfigTable {
     return isExist;
   }
 
-  static Future<int> insertOrUpdate(String columnName, String? value) async {
-    final Database db = await DatabaseHelper().db;
-    return insertOrUpdateWithDB(db, columnName, value);
-  }
-
   static Future<int> insertOrUpdateWithDB(
-      final Database db, String columnName, String? value) async {
+      Database? db, String columnName, String? value) async {
+    db ??= await DatabaseHelper().db;
     if (await checkRowExist(db, columnName)) {
       String sql = "UPDATE $POS_CONFIG_TABLE_NAME "
-          "SET $POS_CONFIG_NAME = '$columnName',"
-          " $POS_CONFIG_VALUE = '$value'";
+          "SET $POS_CONFIG_VALUE = '$value' "
+          "WHERE $POS_CONFIG_NAME = '$columnName'";
       return db.rawInsert(sql);
     } else {
       return insert(db, columnName, value);
@@ -129,7 +125,7 @@ class POSConfigTable {
           posConfig.sequenceLineId = int.tryParse(data[POS_CONFIG_VALUE]);
         } else if (data[POS_CONFIG_NAME] == SEQUENCE_ID_IN_CONFIG) {
           posConfig.sequenceId = int.tryParse(data[POS_CONFIG_VALUE]);
-        } 
+        }
       }
     }
 

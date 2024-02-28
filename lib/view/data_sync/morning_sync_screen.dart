@@ -46,6 +46,12 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
               (sessionResponse.data as List).isNotEmpty) {
             controller.posSession =
                 POSSession.fromJson((sessionResponse.data as List).first);
+            if (controller.posSession is! POSSession) {
+              CommonUtils.showSnackBar(message: 'Something was wrong!');
+
+              Navigator.pop(context, false);
+              return;
+            }
             POSSessionTable.insertOrUpdatePOSSession(controller.posSession!);
             POSCategoryTable.getAllPosCategory().then((posCategorys) {
               if (posCategorys.isEmpty) {

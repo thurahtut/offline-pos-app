@@ -17,7 +17,7 @@ const CONFIG_DATA = "config_data";
 class LoginUserTable {
   static Future<void> onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE $LOGIN_USER_TABLE_NAME("
-        "$LOGIN_NAME TEXT,"
+        "$LOGIN_NAME TEXT UNIQUE,"
         "$LOGIN_VALUE TEXT"
         ")");
   }
@@ -75,8 +75,8 @@ class LoginUserTable {
       final Database db, String columnName, String? value) async {
     if (await checkRowExistWithDb(db, columnName)) {
       String sql = "UPDATE $LOGIN_USER_TABLE_NAME "
-          "SET $LOGIN_NAME = '$columnName',"
-          " $LOGIN_VALUE = '$value'";
+          "SET $LOGIN_VALUE = '$value' "
+          "WHERE $LOGIN_NAME = '$columnName'";
       return db.rawInsert(sql);
     } else {
       return insert(db, columnName, value);
