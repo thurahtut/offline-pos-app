@@ -70,7 +70,8 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                   .getAllAmountTax(// amount tax
                       () {
               context.read<PosCategoryController>().notify();
-                Navigator.pushReplacementNamed(context, MainScreen.routeName);
+                Navigator.pushReplacementNamed(
+                    context, WelcomeScreen.routeName);
             });
             });
           } else {

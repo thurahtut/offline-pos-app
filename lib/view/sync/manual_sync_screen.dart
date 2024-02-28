@@ -61,55 +61,57 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Consumer<MorningsyncController>(builder: (_, controller, __) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _productSyncWidget(controller),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 0.3,
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _productSyncWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
                 ),
-              ),
-              _priceSyncWidget(controller),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 0.3,
+                _priceSyncWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
                 ),
-              ),
-              _customerSyncWidget(controller),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 0.3,
+                _customerSyncWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
                 ),
-              ),
-              _paymentMethodSyncWidget(controller),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 0.3,
+                _paymentMethodSyncWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
                 ),
-              ),
-              _categorySyncWidget(controller),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 0.3,
+                _categorySyncWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
                 ),
-              ),
-              _backUpWidget(controller),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(
-                  thickness: 0.3,
+                _backUpWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
                 ),
-              ),
-              _resetWidget(controller)
-            ],
+                _resetWidget(controller)
+              ],
+            ),
           );
         }),
       ),

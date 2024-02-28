@@ -132,9 +132,8 @@ class CurrentOrderController with ChangeNotifier {
     if (product.productType == "product" &&
         (product.onhandQuantity ?? 0) <= 0) {
       CommonUtils.showSnackBar(
-        message: 'Stock out Item',
+        message: '${product.productName} is not remained stock.',
       );
-      return;
     }
     if (NavigationService.navigatorKey.currentContext != null) {
       if (NavigationService.navigatorKey.currentContext!
@@ -160,6 +159,19 @@ class CurrentOrderController with ChangeNotifier {
       orderProduct.onhandQuantity =
           (currentOrderList[index].onhandQuantity ?? 0) + 1;
       currentOrderList[index] = orderProduct;
+      if (product.productType == "product") {
+        Product? orignalProduct =
+            await ProductTable.getProductByProductId(product.productId ?? 0);
+        if (orignalProduct != null &&
+            ((orignalProduct.onhandQuantity ?? 0) -
+                    (currentOrderList[index].onhandQuantity ?? 0) <=
+                0)) {
+          CommonUtils.showSnackBar(
+            message:
+                '${product.productName} remains only ${orignalProduct.onhandQuantity}.',
+          );
+        }
+      }
     } else {
       orderProduct.firstTime = true;
       orderProduct.onhandQuantity = 1;
@@ -169,10 +181,10 @@ class CurrentOrderController with ChangeNotifier {
     productTextFieldFocusNode.requestFocus();
   }
 
-  void updateCurrentOrder(
+  Future<void> updateCurrentOrder(
     String value, {
     bool? isBack,
-  }) {
+  }) async {
     if (selectedIndex != null) {
       Product product = currentOrderList.elementAt(selectedIndex!);
       product.priceListItem ??= PriceListItem();
@@ -243,6 +255,19 @@ class CurrentOrderController with ChangeNotifier {
           productTextFieldFocusNode.requestFocus();
         } else {
           product.onhandQuantity = int.tryParse(qty);
+          if (product.productType == "product") {
+            Product? orignalProduct = await ProductTable.getProductByProductId(
+                product.productId ?? 0);
+            if (orignalProduct != null &&
+                ((orignalProduct.onhandQuantity ?? 0) -
+                        (product.onhandQuantity ?? 0) <=
+                    0)) {
+              CommonUtils.showSnackBar(
+                message:
+                    '${product.productName} remains only ${orignalProduct.onhandQuantity}.',
+              );
+            }
+          }
         }
         notifyListeners();
       }

@@ -88,20 +88,20 @@ class ProductTable {
   //   });
   // }
 
-  // static Future<Product?> getProductByProductId(int productId) async {
-  //   // Get a reference to the database.
-  //   final Database db = await DatabaseHelper().db;
+  static Future<Product?> getProductByProductId(int productId) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
 
-  //   // Query the table for all The Categories.
-  //   final List<Map<String, dynamic>> maps = await db.query(
-  //     PRODUCT_TABLE_NAME,
-  //     where: "$PRODUCT_ID=?",
-  //     whereArgs: [productId],
-  //     limit: 1,
-  //   );
+    // Query the table for all The Categories.
+    final List<Map<String, dynamic>> maps = await db.query(
+      PRODUCT_TABLE_NAME,
+      where: "$PRODUCT_ID=?",
+      whereArgs: [productId],
+      limit: 1,
+    );
 
-  //   return Product.fromJson(maps.first);
-  // }
+    return Product.fromJson(maps.first);
+  }
 
   // static Future<List<Product>> getProductsFiltering({
   //   String? filter,
