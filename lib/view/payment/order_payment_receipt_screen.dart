@@ -602,12 +602,28 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             //       printer: pri!,
             //       onLayout: (PdfPageFormat format) async => _generatePdf());
             // } else {
-            await Printing.directPrintPdf(
-              onLayout: (PdfPageFormat format) async => _generatePdf(),
-              printer: Printer(url: "Printer-80"),
-              format: PdfPageFormat.roll80,
-            );
-            // }
+            List<Printer> printers = await Printing.listPrinters();
+            Printer? printer;
+            for (var pri in printers) {
+              if (pri.isDefault) {
+                printer = pri;
+                break;
+              }
+            }
+            if (mounted) {
+              printer ??= await Printing.pickPrinter(context: context);
+            }
+            if (printer != null) {
+              await Printing.directPrintPdf(
+                onLayout: (PdfPageFormat format) async => _generatePdf(),
+                printer: printer,
+                format: PdfPageFormat.roll80,
+                usePrinterSettings: true,
+              );
+            } else if (mounted) {
+              CommonUtils.showSnackBar(
+                  context: context, message: "There is no printer!");
+            }
           },
         ),
         // SizedBox(height: 20),
