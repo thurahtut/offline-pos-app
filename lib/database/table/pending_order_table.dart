@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -41,12 +43,12 @@ class PendingOrderTable {
         PENDING_ORDER_TABLE_NAME,
         columns: [PENDING_VALUE],
         where: "$PENDING_NAME=?",
-        whereArgs: ["'$PENDING_ORDER'"]);
+        whereArgs: [PENDING_ORDER]);
 
     if (maps.isEmpty) {
       return null;
     }
-    return OrderHistory.fromJson(maps.first);
+    return OrderHistory.fromJson(jsonDecode(maps.first[PENDING_VALUE]));
   }
 
   static Future<List<Product>> getPendingCurrentOrderList() async {
@@ -58,9 +60,14 @@ class PendingOrderTable {
         PENDING_ORDER_TABLE_NAME,
         columns: [PENDING_VALUE],
         where: "$PENDING_NAME=?",
-        whereArgs: ["'$CURRENT_ORDERS_LIST'"]);
-    return List.generate(maps.length, (i) {
-      return Product.fromJson(maps[i]);
+        whereArgs: [CURRENT_ORDERS_LIST]);
+
+    if (maps.isEmpty) {
+      return [];
+    }
+    List<dynamic> result = jsonDecode(maps.first[PENDING_VALUE]);
+    return List.generate(result.length, (i) {
+      return Product.fromJson(result[i]);
     });
   }
 
@@ -74,7 +81,7 @@ class PendingOrderTable {
     final List<Map<String, dynamic>> maps = await db.query(
         PENDING_ORDER_TABLE_NAME,
         where: "$PENDING_NAME=?",
-        whereArgs: ["'$name'"]);
+        whereArgs: [name]);
     isExist = maps.isNotEmpty;
     return isExist;
   }

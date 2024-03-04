@@ -88,14 +88,13 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             CurrentOrderController currentOrderController =
                 context.read<CurrentOrderController>();
             final Database db = await DatabaseHelper().db;
-            double totalAmt = currentOrderController
-                .getTotalQty(currentOrderController.currentOrderList)
-                ["total"] ??
+            double totalAmt = currentOrderController.getTotalQty(
+                    currentOrderController.currentOrderList)["total"] ??
                 0;
             double totalPayAmt = 0;
             PaymentTransactionTable.deleteByOrderId(
                 db: db, orderID: currentOrderController.orderHistory?.id ?? 0);
-            for (var data
+            for (PaymentTransaction data
                 in currentOrderController.paymentTransactionList.values) {
               totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
               data.orderId = currentOrderController.orderHistory?.id ?? 0;
@@ -121,7 +120,6 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     currentOrderController.paymentTransactionList.values
                         .toList())
                 .then((value) {
-
               String changedTimeToReadable =
                   CommonUtils.splitTimeToReadable(CommonUtils.getDateTimeNow());
               currentOrderController.orderHistory?.receiptNumber =
@@ -193,8 +191,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               (e) => InkWell(
                 onTap: () {
                   _textNode.requestFocus();
-                  double totalAmt =
-                      controller
+                  double totalAmt = controller
                           .getTotalQty(controller.currentOrderList)["total"] ??
                       0;
                   double totalPayAmt = 0;

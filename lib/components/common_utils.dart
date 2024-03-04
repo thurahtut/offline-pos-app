@@ -700,6 +700,7 @@ class CommonUtils {
               navigate,
               controller,
             );
+            return;
           }
           currentOrderController.orderHistory = orderHistory;
           PendingOrderTable.getPendingCurrentOrderList().then((productList) {
