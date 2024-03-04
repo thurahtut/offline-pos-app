@@ -418,8 +418,10 @@ class DataSourceForOrderListScreen extends DataTableSource {
         OrderHistoryTable.getOrderById(order.id).then(
           (value) {
             if (value != null) {
-              context.read<CurrentOrderController>().orderHistory = value;
-              context.read<CurrentOrderController>().selectedCustomer =
+              CurrentOrderController currentOrderController =
+                  context.read<CurrentOrderController>();
+              currentOrderController.orderHistory = value;
+              currentOrderController.selectedCustomer =
                   (value.partnerId != 0
                       ? Customer(
                           id: value.partnerId,
@@ -441,8 +443,14 @@ class DataSourceForOrderListScreen extends DataTableSource {
                     }
                   }
                 }
-                context.read<CurrentOrderController>().currentOrderList =
+                currentOrderController.currentOrderList =
                     products;
+                PendingOrderTable.insertOrUpdatePendingOrderWithDB(
+                    value: jsonEncode(currentOrderController.orderHistory));
+
+                PendingOrderTable.insertOrUpdatePendingOrderWithDB(
+                    value: jsonEncode(products));
+                    
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(

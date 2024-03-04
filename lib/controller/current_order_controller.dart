@@ -179,6 +179,8 @@ class CurrentOrderController with ChangeNotifier {
     }
     notifyListeners();
     productTextFieldFocusNode.requestFocus();
+    PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
+        value: jsonEncode(currentOrderList));
   }
 
   Future<void> updateCurrentOrder(
@@ -280,6 +282,9 @@ class CurrentOrderController with ChangeNotifier {
       //       selectedIndex! + 1, promotionProduct);
       //   notify();
       // }
+   
+      PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
+          value: jsonEncode(currentOrderList)); 
     }
   }
 

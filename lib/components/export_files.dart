@@ -47,6 +47,7 @@ export '../database/table/order_history_table.dart';
 export '../database/table/order_line_id_table.dart';
 export '../database/table/payment_method_table.dart';
 export '../database/table/payment_transaction_table.dart';
+export '../database/table/pending_order_table.dart';
 export '../database/table/pos_config_table.dart';
 export '../database/table/pos_session_table.dart';
 export '../database/table/price_list_item_table.dart';

@@ -9,13 +9,6 @@ class SessionLoginScreen extends StatefulWidget {
 }
 
 class _SessionLoginScreenState extends State<SessionLoginScreen> {
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ThemeSettingController>().getThemeConfig();
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

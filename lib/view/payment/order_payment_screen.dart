@@ -132,6 +132,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
               OrderHistoryTable.update(
                   db, currentOrderController.orderHistory!);
+              db.delete(PENDING_ORDER_TABLE_NAME);
               var count = 0;
               Navigator.popUntil(context, (route) {
                 return count++ == 1;

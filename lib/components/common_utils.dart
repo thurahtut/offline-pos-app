@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:excel/excel.dart' as exl;
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -684,34 +686,71 @@ class CommonUtils {
     BuildContext context,
     bool navigate,
   ) {
-    return ChooseCashierDialog.chooseCashierDialogWidget(context).then((value) {
+    return ChooseCashierDialog.chooseCashierDialogWidget(context)
+        .then((value) async {
       if (value == true) {
         LoginUserController controller = context.read<LoginUserController>();
-        if (controller.posSession != null) {
+        CurrentOrderController currentOrderController =
+            context.read<CurrentOrderController>();
+
+        PendingOrderTable.getPendingOrder().then((orderHistory) {
+          if (orderHistory == null) {
+            createSessionAndGoToMainScreen(
+              context,
+              navigate,
+              controller,
+            );
+          }
+          currentOrderController.orderHistory = orderHistory;
+          PendingOrderTable.getPendingCurrentOrderList().then((productList) {
+            currentOrderController.currentOrderList = productList;
+            createSessionAndGoToMainScreen(
+              context,
+              navigate,
+              controller,
+              resetController: false,
+            );
+          });
+        });
+      }
+    });
+  }
+
+  static createSessionAndGoToMainScreen(
+    BuildContext context,
+    bool navigate,
+    LoginUserController controller, {
+    bool? resetController,
+  }) {
+    if (controller.posSession != null) {
+      if (navigate) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MainScreen(
+                    resetController: resetController,
+                  )),
+          ModalRoute.withName("/Home"),
+        );
+      }
+    } else {
+      return CreateSessionDialog.createSessionDialogWidget(context, true)
+          .then((value) {
+        if (value == true) {
+          context.read<ThemeSettingController>().notify();
           if (navigate) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => MainScreen()),
+              MaterialPageRoute(
+                  builder: (context) => MainScreen(
+                        resetController: resetController,
+                      )),
               ModalRoute.withName("/Home"),
             );
           }
-        } else {
-          return CreateSessionDialog.createSessionDialogWidget(context, true)
-              .then((value) {
-            if (value == true) {
-              context.read<ThemeSettingController>().notify();
-              if (navigate) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainScreen()),
-                  ModalRoute.withName("/Home"),
-                );
-              }
-            }
-          });
         }
-      }
-    });
+      });
+    }
   }
 
   static Future<void> saveAPIErrorLogs(String logs) async {
@@ -924,6 +963,9 @@ class CommonUtils {
       orderHistory.id = value;
       currentOrderController.orderHistory = orderHistory;
     });
+
+    PendingOrderTable.insertOrUpdatePendingOrderWithDB(
+        db: db, value: jsonEncode(orderHistory));
   }
 
   static Future<void> uploadOrderHistoryToDatabase(BuildContext context,
@@ -1014,6 +1056,13 @@ class CommonUtils {
                   currentOrderController.orderHistory?.id ?? 0)
               .then((lineIds) {
             currentOrderController.orderHistory?.lineIds = lineIds;
+
+            PendingOrderTable.insertOrUpdatePendingOrderWithDB(
+                db: db, value: jsonEncode(currentOrderController.orderHistory));
+
+            PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
+                db: db,
+                value: jsonEncode(currentOrderController.currentOrderList));
             if (isNavigate == true) {
               Navigator.pushNamed(context, OrderPaymentScreen.routeName);
             }

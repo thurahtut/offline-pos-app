@@ -452,4 +452,16 @@ class OrderHistoryTable {
             MapEntry(key, double.tryParse(value?.toString() ?? '') ?? 0));
     return totalSummary;
   }
+
+  static Future<bool> isExistDraftOrders({Database? db, int? sessionId}) async {
+    db ??= await DatabaseHelper().db;
+    String query = "select count() "
+        "from $ORDER_HISTORY_TABLE_NAME "
+        "where $STATE_IN_OT='${OrderState.draft.text}' "
+        "and $SESSION_ID=$sessionId";
+    final result = await db.rawQuery(query);
+
+    int? count = Sqflite.firstIntValue(result);
+    return (count ?? 0) > 0;
+  }
 }

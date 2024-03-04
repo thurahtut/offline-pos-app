@@ -3,6 +3,7 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/order_and_order_line_table.dart';
 import 'package:offline_pos/database/table/order_and_transaction_table.dart';
+import 'package:offline_pos/database/table/pending_order_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -142,6 +143,7 @@ class DatabaseHelper {
     await OrderHistoryTable.onCreate(db, version);
     await POSCategoryTable.onCreate(db, version);
     await AmountTaxTable.onCreate(db, version);
+    await PendingOrderTable.onCreate(db, version);
 
     await DBUpgrade.uploadAppConfigForVersion1(db);
   }
@@ -167,6 +169,7 @@ class DatabaseHelper {
     await db.delete(ORDER_HISTORY_TABLE_NAME);
     await db.delete(POS_CATEGORY_TABLE_NAME);
     await db.delete(AMOUNT_TAX_TABLE_NAME);
+    await db.delete(PENDING_ORDER_TABLE_NAME);
   }
 
   static Future<void> userLogOut() async {
@@ -175,5 +178,6 @@ class DatabaseHelper {
     await db.delete(POS_CONFIG_TABLE_NAME);
     await db.delete(POS_SESSION_TABLE_NAME);
     await db.delete(EMPLOYEE_TABLE_NAME);
+    await db.delete(PENDING_ORDER_TABLE_NAME);
   }
 }

@@ -233,22 +233,43 @@ class _SaleAppBarState extends State<SaleAppBar> {
           : '',
       fontSize: 16,
       onPressed: () {
-        if (isPopup) {
-          Navigator.pop(bContext);
-        }
-
-        CommonUtils.sessionLoginMethod(context, false);
+        int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
+        OrderHistoryTable.isExistDraftOrders(sessionId: sessionId)
+            .then((value) {
+          if (value == true) {
+            CommonUtils.showSnackBar(
+              context: context,
+              message:
+                  'You can\'t change cashier due to existing draft orders.',
+            );
+          } else {
+            if (isPopup) {
+              Navigator.pop(bContext);
+            }
+            CommonUtils.sessionLoginMethod(context, false);
+          }
+        });
       },
     );
   }
 
   void _logOut() {
-    context.read<LoginUserController>().loginEmployee = null;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => WelcomeScreen()),
-      ModalRoute.withName("/Home"),
-    );
+    int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
+    OrderHistoryTable.isExistDraftOrders(sessionId: sessionId).then((value) {
+      if (value == true) {
+        CommonUtils.showSnackBar(
+          context: context,
+          message: "You can't logout due to existing draft orders.",
+        );
+      } else {
+        context.read<LoginUserController>().loginEmployee = null;
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          ModalRoute.withName("/Home"),
+        );
+      }
+    });
   }
 
   _syncOrderHistory() {

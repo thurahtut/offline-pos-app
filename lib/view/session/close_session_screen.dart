@@ -532,31 +532,46 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                         "You can't sync data cause no internet connection.");
                 return;
               }
-              bool allowCloseSession = true;
-              if (!context.read<CloseSessionController>().accessPaymentDiff) {
-                for (var paymentTransaction in context
-                    .read<CloseSessionController>()
-                    .paymentTransactionList
-                    .values) {
-                  if (double.tryParse(paymentTransaction.amount ?? '') !=
-                      double.tryParse(paymentTransaction.payingAmount ?? '')) {
-                    allowCloseSession = false;
-                    break;
-                  }
-                }
-                if (!allowCloseSession) {
-                  return;
-                }
-              }
+
               int sessionId =
                   context.read<LoginUserController>().posSession?.id ?? 0;
               final Database db = await DatabaseHelper().db;
-              OrderHistoryTable.getOrderHistoryList(
-                db: db,
-                isCloseSession: true,
-                sessionId: sessionId,
-              ).then((value) async {
-                _syncOrderHistory(value: value, db: db);
+              OrderHistoryTable.isExistDraftOrders(db: db, sessionId: sessionId)
+                  .then((value) {
+                if (value == true) {
+                  CommonUtils.showSnackBar(
+                    context: context,
+                    message:
+                        'You can\'t close session due to existing draft orders.',
+                  );
+                } else {
+                  bool allowCloseSession = true;
+                  if (!context
+                      .read<CloseSessionController>()
+                      .accessPaymentDiff) {
+                    for (var paymentTransaction in context
+                        .read<CloseSessionController>()
+                        .paymentTransactionList
+                        .values) {
+                      if (double.tryParse(paymentTransaction.amount ?? '') !=
+                          double.tryParse(
+                              paymentTransaction.payingAmount ?? '')) {
+                        allowCloseSession = false;
+                        break;
+                      }
+                    }
+                    if (!allowCloseSession) {
+                      return;
+                    }
+                  }
+                  OrderHistoryTable.getOrderHistoryList(
+                    db: db,
+                    isCloseSession: true,
+                    sessionId: sessionId,
+                  ).then((value) async {
+                    _syncOrderHistory(value: value, db: db);
+                  });
+                }
               });
             },
           ),
