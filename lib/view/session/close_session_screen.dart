@@ -308,30 +308,43 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                                         '') ??
                                     0) >
                                 0
-                            ? TextField(
-                                style: TextStyle(
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: '0.00',
-                                  hintStyle: textStyle.copyWith(
-                                      color: Constants.disableColor),
-                                  // contentPadding: EdgeInsets.all(20),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: primaryColor),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: primaryColor),
-                                  ),
-                                ),
-                                onChanged: (value) {
-                                  e.payingAmount = value;
-                                  context
-                                      .read<CloseSessionController>()
-                                      .notify();
-                                },
-                              )
+                            ? (e.paymentMethodName
+                                        ?.toLowerCase()
+                                        .contains('cash') ??
+                                    false)
+                                ? TextField(
+                                    style: TextStyle(
+                                      color: Constants.textColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: '0.00',
+                                      hintStyle: textStyle.copyWith(
+                                          color: Constants.disableColor),
+                                      // contentPadding: EdgeInsets.all(20),
+                                      border: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: primaryColor),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: primaryColor),
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      e.payingAmount = value;
+                                      context
+                                          .read<CloseSessionController>()
+                                          .notify();
+                                    },
+                                  )
+                                : SizedBox(
+                                    width: width,
+                                    child: Text(
+                                      '${CommonUtils.priceFormat.format(double.tryParse(getAmount(e.paymentMethodName, e.amount) ?? '') ?? 0)} Ks',
+                                      style: textStyle,
+                                    ),
+                                  )
                             : Text(
                                 '',
                                 style: textStyle,
@@ -549,13 +562,21 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                   if (!context
                       .read<CloseSessionController>()
                       .accessPaymentDiff) {
-                    for (var paymentTransaction in context
+                    // (e.paymentMethodName
+                    //                 ?.toLowerCase()
+                    //                 .contains("cash"))
+
+                    for (PaymentTransaction paymentTransaction in context
                         .read<CloseSessionController>()
                         .paymentTransactionList
                         .values) {
-                      if (double.tryParse(paymentTransaction.amount ?? '') !=
-                          double.tryParse(
-                              paymentTransaction.payingAmount ?? '')) {
+                      if ((paymentTransaction.paymentMethodName
+                                  ?.toLowerCase()
+                                  .contains("cash") ??
+                              false) &&
+                          double.tryParse(paymentTransaction.amount ?? '') !=
+                              double.tryParse(
+                                  paymentTransaction.payingAmount ?? '')) {
                         allowCloseSession = false;
                         break;
                       }

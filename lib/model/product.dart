@@ -85,7 +85,7 @@ class Product {
         double.tryParse(json['onhand_quantity'].toString())?.toInt() ?? 0;
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool? removed}) {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = productId;
     data['name'] = productName;
@@ -105,6 +105,9 @@ class Product {
     }
     data['barcode'] = barcode;
     data['onhand_quantity'] = onhandQuantity?.toString();
+    if (removed != true) {
+      data["priceListItem"] = priceListItem?.toJson();
+    }
     return data;
   }
 

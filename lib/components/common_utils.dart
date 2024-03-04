@@ -693,7 +693,7 @@ class CommonUtils {
         CurrentOrderController currentOrderController =
             context.read<CurrentOrderController>();
 
-        PendingOrderTable.getPendingOrder().then((orderHistory) {
+        PendingOrderTable.getPendingOrder().then((orderHistory) async {
           if (orderHistory == null) {
             createSessionAndGoToMainScreen(
               context,
@@ -703,6 +703,15 @@ class CommonUtils {
             return;
           }
           currentOrderController.orderHistory = orderHistory;
+          if (orderHistory.partnerId != null && orderHistory.partnerId != 0) {
+            await CustomerTable.getCustomerNameByCustomerId(
+                    customerId: orderHistory.partnerId)
+                .then((customerName) =>
+                    currentOrderController.selectedCustomer = Customer(
+                      id: orderHistory.partnerId,
+                      name: customerName,
+                    ));
+          }
           PendingOrderTable.getPendingCurrentOrderList().then((productList) {
             currentOrderController.currentOrderList = productList;
             createSessionAndGoToMainScreen(
@@ -1063,7 +1072,8 @@ class CommonUtils {
 
             PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
                 db: db,
-                value: jsonEncode(currentOrderController.currentOrderList));
+                productList:
+                    jsonEncode(currentOrderController.currentOrderList));
             if (isNavigate == true) {
               Navigator.pushNamed(context, OrderPaymentScreen.routeName);
             }

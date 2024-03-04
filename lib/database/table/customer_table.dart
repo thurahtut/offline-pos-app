@@ -91,7 +91,7 @@ class CustomerTable {
 
     return db.rawInsert(sql);
   }
-  
+
   static Future<void> insertOrUpdate(List<dynamic> data) async {
     final Database db = await DatabaseHelper().db;
     Batch batch = db.batch();
@@ -165,8 +165,7 @@ class CustomerTable {
       where: filter != null
           ? "$CUSTOMER_ID_IN_CT LIKE ? or lower($CUSTOMER_NAME) LIKE ? or $BARCODE_IN_CT LIKE ? or $EMAIL LIKE ? or $CUSTOMER_PHONE LIKE ?"
           : null,
-      whereArgs:
-          filter != null
+      whereArgs: filter != null
           ? [
               '%$filter%',
               '%${filter.toLowerCase()}%',
@@ -226,7 +225,7 @@ class CustomerTable {
 
     // Query the table for all The Categories.
     String query = "select * from $CUSTOMER_TABLE_NAME "
-            "where $CUSTOMER_ID_IN_CT='$customerId' "
+        "where $CUSTOMER_ID_IN_CT='$customerId' "
         "and ($REF='$password' or ($REF is null and '$password'=''))";
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
@@ -256,5 +255,27 @@ class CustomerTable {
       where: "$CUSTOMER_ID_IN_CT=?",
       whereArgs: [customer.id],
     );
+  }
+
+  static Future<String?> getCustomerNameByCustomerId({
+    int? customerId,
+  }) async {
+    final Database db = await DatabaseHelper().db;
+
+    final result = await db.query(
+      CUSTOMER_TABLE_NAME,
+      columns: [CUSTOMER_NAME],
+      where: "$CUSTOMER_ID_IN_CT=?",
+      whereArgs: [customerId],
+    );
+    if (result.isEmpty) {
+      return null;
+    }
+
+    try {
+      return result.first[CUSTOMER_NAME] as String?;
+    } catch (e) {
+      return null;
+    }
   }
 }

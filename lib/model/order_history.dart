@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/model/order_line_id.dart';
 
 class OrderHistory {
   int? id;
@@ -121,7 +120,7 @@ class OrderHistory {
     totalQty = int.tryParse(json['total_qty']?.toString() ?? '');
     userId = int.tryParse(json['user_id']?.toString() ?? '');
     sequenceId = int.tryParse(json['sequence_id']?.toString() ?? '');
-    sequenceLineId = int.tryParse(json['sequence_line_id']?.toString() ?? ''); 
+    sequenceLineId = int.tryParse(json['sequence_line_id']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {

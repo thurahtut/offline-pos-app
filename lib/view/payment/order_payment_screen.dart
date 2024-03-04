@@ -127,6 +127,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               currentOrderController.orderHistory?.state = OrderState.paid.text;
               currentOrderController.orderHistory?.amountPaid =
                   totalPayAmt.toInt();
+              currentOrderController.orderHistory?.partnerId =
+                  currentOrderController.selectedCustomer?.id;
+              currentOrderController.orderHistory?.partnerName =
+                  currentOrderController.selectedCustomer?.name;
 
               OrderHistoryTable.update(
                   db, currentOrderController.orderHistory!);
@@ -437,7 +441,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       valueAdding: true);
                 },
               ),
-              context.watch<CurrentOrderController>().selectedCustomer != null
+              currentOrderController.selectedCustomer != null
                   ? CommonUtils.eachCalculateButtonWidget(
                       text: currentOrderController.selectedCustomer != null
                           ? currentOrderController.selectedCustomer!.name
@@ -445,7 +449,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       width: 150,
                       prefixSvg: "assets/svg/account_circle.svg",
                       svgColor: primaryColor,
-                      onPressed: () {},
+                      onPressed: () {
+                        CustomerListDialog.customerListDialogWidget(context,
+                            rechoose: true);
+                      },
                     )
                   : CommonUtils.eachCalculateButtonWidget(
                       text: "Invoice",
@@ -483,7 +490,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                     _updatePayAmount(currentOrderController, "20",
                         valueAdding: true);
                   }),
-              context.watch<CurrentOrderController>().selectedCustomer != null
+              currentOrderController.selectedCustomer != null
                   ? CommonUtils.eachCalculateButtonWidget(
                       text: "Invoice",
                       width: 150,

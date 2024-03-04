@@ -132,6 +132,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     style: pw.TextStyle(
                       color: PdfColor.fromInt(Constants.textColor.value),
                       fontSize: 7,
+                      font: fontData != null ? pw.Font.ttf(fontData!) : null,
                     ),
                   ),
                   pw.SizedBox(
@@ -148,6 +149,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                     style: pw.TextStyle(
                       color: PdfColor.fromInt(Constants.textColor.value),
                       fontSize: 7,
+                      font: fontData != null ? pw.Font.ttf(fontData!) : null,
                     ),
                   ),
                   pw.SizedBox(height: 20),
@@ -192,6 +194,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                       style: pw.TextStyle(
                         color: PdfColor.fromInt(Constants.textColor.value),
                         fontSize: 9,
+                        font: fontData != null ? pw.Font.ttf(fontData!) : null,
                       ),
                     ),
                   pw.SizedBox(height: 30),
@@ -212,6 +215,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       color: PdfColors.black,
       fontSize: 7,
       fontWeight: pw.FontWeight.bold,
+      font: fontData != null ? pw.Font.ttf(fontData!) : null,
       // fontWeight: pw.FontWeight.w500,
     );
     double maxPageWidth = PdfPageFormat.roll80.width;
@@ -378,6 +382,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   style: pw.TextStyle(
                     color: PdfColor.fromHex("#171717"),
                     fontSize: fontSize,
+                    font: fontData != null ? pw.Font.ttf(fontData!) : null,
                   ),
                 ),
               ),
@@ -534,6 +539,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           style: pw.TextStyle(
             color: PdfColor.fromHex("#262927"),
             fontSize: 8.8,
+            font: fontData != null ? pw.Font.ttf(fontData!) : null,
           ),
         ),
       ),

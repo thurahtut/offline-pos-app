@@ -1,9 +1,8 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class CustomerListDialog {
-  static Future<Object?> customerListDialogWidget(
-    BuildContext mainContext,
-  ) {
+  static Future<Object?> customerListDialogWidget(BuildContext mainContext,
+      {bool? rechoose}) {
     return CommonUtils.showGeneralDialogWidget(
       mainContext,
       (bContext, anim1, anim2) {
@@ -18,6 +17,7 @@ class CustomerListDialog {
             content: CustomerPaginationTable(
               mainContext: mainContext,
               bContext: bContext,
+              rechoose: rechoose,
             ));
       },
     );

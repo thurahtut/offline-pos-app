@@ -44,7 +44,7 @@ class ProductTable {
   static Future<int> insert(Product product) async {
     final Database db = await DatabaseHelper().db;
 
-    return db.insert(PRODUCT_TABLE_NAME, product.toJson());
+    return db.insert(PRODUCT_TABLE_NAME, product.toJson(removed: true));
   }
 
   static Future<void> insertOrUpdate(List<dynamic> data) async {
@@ -55,7 +55,7 @@ class ProductTable {
       Product product = Product.fromJson(element);
       batch.insert(
         PRODUCT_TABLE_NAME,
-        product.toJson(),
+        product.toJson(removed: true),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
       if (index % 1000 == 0) {
@@ -183,7 +183,7 @@ class ProductTable {
         "on '[' || line.$PRODUCT_ID_IN_LINE || ']'= pt.product_variant_ids "
         "where 1=1 "
         "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
-        "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "  
+        "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
         "Group by pt.id "
         "ORDER by pt.$PRODUCT_ID DESC "
         "${limit != null ? "limit $limit " : " "}"
@@ -291,7 +291,7 @@ class ProductTable {
 
     return db.update(
       PRODUCT_TABLE_NAME,
-      product.toJson(),
+      product.toJson(removed: true),
       where: "$PRODUCT_ID=?",
       whereArgs: [product.productId],
     );

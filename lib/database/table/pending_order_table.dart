@@ -67,7 +67,11 @@ class PendingOrderTable {
     }
     List<dynamic> result = jsonDecode(maps.first[PENDING_VALUE]);
     return List.generate(result.length, (i) {
-      return Product.fromJson(result[i]);
+      Product product = Product.fromJson(result[i]);
+      PriceListItem? priceListItem =
+          PriceListItem.fromJson(result[i]["priceListItem"]);
+      product.priceListItem = priceListItem;
+      return product;
     });
   }
 
@@ -103,16 +107,16 @@ class PendingOrderTable {
 
   static Future<int> insertOrUpdateCurrentOrderListWithDB({
     Database? db,
-    required String value,
+    required String productList,
   }) async {
     db ??= await DatabaseHelper().db;
     if (await checkRowExist(db, CURRENT_ORDERS_LIST)) {
       String sql = "UPDATE $PENDING_ORDER_TABLE_NAME "
-          "SET $PENDING_VALUE = '$value' "
+          "SET $PENDING_VALUE = '$productList' "
           "WHERE $PENDING_NAME='$CURRENT_ORDERS_LIST'";
       return db.rawInsert(sql);
     } else {
-      return insert(db, CURRENT_ORDERS_LIST, value);
+      return insert(db, CURRENT_ORDERS_LIST, productList);
     }
   }
 }

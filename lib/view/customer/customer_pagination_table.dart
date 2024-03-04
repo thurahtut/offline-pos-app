@@ -3,10 +3,15 @@ import 'dart:math';
 import 'package:offline_pos/components/export_files.dart';
 
 class CustomerPaginationTable extends StatefulWidget {
-  const CustomerPaginationTable(
-      {super.key, required this.mainContext, required this.bContext});
+  const CustomerPaginationTable({
+    super.key,
+    required this.mainContext,
+    required this.bContext,
+    this.rechoose,
+  });
   final BuildContext mainContext;
   final BuildContext bContext;
+  final bool? rechoose;
 
   @override
   State<CustomerPaginationTable> createState() =>
@@ -54,42 +59,47 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
   Future<void> updateCustomerListToTable() async {
     widget.mainContext.read<CustomerListController>().customerInfoDataSource =
         CustomerInfoDataSourceForCustomerListScreen(
-            widget.mainContext,
-            widget.mainContext.read<CustomerListController>().customerList,
-            passwordTextController,
-            () {}, (customer, isSelectedCus) {
-      if (!isSelectedCus &&
-          widget.mainContext
-              .read<CurrentOrderController>()
-              .currentOrderList
-              .isEmpty) {
-        CommonUtils.showSnackBar(
-            context: widget.mainContext, message: 'There is no order items.');
-        return;
-      }
-      CustomerPasswordDialog.enterCustomerPasswordWidget(widget.mainContext,
-              customer, isSelectedCus, passwordTextController)
-          .then((value) {
-        if (!isSelectedCus) {
-          passwordTextController.clear();
-          if (value is Customer) {
+      widget.mainContext,
+      widget.mainContext.read<CustomerListController>().customerList,
+      passwordTextController,
+      () {},
+      (customer, isSelectedCus) {
+        if (!isSelectedCus &&
             widget.mainContext
                 .read<CurrentOrderController>()
-                .selectingCustomer = value;
-            widget.mainContext.read<CurrentOrderController>().selectedCustomer =
-                value;
-            widget.mainContext
-                .read<CurrentOrderController>()
-                .chooseCusFromCart = true;
-          }
-          Navigator.pop(widget.bContext, value);
+                .currentOrderList
+                .isEmpty) {
+          CommonUtils.showSnackBar(
+              context: widget.mainContext, message: 'There is no order items.');
+          return;
         }
-      });
-    }, (customer) {
-      context.read<CurrentOrderController>().selectingCustomer = customer;
-      context.read<CurrentOrderController>().selectedCustomer = null;
-      updateCustomerListToTable();
-    });
+        CustomerPasswordDialog.enterCustomerPasswordWidget(widget.mainContext,
+                customer, isSelectedCus, passwordTextController)
+            .then((value) {
+          if (!isSelectedCus) {
+            passwordTextController.clear();
+            if (value is Customer) {
+              widget.mainContext
+                  .read<CurrentOrderController>()
+                  .selectingCustomer = value;
+              widget.mainContext
+                  .read<CurrentOrderController>()
+                  .selectedCustomer = value;
+              widget.mainContext
+                  .read<CurrentOrderController>()
+                  .chooseCusFromCart = true;
+            }
+            Navigator.pop(widget.bContext, value);
+          }
+        });
+      },
+      (customer) {
+        context.read<CurrentOrderController>().selectingCustomer = customer;
+        context.read<CurrentOrderController>().selectedCustomer = null;
+        updateCustomerListToTable();
+      },
+      widget.rechoose,
+    );
   }
 
   @override
@@ -431,6 +441,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
   Function() reloadDataCallback;
   Function(Customer, bool) cartCallback;
   Function(Customer) selectingCustomerCallback;
+  bool? rechoose;
 
   CustomerInfoDataSourceForCustomerListScreen(
     this.context,
@@ -439,6 +450,7 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
     this.reloadDataCallback,
     this.cartCallback,
     this.selectingCustomerCallback,
+    this.rechoose,
   );
   @override
   DataRow? getRow(int index) {
@@ -500,20 +512,23 @@ class CustomerInfoDataSourceForCustomerListScreen extends DataTableSource {
           Text('0'),
         ),
         DataCell(
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                  '0 Ks'), //${customerInfo.credit?.toStringAsFixed(2) ?? '0.00'}
-              SizedBox(width: 4),
-              CommonUtils.svgIconActionButton('assets/svg/shopping_cart.svg',
-                  onPressed: () {
-                cartCallback(customerInfo, false);
-              }),
-              SizedBox(width: 4),
-              CommonUtils.svgIconActionButton('assets/svg/share_windows.svg'),
-            ],
-          ),
+          rechoose == true
+              ? SizedBox()
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                        '0 Ks'), //${customerInfo.credit?.toStringAsFixed(2) ?? '0.00'}
+                    SizedBox(width: 4),
+                    CommonUtils.svgIconActionButton(
+                        'assets/svg/shopping_cart.svg', onPressed: () {
+                      cartCallback(customerInfo, false);
+                    }),
+                    SizedBox(width: 4),
+                    CommonUtils.svgIconActionButton(
+                        'assets/svg/share_windows.svg'),
+                  ],
+                ),
         ),
         DataCell(
           Text(''), //customerInfo.creditLimit ??

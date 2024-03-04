@@ -180,7 +180,7 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
     productTextFieldFocusNode.requestFocus();
     PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
-        value: jsonEncode(currentOrderList));
+        productList: jsonEncode(currentOrderList));
   }
 
   Future<void> updateCurrentOrder(
@@ -278,13 +278,12 @@ class CurrentOrderController with ChangeNotifier {
       //   Product promotionProduct = product.cloneProduct();
       //   promotionProduct.onhandQuantity = 1;
       //   promotionProduct.priceListItem?.fixedPrice = 0;
-      //   currentOrderList.insert(
+      //   currentOrderList.insert(=
       //       selectedIndex! + 1, promotionProduct);
       //   notify();
       // }
-   
       PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
-          value: jsonEncode(currentOrderList)); 
+          productList: jsonEncode(currentOrderList));
     }
   }
 

@@ -104,13 +104,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 maxWidth: MediaQuery.of(context).size.width,
                 maxHeight: MediaQuery.of(context).size.height - 100,
               ),
-              child:
-                    controller.orderInfoDataSource != null
+              child: controller.orderInfoDataSource != null
                   ? _orderHistoryListWidget(controller)
                   : SizedBox(),
             );
-          }
-          ),
+          }),
         ),
       ),
     );
@@ -264,11 +262,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   dataRowHeight: 70,
                   headingRowHeight: 70,
                   dividerThickness: 0.0,
-                  rowsPerPage: math.min(
-                      controller.limit,
-                      math.max(
-                          controller.orderList.length,
-                          1)),
+                  rowsPerPage: math.min(controller.limit,
+                      math.max(controller.orderList.length, 1)),
                   minWidth: MediaQuery.of(context).size.width + 400,
                   showCheckboxColumn: false,
                   fit: FlexFit.tight,
@@ -317,8 +312,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       text: '',
                     ),
                   ],
-                  source:
-                      controller.orderInfoDataSource!,
+                  source: controller.orderInfoDataSource!,
                 ),
               ),
         _paginationWidget(controller),
@@ -328,43 +322,39 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   Widget _paginationWidget(OrderListController controller) {
     return Wrap(
-        alignment: WrapAlignment.center,
-        children: [
-          FlutterCustomPagination(
-            currentPage: controller.currentIndex,
-            limitPerPage: controller.limit,
-            totalDataCount: controller.total,
-            onPreviousPage: (pageNo) {
-              controller.offset =
-                  (controller.limit * pageNo) - controller.limit;
-              controller.currentIndex = pageNo;
-              getAllOrderHistory();
-            },
-            onBackToFirstPage: (pageNo) {
-              controller.offset =
-                  (controller.limit * pageNo) - controller.limit;
-              controller.currentIndex = pageNo;
-              getAllOrderHistory();
-            },
-            onNextPage: (pageNo) {
-              controller.offset =
-                  (controller.limit * pageNo) - controller.limit;
-              controller.currentIndex = pageNo;
-              getAllOrderHistory();
-            },
-            onGoToLastPage: (pageNo) {
-              controller.offset =
-                  (controller.limit * pageNo) - controller.limit;
-              controller.currentIndex = pageNo;
-              getAllOrderHistory();
-            },
-            backgroundColor: Theme.of(context).colorScheme.background,
-            previousPageIcon: Icons.keyboard_arrow_left,
-            backToFirstPageIcon: Icons.first_page,
-            nextPageIcon: Icons.keyboard_arrow_right,
-            goToLastPageIcon: Icons.last_page,
-          ),
-        ],
+      alignment: WrapAlignment.center,
+      children: [
+        FlutterCustomPagination(
+          currentPage: controller.currentIndex,
+          limitPerPage: controller.limit,
+          totalDataCount: controller.total,
+          onPreviousPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllOrderHistory();
+          },
+          onBackToFirstPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllOrderHistory();
+          },
+          onNextPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllOrderHistory();
+          },
+          onGoToLastPage: (pageNo) {
+            controller.offset = (controller.limit * pageNo) - controller.limit;
+            controller.currentIndex = pageNo;
+            getAllOrderHistory();
+          },
+          backgroundColor: Theme.of(context).colorScheme.background,
+          previousPageIcon: Icons.keyboard_arrow_left,
+          backToFirstPageIcon: Icons.first_page,
+          nextPageIcon: Icons.keyboard_arrow_right,
+          goToLastPageIcon: Icons.last_page,
+        ),
+      ],
     );
   }
 }
@@ -421,13 +411,12 @@ class DataSourceForOrderListScreen extends DataTableSource {
               CurrentOrderController currentOrderController =
                   context.read<CurrentOrderController>();
               currentOrderController.orderHistory = value;
-              currentOrderController.selectedCustomer =
-                  (value.partnerId != 0
-                      ? Customer(
-                          id: value.partnerId,
-                          name: value.partnerName,
-                        )
-                      : null);
+              currentOrderController.selectedCustomer = (value.partnerId != 0
+                  ? Customer(
+                      id: value.partnerId,
+                      name: value.partnerName,
+                    )
+                  : null);
               List<int> productIds = [];
               for (OrderLineID data in value.lineIds ?? []) {
                 productIds.add(data.productId ?? 0);
@@ -443,14 +432,13 @@ class DataSourceForOrderListScreen extends DataTableSource {
                     }
                   }
                 }
-                currentOrderController.currentOrderList =
-                    products;
+                currentOrderController.currentOrderList = products;
                 PendingOrderTable.insertOrUpdatePendingOrderWithDB(
                     value: jsonEncode(currentOrderController.orderHistory));
 
                 PendingOrderTable.insertOrUpdatePendingOrderWithDB(
                     value: jsonEncode(products));
-                    
+
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -533,7 +521,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
           // onTap: onTap,
         ),
         DataCell(
-          Text(order.state ?? ''),
+          Text(order.state?.toUpperCase() ?? ''),
           // onTap: onTap,
         ),
         DataCell(

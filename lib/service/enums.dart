@@ -1,5 +1,3 @@
-
-
 enum ViewMode { view, create, edit }
 
 enum ReInvoiceExpenses {
@@ -58,9 +56,9 @@ enum DataSync {
 }
 
 enum OrderState {
-  draft("New"),
-  cancelled("Cancelled"),
-  paid("Paid");
+  draft("new"),
+  cancelled("cancelled"),
+  paid("paid");
 
   const OrderState(this.text);
   final String text;
