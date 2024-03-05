@@ -29,6 +29,7 @@ export '../../model/customer.dart';
 export '../../model/employee.dart';
 export '../../model/order_history.dart';
 export '../../model/product.dart';
+export '../../model/product_packaging.dart';
 export '../../service/api.dart';
 export '../../service/pagination.dart';
 export '../components/common_utils.dart';

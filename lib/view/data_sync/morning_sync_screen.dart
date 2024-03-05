@@ -174,9 +174,27 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                     .read<MorningsyncController>()
                     .getAllAmountTax(// amount tax
                         () {
+                  context.read<MorningsyncController>().getAllProductPackaging(
+                      // product packaging
+                      context
+                          .read<ThemeSettingController>()
+                          .appConfig
+                          ?.packagingLastSyncDate, () {
+                    context
+                            .read<ThemeSettingController>()
+                            .appConfig
+                            ?.packagingLastSyncDate =
+                        CommonUtils.getDateTimeNow().toString();
+                    AppConfigTable.insertOrUpdate(
+                        PACKAGING_LAST_SYNC_DATE,
+                        context
+                            .read<ThemeSettingController>()
+                            .appConfig
+                            ?.packagingLastSyncDate);
                   context.read<MorningsyncController>().currentTaskTitle = "";
                   Navigator.pushReplacementNamed(
                       context, WelcomeScreen.routeName);
+                });
                 });
               });
             });

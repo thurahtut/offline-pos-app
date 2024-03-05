@@ -53,6 +53,7 @@ enum DataSync {
   amountTax,
   databaseBackup,
   reset,
+  productPackaging,
 }
 
 enum OrderState {

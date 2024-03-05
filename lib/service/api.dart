@@ -451,4 +451,25 @@ class Api {
       onReceiveProgress: onReceiveProgress,
     );
   }
+
+  static Future<Response?> getProductPackaging({
+    String? lastSyncDate,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    Map<String, dynamic> map = {};
+    if (lastSyncDate != null) {
+      map.putIfAbsent("last_sync_date", () => lastSyncDate);
+    }
+    return request(
+      endpoint: '/product/packagings'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
+      queryParameters: map,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
+    );
+  }
 }

@@ -33,21 +33,21 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
-      for (var i = 0; i < 20; i++) {
-        context
-            .read<ProductPackagingController>()
-            .productPackagingList
-            .add(CommonUtils.demoProductPackaging);
-      }
-      context
-              .read<ProductPackagingController>()
-              .productPackagingInfoDataSource =
-          DataSourceForProductPackagingListScreen(
-              context,
-              context.read<ProductPackagingController>().productPackagingList,
-              _offset,
-              () {});
-      setState(() {});
+      // for (var i = 0; i < 20; i++) {
+      //   context
+      //       .read<ProductPackagingController>()
+      //       .productPackagingList
+      //       .add(CommonUtils.demoProductPackaging);
+      // }
+      // context
+      //         .read<ProductPackagingController>()
+      //         .productPackagingInfoDataSource =
+      //     DataSourceForProductPackagingListScreen(
+      //         context,
+      //         context.read<ProductPackagingController>().productPackagingList,
+      //         _offset,
+      //         () {});
+      // setState(() {});
     });
     super.initState();
   }
@@ -448,7 +448,7 @@ class DataSourceForProductPackagingListScreen extends DataTableSource {
             // context.read<ProductPackagingController>().editingPaymentMethod =
             //     productPackaging;
           },
-          Text(productPackaging.product ?? ''),
+          Text(productPackaging.name ?? ''),
         ),
         DataCell(
           onTap: () {
@@ -457,7 +457,7 @@ class DataSourceForProductPackagingListScreen extends DataTableSource {
             //     productPackaging;
           },
           Text(
-            '${productPackaging.containedQuantity ?? 0}',
+            '${productPackaging.qty ?? 0}',
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -480,46 +480,5 @@ class DataSourceForProductPackagingListScreen extends DataTableSource {
         ),
       ],
     );
-  }
-}
-
-class ProductPackaging {
-  String? product;
-  int? containedQuantity;
-  String? barcode;
-  bool? routes;
-  bool? purchase;
-  bool? sale;
-  bool? company;
-
-  ProductPackaging(
-      {this.product,
-      this.containedQuantity,
-      this.barcode,
-      this.routes,
-      this.purchase,
-      this.sale,
-      this.company});
-
-  ProductPackaging.fromJson(Map<String, dynamic> json) {
-    product = json['product'];
-    containedQuantity = json['contained_quantity'];
-    barcode = json['barcode'];
-    routes = json['routes'];
-    purchase = json['purchase'];
-    sale = json['sale'];
-    company = json['company'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['product'] = this.product;
-    data['contained_quantity'] = this.containedQuantity;
-    data['barcode'] = this.barcode;
-    data['routes'] = this.routes;
-    data['purchase'] = this.purchase;
-    data['sale'] = this.sale;
-    data['company'] = this.company;
-    return data;
   }
 }

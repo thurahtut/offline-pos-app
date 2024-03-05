@@ -3,9 +3,10 @@ import 'dart:math';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
+import 'package:offline_pos/database/table/product_packaging_table.dart';
 
 class MorningsyncController with ChangeNotifier {
-  final int allTask = 6;
+  final int allTask = 7;
 
   int _currentReachTask = 1;
   int get currentReachTask => _currentReachTask;
@@ -190,6 +191,28 @@ class MorningsyncController with ChangeNotifier {
           response.data != null) {
         if (response.data is List) {
           AmountTaxTable.insertOrUpdate(response.data)
+              .then((value) => callback?.call());
+        }
+      }
+    });
+  }
+
+  void getAllProductPackaging(String? lastSyncDate, Function()? callback) {
+    currentTaskTitle = "Product Packaging List Sync....";
+    currentReachTask = 7;
+    Api.getProductPackaging(
+      lastSyncDate: lastSyncDate,
+      onReceiveProgress: (sent, total) {
+        double value = min(((sent / total) * 100), 100);
+        percentage = value > 100 ? null : value;
+        updateProcessingPercentage(DataSync.productPackaging.name, percentage);
+      },
+    ).then((response) {
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        if (response.data is List) {
+          ProductPackagingTable.insertOrUpdate(response.data)
               .then((value) => callback?.call());
         }
       }

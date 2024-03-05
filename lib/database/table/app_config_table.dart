@@ -14,6 +14,7 @@ const DB_VERSION = "db_version";
 const PRODUCT_LAST_SYNC_DATE = "product_last_sync_date";
 const PRICE_LAST_SYNC_DATE = "price_last_sync_date";
 const CUSTOMER_LAST_SYNC_DATE = "customer_last_sync_date";
+const PACKAGING_LAST_SYNC_DATE = "packaging_last_sync_date";
 const REMEMBER_PASSWORD = "remember_password";
 
 class AppConfigTable {
@@ -101,6 +102,6 @@ class AppConfigTable {
   static Future<void> deleteByColumnName(String columnName) async {
     final Database db = await DatabaseHelper().db;
     db.rawQuery(
-        "delete from $PRODUCT_TABLE_NAME where $APP_CONFIG_NAME='$columnName';");
+        "delete from $APP_CONFIG_TABLE_NAME where $APP_CONFIG_NAME='$columnName';");
   }
 }

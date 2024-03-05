@@ -456,15 +456,15 @@ class CommonUtils {
       allowPaymentViaWallet: true,
       shortCode: "1234567");
 
-  static ProductPackaging demoProductPackaging = ProductPackaging(
-    product: "100 Pipers whisky 175ML",
-    containedQuantity: 49,
-    barcode: "0101234567890128TEC-IT",
-    routes: false,
-    purchase: true,
-    sale: true,
-    company: true,
-  );
+  // static ProductPackaging demoProductPackaging = ProductPackaging(
+  //   product: "100 Pipers whisky 175ML",
+  //   containedQuantity: 49,
+  //   barcode: "0101234567890128TEC-IT",
+  //   routes: false,
+  //   purchase: true,
+  //   sale: true,
+  //   company: true,
+  // );
 
   static DataColumn2 dataColumn({
     required String text,
