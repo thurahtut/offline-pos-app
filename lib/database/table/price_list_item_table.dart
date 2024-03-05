@@ -10,6 +10,7 @@ const PRODUCT_TMPL_ID = "product_tmpl_id";
 const MIN_QUANTITY = "min_quantity";
 const APPLIED_ON = "applied_on";
 const CURRENCY_ID = "currency_id";
+const PACKAGE_ID = "package_id";
 const DATE_START = "date_start";
 const DATE_END = "date_end";
 const COMPUTE_PRICE = "compute_price";
@@ -26,6 +27,7 @@ class PriceListItemTable {
         "$MIN_QUANTITY INTEGER,"
         "$APPLIED_ON TEXT,"
         "$CURRENCY_ID INTEGER,"
+        "$PACKAGE_ID INTEGER,"
         "$DATE_START TEXT,"
         "$DATE_END TEXT,"
         "$COMPUTE_PRICE TEXT,"
@@ -38,22 +40,7 @@ class PriceListItemTable {
 
   static Future<int> insert(PriceListItem priceListItem) async {
     final Database db = await DatabaseHelper().db;
-
-    String sql = "INSERT INTO $PRICE_LIST_ITEM_TABLE_NAME("
-        "${priceListItem.id != null && priceListItem.id != 0 ? "$PRICE_LIST_ITEM_ID," : ""}"
-        "$MIN_QUANTITY, $APPLIED_ON, $CURRENCY_ID,"
-        "$DATE_START, $DATE_END, $COMPUTE_PRICE,"
-        "$FIXED_PRICE, $PERCENT_PRICE, $WRITE_DATE_IN_PRIT,"
-        "$WRITE_UID_IN_PRIT"
-        ")"
-        " VALUES("
-        "${priceListItem.id != null && priceListItem.id != 0 ? '${int.tryParse(priceListItem.id.toString())}' : ""}"
-        "'${int.tryParse(priceListItem.minQuantity.toString())}', '${priceListItem.appliedOn}', '${int.tryParse(priceListItem.currencyId.toString())}', "
-        "'${priceListItem.dateStart}', '${priceListItem.dateEnd}', '${int.tryParse(priceListItem.computePrice.toString())}', "
-        "'${int.tryParse(priceListItem.fixedPrice.toString())}', '${int.tryParse(priceListItem.percentPrice.toString())}', '${priceListItem.writeDate}', "
-        "'${int.tryParse(priceListItem.writeUid.toString())}'"
-        ")";
-    return db.rawInsert(sql);
+    return db.insert(PRICE_LIST_ITEM_TABLE_NAME, priceListItem.toJson());
   }
 
   static Future<void> insertOrUpdate(List<dynamic> data) async {

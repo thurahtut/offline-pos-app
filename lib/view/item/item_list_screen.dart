@@ -1,4 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/product_packaging_table.dart';
 
 class ItemListScreen extends StatefulWidget {
   const ItemListScreen({super.key, required this.showSideBar});
@@ -108,24 +109,24 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   ?.id ??
                               0,
                           callback: (product) {
-                        if (product != null) {
-                          context
-                              .read<CurrentOrderController>()
-                              .addItemToList(product);
-                          _searchProductTextController.clear();
-                          itemListController.filterValue = null;
-                          context
-                              .read<CurrentOrderController>()
-                              .productTextFieldFocusNode
-                              .requestFocus();
-                        } else {
-                          _searchProductTextController.clear();
-                          context
-                              .read<CurrentOrderController>()
-                              .productTextFieldFocusNode
-                              .requestFocus();
-                        }
-                      });
+                            if (product != null) {
+                              context
+                                  .read<CurrentOrderController>()
+                                  .addItemToList(product);
+                              _searchProductTextController.clear();
+                              itemListController.filterValue = null;
+                              context
+                                  .read<CurrentOrderController>()
+                                  .productTextFieldFocusNode
+                                  .requestFocus();
+                            } else {
+                              _searchProductTextController.clear();
+                              context
+                                  .read<CurrentOrderController>()
+                                  .productTextFieldFocusNode
+                                  .requestFocus();
+                            }
+                          });
                     },
                   ),
                 ),
@@ -331,7 +332,47 @@ class _ItemListScreenState extends State<ItemListScreen> {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return InkWell(
       onTap: () {
-        context.read<CurrentOrderController>().addItemToList(product);
+        ProductPackagingTable.getProductPackagingByProductId(
+                product.productId ?? 0)
+            .then((packagings) {
+          if (packagings.isNotEmpty) {
+            ProductPackaging productPackaging = packagings.firstWhere(
+              (e) => e.packageTypeId?.name == "1_product",
+              orElse: () {
+                return ProductPackaging();
+              },
+            );
+            if (productPackaging.id == null) {
+              productPackaging = ProductPackaging(
+                id: 0,
+                productId: product.productId,
+                name: "Unit",
+                qty: "1.00",
+                barcode: product.barcode,
+                sales: true,
+                priceListItem: product.priceListItem ??
+                    PriceListItem(
+                      appliedOn: "1_product",
+                      productTmplId: product.productId,
+                      minQuantity: 1,
+                    ),
+              );
+            } else {
+              productPackaging.priceListItem ??= product.priceListItem ??
+                  PriceListItem(
+                    appliedOn: "1_product",
+                    productTmplId: product.productId,
+                    minQuantity: 1,
+                  );
+            }
+            ProductUntiDialog.productUnitWidget(
+              context,
+              productPackaging: packagings,
+            );
+          } else {
+            context.read<CurrentOrderController>().addItemToList(product);
+          }
+        });
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),

@@ -63,7 +63,6 @@ class ProductPackagingTable {
       PRODUCT_PACKAGING_TABLE_NAME,
       where: "$PACKAGING_PRODUCT_ID=?",
       whereArgs: [productId],
-      limit: 1,
     );
 
     return List.generate(

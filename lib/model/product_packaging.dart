@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:offline_pos/components/export_files.dart';
+
 class ProductPackaging {
   int? id;
   int? productId;
@@ -9,6 +11,7 @@ class ProductPackaging {
   String? barcode;
   bool? sales;
   PackageDes? productUomId;
+  PriceListItem? priceListItem;
 
   ProductPackaging({
     this.id,
@@ -19,6 +22,7 @@ class ProductPackaging {
     this.barcode,
     this.sales,
     this.productUomId,
+    this.priceListItem,
   });
 
   ProductPackaging.fromJson(Map<String, dynamic> json) {

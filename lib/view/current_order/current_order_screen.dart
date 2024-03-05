@@ -157,9 +157,6 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                       ),
                                       InkWell(
                                         onTap: () {
-                                          ProductUntiDialog.productUnitWidget(
-                                              context,
-                                              product: e);
                                         },
                                         child: Text(
                                             "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"

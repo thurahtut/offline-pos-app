@@ -3,7 +3,7 @@ import 'package:offline_pos/components/export_files.dart';
 class ProductUntiDialog {
   static Future<dynamic> productUnitWidget(
     BuildContext context, {
-    required Product product,
+    required List<ProductPackaging> productPackaging
   }) {
     Widget spacer = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -42,7 +42,8 @@ class ProductUntiDialog {
                         )),
                     child: Center(
                       child: Text(
-                        'Product Packages ${product.barcode != null ? " [${product.barcode}]" : ""} \n ${product.productName}',
+                        '',
+                        // 'Product Packages ${product.barcode != null ? " [${product.barcode}]" : ""} \n ${product.productName}',
                         textAlign: TextAlign.center,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -55,7 +56,7 @@ class ProductUntiDialog {
                     ),
                   ),
                   SizedBox(height: 8),
-                  packagesWidget(context, product),
+                  // packagesWidget(context, product),
                   spacer,
                   SizedBox(height: 16),
                   CommonUtils.okCancelWidget(

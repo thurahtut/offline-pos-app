@@ -4,6 +4,7 @@ class PriceListItem {
   int? minQuantity;
   String? appliedOn;
   int? currencyId;
+  int? packageId;
   String? dateStart;
   String? dateEnd;
   int? computePrice;
@@ -18,6 +19,7 @@ class PriceListItem {
       this.minQuantity,
       this.appliedOn,
       this.currencyId,
+      this.packageId,
       this.dateStart,
       this.dateEnd,
       this.computePrice,
@@ -32,6 +34,7 @@ class PriceListItem {
     minQuantity = int.tryParse(json['min_quantity'].toString());
     appliedOn = json['applied_on'];
     currencyId = json['currency_id'];
+    packageId = json['package_id'];
     dateStart = json['date_start'];
     dateEnd = json['date_end'];
     computePrice =
@@ -51,6 +54,7 @@ class PriceListItem {
     data['min_quantity'] = minQuantity;
     data['applied_on'] = appliedOn;
     data['currency_id'] = currencyId;
+    data['package_id'] = packageId;
     data['date_start'] = dateStart;
     data['date_end'] = dateEnd;
     data['compute_price'] = computePrice?.toString();
