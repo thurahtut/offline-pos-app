@@ -25,12 +25,12 @@ class ProductPackaging {
     this.priceListItem,
   });
 
-  ProductPackaging.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  ProductPackaging.fromJson(Map<String, dynamic> json, {int? packagingId}) {
+    id = packagingId ?? json['id'];
     productId = json['product_id'];
     name = json['name'];
     if (json['package_type_id'] != null && json['package_type_id'] != "null") {
-      if (json['package_type_id'] is Object) {
+      if (json['package_type_id'] is Map) {
         try {
           packageTypeId = PackageDes.fromJson(json['package_type_id']);
         } catch (_) {}
@@ -39,7 +39,9 @@ class ProductPackaging {
             PackageDes.fromJson(jsonDecode(json['package_type_id']));
       }
     }
-    qty = json['qty'];
+    qty = json['qty']?.toString() ?? '';
+    // double.tryParse(json['qty']?.toString() ?? '')?.toInt().toString() ??
+    //     "0.00";
     barcode = json['barcode'];
     sales = bool.tryParse(json['sales']?.toString() ?? '');
     if (json['product_uom_id'] != null && json['product_uom_id'] != "null") {

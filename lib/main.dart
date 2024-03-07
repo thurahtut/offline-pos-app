@@ -6,6 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/close_session_controller.dart';
 import 'package:offline_pos/controller/order_detail_controller.dart';
+import 'package:offline_pos/controller/order_product_packaging_controller.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -46,6 +47,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PosCategoryController()),
         ChangeNotifierProvider(create: (_) => OrderDetailController()),
         ChangeNotifierProvider(create: (_) => CloseSessionController()),
+        ChangeNotifierProvider(
+            create: (_) => OrderProductPackagingController()),
       ],
       child: InitializePage(),
     );

@@ -128,7 +128,10 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addItemToList(Product product) async {
+  Future<void> addItemToList(
+    Product product, {
+    ProductPackaging? productPackaging,
+  }) async {
     if (product.productType == "product" &&
         (product.onhandQuantity ?? 0) <= 0) {
       CommonUtils.showSnackBar(
@@ -180,7 +183,8 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
     productTextFieldFocusNode.requestFocus();
     PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
-        productList: jsonEncode(currentOrderList));
+      productList: jsonEncode(currentOrderList),
+    );
   }
 
   Future<void> updateCurrentOrder(

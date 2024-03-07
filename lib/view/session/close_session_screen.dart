@@ -529,6 +529,9 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
             containerColor: primaryColor,
             width: MediaQuery.of(context).size.width / 8,
             textSize: 15,
+            onTap: () {
+              _logOut();
+            },
           ),
           SizedBox(width: 8),
           BorderContainer(
@@ -688,6 +691,25 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
               MaterialPageRoute(builder: (context) => WelcomeScreen()),
               ModalRoute.withName("/Home"));
         });
+      }
+    });
+  }
+
+  void _logOut() {
+    int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
+    OrderHistoryTable.isExistDraftOrders(sessionId: sessionId).then((value) {
+      if (value == true) {
+        CommonUtils.showSnackBar(
+          context: context,
+          message: "You can't logout due to existing draft orders.",
+        );
+      } else {
+        context.read<LoginUserController>().loginEmployee = null;
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          ModalRoute.withName("/Home"),
+        );
       }
     });
   }

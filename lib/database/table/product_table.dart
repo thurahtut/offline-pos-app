@@ -180,7 +180,7 @@ class ProductTable {
         " on $ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
         " and $SESSION_ID =$sessionId "
         ") line "
-        "on '[' || line.$PRODUCT_ID_IN_LINE || ']'= pt.product_variant_ids "
+        "on '[' || line.$PRODUCT_ID_IN_LINE || ']'= pt.$PRODUCT_VARIANT_IDS "
         "where 1=1 "
         "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
         "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
