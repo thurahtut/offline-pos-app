@@ -472,4 +472,18 @@ class Api {
       sendTimeout: Duration(milliseconds: 900000),
     );
   }
+
+  static Future<Response?> getCouponAndPromoByConfigId({
+    required int configId,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/promotion/$configId'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
 }

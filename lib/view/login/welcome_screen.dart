@@ -88,10 +88,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           _buttonContainer(context, 'Sync', () {
             Navigator.pushNamed(context, ManualSyncScreen.routeName);
           }, icon: Icons.replay_rounded),
-          SizedBox(width: 8),
-          _buttonContainer(context, 'Deleted Product Log', () {
-            Navigator.pushNamed(context, DeletedProductLogScreen.routeName);
-          }, icon: Icons.remove_shopping_cart_rounded),
+          // SizedBox(width: 8),
+          // _buttonContainer(context, 'Deleted Logs', () {
+          //   Navigator.pushNamed(context, DeletedLogsTypeScreen.routeName);
+          // }, icon: Icons.delete_sweep),
         ],
       ),
     );

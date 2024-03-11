@@ -1,19 +1,21 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
-class DeletedProductLogScreen extends StatefulWidget {
-  const DeletedProductLogScreen({super.key});
-  static const String routeName = "/deleted_product_log_screen";
+// class DeletedProductLogScreen extends StatefulWidget {
+//   const DeletedProductLogScreen({super.key});
+//   static const String routeName = "/deleted_product_log_screen";
 
-  @override
-  State<DeletedProductLogScreen> createState() =>
-      _DeletedProductLogScreenState();
-}
+//   @override
+//   State<DeletedProductLogScreen> createState() =>
+//       _DeletedProductLogScreenState();
+// }
 
-class _DeletedProductLogScreenState extends State<DeletedProductLogScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(),
-    );
-  }
-}
+// class _DeletedProductLogScreenState extends State<DeletedProductLogScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(
+//         child: ,
+//       ),
+//     );
+//   }
+// }
