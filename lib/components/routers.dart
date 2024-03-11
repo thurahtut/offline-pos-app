@@ -1,9 +1,6 @@
 import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/category/product_category_list_screen.dart';
-import 'package:offline_pos/view/login/session_login_screen.dart';
-import 'package:offline_pos/view/order/order_detail_screen.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -101,6 +98,10 @@ class Routers {
       case SessionLoginScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => SessionLoginScreen(),
+        );
+      case DeletedProductLogScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => DeletedProductLogScreen(),
         );
       default:
         {

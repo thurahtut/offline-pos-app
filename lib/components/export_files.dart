@@ -68,6 +68,7 @@ export '../model/user.dart';
 export '../service/enums.dart';
 export '../service/navigation_service.dart';
 export '../view/cash_in_out/cash_in_out_dialog.dart';
+export '../view/category/product_category_list_screen.dart';
 export '../view/common/border_container.dart';
 export '../view/common/inventory_appbar.dart';
 export '../view/common/sale_appbar.dart';
@@ -81,9 +82,12 @@ export '../view/data_sync/morning_sync_screen.dart';
 export '../view/inventory/select_inventory_screen.dart';
 // export '../view/inventory/inventory_list_screen.dart';
 export '../view/item/item_list_screen.dart';
+export '../view/log/deleted_product_log_screen.dart';
+export '../view/login/session_login_screen.dart';
 export '../view/login/user_login_screen.dart';
 export '../view/login/welcome_screen.dart';
 export '../view/main_screen.dart';
+export '../view/order/order_detail_screen.dart';
 export '../view/order/order_history_list_screen.dart';
 export '../view/order/order_list_screen.dart';
 export '../view/password/password_dialog.dart';
@@ -115,5 +119,3 @@ export '../view/user/create_or_edit_user_screen.dart';
 export '../view/user/user_list_screen.dart';
 export '/components/constant.dart';
 export '/components/routers.dart';
-
-

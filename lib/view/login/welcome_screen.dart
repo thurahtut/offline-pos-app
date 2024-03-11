@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/login/session_login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -89,6 +88,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           _buttonContainer(context, 'Sync', () {
             Navigator.pushNamed(context, ManualSyncScreen.routeName);
           }, icon: Icons.replay_rounded),
+          SizedBox(width: 8),
+          _buttonContainer(context, 'Deleted Product Log', () {
+            Navigator.pushNamed(context, DeletedProductLogScreen.routeName);
+          }, icon: Icons.remove_shopping_cart_rounded),
         ],
       ),
     );
