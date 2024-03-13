@@ -110,7 +110,7 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
         ),
         child: TextField(
           controller: _searchEmployeeTextController,
-          autofocus: true,
+          // autofocus: true,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

@@ -57,6 +57,7 @@ export '../database/table/product_table.dart';
 export '../model/amount_tax.dart';
 export '../model/create_session.dart';
 export '../model/deleted_product_log.dart';
+export '../model/id_and_name.dart';
 export '../model/order_line_id.dart';
 export '../model/payment_method.dart';
 export '../model/payment_transaction.dart';

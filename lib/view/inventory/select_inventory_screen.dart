@@ -140,7 +140,7 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
 
   static _dropDownWidget(
     BuildContext mainContext,
-    List<ConfigData> list,
+    List<IdAndName> list,
     ValueNotifier<int> inventoryIdNotifier,
   ) {
     return Container(
@@ -162,7 +162,7 @@ class _SelectInventoryScreenState extends State<SelectInventoryScreen> {
                     value: inventoryId == 0 ? list.first.id : inventoryId,
                     icon: SizedBox(),
                     underline: Container(),
-                    items: list.map((ConfigData items) {
+                    items: list.map((IdAndName items) {
                       return DropdownMenuItem(
                         value: items.id,
                         child: Text(items.name ?? ''),

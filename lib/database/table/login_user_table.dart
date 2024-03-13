@@ -119,7 +119,7 @@ class LoginUserTable {
         } else if (data[LOGIN_NAME] == CONFIG_DATA) {
           loginUser.configData = [];
           jsonDecode(data[LOGIN_VALUE]).forEach((v) {
-            loginUser.configData!.add(ConfigData.fromJson(v));
+            loginUser.configData!.add(IdAndName.fromJson(v));
           });
         }
       }

@@ -9,7 +9,6 @@ const PROMOTION_RULE_ID = "id";
 const RULE_DATE_FROM = "rule_date_from";
 const RULE_DATE_TO = "rule_date_to";
 const RULE_PARTNERS_DOMAIN = "rule_partners_domain";
-const RULE_PRODUCTS_DOMAIN = "rule_products_domain";
 const RULE_MIN_QUANTITY = "rule_min_quantity";
 const RULE_MINIMUM_AMOUNT = "rule_minimum_amount";
 const RULE_MINIMUM_AMOUNT_TAX_INCLUSION = "rule_minimum_amount_tax_inclusion";
@@ -18,6 +17,7 @@ const RULE_CREATE_DATE = "create_date";
 const RULE_WRITE_UID = "write_uid";
 const RULE_WRITE_DATE = "write_date";
 const IS_ANY = "is_any";
+const VALID_PRODUCT_IDS = "valid_product_ids";
 
 class PromotionRuleTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -26,7 +26,6 @@ class PromotionRuleTable {
         "$RULE_DATE_FROM TEXT,"
         "$RULE_DATE_TO TEXT,"
         "$RULE_PARTNERS_DOMAIN TEXT,"
-        "$RULE_PRODUCTS_DOMAIN TEXT,"
         "$RULE_MIN_QUANTITY REAL,"
         "$RULE_MINIMUM_AMOUNT REAL,"
         "$RULE_MINIMUM_AMOUNT_TAX_INCLUSION TEXT,"
@@ -34,7 +33,8 @@ class PromotionRuleTable {
         "$RULE_CREATE_DATE TEXT,"
         "$RULE_WRITE_UID INTEGER,"
         "$RULE_WRITE_DATE TEXT,"
-        "$IS_ANY TEXT"
+        "$IS_ANY TEXT,"
+        "$VALID_PRODUCT_IDS TEXT"
         ")");
   }
 

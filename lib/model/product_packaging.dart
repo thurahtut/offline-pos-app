@@ -6,11 +6,11 @@ class ProductPackaging {
   int? id;
   int? productId;
   String? name;
-  PackageDes? packageTypeId;
+  IdAndName? packageTypeId;
   String? qty;
   String? barcode;
   bool? sales;
-  PackageDes? productUomId;
+  IdAndName? productUomId;
   PriceListItem? priceListItem;
 
   ProductPackaging({
@@ -32,11 +32,10 @@ class ProductPackaging {
     if (json['package_type_id'] != null && json['package_type_id'] != "null") {
       if (json['package_type_id'] is Map) {
         try {
-          packageTypeId = PackageDes.fromJson(json['package_type_id']);
+          packageTypeId = IdAndName.fromJson(json['package_type_id']);
         } catch (_) {}
       } else if (json['package_type_id'] is String) {
-        packageTypeId =
-            PackageDes.fromJson(jsonDecode(json['package_type_id']));
+        packageTypeId = IdAndName.fromJson(jsonDecode(json['package_type_id']));
       }
     }
     qty = json['qty']?.toString() ?? '';
@@ -47,10 +46,10 @@ class ProductPackaging {
     if (json['product_uom_id'] != null && json['product_uom_id'] != "null") {
       if (json['product_uom_id'] is Object) {
         try {
-          productUomId = PackageDes.fromJson(json['product_uom_id']);
+          productUomId = IdAndName.fromJson(json['product_uom_id']);
         } catch (_) {}
       } else if (json['product_uom_id'] is String) {
-        productUomId = PackageDes.fromJson(jsonDecode(json['product_uom_id']));
+        productUomId = IdAndName.fromJson(jsonDecode(json['product_uom_id']));
       }
     }
   }
@@ -69,25 +68,6 @@ class ProductPackaging {
     if (productUomId != null) {
       data['product_uom_id'] = jsonEncode(productUomId);
     }
-    return data;
-  }
-}
-
-class PackageDes {
-  int? id;
-  String? name;
-
-  PackageDes({this.id, this.name});
-
-  PackageDes.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
     return data;
   }
 }

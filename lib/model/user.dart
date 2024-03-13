@@ -4,7 +4,7 @@ class User {
   UserData? userData;
   PartnerData? partnerData;
   Employee? employeeData;
-  List<ConfigData>? configData;
+  List<IdAndName>? configData;
 
   User({this.userData, this.partnerData, this.employeeData, this.configData});
 
@@ -18,9 +18,9 @@ class User {
         ? Employee.fromJson(json['employee_data'])
         : null;
     if (json['config_data'] != null) {
-      configData = <ConfigData>[];
+      configData = <IdAndName>[];
       json['config_data'].forEach((v) {
-        configData!.add(ConfigData.fromJson(v));
+        configData!.add(IdAndName.fromJson(v));
       });
     }
   }
@@ -69,25 +69,6 @@ class PartnerData {
   PartnerData({this.id, this.name});
 
   PartnerData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    return data;
-  }
-}
-
-class ConfigData {
-  int? id;
-  String? name;
-
-  ConfigData({this.id, this.name});
-
-  ConfigData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
   }

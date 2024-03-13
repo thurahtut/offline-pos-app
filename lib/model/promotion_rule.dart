@@ -1,9 +1,12 @@
+import 'dart:convert';
+
+import 'package:offline_pos/components/export_files.dart';
+
 class PromotionRule {
   int? id;
   String? ruleDateFrom;
   String? ruleDateTo;
   String? rulePartnersDomain;
-  String? ruleProductsDomain;
   int? ruleMinQuantity;
   int? ruleMinimumAmount;
   String? ruleMinimumAmountTaxInclusion;
@@ -12,28 +15,29 @@ class PromotionRule {
   int? writeUid;
   String? writeDate;
   bool? isAny;
+  List<IdAndName>? validProductIds;
 
-  PromotionRule(
-      {this.id,
-      this.ruleDateFrom,
-      this.ruleDateTo,
-      this.rulePartnersDomain,
-      this.ruleProductsDomain,
-      this.ruleMinQuantity,
-      this.ruleMinimumAmount,
-      this.ruleMinimumAmountTaxInclusion,
-      this.createUid,
-      this.createDate,
-      this.writeUid,
-      this.writeDate,
-      this.isAny});
+  PromotionRule({
+    this.id,
+    this.ruleDateFrom,
+    this.ruleDateTo,
+    this.rulePartnersDomain,
+    this.ruleMinQuantity,
+    this.ruleMinimumAmount,
+    this.ruleMinimumAmountTaxInclusion,
+    this.createUid,
+    this.createDate,
+    this.writeUid,
+    this.writeDate,
+    this.isAny,
+    this.validProductIds,
+  });
 
   PromotionRule.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     ruleDateFrom = json['rule_date_from'];
     ruleDateTo = json['rule_date_to'];
     rulePartnersDomain = json['rule_partners_domain'];
-    ruleProductsDomain = json['rule_products_domain'];
     ruleMinQuantity = json['rule_min_quantity'];
     ruleMinimumAmount = json['rule_minimum_amount'];
     ruleMinimumAmountTaxInclusion = json['rule_minimum_amount_tax_inclusion'];
@@ -42,6 +46,12 @@ class PromotionRule {
     writeUid = json['write_uid'];
     writeDate = json['write_date'];
     isAny = json['is_any'];
+    if (json['valid_product_ids'] != null) {
+      validProductIds = <IdAndName>[];
+      json['valid_product_ids'].forEach((v) {
+        validProductIds!.add(IdAndName.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -50,7 +60,6 @@ class PromotionRule {
     data['rule_date_from'] = ruleDateFrom;
     data['rule_date_to'] = ruleDateTo;
     data['rule_partners_domain'] = rulePartnersDomain;
-    data['rule_products_domain'] = ruleProductsDomain;
     data['rule_min_quantity'] = ruleMinQuantity;
     data['rule_minimum_amount'] = ruleMinimumAmount;
     data['rule_minimum_amount_tax_inclusion'] = ruleMinimumAmountTaxInclusion;
@@ -59,6 +68,9 @@ class PromotionRule {
     data['write_uid'] = writeUid;
     data['write_date'] = writeDate;
     data['is_any'] = isAny?.toString() ?? 'false';
+    if (validProductIds != null) {
+      data['valid_product_ids'] = jsonEncode(validProductIds);
+    }
     return data;
   }
 }

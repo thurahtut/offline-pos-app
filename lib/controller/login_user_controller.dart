@@ -8,9 +8,9 @@ class LoginUserController with ChangeNotifier {
     notifyListeners();
   }
 
-  ConfigData? _selectedInventory;
-  ConfigData? get selectedInventory => _selectedInventory;
-  set selectedInventory(ConfigData? selectedInventory) {
+  IdAndName? _selectedInventory;
+  IdAndName? get selectedInventory => _selectedInventory;
+  set selectedInventory(IdAndName? selectedInventory) {
     _selectedInventory = selectedInventory;
     notifyListeners();
   }
