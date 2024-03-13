@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '/components/export_files.dart';
 
 class MainScreen extends StatefulWidget {
@@ -25,23 +27,28 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context
-          .read<CurrentOrderController>()
-          .productTextFieldFocusNode
-          .requestFocus();
+      if (kIsWeb || Platform.isWindows) {
+        context
+            .read<CurrentOrderController>()
+            .productTextFieldFocusNode
+            .requestFocus();
+      }
       if (widget.resetController != false) {
         context.read<CurrentOrderController>().resetCurrentOrderController();
         context.read<ItemListController>().resetItemListController();
       }
       context.read<ViewController>().isCustomerView = false;
-      context.read<ViewController>().searchProductFocusNode.addListener(() {
-        if (!context.read<ViewController>().searchProductFocusNode.hasFocus) {
-          context
-              .read<CurrentOrderController>()
-              .productTextFieldFocusNode
-              .requestFocus();
-        }
-      });
+      if (kIsWeb || Platform.isWindows) {
+        context.read<ViewController>().searchProductFocusNode.addListener(() {
+          if ((kIsWeb || Platform.isWindows) &&
+              !context.read<ViewController>().searchProductFocusNode.hasFocus) {
+            context
+                .read<CurrentOrderController>()
+                .productTextFieldFocusNode
+                .requestFocus();
+          }
+        });
+      }
     });
 
     super.initState();
@@ -62,30 +69,36 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return GestureDetector(
       onTap: () {
-        context
-            .read<CurrentOrderController>()
-            .productTextFieldFocusNode
-            .requestFocus();
+        if (kIsWeb || Platform.isWindows) {
+          context
+              .read<CurrentOrderController>()
+              .productTextFieldFocusNode
+              .requestFocus();
+        }
       },
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           GestureDetector(
               onTap: () {
-                context
-                    .read<CurrentOrderController>()
-                    .productTextFieldFocusNode
-                    .requestFocus();
+                if (kIsWeb || Platform.isWindows) {
+                  context
+                      .read<CurrentOrderController>()
+                      .productTextFieldFocusNode
+                      .requestFocus();
+                }
               },
               child: SizedBox(height: 8)),
           if (context.watch<ViewController>().hideCategory == false)
             _categoryWidget(),
           GestureDetector(
               onTap: () {
-                context
-                    .read<CurrentOrderController>()
-                    .productTextFieldFocusNode
-                    .requestFocus();
+                if (kIsWeb || Platform.isWindows) {
+                  context
+                      .read<CurrentOrderController>()
+                      .productTextFieldFocusNode
+                      .requestFocus();
+                }
               },
               child: SizedBox(height: 16)),
           Expanded(
@@ -144,130 +157,128 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   Widget _categoryWidget() {
     Widget spacer = SizedBox(width: 14);
-    return GestureDetector(
-      onTap: () {
-        context
-            .read<CurrentOrderController>()
-            .productTextFieldFocusNode
-            .requestFocus();
-      },
-      child: RawScrollbar(
-        controller: scrollController,
-        thumbVisibility: true,
-        trackVisibility: true,
-        thumbColor: primaryColor,
-        radius: Radius.circular(20),
-        thickness: 6,
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                CommonUtils.svgIconActionButton(
-                  'assets/svg/grid_view.svg',
-                  withContianer: true,
-                  containerColor: !context.watch<ViewController>().isList
-                      ? primaryColor
-                      : Constants.unselectedColor,
-                  iconColor: !context.watch<ViewController>().isList
-                      ? Colors.white
-                      : primaryColor,
-                  onPressed: () {
-                    context.read<ViewController>().isList = false;
-                  },
-                ),
-                spacer,
-                CommonUtils.iconActionButton(
-                  Icons.view_list_outlined,
-                  withContianer: true,
-                  containerColor: context.watch<ViewController>().isList
-                      ? primaryColor
-                      : Constants.unselectedColor,
-                  iconColor: context.watch<ViewController>().isList
-                      ? Colors.white
-                      : primaryColor,
-                  onPressed: () {
-                    context.read<ViewController>().isList = true;
-                  },
-                ),
-                spacer,
-                CommonUtils.svgIconActionButton(
-                  'assets/svg/home.svg',
-                  withContianer: true,
-                  containerColor: context.watch<ViewController>().isHome
-                      ? primaryColor
-                      : Constants.unselectedColor,
-                  iconColor: context.watch<ViewController>().isHome
-                      ? Colors.white
-                      : primaryColor,
-                ),
-                // spacer,
-                // CommonUtils.svgIconActionButton(
-                //   'assets/svg/home.svg',
-                //   withContianer: true,
-                //   containerColor: context.watch<ViewController>().isHome
-                //       ? primaryColor
-                //       : Constants.unselectedColor,
-                //   iconColor: context.watch<ViewController>().isHome
-                //       ? Colors.white
-                //       : primaryColor,
-                // ),
-                spacer,
-                ...context
-                    .read<PosCategoryController>()
-                    .posCategoryList
-                    .asMap()
-                    .map(
-                      (i, e) => MapEntry(
-                          i,
-                          InkWell(
-                            onTap: () {
-                              context
-                                      .read<PosCategoryController>()
-                                      .selectedCategory =
+    return Center(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          splashColor: primaryColor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(100),
+          onTap: () {
+            if (kIsWeb || Platform.isWindows) {
+              Future.delayed(Duration(milliseconds: 120), () {
+                context
+                    .read<CurrentOrderController>()
+                    .productTextFieldFocusNode
+                    .requestFocus();
+              });
+            }
+          },
+          child: RawScrollbar(
+            controller: scrollController,
+            thumbVisibility: true,
+            trackVisibility: true,
+            thumbColor: primaryColor,
+            radius: Radius.circular(20),
+            thickness: 6,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
+              color: Colors.transparent,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    CommonUtils.svgIconActionButton(
+                      'assets/svg/grid_view.svg',
+                      withContianer: true,
+                      containerColor: !context.watch<ViewController>().isList
+                          ? primaryColor
+                          : Constants.unselectedColor,
+                      iconColor: !context.watch<ViewController>().isList
+                          ? Colors.white
+                          : primaryColor,
+                      onPressed: () {
+                        context.read<ViewController>().isList = false;
+                      },
+                    ),
+                    spacer,
+                    CommonUtils.iconActionButton(
+                      Icons.view_list_outlined,
+                      withContianer: true,
+                      containerColor: context.watch<ViewController>().isList
+                          ? primaryColor
+                          : Constants.unselectedColor,
+                      iconColor: context.watch<ViewController>().isList
+                          ? Colors.white
+                          : primaryColor,
+                      onPressed: () {
+                        context.read<ViewController>().isList = true;
+                      },
+                    ),
+                    spacer,
+                    CommonUtils.svgIconActionButton(
+                      'assets/svg/home.svg',
+                      withContianer: true,
+                      containerColor: context.watch<ViewController>().isHome
+                          ? primaryColor
+                          : Constants.unselectedColor,
+                      iconColor: context.watch<ViewController>().isHome
+                          ? Colors.white
+                          : primaryColor,
+                    ),
+                    // spacer,
+                    // CommonUtils.svgIconActionButton(
+                    //   'assets/svg/home.svg',
+                    //   withContianer: true,
+                    //   containerColor: context.watch<ViewController>().isHome
+                    //       ? primaryColor
+                    //       : Constants.unselectedColor,
+                    //   iconColor: context.watch<ViewController>().isHome
+                    //       ? Colors.white
+                    //       : primaryColor,
+                    // ),
+                    spacer,
+                    ...context
+                        .read<PosCategoryController>()
+                        .posCategoryList
+                        .asMap()
+                        .map(
+                          (i, e) => MapEntry(
+                              i,
+                              InkWell(
+                                onTap: () {
                                   context
-                                      .read<PosCategoryController>()
-                                      .posCategoryList[i]
-                                      .id;
+                                          .read<PosCategoryController>()
+                                          .selectedCategory =
+                                      context
+                                          .read<PosCategoryController>()
+                                          .posCategoryList[i]
+                                          .id;
 
-                              context.read<ItemListController>().offset = 0;
-                              context.read<ItemListController>().currentIndex =
-                                  1;
-                              context
-                                  .read<ItemListController>()
-                                  .getAllProduct(
-                                    context,
-                                    sessionId: context
-                                            .read<LoginUserController>()
-                                            .posSession
-                                            ?.id ??
-                                        0,
-                                  );
-                            },
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 12),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18),
-                                    color: context
-                                                .watch<PosCategoryController>()
-                                                .selectedCategory ==
-                                            context
-                                                .read<PosCategoryController>()
-                                                .posCategoryList[i]
-                                                .id
-                                        ? primaryColor
-                                        : primaryColor.withOpacity(0.76),
-                                  ),
-                                  child: Text(
-                                    e.name ?? '',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: context
+                                  context.read<ItemListController>().offset = 0;
+                                  context
+                                      .read<ItemListController>()
+                                      .currentIndex = 1;
+                                  context
+                                      .read<ItemListController>()
+                                      .getAllProduct(
+                                        context,
+                                        sessionId: context
+                                                .read<LoginUserController>()
+                                                .posSession
+                                                ?.id ??
+                                            0,
+                                      );
+                                },
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(18),
+                                        color: context
                                                     .watch<
                                                         PosCategoryController>()
                                                     .selectedCategory ==
@@ -276,18 +287,36 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                                         PosCategoryController>()
                                                     .posCategoryList[i]
                                                     .id
-                                            ? FontWeight.bold
-                                            : FontWeight.w300),
-                                  ),
+                                            ? primaryColor
+                                            : primaryColor.withOpacity(0.76),
+                                      ),
+                                      child: Text(
+                                        e.name ?? '',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: context
+                                                        .watch<
+                                                            PosCategoryController>()
+                                                        .selectedCategory ==
+                                                    context
+                                                        .read<
+                                                            PosCategoryController>()
+                                                        .posCategoryList[i]
+                                                        .id
+                                                ? FontWeight.bold
+                                                : FontWeight.w300),
+                                      ),
+                                    ),
+                                    spacer,
+                                  ],
                                 ),
-                                spacer,
-                              ],
-                            ),
-                          )),
-                    )
-                    .values
-                    .toList(),
-              ],
+                              )),
+                        )
+                        .values
+                        .toList(),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

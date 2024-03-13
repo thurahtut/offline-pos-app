@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
 
 class ItemListScreen extends StatefulWidget {
@@ -35,10 +36,12 @@ class _ItemListScreenState extends State<ItemListScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          context
-              .read<CurrentOrderController>()
-              .productTextFieldFocusNode
-              .requestFocus();
+          if (kIsWeb || Platform.isWindows) {
+            context
+                .read<CurrentOrderController>()
+                .productTextFieldFocusNode
+                .requestFocus();
+          }
         },
         child: _itemListWidget());
   }
@@ -114,16 +117,20 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   .addItemToList(product);
                               _searchProductTextController.clear();
                               itemListController.filterValue = null;
-                              context
-                                  .read<CurrentOrderController>()
-                                  .productTextFieldFocusNode
-                                  .requestFocus();
+                              if (kIsWeb || Platform.isWindows) {
+                                context
+                                    .read<CurrentOrderController>()
+                                    .productTextFieldFocusNode
+                                    .requestFocus();
+                              }
                             } else {
                               _searchProductTextController.clear();
-                              context
-                                  .read<CurrentOrderController>()
-                                  .productTextFieldFocusNode
-                                  .requestFocus();
+                              if (kIsWeb || Platform.isWindows) {
+                                context
+                                    .read<CurrentOrderController>()
+                                    .productTextFieldFocusNode
+                                    .requestFocus();
+                              }
                             }
                           });
                     },

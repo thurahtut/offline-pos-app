@@ -4,7 +4,8 @@ import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/order_and_order_line_table.dart';
 import 'package:offline_pos/database/table/order_and_transaction_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
-import 'package:offline_pos/database/table/product_packaging_table.dart';
+import 'package:offline_pos/database/table/promotion_rules_table.dart';
+import 'package:offline_pos/database/table/promotion_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -145,6 +146,8 @@ class DatabaseHelper {
     await AmountTaxTable.onCreate(db, version);
     await PendingOrderTable.onCreate(db, version);
     await ProductPackagingTable.onCreate(db, version);
+    await PromotionTable.onCreate(db, version);
+    await PromotionRuleTable.onCreate(db, version);
 
     await DBUpgrade.uploadAppConfigForVersion1(db);
   }
@@ -172,6 +175,8 @@ class DatabaseHelper {
     await db.delete(AMOUNT_TAX_TABLE_NAME);
     await db.delete(PENDING_ORDER_TABLE_NAME);
     await db.delete(PRODUCT_PACKAGING_TABLE_NAME);
+    await db.delete(PROMOTION_TABLE_NAME);
+    await db.delete(PROMOTION_RULE_TABLE_NAME);
   }
 
   static Future<void> userLogOut() async {

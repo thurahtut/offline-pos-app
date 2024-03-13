@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
 
 class CurrentOrderScreen extends StatefulWidget {
@@ -25,10 +26,12 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     isTabletMode = CommonUtils.isTabletMode(context);
     return GestureDetector(
       onTap: () {
-        context
-            .read<CurrentOrderController>()
-            .productTextFieldFocusNode
-            .requestFocus();
+        if (kIsWeb || Platform.isWindows) {
+          context
+              .read<CurrentOrderController>()
+              .productTextFieldFocusNode
+              .requestFocus();
+        }
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +99,10 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                           if (controller.selectedIndex == i) {
                             _textNode.unfocus();
                             controller.selectedIndex = -1;
-                            controller.productTextFieldFocusNode.requestFocus();
+                            if (kIsWeb || Platform.isWindows) {
+                              controller.productTextFieldFocusNode
+                                  .requestFocus();
+                            }
                           } else {
                             _textNode.requestFocus();
                             controller.selectedIndex = i;
@@ -112,7 +118,6 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                             //         event, context.read<ItemListController>());
                             //   },
                             //   child:
-
 
                             Column(
                           mainAxisSize: MainAxisSize.min,
@@ -156,8 +161,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: () {
-                                        },
+                                        onTap: () {},
                                         child: Text(
                                             "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"
                                                 .toString(), // product.salePrice
@@ -279,10 +283,12 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   Widget _noOrderWidget() {
     return GestureDetector(
       onTap: () {
-        context
-            .read<CurrentOrderController>()
-            .productTextFieldFocusNode
-            .requestFocus();
+        if (kIsWeb || Platform.isWindows) {
+          context
+              .read<CurrentOrderController>()
+              .productTextFieldFocusNode
+              .requestFocus();
+        }
       },
       child: SizedBox(
         width: widget.width,

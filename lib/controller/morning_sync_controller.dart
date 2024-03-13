@@ -3,10 +3,11 @@ import 'dart:math';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
-import 'package:offline_pos/database/table/product_packaging_table.dart';
+import 'package:offline_pos/database/table/promotion_rules_table.dart';
+import 'package:offline_pos/database/table/promotion_table.dart';
 
 class MorningsyncController with ChangeNotifier {
-  final int allTask = 7;
+  final int allTask = 8;
 
   int _currentReachTask = 1;
   int get currentReachTask => _currentReachTask;
@@ -214,6 +215,47 @@ class MorningsyncController with ChangeNotifier {
         if (response.data is List) {
           ProductPackagingTable.insertOrUpdate(response.data)
               .then((value) => callback?.call());
+        }
+      }
+    });
+  }
+
+  void getAllPromotion(int configId, Function()? callback) {
+    currentTaskTitle = "Promotion List Sync....";
+    currentReachTask = 8;
+    Api.getCouponAndPromoByConfigId(
+      configId: configId,
+      onReceiveProgress: (sent, total) {
+        double value = min(((sent / total) * 50), 50);
+        percentage = value > 50 ? null : value;
+        updateProcessingPercentage(DataSync.promotion.name, percentage);
+      },
+    ).then((response) {
+      if (response != null &&
+          response.statusCode == 200 &&
+          response.data != null) {
+        if (response.data is List) {
+          PromotionTable.insertOrUpdate(response.data).then(
+            (value) => Api.getPromotionRules(
+              configId: configId,
+              onReceiveProgress: (sent, total) {
+                double value = min(((sent / total) * 50), 50) + 50;
+                percentage = value > 100 ? null : value;
+                updateProcessingPercentage(DataSync.promotion.name, percentage);
+              },
+            ).then(
+              (response) {
+                if (response != null &&
+                    response.statusCode == 200 &&
+                    response.data != null) {
+                  if (response.data is List) {
+                    PromotionRuleTable.insertOrUpdate(response.data)
+                        .then((value) => callback?.call());
+                  }
+                }
+              },
+            ),
+          );
         }
       }
     });

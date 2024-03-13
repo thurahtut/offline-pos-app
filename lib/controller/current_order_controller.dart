@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
 
 class CurrentOrderController with ChangeNotifier {
@@ -181,7 +182,9 @@ class CurrentOrderController with ChangeNotifier {
       currentOrderList.add(orderProduct);
     }
     notifyListeners();
-    productTextFieldFocusNode.requestFocus();
+    if (kIsWeb || Platform.isWindows) {
+      productTextFieldFocusNode.requestFocus();
+    }
     PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
       productList: jsonEncode(currentOrderList),
     );
@@ -258,7 +261,9 @@ class CurrentOrderController with ChangeNotifier {
         if (isDelete) {
           currentOrderList.removeAt(selectedIndex!);
           selectedIndex = null;
-          productTextFieldFocusNode.requestFocus();
+          if (kIsWeb || Platform.isWindows) {
+            productTextFieldFocusNode.requestFocus();
+          }
         } else {
           product.onhandQuantity = int.tryParse(qty);
           if (product.productType == "product") {

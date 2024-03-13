@@ -191,10 +191,16 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                             .read<ThemeSettingController>()
                             .appConfig
                             ?.packagingLastSyncDate);
-                  context.read<MorningsyncController>().currentTaskTitle = "";
-                  Navigator.pushReplacementNamed(
-                      context, WelcomeScreen.routeName);
-                });
+                    context.read<MorningsyncController>().getAllPromotion(
+                        // promotion
+                        context.read<LoginUserController>().posConfig?.id ?? 0,
+                        () {
+                      context.read<MorningsyncController>().currentTaskTitle =
+                          "";
+                      Navigator.pushReplacementNamed(
+                          context, WelcomeScreen.routeName);
+                    });
+                  });
                 });
               });
             });

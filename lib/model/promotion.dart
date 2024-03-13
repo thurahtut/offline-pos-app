@@ -1,49 +1,27 @@
-class CouponAndPromo {
-  List<PromoProgramIds>? promoProgramIds;
-  List<CouponProgramIds>? couponProgramIds;
+import 'dart:convert';
 
-  CouponAndPromo({this.promoProgramIds, this.couponProgramIds});
-
-  CouponAndPromo.fromJson(Map<String, dynamic> json) {
-    if (json['promo_program_ids'] != null) {
-      promoProgramIds = <PromoProgramIds>[];
-      json['promo_program_ids'].forEach((v) {
-        promoProgramIds!.add(PromoProgramIds.fromJson(v));
-      });
-    }
-    if (json['coupon_program_ids'] != null) {
-      couponProgramIds = <CouponProgramIds>[];
-      json['coupon_program_ids'].forEach((v) {
-        couponProgramIds!.add(CouponProgramIds.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (promoProgramIds != null) {
-      data['promo_program_ids'] =
-          promoProgramIds!.map((v) => v.toJson()).toList();
-    }
-    if (couponProgramIds != null) {
-      data['coupon_program_ids'] =
-          couponProgramIds!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class PromoProgramIds {
+class Promotion {
   int? id;
   String? name;
   bool? active;
-  RuleId? ruleId;
+  int? ruleId;
+  String? ruleDateFrom;
+  String? ruleDateTo;
   int? rewardId;
+  String? discountType;
+  String? rewardType;
+  int? rewardProductId;
+  int? discountFixedAmount;
+  String? discountApplyOn;
+  int? discountMaxAmount;
+  int? discountLineProductId;
+  int? discountPercentage;
+  List<DiscountSpecificProductIds>? discountSpecificProductIds;
   int? sequence;
   int? maximumUseNumber;
   String? programType;
   String? promoCodeUsage;
-  int? promoCode;
+  String? promoCode;
   String? promoApplicability;
   int? companyId;
   int? validityDuration;
@@ -63,12 +41,23 @@ class PromoProgramIds {
   String? videoUrl;
   bool? excludePosOrder;
 
-  PromoProgramIds(
+  Promotion(
       {this.id,
       this.name,
       this.active,
       this.ruleId,
+      this.ruleDateFrom,
+      this.ruleDateTo,
       this.rewardId,
+      this.discountType,
+      this.rewardType,
+      this.rewardProductId,
+      this.discountFixedAmount,
+      this.discountApplyOn,
+      this.discountMaxAmount,
+      this.discountLineProductId,
+      this.discountPercentage,
+      this.discountSpecificProductIds,
       this.sequence,
       this.maximumUseNumber,
       this.programType,
@@ -93,12 +82,28 @@ class PromoProgramIds {
       this.videoUrl,
       this.excludePosOrder});
 
-  PromoProgramIds.fromJson(Map<String, dynamic> json) {
+  Promotion.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     active = json['active'];
-    ruleId = json['rule_id'] != null ? RuleId.fromJson(json['rule_id']) : null;
+    ruleId = json['rule_id'];
+    ruleDateFrom = json['rule_date_from'];
+    ruleDateTo = json['rule_date_to'];
     rewardId = json['reward_id'];
+    discountType = json['discount_type'];
+    rewardType = json['reward_type'];
+    rewardProductId = json['reward_product_id'];
+    discountFixedAmount = json['discount_fixed_amount'];
+    discountApplyOn = json['discount_apply_on'];
+    discountMaxAmount = json['discount_max_amount'];
+    discountLineProductId = json['discount_line_product_id'];
+    discountPercentage = json['discount_percentage'];
+    if (json['discount_specific_product_ids'] != null) {
+      discountSpecificProductIds = <DiscountSpecificProductIds>[];
+      json['discount_specific_product_ids'].forEach((v) {
+        discountSpecificProductIds!.add(DiscountSpecificProductIds.fromJson(v));
+      });
+    }
     sequence = json['sequence'];
     maximumUseNumber = json['maximum_use_number'];
     programType = json['program_type'];
@@ -128,11 +133,23 @@ class PromoProgramIds {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
-    data['active'] = active;
-    if (ruleId != null) {
-      data['rule_id'] = ruleId!.toJson();
-    }
+    data['active'] = active?.toString() ?? 'false';
+    data['rule_id'] = ruleId;
+    data['rule_date_from'] = ruleDateFrom;
+    data['rule_date_to'] = ruleDateTo;
     data['reward_id'] = rewardId;
+    data['discount_type'] = discountType;
+    data['reward_type'] = rewardType;
+    data['reward_product_id'] = rewardProductId;
+    data['discount_fixed_amount'] = discountFixedAmount;
+    data['discount_apply_on'] = discountApplyOn;
+    data['discount_max_amount'] = discountMaxAmount;
+    data['discount_line_product_id'] = discountLineProductId;
+    data['discount_percentage'] = discountPercentage;
+    if (discountSpecificProductIds != null) {
+      data["discount_specific_product_ids"] =
+          jsonEncode(discountSpecificProductIds);
+    }
     data['sequence'] = sequence;
     data['maximum_use_number'] = maximumUseNumber;
     data['program_type'] = programType;
@@ -147,75 +164,31 @@ class PromoProgramIds {
     data['write_date'] = writeDate;
     data['promo_barcode'] = promoBarcode;
     data['website_id'] = websiteId;
-    data['combine_promotion'] = combinePromotion;
-    data['break_multiple'] = breakMultiple;
+    data['combine_promotion'] = combinePromotion?.toString() ?? 'false';
+    data['break_multiple'] = breakMultiple?.toString() ?? 'false';
     data['own_percent'] = ownPercent;
     data['deal_name'] = dealName;
     data['deal_detail'] = dealDetail;
     data['store_type'] = storeType;
     data['app_sequence'] = appSequence;
     data['video_url'] = videoUrl;
-    data['exclude_pos_order'] = excludePosOrder;
+    data['exclude_pos_order'] = excludePosOrder?.toString() ?? 'false';
     return data;
   }
 }
 
-class RuleId {
-  int? id;
-  String? ruleDateFrom;
-  String? ruleDateTo;
-  String? rulePartnersDomain;
-  String? ruleProductsDomain;
-  int? ruleMinimumAmount;
-  String? ruleMinimumAmountTaxInclusion;
+class DiscountSpecificProductIds {
+  int? product;
 
-  RuleId(
-      {this.id,
-      this.ruleDateFrom,
-      this.ruleDateTo,
-      this.rulePartnersDomain,
-      this.ruleProductsDomain,
-      this.ruleMinimumAmount,
-      this.ruleMinimumAmountTaxInclusion});
+  DiscountSpecificProductIds({this.product});
 
-  RuleId.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    ruleDateFrom = json['rule_date_from'];
-    ruleDateTo = json['rule_date_to'];
-    rulePartnersDomain = json['rule_partners_domain'];
-    ruleProductsDomain = json['rule_products_domain'];
-    ruleMinimumAmount = json['rule_minimum_amount'];
-    ruleMinimumAmountTaxInclusion = json['rule_minimum_amount_tax_inclusion'];
+  DiscountSpecificProductIds.fromJson(Map<String, dynamic> json) {
+    product = json['product_product_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['rule_date_from'] = ruleDateFrom;
-    data['rule_date_to'] = ruleDateTo;
-    data['rule_partners_domain'] = rulePartnersDomain;
-    data['rule_products_domain'] = ruleProductsDomain;
-    data['rule_minimum_amount'] = ruleMinimumAmount;
-    data['rule_minimum_amount_tax_inclusion'] = ruleMinimumAmountTaxInclusion;
-    return data;
-  }
-}
-
-class CouponProgramIds {
-  int? id;
-  String? name;
-
-  CouponProgramIds({this.id, this.name});
-
-  CouponProgramIds.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
+    data['product_product_id'] = product;
     return data;
   }
 }

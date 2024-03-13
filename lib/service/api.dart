@@ -355,8 +355,8 @@ class Api {
       method: Method.GET.name,
       onReceiveProgress: onReceiveProgress,
       queryParameters: map,
-      receiveTimeout: Duration(milliseconds: 900000),
-      sendTimeout: Duration(milliseconds: 900000),
+      receiveTimeout: Duration(milliseconds: 1200000), //20 mins
+      sendTimeout: Duration(milliseconds: 1200000),
     );
   }
 
@@ -484,6 +484,24 @@ class Api {
       endpoint: '/promotion/$configId'.onEndPoint(),
       method: Method.GET.name,
       onReceiveProgress: onReceiveProgress,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
+    );
+  }
+
+  static Future<Response?> getPromotionRules({
+    required int configId,
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/promotion/$configId/rules'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
     );
   }
 }
