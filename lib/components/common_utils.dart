@@ -1020,7 +1020,7 @@ class CommonUtils {
 
         OrderLineID orderLineID = OrderLineID(
           orderId: currentOrderController.orderHistory?.id ?? 0,
-          productId: data.productVariantIds?.first ?? 0,
+          productId: data.productVariantIds ?? 0,
           qty: data.onhandQuantity?.toDouble(),
           priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
           priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *

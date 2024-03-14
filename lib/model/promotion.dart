@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:offline_pos/components/export_files.dart';
+
 class Promotion {
   int? id;
   String? name;
@@ -40,47 +42,50 @@ class Promotion {
   int? appSequence;
   String? videoUrl;
   bool? excludePosOrder;
+  PromotionRule? promotionRule;
 
-  Promotion(
-      {this.id,
-      this.name,
-      this.active,
-      this.ruleId,
-      this.ruleDateFrom,
-      this.ruleDateTo,
-      this.rewardId,
-      this.discountType,
-      this.rewardType,
-      this.rewardProductId,
-      this.discountFixedAmount,
-      this.discountApplyOn,
-      this.discountMaxAmount,
-      this.discountLineProductId,
-      this.discountPercentage,
-      this.discountSpecificProductIds,
-      this.sequence,
-      this.maximumUseNumber,
-      this.programType,
-      this.promoCodeUsage,
-      this.promoCode,
-      this.promoApplicability,
-      this.companyId,
-      this.validityDuration,
-      this.createUid,
-      this.createDate,
-      this.writeUid,
-      this.writeDate,
-      this.promoBarcode,
-      this.websiteId,
-      this.combinePromotion,
-      this.breakMultiple,
-      this.ownPercent,
-      this.dealName,
-      this.dealDetail,
-      this.storeType,
-      this.appSequence,
-      this.videoUrl,
-      this.excludePosOrder});
+  Promotion({
+    this.id,
+    this.name,
+    this.active,
+    this.ruleId,
+    this.ruleDateFrom,
+    this.ruleDateTo,
+    this.rewardId,
+    this.discountType,
+    this.rewardType,
+    this.rewardProductId,
+    this.discountFixedAmount,
+    this.discountApplyOn,
+    this.discountMaxAmount,
+    this.discountLineProductId,
+    this.discountPercentage,
+    this.discountSpecificProductIds,
+    this.sequence,
+    this.maximumUseNumber,
+    this.programType,
+    this.promoCodeUsage,
+    this.promoCode,
+    this.promoApplicability,
+    this.companyId,
+    this.validityDuration,
+    this.createUid,
+    this.createDate,
+    this.writeUid,
+    this.writeDate,
+    this.promoBarcode,
+    this.websiteId,
+    this.combinePromotion,
+    this.breakMultiple,
+    this.ownPercent,
+    this.dealName,
+    this.dealDetail,
+    this.storeType,
+    this.appSequence,
+    this.videoUrl,
+    this.excludePosOrder,
+    this.promotionRule,
+  });
 
   Promotion.fromJson(Map<String, dynamic> json) {
     id = json['id'];

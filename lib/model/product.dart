@@ -13,7 +13,7 @@ class Product {
   int? writeUid;
   String? writeDate;
   String? productType;
-  List<int>? productVariantIds;
+  int? productVariantIds;
   List<int>? taxesId;
   String? barcode;
   int? onhandQuantity;
@@ -61,10 +61,11 @@ class Product {
         json['product_variant_ids'] != "null") {
       if (json['product_variant_ids'] is List) {
         try {
-          productVariantIds = json['product_variant_ids'].cast<int>();
+          productVariantIds = json['product_variant_ids'][0];
         } catch (_) {}
       } else if (json['product_variant_ids'] is String) {
-        productVariantIds = jsonDecode(json['product_variant_ids']).cast<int>();
+        List list = jsonDecode(json['product_variant_ids']).cast<int>();
+        productVariantIds = list[0];
       }
     }
     if ((json['taxes_id']?.isNotEmpty ?? false) && json['taxes_id'] != "null") {
@@ -98,7 +99,7 @@ class Product {
     data['write_date'] = writeDate;
     data['type'] = productType;
     if (productVariantIds != null) {
-      data['product_variant_ids'] = jsonEncode(productVariantIds);
+      data['product_variant_ids'] = productVariantIds;
     }
     if (taxesId != null && taxesId!.isNotEmpty) {
       data['taxes_id'] = jsonEncode(taxesId);

@@ -180,6 +180,7 @@ class CurrentOrderController with ChangeNotifier {
       orderProduct.firstTime = true;
       orderProduct.onhandQuantity = 1;
       currentOrderList.add(orderProduct);
+      // to check promotion
     }
     notifyListeners();
     if (kIsWeb || Platform.isWindows) {

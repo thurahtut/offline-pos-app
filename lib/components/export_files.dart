@@ -65,6 +65,7 @@ export '../model/pos_category.dart';
 export '../model/pos_config.dart';
 export '../model/pos_session.dart';
 export '../model/price_list_item.dart';
+export '../model/promotion_rule.dart';
 export '../model/user.dart';
 export '../service/enums.dart';
 export '../service/navigation_service.dart';

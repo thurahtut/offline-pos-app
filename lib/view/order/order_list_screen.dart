@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/order/order_detail_screen.dart';
 import 'package:sqflite/sqflite.dart';
 
 class OrderListScreen extends StatefulWidget {
@@ -424,8 +423,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
               ProductTable.getProductListByIds(productIds).then((products) {
                 for (OrderLineID data in value.lineIds ?? []) {
                   for (Product product in products) {
-                    if (product.productVariantIds?.contains(data.productId) ??
-                        false) {
+                    if (product.productVariantIds == data.productId) {
                       product.onhandQuantity = data.qty?.toInt();
                       product.priceListItem?.fixedPrice =
                           data.priceUnit?.toInt() ?? 0;
