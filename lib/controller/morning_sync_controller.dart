@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
+import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_table.dart';
 import 'package:offline_pos/database/table/promotion_table.dart';
 
@@ -250,7 +251,10 @@ class MorningsyncController with ChangeNotifier {
                     response.data != null) {
                   if (response.data is List) {
                     PromotionRuleTable.insertOrUpdate(response.data)
-                        .then((value) => callback?.call());
+                        .then((value) async {
+                      await insertPromotionRuleMappingTable(response.data);
+                      callback?.call();
+                    });
                   }
                 }
               },
@@ -259,5 +263,15 @@ class MorningsyncController with ChangeNotifier {
         }
       }
     });
+  }
+
+  Future<void> insertPromotionRuleMappingTable(List<dynamic> data) async {
+    for (final element in data) {
+      PromotionRule promotionRule = PromotionRule.fromJson(element);
+      for (IdAndName variant in promotionRule.validProductIds ?? []) {
+        await PromotionRuleMappingTable.insert(
+            promotionRule.id ?? 0, variant.id ?? 0, variant.name ?? '');
+      }
+    }
   }
 }

@@ -57,9 +57,11 @@ class Product {
     writeUid = int.tryParse(json['write_uid'].toString());
     writeDate = json['write_date'];
     productType = json['type'];
-    if ((json['product_variant_ids']?.isNotEmpty ?? false) &&
+    if (json['product_variant_ids'] != null &&
         json['product_variant_ids'] != "null") {
-      if (json['product_variant_ids'] is List) {
+      if (json['product_variant_ids'] is int) {
+        productVariantIds = json['product_variant_ids'];
+      } else if (json['product_variant_ids'] is List) {
         try {
           productVariantIds = json['product_variant_ids'][0];
         } catch (_) {}

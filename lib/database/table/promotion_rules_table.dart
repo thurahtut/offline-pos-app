@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/model/promotion_rule.dart';
 import 'package:sqflite/sqflite.dart';
 
 const PROMOTION_RULE_TABLE_NAME = "promotion_rule_table";
