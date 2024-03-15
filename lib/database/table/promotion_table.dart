@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
+import 'package:offline_pos/database/table/promotion_rules_table.dart';
 import 'package:offline_pos/model/promotion.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -118,5 +120,25 @@ class PromotionTable {
 
   static Future<void> deleteAll(Database db) async {
     db.rawQuery("delete from $PROMOTION_TABLE_NAME");
+  }
+
+  static Future<Promotion?> getPromotionByProductId(int productId) async {
+    final Database db = await DatabaseHelper().db;
+    String query = "SELECT * "
+        "FROM $PROMOTION_TABLE_NAME pt "
+        "left join $PROMOTION_RULE_TABLE_NAME prt"
+        "on pt.$RULE_ID = prt.$PROMOTION_RULE_ID"
+        "where prt.$PROMOTION_RULE_ID = "
+        "("
+        "	select $MAPPING_PROMOTION_RULE_ID"
+        "	from $PROMOTION_RULE_MAPPING_TABLE_NAME"
+        "	where $MAPPING_PRODUCT_ID in ($productId)"
+        ")";
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
+    if (maps.isNotEmpty) {
+      return Promotion.fromJson(maps.first);
+    }
+    return null;
   }
 }

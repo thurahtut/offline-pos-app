@@ -13,7 +13,8 @@ class PromotionRuleMappingTable {
     await db.execute("CREATE TABLE $PROMOTION_RULE_MAPPING_TABLE_NAME("
         "$MAPPING_PROMOTION_RULE_ID INTEGER,"
         "$MAPPING_PRODUCT_ID INTEGER,"
-        "$MAPPING_PRODUCT_NAME TEXT"
+        "$MAPPING_PRODUCT_NAME TEXT,"
+        "unique ($MAPPING_PROMOTION_RULE_ID, $MAPPING_PRODUCT_ID)"
         ")");
   }
 
