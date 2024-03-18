@@ -41,7 +41,8 @@ class Product {
     this.amountTax,
   });
 
-  Product.fromJson(Map<String, dynamic> json, {int? pId, String? pName}) {
+  Product.fromJson(Map<String, dynamic> json,
+      {int? pId, String? pName, bool? includedOtherField}) {
     productId = pId ?? json['id'];
     productName = pName ?? json['name'];
     categoryId = int.tryParse(json['categ_id'].toString());
@@ -86,6 +87,14 @@ class Product {
     barcode = json['barcode'];
     onhandQuantity =
         double.tryParse(json['onhand_quantity'].toString())?.toInt() ?? 0;
+    if (includedOtherField == true) {
+      if (json['priceListItem'] != null) {
+        priceListItem = PriceListItem.fromJson(json['priceListItem']);
+      }
+      if (json['amountTax'] != null) {
+        amountTax = AmountTax.fromJson(json['amountTax']);
+      }
+    }
   }
 
   Map<String, dynamic> toJson({bool? removed}) {
@@ -110,6 +119,7 @@ class Product {
     data['onhand_quantity'] = onhandQuantity?.toString();
     if (removed != true) {
       data["priceListItem"] = priceListItem?.toJson();
+      data["amountTax"] = amountTax?.toJson();
     }
     return data;
   }

@@ -21,6 +21,14 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  List<Promotion> _promotionList = [];
+  List<Promotion> get promotionList => _promotionList;
+
+  set promotionList(List<Promotion> promotionList) {
+    _promotionList = promotionList;
+    notifyListeners();
+  }
+
   notify() {
     notifyListeners();
   }
@@ -139,7 +147,13 @@ class CurrentOrderController with ChangeNotifier {
         message: '${product.productName} is not remained stock.',
       );
     }
+    int? sessionId;
     if (NavigationService.navigatorKey.currentContext != null) {
+      sessionId = NavigationService.navigatorKey.currentContext!
+              .read<LoginUserController>()
+              .posSession
+              ?.id ??
+          0;
       if (NavigationService.navigatorKey.currentContext!
               .read<CurrentOrderController>()
               .orderHistory ==
@@ -180,8 +194,12 @@ class CurrentOrderController with ChangeNotifier {
       orderProduct.firstTime = true;
       orderProduct.onhandQuantity = 1;
       currentOrderList.add(orderProduct);
-      // to check promotion
     }
+
+    // to check promotion
+    _promotionList = await PromotionTable.getPromotionByProductId(
+        orderProduct.productId ?? 0, sessionId ?? 0);
+
     notifyListeners();
     if (kIsWeb || Platform.isWindows) {
       productTextFieldFocusNode.requestFocus();
@@ -190,6 +208,10 @@ class CurrentOrderController with ChangeNotifier {
       productList: jsonEncode(currentOrderList),
     );
   }
+
+  // Future<void> updateCurrentOrderByPromotion() async{
+  //   // to update current order
+  // }
 
   Future<void> updateCurrentOrder(
     String value, {

@@ -33,8 +33,8 @@ class PromotionRule {
     this.validProductIds,
   });
 
-  PromotionRule.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  PromotionRule.fromJson(Map<String, dynamic> json, {int? ruleId}) {
+    id = ruleId ?? json['id'];
     ruleDateFrom = json['rule_date_from'];
     ruleDateTo = json['rule_date_to'];
     rulePartnersDomain = json['rule_partners_domain'];

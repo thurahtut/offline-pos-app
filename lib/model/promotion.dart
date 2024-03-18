@@ -13,12 +13,14 @@ class Promotion {
   String? discountType;
   String? rewardType;
   int? rewardProductId;
+  Product? rewardProduct;
   int? discountFixedAmount;
   String? discountApplyOn;
   int? discountMaxAmount;
   int? discountLineProductId;
   int? discountPercentage;
   List<DiscountSpecificProductIds>? discountSpecificProductIds;
+  List<Product>? discountSpecificProducts;
   int? sequence;
   int? maximumUseNumber;
   String? programType;
@@ -55,12 +57,14 @@ class Promotion {
     this.discountType,
     this.rewardType,
     this.rewardProductId,
+    this.rewardProduct,
     this.discountFixedAmount,
     this.discountApplyOn,
     this.discountMaxAmount,
     this.discountLineProductId,
     this.discountPercentage,
     this.discountSpecificProductIds,
+    this.discountSpecificProducts,
     this.sequence,
     this.maximumUseNumber,
     this.programType,
@@ -87,8 +91,12 @@ class Promotion {
     this.promotionRule,
   });
 
-  Promotion.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  Promotion.fromJson(
+    Map<String, dynamic> json, {
+    int? promoId,
+    bool? removeKey,
+  }) {
+    id = promoId ?? json['id'];
     name = json['name'];
     active = json['active'];
     ruleId = json['rule_id'];
@@ -103,7 +111,7 @@ class Promotion {
     discountMaxAmount = json['discount_max_amount'];
     discountLineProductId = json['discount_line_product_id'];
     discountPercentage = json['discount_percentage'];
-    if (json['discount_specific_product_ids'] != null) {
+    if (removeKey != true && json['discount_specific_product_ids'] != null) {
       discountSpecificProductIds = <DiscountSpecificProductIds>[];
       json['discount_specific_product_ids'].forEach((v) {
         discountSpecificProductIds!.add(DiscountSpecificProductIds.fromJson(v));
@@ -134,7 +142,7 @@ class Promotion {
     excludePosOrder = json['exclude_pos_order'];
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool? removeKey}) {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
@@ -151,7 +159,7 @@ class Promotion {
     data['discount_max_amount'] = discountMaxAmount;
     data['discount_line_product_id'] = discountLineProductId;
     data['discount_percentage'] = discountPercentage;
-    if (discountSpecificProductIds != null) {
+    if (removeKey != true && discountSpecificProductIds != null) {
       data["discount_specific_product_ids"] =
           jsonEncode(discountSpecificProductIds);
     }
@@ -183,17 +191,17 @@ class Promotion {
 }
 
 class DiscountSpecificProductIds {
-  int? product;
+  int? productId;
 
-  DiscountSpecificProductIds({this.product});
+  DiscountSpecificProductIds({this.productId});
 
   DiscountSpecificProductIds.fromJson(Map<String, dynamic> json) {
-    product = json['product_product_id'];
+    productId = json['product_product_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['product_product_id'] = product;
+    data['product_product_id'] = productId;
     return data;
   }
 }

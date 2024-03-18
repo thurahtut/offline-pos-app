@@ -42,4 +42,38 @@ class AmountTaxTable {
     }
     await batch.commit(noResult: true);
   }
+
+  static String getAmountTaxSelectKeys({
+    String? initialKey,
+    bool? jsonForm,
+    List<String>? toRemoveKeys,
+    Map<String, String>? replaceValue,
+  }) {
+    Map<String, dynamic> map = AmountTax().toJson();
+    for (var data in toRemoveKeys ?? []) {
+      map.remove(data);
+    }
+    String str = "";
+    List<String> list = [];
+    if (jsonForm == true) {
+      for (MapEntry<String, dynamic> entry in map.entries) {
+        list.add("'${entry.key}'");
+        MapEntry<String, String>? replaceMap = replaceValue?.entries
+            .firstWhere((element) => entry.key == element.key);
+        list.add(initialKey != null
+            ? "$initialKey${replaceMap != null ? replaceMap.value : entry.key}"
+            : (replaceMap != null ? replaceMap.value : entry.key));
+      }
+    } else {
+      list = initialKey != null || replaceValue != null
+          ? map.keys.map((e) {
+              MapEntry<String, String>? replaceMap = replaceValue?.entries
+                  .firstWhere((element) => e == element.key);
+              return "$initialKey${replaceMap != null ? replaceMap.value : e}";
+            }).toList()
+          : map.keys.toList();
+    }
+    str = list.join(",");
+    return str;
+  }
 }

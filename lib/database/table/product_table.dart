@@ -327,4 +327,58 @@ class ProductTable {
       return product;
     });
   }
+
+  static String getProductSelectKeys({
+    String? initialKey,
+    bool? jsonForm,
+    List<String>? toRemoveKeys,
+    bool? removed,
+    Map<String, String>? replaceValue,
+  }) {
+    Map<String, dynamic> map = Product().toJson(removed: removed);
+    for (var data in toRemoveKeys ?? []) {
+      map.remove(data);
+    }
+    String str = "";
+    List<String> list = [];
+    if (jsonForm == true) {
+      for (MapEntry<String, dynamic> entry in map.entries) {
+        list.add("'${entry.key}'");
+        MapEntry<String, String>? replaceMap = replaceValue?.entries
+            .firstWhere((element) => entry.key == element.key);
+        list.add(initialKey != null
+            ? "$initialKey${replaceMap != null ? replaceMap.value : entry.key}"
+            : (replaceMap != null ? replaceMap.value : entry.key));
+      }
+    } else {
+      list = initialKey != null || replaceValue != null
+          ? map.keys.map((e) {
+              MapEntry<String, String>? replaceMap = replaceValue?.entries
+                  .firstWhere((element) => e == element.key);
+              return "$initialKey${replaceMap != null ? replaceMap.value : e}";
+            }).toList()
+          : map.keys.toList();
+    }
+    str = list.join(",");
+    return str;
+  }
+
+  static String getProductIncludingPriceAndTax(int sessionId) {
+    return "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
+        "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
+        "and pli.$APPLIED_ON='1_product' "
+        "and (datetime($DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
+        "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
+        "left join $AMOUNT_TAX_TABLE_NAME amt "
+        "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
+        "left JOIN "
+        "( "
+        "select sum(qty) as totalQty, $PRODUCT_ID_IN_LINE "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "on $ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
+        "and $SESSION_ID =$sessionId "
+        ") line "
+        "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS ";
+  }
 }

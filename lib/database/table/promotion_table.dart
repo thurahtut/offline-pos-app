@@ -1,13 +1,14 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/amount_tax_table.dart';
+import 'package:offline_pos/database/table/discount_specific_product_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_table.dart';
-import 'package:offline_pos/model/promotion.dart';
 import 'package:sqflite/sqflite.dart';
 
 const PROMOTION_TABLE_NAME = "promotion_table";
-const PROMOTION_ID = " id";
+const PROMOTION_ID = "id";
 const PROMOTION_NAME = "name";
 const PROMOTION_ACTIVE = "active";
 const RULE_ID = "rule_id";
@@ -106,7 +107,7 @@ class PromotionTable {
       Promotion couponAndPromo = Promotion.fromJson(element);
       batch.insert(
         PROMOTION_TABLE_NAME,
-        couponAndPromo.toJson(),
+        couponAndPromo.toJson(removeKey: true),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
       if (index % 1000 == 0) {
@@ -122,23 +123,84 @@ class PromotionTable {
     db.rawQuery("delete from $PROMOTION_TABLE_NAME");
   }
 
-  static Future<Promotion?> getPromotionByProductId(int productId) async {
+  static Future<List<Promotion>> getPromotionByProductId(
+      int productId, int sessionId) async {
     final Database db = await DatabaseHelper().db;
-    String query = "SELECT * "
-        "FROM $PROMOTION_TABLE_NAME pt "
-        "left join $PROMOTION_RULE_TABLE_NAME prt"
-        "on pt.$RULE_ID = prt.$PROMOTION_RULE_ID"
+    // Map<String, String> productReplaceValue = {};
+    // productReplaceValue.putIfAbsent(PRODUCT_NAME, () => "pt.productName");
+
+    String query =
+        "SELECT *, prot.$PROMOTION_ID as promoId, prt.$PROMOTION_RULE_ID as ruleId, dpmt.discountSpecificProduct, "
+        "json_group_array(distinct json_extract(json_object("
+        "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: false)}"
+        ", 'priceListItem', json_object("
+        "${PriceListItemTable.getPriceListItemSelectKeys(initialKey: "pli.", jsonForm: true)}"
+        ")"
+        ", 'amountTax', json_object("
+        "${AmountTaxTable.getAmountTaxSelectKeys(initialKey: "amt.", jsonForm: true)}"
+        ")"
+        "), '\$' )) as rewardProduct "
+        "FROM $PROMOTION_TABLE_NAME prot "
+        "left join $PROMOTION_RULE_TABLE_NAME prt "
+        "on prot.$RULE_ID = prt.$PROMOTION_RULE_ID "
+        "left join "
+        "( select  $MAPPING_PROMOTION_ID, "
+        "json_group_array(distinct json_extract(json_object("
+        "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: false)}"
+        ", 'priceListItem', json_object("
+        "${PriceListItemTable.getPriceListItemSelectKeys(initialKey: "pli.", jsonForm: true)}"
+        ")"
+        ", 'amountTax', json_object("
+        "${AmountTaxTable.getAmountTaxSelectKeys(initialKey: "amt.", jsonForm: true)}"
+        ")"
+        "), '\$' )) as discountSpecificProduct "
+        "from $DISCOUNT_SPECIFIC_PRODUCT_MAPPING_TABLE_NAME dpmt"
+        "left join $PRODUCT_TABLE_NAME pt "
+        "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
+        "on dpmt.$DISCOUNT_MAPPING_PRODUCT_ID=pt.$PRODUCT_VARIANT_IDS "
+        "group by pt.$PRODUCT_ID "
+        ") dpmt "
+        "on prot.$PROMOTION_ID=dpmt.$MAPPING_PROMOTION_ID "
+        "left join $PRODUCT_TABLE_NAME pt "
+        "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
+        "on prot.$REWARD_PRODUCT_ID=pt.$PRODUCT_VARIANT_IDS "
         "where prt.$PROMOTION_RULE_ID = "
         "("
-        "	select $MAPPING_PROMOTION_RULE_ID"
-        "	from $PROMOTION_RULE_MAPPING_TABLE_NAME"
-        "	where $MAPPING_PRODUCT_ID in ($productId)"
+        "select $MAPPING_PROMOTION_RULE_ID "
+        "from $PROMOTION_RULE_MAPPING_TABLE_NAME "
+        "where $MAPPING_PRODUCT_ID in ($productId) "
         ")";
 
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
-    if (maps.isNotEmpty) {
-      return Promotion.fromJson(maps.first);
-    }
-    return null;
+    return List.generate(maps.length, (i) {
+      Promotion promotion =
+          Promotion.fromJson(maps[i], promoId: maps[i]["promoId"]);
+      if (maps[i]["rewardProduct"] != null) {
+        try {
+          Product? rewardProduct = Product.fromJson(
+            maps[i]["rewardProduct"],
+            includedOtherField: true,
+          );
+          promotion.rewardProduct = rewardProduct;
+        } catch (_) {}
+      }
+
+      if (maps[i]["discountSpecificProduct"] != null) {
+        for (int v = 0; v < maps[i]["discountSpecificProduct"].length; v++) {
+          try {
+            Product? discountSpecificProduct = Product.fromJson(
+              maps[i]["discountSpecificProduct"][v],
+              includedOtherField: true,
+            );
+            promotion.discountSpecificProducts?.add(discountSpecificProduct);
+          } catch (_) {}
+        }
+      }
+
+      PromotionRule promotionRule =
+          PromotionRule.fromJson(maps[i], ruleId: maps[i]["ruleId"]);
+      promotion.promotionRule = promotionRule;
+      return promotion;
+    });
   }
 }

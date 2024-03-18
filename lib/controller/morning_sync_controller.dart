@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
+import 'package:offline_pos/database/table/discount_specific_product_mapping_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_table.dart';
-import 'package:offline_pos/database/table/promotion_table.dart';
 
 class MorningsyncController with ChangeNotifier {
   final int allTask = 8;
@@ -236,8 +236,9 @@ class MorningsyncController with ChangeNotifier {
           response.statusCode == 200 &&
           response.data != null) {
         if (response.data is List) {
-          PromotionTable.insertOrUpdate(response.data).then(
-            (value) => Api.getPromotionRules(
+          PromotionTable.insertOrUpdate(response.data).then((value) async {
+            await insertDiscountSpecificProductMappingTable(response.data);
+            Api.getPromotionRules(
               configId: configId,
               onReceiveProgress: (sent, total) {
                 double value = min(((sent / total) * 50), 50) + 50;
@@ -245,21 +246,21 @@ class MorningsyncController with ChangeNotifier {
                 updateProcessingPercentage(DataSync.promotion.name, percentage);
               },
             ).then(
-              (response) {
-                if (response != null &&
-                    response.statusCode == 200 &&
-                    response.data != null) {
-                  if (response.data is List) {
-                    PromotionRuleTable.insertOrUpdate(response.data)
+              (responseRule) {
+                if (responseRule != null &&
+                    responseRule.statusCode == 200 &&
+                    responseRule.data != null) {
+                  if (responseRule.data is List) {
+                    PromotionRuleTable.insertOrUpdate(responseRule.data)
                         .then((value) async {
-                      await insertPromotionRuleMappingTable(response.data);
+                      await insertPromotionRuleMappingTable(responseRule.data);
                       callback?.call();
                     });
                   }
                 }
               },
-            ),
-          );
+            );
+          });
         }
       }
     });
@@ -271,6 +272,18 @@ class MorningsyncController with ChangeNotifier {
       for (IdAndName variant in promotionRule.validProductIds ?? []) {
         await PromotionRuleMappingTable.insert(
             promotionRule.id ?? 0, variant.id ?? 0, variant.name ?? '');
+      }
+    }
+  }
+
+  Future<void> insertDiscountSpecificProductMappingTable(
+      List<dynamic> promotions) async {
+    for (final data in promotions) {
+      Promotion promotion = Promotion.fromJson(data);
+      for (DiscountSpecificProductIds element
+          in promotion.discountSpecificProductIds ?? []) {
+        await DiscountSpecificProductMappingTable.insert(
+            promotion.id ?? 0, element.productId ?? 0);
       }
     }
   }
