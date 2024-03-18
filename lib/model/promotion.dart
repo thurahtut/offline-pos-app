@@ -98,7 +98,7 @@ class Promotion {
   }) {
     id = promoId ?? json['id'];
     name = json['name'];
-    active = json['active'];
+    active = bool.tryParse(json['active']?.toString() ?? '');
     ruleId = json['rule_id'];
     ruleDateFrom = json['rule_date_from'];
     ruleDateTo = json['rule_date_to'];
@@ -131,15 +131,17 @@ class Promotion {
     writeDate = json['write_date'];
     promoBarcode = json['promo_barcode'];
     websiteId = json['website_id'];
-    combinePromotion = json['combine_promotion'];
-    breakMultiple = json['break_multiple'];
+    combinePromotion =
+        bool.tryParse(json['combine_promotion']?.toString() ?? '');
+    breakMultiple = bool.tryParse(json['break_multiple']?.toString() ?? '');
     ownPercent = json['own_percent'];
     dealName = json['deal_name'];
     dealDetail = json['deal_detail'];
     storeType = json['store_type'];
     appSequence = json['app_sequence'];
     videoUrl = json['video_url'];
-    excludePosOrder = json['exclude_pos_order'];
+    excludePosOrder =
+        bool.tryParse(json['exclude_pos_order']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson({bool? removeKey}) {

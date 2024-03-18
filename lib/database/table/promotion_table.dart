@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
@@ -86,7 +88,7 @@ class PromotionTable {
         "$DEAL_NAME TEXT,"
         "$DEAL_DETAIL TEXT,"
         "$STORE_TYPE TEXT,"
-        "$APP_SEQUENCE TEXT,"
+        "$APP_SEQUENCE INTEGER,"
         "$VIDEO_URL TEXT,"
         "$EXCLUDE_POS_ORDER TEXT"
         ")");
@@ -131,7 +133,7 @@ class PromotionTable {
     String query =
         "SELECT *, prot.$PROMOTION_ID as promoId, prt.$PROMOTION_RULE_ID as ruleId, dpmt.discountSpecificProduct, "
         "json_group_array(distinct json_extract(json_object("
-        "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: false)}"
+        "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: true)}"
         ", 'priceListItem', json_object("
         "${PriceListItemTable.getPriceListItemSelectKeys(initialKey: "pli.", jsonForm: true)}"
         ")"
@@ -145,7 +147,7 @@ class PromotionTable {
         "left join "
         "( select  $MAPPING_PROMOTION_ID, "
         "json_group_array(distinct json_extract(json_object("
-        "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: false)}"
+        "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: true)}"
         ", 'priceListItem', json_object("
         "${PriceListItemTable.getPriceListItemSelectKeys(initialKey: "pli.", jsonForm: true)}"
         ")"
@@ -177,7 +179,7 @@ class PromotionTable {
       if (maps[i]["rewardProduct"] != null) {
         try {
           Product? rewardProduct = Product.fromJson(
-            maps[i]["rewardProduct"],
+            jsonDecode(maps[i]["rewardProduct"]),
             includedOtherField: true,
           );
           promotion.rewardProduct = rewardProduct;
@@ -185,10 +187,11 @@ class PromotionTable {
       }
 
       if (maps[i]["discountSpecificProduct"] != null) {
-        for (int v = 0; v < maps[i]["discountSpecificProduct"].length; v++) {
+        List<dynamic>? list = jsonDecode(maps[i]["discountSpecificProduct"]);
+        for (int v = 0; v < (list?.length ?? 0); v++) {
           try {
             Product? discountSpecificProduct = Product.fromJson(
-              maps[i]["discountSpecificProduct"][v],
+              list![v],
               includedOtherField: true,
             );
             promotion.discountSpecificProducts?.add(discountSpecificProduct);
