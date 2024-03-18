@@ -2,7 +2,6 @@
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
-import 'package:offline_pos/database/table/discount_specific_product_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_table.dart';
 import 'package:sqflite/sqflite.dart';
@@ -154,16 +153,16 @@ class PromotionTable {
         "${AmountTaxTable.getAmountTaxSelectKeys(initialKey: "amt.", jsonForm: true)}"
         ")"
         "), '\$' )) as discountSpecificProduct "
-        "from $DISCOUNT_SPECIFIC_PRODUCT_MAPPING_TABLE_NAME dpmt"
+        "from $DISCOUNT_SPECIFIC_PRODUCT_MAPPING_TABLE_NAME dpmt "
         "left join $PRODUCT_TABLE_NAME pt "
-        "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
         "on dpmt.$DISCOUNT_MAPPING_PRODUCT_ID=pt.$PRODUCT_VARIANT_IDS "
+        "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
         "group by pt.$PRODUCT_ID "
         ") dpmt "
         "on prot.$PROMOTION_ID=dpmt.$MAPPING_PROMOTION_ID "
         "left join $PRODUCT_TABLE_NAME pt "
-        "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
         "on prot.$REWARD_PRODUCT_ID=pt.$PRODUCT_VARIANT_IDS "
+        "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
         "where prt.$PROMOTION_RULE_ID = "
         "("
         "select $MAPPING_PROMOTION_RULE_ID "

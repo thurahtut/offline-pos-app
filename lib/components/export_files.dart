@@ -42,6 +42,7 @@ export '../database/database_helper.dart';
 export '../database/db_upgrade.dart';
 export '../database/table/app_config_table.dart';
 export '../database/table/customer_table.dart';
+export '../database/table/discount_specific_product_mapping_table.dart';
 export '../database/table/employee_table.dart';
 export '../database/table/login_user_table.dart';
 export '../database/table/order_history_table.dart';
