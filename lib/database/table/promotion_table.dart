@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
@@ -132,7 +133,7 @@ class PromotionTable {
 
     String query =
         "SELECT *, prot.$PROMOTION_ID as promoId, prt.$PROMOTION_RULE_ID as ruleId, dpmt.discountSpecificProduct, "
-        "json_group_array(distinct json_extract(json_object("
+        "json_object("
         "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: true)}"
         ", 'priceListItem', json_object("
         "${PriceListItemTable.getPriceListItemSelectKeys(initialKey: "pli.", jsonForm: true)}"
@@ -140,7 +141,7 @@ class PromotionTable {
         ", 'amountTax', json_object("
         "${AmountTaxTable.getAmountTaxSelectKeys(initialKey: "amt.", jsonForm: true)}"
         ")"
-        "), '\$' )) as rewardProduct "
+        ") as rewardProduct "
         "FROM $PROMOTION_TABLE_NAME prot "
         "left join $PROMOTION_RULE_TABLE_NAME prt "
         "on prot.$RULE_ID = prt.$PROMOTION_RULE_ID "
@@ -183,11 +184,14 @@ class PromotionTable {
             includedOtherField: true,
           );
           promotion.rewardProduct = rewardProduct;
-        } catch (_) {}
+        } catch (e) {
+          log(e.toString());
+        }
       }
 
       if (maps[i]["discountSpecificProduct"] != null) {
         List<dynamic>? list = jsonDecode(maps[i]["discountSpecificProduct"]);
+        promotion.discountSpecificProducts ??= [];
         for (int v = 0; v < (list?.length ?? 0); v++) {
           try {
             Product? discountSpecificProduct = Product.fromJson(
@@ -195,7 +199,9 @@ class PromotionTable {
               includedOtherField: true,
             );
             promotion.discountSpecificProducts?.add(discountSpecificProduct);
-          } catch (_) {}
+          } catch (e) {
+            log(e.toString());
+          }
         }
       }
 

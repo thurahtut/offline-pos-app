@@ -45,10 +45,10 @@ class PromotionRule {
     createDate = json['create_date'];
     writeUid = json['write_uid'];
     writeDate = json['write_date'];
-    isAny = json['is_any'];
+    isAny = bool.tryParse(json['is_any']?.toString() ?? '');
     if (json['valid_product_ids'] != null) {
       validProductIds = <IdAndName>[];
-      json['valid_product_ids'].forEach((v) {
+      jsonDecode(json['valid_product_ids']).forEach((v) {
         validProductIds!.add(IdAndName.fromJson(v));
       });
     }
