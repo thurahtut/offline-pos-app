@@ -48,9 +48,15 @@ class PromotionRule {
     isAny = bool.tryParse(json['is_any']?.toString() ?? '');
     if (json['valid_product_ids'] != null) {
       validProductIds = <IdAndName>[];
-      jsonDecode(json['valid_product_ids']).forEach((v) {
-        validProductIds!.add(IdAndName.fromJson(v));
-      });
+      if (json['valid_product_ids'] is String) {
+        jsonDecode(json['valid_product_ids']).forEach((v) {
+          validProductIds!.add(IdAndName.fromJson(v));
+        });
+      } else {
+        json['valid_product_ids'].forEach((v) {
+          validProductIds!.add(IdAndName.fromJson(v));
+        });
+      }
     }
   }
 

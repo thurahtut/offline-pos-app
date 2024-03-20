@@ -132,7 +132,7 @@ class PromotionTable {
     // productReplaceValue.putIfAbsent(PRODUCT_NAME, () => "pt.productName");
 
     String query =
-        "SELECT *, prot.$PROMOTION_ID as promoId, prt.$PROMOTION_RULE_ID as ruleId, dpmt.discountSpecificProduct, "
+        "SELECT *, prot.$PROMOTION_ID as promoId, prot.$PROMOTION_NAME as promoName, prt.$PROMOTION_RULE_ID as ruleId, dpmt.discountSpecificProduct, "
         "json_object("
         "${ProductTable.getProductSelectKeys(initialKey: "pt.", jsonForm: true, removed: true)}"
         ", 'priceListItem', json_object("
@@ -160,7 +160,7 @@ class PromotionTable {
         "left join $PRODUCT_TABLE_NAME pt "
         "on dpmt.$DISCOUNT_MAPPING_PRODUCT_ID=pt.$PRODUCT_VARIANT_IDS "
         "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
-        "group by pt.$PRODUCT_ID "
+        "group by $MAPPING_PROMOTION_ID "
         ") dpmt "
         "on prot.$PROMOTION_ID=dpmt.$MAPPING_PROMOTION_ID "
         "left join $PRODUCT_TABLE_NAME pt "
@@ -175,8 +175,8 @@ class PromotionTable {
 
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
     return List.generate(maps.length, (i) {
-      Promotion promotion =
-          Promotion.fromJson(maps[i], promoId: maps[i]["promoId"]);
+      Promotion promotion = Promotion.fromJson(maps[i],
+          promoId: maps[i]["promoId"], promoName: maps[i]["promoName"]);
       if (maps[i]["rewardProduct"] != null) {
         try {
           Product? rewardProduct = Product.fromJson(

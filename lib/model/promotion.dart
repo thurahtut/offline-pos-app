@@ -94,10 +94,11 @@ class Promotion {
   Promotion.fromJson(
     Map<String, dynamic> json, {
     int? promoId,
+    String? promoName,
     bool? removeKey,
   }) {
     id = promoId ?? json['id'];
-    name = json['name'];
+    name = promoName ?? json['name'];
     active = bool.tryParse(json['active']?.toString() ?? '');
     ruleId = json['rule_id'];
     ruleDateFrom = json['rule_date_from'];

@@ -21,13 +21,13 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Promotion> _promotionList = [];
-  List<Promotion> get promotionList => _promotionList;
+  // List<Promotion> _promotionList = [];
+  // List<Promotion> get promotionList => _promotionList;
 
-  set promotionList(List<Promotion> promotionList) {
-    _promotionList = promotionList;
-    notifyListeners();
-  }
+  // set promotionList(List<Promotion> promotionList) {
+  //   _promotionList = promotionList;
+  //   notifyListeners();
+  // }
 
   notify() {
     notifyListeners();
@@ -193,12 +193,21 @@ class CurrentOrderController with ChangeNotifier {
     } else {
       orderProduct.firstTime = true;
       orderProduct.onhandQuantity = 1;
+
+      // to check promotion
+      List<Promotion> promotionList =
+          await PromotionTable.getPromotionByProductId(
+              orderProduct.productId ?? 0, sessionId ?? 0);
+      orderProduct.promotionList = promotionList;
+
       currentOrderList.add(orderProduct);
     }
 
-    // to check promotion
-    _promotionList = await PromotionTable.getPromotionByProductId(
-        orderProduct.productId ?? 0, sessionId ?? 0);
+    // promotion product
+    if (orderProduct.promotionList?.isNotEmpty ?? false) {
+      List<Product> promoProductList = checkAndSetUpPromotion(orderProduct);
+      currentOrderList.addAll(promoProductList);
+    }
 
     notifyListeners();
     if (kIsWeb || Platform.isWindows) {
@@ -207,6 +216,113 @@ class CurrentOrderController with ChangeNotifier {
     PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
       productList: jsonEncode(currentOrderList),
     );
+  }
+
+  List<Product> checkAndSetUpPromotion(Product orderProduct) {
+    Promotion? promotion = orderProduct.promotionList?.firstWhere((e) {
+      return (e.promotionRule?.ruleMinQuantity ?? 0) >=
+          (orderProduct.onhandQuantity ?? 0);
+    });
+    Product? promoProduct = promotion != null
+        ? Product.fromJson(jsonDecode(jsonEncode(orderProduct)))
+        : null;
+    if (promoProduct != null && promotion != null) {
+      promoProduct.parentPromotionId = promotion.id;
+      promoProduct.isPromoItem = true;
+
+      if (promotion.discountApplyOn == "on_order") {
+        promoProduct.onOrderPromo = true;
+      }
+
+      // todo: return promoProductList
+      return calculatePromotion(promoProduct, promotion);
+    }
+    return [];
+  }
+
+  List<Product> calculatePromotion(Product promoProduct, Promotion promotion) {
+    List<Product> promoProductList = [];
+    if (promotion.rewardType == 'product') {
+      promoProductList = _rewardSpecificProductPromotion(
+          promotion, promoProductList, promoProduct);
+    } else {
+      promoProductList =
+          _rewardDiscountPromotion(promotion, promoProductList, promoProduct);
+    }
+    return promoProductList;
+  }
+
+  List<Product> _rewardSpecificProductPromotion(Promotion promotion,
+      List<Product> promoProductList, Product promoProduct) {
+    List<Product> promoProductList = [];
+    if (promotion.rewardProduct != null &&
+        promotion.rewardProduct!.productId != null) {
+      promoProductList.add(promoProduct);
+      promoProduct.priceListItem?.fixedPrice =
+          -(promoProduct.priceListItem?.fixedPrice ?? 0);
+      return promoProductList;
+    }
+    return [];
+  }
+
+  List<Product> _rewardDiscountPromotion(Promotion promotion,
+      List<Product> promoProductList, Product promoProduct) {
+    List<Product> promoProductList = [];
+    if (promotion.discountType == 'percentage') {
+      // if (promotion.discountSpecificProducts?.isNotEmpty ?? false) {
+      if (promotion.discountApplyOn == 'on_order') {
+        if (promotion.rewardProduct != null) {
+          Product product = promotion.rewardProduct!;
+          if ((promotion.discountPercentage ?? 0) > 0) {
+            Map<String, double> totalMap =
+                getTotalQty(currentOrderList); // to ask included promo or not
+            product.priceListItem?.fixedPrice = -(totalMap["total"]! *
+                    ((promotion.discountPercentage ?? 0) / 100))
+                .toInt();
+          } else if ((promotion.discountFixedAmount ?? 0) > 0) {
+            Map<String, double> totalMap =
+                getTotalQty(currentOrderList); // to ask included promo or not
+            if ((totalMap["total"]! *
+                    ((promotion.discountPercentage ?? 0) / 100)) >
+                promotion.discountFixedAmount!) {
+              product.priceListItem?.fixedPrice = -promotion
+                  .discountFixedAmount!; // to ask how about amount tax
+              promoProductList.add(product);
+            } else {
+              product.priceListItem?.fixedPrice = -(totalMap["total"]! *
+                      ((promotion.discountPercentage ?? 0) / 100))
+                  .toInt();
+            }
+          }
+        }
+      } else {
+        // promotion
+        if (promotion.rewardProduct != null) {
+          Product product = promotion.rewardProduct!;
+          if ((promotion.discountPercentage ?? 0) > 0) {
+            product.priceListItem?.fixedPrice =
+                ((promoProduct.priceListItem?.fixedPrice ?? 0) *
+                        (promotion.discountPercentage! / 100))
+                    .toInt();
+          } else if ((promotion.discountFixedAmount ?? 0) > 0) {
+            if (((promoProduct.priceListItem?.fixedPrice ?? 0) *
+                    ((promotion.discountPercentage ?? 0) / 100)) >
+                promotion.discountFixedAmount!) {
+              product.priceListItem?.fixedPrice = -promotion
+                  .discountFixedAmount!; // to ask how about amount tax
+              promoProductList.add(product);
+            } else {
+              product.priceListItem?.fixedPrice =
+                  -((promoProduct.priceListItem?.fixedPrice ?? 0) *
+                          ((promotion.discountPercentage ?? 0) / 100))
+                      .toInt();
+            }
+          }
+        }
+      }
+      // } else {}
+    }
+    return promoProductList;
   }
 
   // Future<void> updateCurrentOrderByPromotion() async{
@@ -302,6 +418,10 @@ class CurrentOrderController with ChangeNotifier {
               );
             }
           }
+        }
+        if (product.promotionList?.isNotEmpty ?? false) {
+          List<Product> promoProductList = checkAndSetUpPromotion(product);
+          currentOrderList.addAll(promoProductList);
         }
         notifyListeners();
       }

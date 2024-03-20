@@ -20,6 +20,10 @@ class Product {
   PriceListItem? priceListItem;
   bool? firstTime;
   AmountTax? amountTax;
+  List<Promotion>? promotionList;
+  int? parentPromotionId;
+  bool? isPromoItem;
+  bool? onOrderPromo;
 
   Product({
     this.productId,
@@ -39,6 +43,10 @@ class Product {
     this.priceListItem,
     this.firstTime,
     this.amountTax,
+    this.promotionList,
+    this.parentPromotionId,
+    this.isPromoItem,
+    this.onOrderPromo,
   });
 
   Product.fromJson(Map<String, dynamic> json,
@@ -120,6 +128,9 @@ class Product {
     if (removed != true) {
       data["priceListItem"] = priceListItem?.toJson();
       data["amountTax"] = amountTax?.toJson();
+      data["parentPromotionId"] = parentPromotionId;
+      data["isPromoItem"] = isPromoItem;
+      data["onOrderPromo"] = onOrderPromo;
     }
     return data;
   }
