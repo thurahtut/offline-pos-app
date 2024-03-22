@@ -363,14 +363,24 @@ class ProductTable {
     return str;
   }
 
-  static String getProductIncludingPriceAndTax(int sessionId) {
-    return "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
-        "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
-        "and pli.$APPLIED_ON='1_product' "
-        "and (datetime($DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
-        "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
-        "left join $AMOUNT_TAX_TABLE_NAME amt "
-        "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
+  static String getProductIncludingPriceAndTax(
+    int sessionId, {
+    String? productTName,
+    String? priTName,
+    String? amtTName,
+    String? lineTName,
+  }) {
+    productTName ??= "pt";
+    priTName ??= "pli";
+    amtTName ??= "amt";
+    lineTName ??= "line";
+    return "left join $PRICE_LIST_ITEM_TABLE_NAME $priTName "
+        "on $productTName.$PRODUCT_ID=$priTName.$PRODUCT_TMPL_ID "
+        "and $priTName.$APPLIED_ON='1_product' "
+        "and (datetime($priTName.$DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $priTName.$DATE_START=null or lower($priTName.$DATE_START) is null or $priTName.$DATE_START='') "
+        "and (datetime($priTName.$DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $priTName.$DATE_END=null or lower($priTName.$DATE_END) is null or $priTName.$DATE_END='') "
+        "left join $AMOUNT_TAX_TABLE_NAME $amtTName "
+        "on '[' || $amtTName.$AMOUNT_TAX_ID || ']'= $productTName.$TAXES_ID "
         "left JOIN "
         "( "
         "select sum(qty) as totalQty, $PRODUCT_ID_IN_LINE "
@@ -378,7 +388,7 @@ class ProductTable {
         "left join $ORDER_LINE_ID_TABLE_NAME olt "
         "on $ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
         "and $SESSION_ID =$sessionId "
-        ") line "
-        "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS ";
+        ") $lineTName "
+        "on $lineTName.$PRODUCT_ID_IN_LINE= $productTName.$PRODUCT_VARIANT_IDS ";
   }
 }

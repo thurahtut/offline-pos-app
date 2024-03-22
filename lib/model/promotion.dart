@@ -13,7 +13,9 @@ class Promotion {
   String? discountType;
   String? rewardType;
   int? rewardProductId;
+  int? rewardProductQuantity;
   Product? rewardProduct;
+  Product? freeProduct;
   int? discountFixedAmount;
   String? discountApplyOn;
   int? discountMaxAmount;
@@ -57,7 +59,9 @@ class Promotion {
     this.discountType,
     this.rewardType,
     this.rewardProductId,
+    this.rewardProductQuantity,
     this.rewardProduct,
+    this.freeProduct,
     this.discountFixedAmount,
     this.discountApplyOn,
     this.discountMaxAmount,
@@ -107,6 +111,7 @@ class Promotion {
     discountType = json['discount_type'];
     rewardType = json['reward_type'];
     rewardProductId = json['reward_product_id'];
+    rewardProductQuantity = json['reward_product_quantity'];
     discountFixedAmount = json['discount_fixed_amount'];
     discountApplyOn = json['discount_apply_on'];
     discountMaxAmount = json['discount_max_amount'];
@@ -157,6 +162,7 @@ class Promotion {
     data['discount_type'] = discountType;
     data['reward_type'] = rewardType;
     data['reward_product_id'] = rewardProductId;
+    data['reward_product_quantity'] = rewardProductQuantity;
     data['discount_fixed_amount'] = discountFixedAmount;
     data['discount_apply_on'] = discountApplyOn;
     data['discount_max_amount'] = discountMaxAmount;

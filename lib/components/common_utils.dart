@@ -561,6 +561,9 @@ class CommonUtils {
 
   static Future<void> saveDeletedItemLogs(
       List<DeletedProductLog> deletedProductLogs) async {
+    if (kIsWeb) {
+      return;
+    }
     String externalDir =
         await externalDirectoryPath("Offline Pos Deleted Product Log");
 
@@ -764,6 +767,9 @@ class CommonUtils {
   }
 
   static Future<void> saveAPIErrorLogs(String logs) async {
+    if (kIsWeb) {
+      return;
+    }
     String externalDir =
         await externalDirectoryPath("Offline Pos Api Error Logs");
 
@@ -825,6 +831,9 @@ class CommonUtils {
   }
 
   static Future<void> saveOrderDeleteLogs(String logs) async {
+    if (kIsWeb) {
+      return;
+    }
     String externalDir =
         await externalDirectoryPath("Offline Pos Deleted Order Logs");
 

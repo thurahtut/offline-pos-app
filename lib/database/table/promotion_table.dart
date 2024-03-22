@@ -20,6 +20,7 @@ const REWARD_ID = "reward_id";
 const DISCOUNT_TYPE = "discount_type";
 const REWARD_TYPE = "reward_type";
 const REWARD_PRODUCT_ID = "reward_product_id";
+const REWARD_PRODUCT_QUANTITY = "reward_product_quantity";
 const DISCOUNT_FIXED_AMOUNT = "discount_fixed_amount";
 const DISCOUNT_APPLY_ON = "discount_apply_on";
 const DISCOUNT_MAX_AMOUNT = "discount_max_amount";
@@ -63,6 +64,7 @@ class PromotionTable {
         "$DISCOUNT_TYPE TEXT,"
         "$REWARD_TYPE TEXT,"
         "$REWARD_PRODUCT_ID INTEGER,"
+        "$REWARD_PRODUCT_QUANTITY INTEGER,"
         "$DISCOUNT_FIXED_AMOUNT REAL,"
         "$DISCOUNT_APPLY_ON TEXT,"
         "$DISCOUNT_MAX_AMOUNT REAL,"
@@ -141,7 +143,16 @@ class PromotionTable {
         ", 'amountTax', json_object("
         "${AmountTaxTable.getAmountTaxSelectKeys(initialKey: "amt.", jsonForm: true)}"
         ")"
-        ") as rewardProduct "
+        ") as rewardProduct, "
+        "json_object("
+        "${ProductTable.getProductSelectKeys(initialKey: "ptForReward.", jsonForm: true, removed: true)}"
+        ", 'priceListItem', json_object("
+        "${PriceListItemTable.getPriceListItemSelectKeys(initialKey: "priceForReward.", jsonForm: true)}"
+        ")"
+        ", 'amountTax', json_object("
+        "${AmountTaxTable.getAmountTaxSelectKeys(initialKey: "amtForReward.", jsonForm: true)}"
+        ")"
+        ") as freeProduct "
         "FROM $PROMOTION_TABLE_NAME prot "
         "left join $PROMOTION_RULE_TABLE_NAME prt "
         "on prot.$RULE_ID = prt.$PROMOTION_RULE_ID "
@@ -164,8 +175,11 @@ class PromotionTable {
         ") dpmt "
         "on prot.$PROMOTION_ID=dpmt.$MAPPING_PROMOTION_ID "
         "left join $PRODUCT_TABLE_NAME pt "
-        "on prot.$REWARD_PRODUCT_ID=pt.$PRODUCT_VARIANT_IDS "
+        "on prot.$DISCOUNT_LINE_PRODUCT_ID=pt.$PRODUCT_VARIANT_IDS "
         "${ProductTable.getProductIncludingPriceAndTax(sessionId)} "
+        "left join $PRODUCT_TABLE_NAME ptForReward "
+        "on prot.$REWARD_PRODUCT_ID=ptForReward.$PRODUCT_VARIANT_IDS "
+        "${ProductTable.getProductIncludingPriceAndTax(sessionId, productTName: "ptForReward", priTName: "priceForReward", amtTName: "amtForReward", lineTName: "lineForReward")} "
         "where prt.$PROMOTION_RULE_ID = "
         "("
         "select $MAPPING_PROMOTION_RULE_ID "
@@ -184,6 +198,17 @@ class PromotionTable {
             includedOtherField: true,
           );
           promotion.rewardProduct = rewardProduct;
+        } catch (e) {
+          log(e.toString());
+        }
+      }
+      if (maps[i]["freeProduct"] != null) {
+        try {
+          Product? freeProduct = Product.fromJson(
+            jsonDecode(maps[i]["freeProduct"]),
+            includedOtherField: true,
+          );
+          promotion.freeProduct = freeProduct;
         } catch (e) {
           log(e.toString());
         }
