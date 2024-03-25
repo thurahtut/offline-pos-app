@@ -38,8 +38,9 @@ class PromotionRule {
     ruleDateFrom = json['rule_date_from'];
     ruleDateTo = json['rule_date_to'];
     rulePartnersDomain = json['rule_partners_domain'];
-    ruleMinQuantity = json['rule_min_quantity'];
-    ruleMinimumAmount = json['rule_minimum_amount'];
+    ruleMinQuantity = int.tryParse(json['rule_min_quantity']?.toString() ?? '');
+    ruleMinimumAmount =
+        int.tryParse(json['rule_minimum_amount']?.toString() ?? '');
     ruleMinimumAmountTaxInclusion = json['rule_minimum_amount_tax_inclusion'];
     createUid = json['create_uid'];
     createDate = json['create_date'];

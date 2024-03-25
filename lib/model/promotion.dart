@@ -39,7 +39,7 @@ class Promotion {
   int? websiteId;
   bool? combinePromotion;
   bool? breakMultiple;
-  int? ownPercent;
+  double? ownPercent;
   String? dealName;
   String? dealDetail;
   String? storeType;
@@ -144,7 +144,7 @@ class Promotion {
     combinePromotion =
         bool.tryParse(json['combine_promotion']?.toString() ?? '');
     breakMultiple = bool.tryParse(json['break_multiple']?.toString() ?? '');
-    ownPercent = json['own_percent'];
+    ownPercent = double.tryParse(json['own_percent']?.toString() ?? '');
     dealName = json['deal_name'];
     dealDetail = json['deal_detail'];
     storeType = json['store_type'];
