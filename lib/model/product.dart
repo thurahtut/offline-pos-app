@@ -117,9 +117,7 @@ class Product {
     data['write_uid'] = writeUid;
     data['write_date'] = writeDate;
     data['type'] = productType;
-    if (productVariantIds != null) {
-      data['product_variant_ids'] = productVariantIds;
-    }
+    data['product_variant_ids'] = productVariantIds;
     if (taxesId != null && taxesId!.isNotEmpty) {
       data['taxes_id'] = jsonEncode(taxesId);
     }

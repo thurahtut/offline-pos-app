@@ -240,7 +240,6 @@ class CurrentOrderController with ChangeNotifier {
       return element.isPromoItem == true &&
           element.parentPromotionId == promotion?.id;
     });
-    print(jsonEncode(currentOrderList));
     notifyListeners();
   }
 
@@ -300,8 +299,8 @@ class CurrentOrderController with ChangeNotifier {
       if (promotion.rewardProduct != null &&
           promotion.rewardProduct!.productId != null) {
         Product free = promotion.rewardProduct!;
-        free.priceListItem?.fixedPrice =
-            -(promotion.freeProduct!.priceListItem?.fixedPrice ?? 0);
+        free.priceListItem = promotion.freeProduct!.priceListItem;
+        free.priceListItem?.fixedPrice = -(free.priceListItem?.fixedPrice ?? 0);
         free.onhandQuantity = (promotion.rewardProductQuantity ?? 1) *
             (promoProduct.onhandQuantity ?? 1);
         free.parentPromotionId = promoProduct.parentPromotionId;
