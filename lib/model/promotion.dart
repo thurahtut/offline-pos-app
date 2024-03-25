@@ -20,7 +20,7 @@ class Promotion {
   String? discountApplyOn;
   int? discountMaxAmount;
   int? discountLineProductId;
-  int? discountPercentage;
+  double? discountPercentage;
   List<DiscountSpecificProductIds>? discountSpecificProductIds;
   List<Product>? discountSpecificProducts;
   int? sequence;
@@ -112,11 +112,15 @@ class Promotion {
     rewardType = json['reward_type'];
     rewardProductId = json['reward_product_id'];
     rewardProductQuantity = json['reward_product_quantity'];
-    discountFixedAmount = json['discount_fixed_amount'];
+    discountFixedAmount =
+        double.tryParse(json['discount_fixed_amount']?.toString() ?? '')
+            ?.toInt();
     discountApplyOn = json['discount_apply_on'];
-    discountMaxAmount = json['discount_max_amount'];
+    discountMaxAmount =
+        double.tryParse(json['discount_max_amount']?.toString() ?? '')?.toInt();
     discountLineProductId = json['discount_line_product_id'];
-    discountPercentage = json['discount_percentage'];
+    discountPercentage =
+        double.tryParse(json['discount_percentage']?.toString() ?? '');
     if (removeKey != true && json['discount_specific_product_ids'] != null) {
       discountSpecificProductIds = <DiscountSpecificProductIds>[];
       json['discount_specific_product_ids'].forEach((v) {
