@@ -319,8 +319,6 @@ class CurrentOrderController with ChangeNotifier {
       if (promotion.discountApplyOn == 'on_order') {
         if (promotion.rewardProduct != null) {
           Product product = promotion.rewardProduct!;
-          product.parentPromotionId = promoProduct.parentPromotionId;
-          product.isPromoItem = true;
           if ((promotion.discountPercentage ?? 0) > 0) {
             Map<String, double> totalMap =
                 getTotalQty(currentOrderList); // to ask included promo or not
@@ -328,6 +326,8 @@ class CurrentOrderController with ChangeNotifier {
                     ((promotion.discountPercentage ?? 0) / 100))
                 .toInt();
             product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+            product.parentPromotionId = promoProduct.parentPromotionId;
+            product.isPromoItem = true;
             promoProductList.add(product);
           } else if ((promotion.discountFixedAmount ?? 0) > 0) {
             Map<String, double> totalMap =
@@ -338,12 +338,16 @@ class CurrentOrderController with ChangeNotifier {
               product.priceListItem?.fixedPrice = -promotion
                   .discountFixedAmount!; // to ask how about amount tax
               product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+              product.parentPromotionId = promoProduct.parentPromotionId;
+              product.isPromoItem = true;
               promoProductList.add(product);
             } else {
               product.priceListItem?.fixedPrice = -(totalMap["total"]! *
                       ((promotion.discountPercentage ?? 0) / 100))
                   .toInt();
               product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+              product.parentPromotionId = promoProduct.parentPromotionId;
+              product.isPromoItem = true;
               promoProductList.add(product);
             }
           }
@@ -358,6 +362,8 @@ class CurrentOrderController with ChangeNotifier {
                         (promotion.discountPercentage! / 100))
                     .toInt();
             product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+            product.parentPromotionId = promoProduct.parentPromotionId;
+            product.isPromoItem = true;
             promoProductList.add(product);
           } else if ((promotion.discountFixedAmount ?? 0) > 0) {
             if (((promoProduct.priceListItem?.fixedPrice ?? 0) *
@@ -366,6 +372,8 @@ class CurrentOrderController with ChangeNotifier {
               product.priceListItem?.fixedPrice = -promotion
                   .discountFixedAmount!; // to ask how about amount tax
               product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+              product.parentPromotionId = promoProduct.parentPromotionId;
+              product.isPromoItem = true;
               promoProductList.add(product);
             } else {
               product.priceListItem?.fixedPrice =
@@ -373,6 +381,8 @@ class CurrentOrderController with ChangeNotifier {
                           ((promotion.discountPercentage ?? 0) / 100))
                       .toInt();
               product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+              product.parentPromotionId = promoProduct.parentPromotionId;
+              product.isPromoItem = true;
               promoProductList.add(product);
             }
           }
@@ -385,6 +395,8 @@ class CurrentOrderController with ChangeNotifier {
         product.priceListItem?.fixedPrice =
             -(promotion.discountFixedAmount ?? 0);
         product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+        product.parentPromotionId = promoProduct.parentPromotionId;
+        product.isPromoItem = true;
         promoProductList.add(product);
       }
     }

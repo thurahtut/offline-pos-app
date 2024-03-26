@@ -434,8 +434,8 @@ class DataSourceForOrderListScreen extends DataTableSource {
                 PendingOrderTable.insertOrUpdatePendingOrderWithDB(
                     value: jsonEncode(currentOrderController.orderHistory));
 
-                PendingOrderTable.insertOrUpdatePendingOrderWithDB(
-                    value: jsonEncode(products));
+                PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
+                    productList: jsonEncode(products));
 
                 Navigator.pushAndRemoveUntil(
                   context,

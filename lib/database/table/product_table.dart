@@ -311,7 +311,7 @@ class ProductTable {
         "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "left join $AMOUNT_TAX_TABLE_NAME amt "
         "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
-        "WHERE $PRODUCT_VARIANT_IDS in (${productIds.map((e) => "'[$e]'").join(",")}) "
+        "WHERE $PRODUCT_VARIANT_IDS in (${productIds.map((e) => e).join(",")}) "
         "Group by pt.id";
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
