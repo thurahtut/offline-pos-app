@@ -123,7 +123,8 @@ class PromotionTable {
     await batch.commit(noResult: true);
   }
 
-  static Future<void> deleteAll(Database db) async {
+  static Future<void> deleteAll({Database? db}) async {
+    db ??= await DatabaseHelper().db;
     db.rawQuery("delete from $PROMOTION_TABLE_NAME");
   }
 

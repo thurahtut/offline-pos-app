@@ -102,6 +102,13 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                     thickness: 0.3,
                   ),
                 ),
+                _promotionSyncWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
+                ),
                 _backUpWidget(controller),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -137,8 +144,7 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                 .read<ThemeSettingController>()
                 .appConfig
                 ?.productLastSyncDate = CommonUtils.getDateTimeNow().toString();
-            AppConfigTable.insertOrUpdate(
-                PRODUCT_LAST_SYNC_DATE,
+            AppConfigTable.insertOrUpdate(PRODUCT_LAST_SYNC_DATE,
                 CommonUtils.getDateTimeNow().toString());
           },
         );
@@ -217,6 +223,23 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
         context.read<MorningsyncController>().getAllPosCategory(
           () {
             controller.doneActionList.add(DataSync.posCategory.name);
+            controller.notify();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _promotionSyncWidget(MorningsyncController controller) {
+    return _syncWidget(
+      'Promotion List Sync',
+      controller.doneActionList.contains(DataSync.promotion.name),
+      percentage: controller.processingPercentage[DataSync.promotion.name],
+      onSync: () {
+        context.read<MorningsyncController>().getAllPromotion(
+          context.read<LoginUserController>().posConfig?.id ?? 0,
+          () {
+            controller.doneActionList.add(DataSync.promotion.name);
             controller.notify();
           },
         );

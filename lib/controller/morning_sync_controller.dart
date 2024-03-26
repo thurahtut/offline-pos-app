@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
-import 'package:offline_pos/database/table/discount_specific_product_mapping_table.dart';
 import 'package:offline_pos/database/table/pos_category_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_table.dart';
@@ -221,9 +220,10 @@ class MorningsyncController with ChangeNotifier {
     });
   }
 
-  void getAllPromotion(int configId, Function()? callback) {
+  Future<void> getAllPromotion(int configId, Function()? callback) async {
     currentTaskTitle = "Promotion List Sync....";
     currentReachTask = 8;
+    PromotionTable.deleteAll();
     Api.getCouponAndPromoByConfigId(
       configId: configId,
       onReceiveProgress: (sent, total) {
@@ -251,8 +251,10 @@ class MorningsyncController with ChangeNotifier {
                     responseRule.statusCode == 200 &&
                     responseRule.data != null) {
                   if (responseRule.data is List) {
+                    PromotionRuleTable.deleteAll();
                     PromotionRuleTable.insertOrUpdate(responseRule.data)
                         .then((value) async {
+                      PromotionRuleMappingTable.deleteAll();
                       await insertPromotionRuleMappingTable(responseRule.data);
                       callback?.call();
                     });
@@ -278,6 +280,7 @@ class MorningsyncController with ChangeNotifier {
 
   Future<void> insertDiscountSpecificProductMappingTable(
       List<dynamic> promotions) async {
+    DiscountSpecificProductMappingTable.deleteAll();
     for (final data in promotions) {
       Promotion promotion = Promotion.fromJson(data);
       for (DiscountSpecificProductIds element

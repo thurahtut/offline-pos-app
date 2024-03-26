@@ -41,7 +41,8 @@ class DiscountSpecificProductMappingTable {
         "VALUES($promotionId, $productProductId)");
   }
 
-  static Future<void> deleteAll(Database db) async {
+  static Future<void> deleteAll({Database? db}) async {
+    db ??= await DatabaseHelper().db;
     db.rawQuery("delete from $DISCOUNT_SPECIFIC_PRODUCT_MAPPING_TABLE_NAME");
   }
 }
