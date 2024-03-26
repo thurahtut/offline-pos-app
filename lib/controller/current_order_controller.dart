@@ -379,7 +379,16 @@ class CurrentOrderController with ChangeNotifier {
         }
       }
       // } else {}
+    } else if (promotion.rewardProduct != null) {
+      Product product = promotion.rewardProduct!;
+      if ((promotion.discountFixedAmount ?? 0) > 0) {
+        product.priceListItem?.fixedPrice =
+            -(promotion.discountFixedAmount ?? 0);
+        product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+        promoProductList.add(product);
+      }
     }
+
     return promoProductList;
   }
 
