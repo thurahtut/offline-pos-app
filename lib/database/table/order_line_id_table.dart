@@ -17,6 +17,9 @@ const CREATE_UID_IN_LINE = "create_uid";
 const DISCOUNT_IN_LINE = "discount";
 const WRITE_DATE_IN_LINE = "write_date";
 const WRITE_UID_IN_LINE = "write_uid";
+const PARENT_PROMOTION_ID = "parent_promotion_id";
+const IS_PROMO_ITEM = "is_promo_item";
+const ON_ORDER_ITEM = "on_order_item";
 
 class OrderLineIdTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -33,14 +36,18 @@ class OrderLineIdTable {
         "$CREATE_UID_IN_LINE INTEGER NOT NULL,"
         "$DISCOUNT_IN_LINE INTEGER,"
         "$WRITE_DATE_IN_LINE TEXT,"
-        "$WRITE_UID_IN_LINE INTEGER"
+        "$WRITE_UID_IN_LINE INTEGER,"
+        "$PARENT_PROMOTION_ID INTEGER,"
+        "$IS_PROMO_ITEM TEXT,"
+        "$ON_ORDER_ITEM TEXT"
         ")");
   }
 
   static Future<int> insert(
       {Database? db, required OrderLineID orderLine}) async {
     Database db = await DatabaseHelper().db;
-    return db.insert(ORDER_LINE_ID_TABLE_NAME, orderLine.toJson());
+    return db.insert(
+        ORDER_LINE_ID_TABLE_NAME, orderLine.toJson(isOnlyForDatabase: true));
   }
 
   static Future<List<OrderLineID>?> getOrderLinesByOrderId(int orderId) async {
@@ -66,7 +73,7 @@ class OrderLineIdTable {
 
     return db.update(
       ORDER_LINE_ID_TABLE_NAME,
-      orderLineID.toJson(),
+      orderLineID.toJson(isOnlyForDatabase: true),
       where: "$ORDER_LINE_ID=?",
       whereArgs: [orderLineID.id],
     );

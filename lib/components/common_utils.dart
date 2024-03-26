@@ -1046,6 +1046,9 @@ class CommonUtils {
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
           discount: 0,
+          parentPromotionId: data.parentPromotionId,
+          isPromoItem: data.isPromoItem,
+          onOrderPromo: data.onOrderPromo,
         );
         orderLineIdList.add(orderLineID);
         totalTax = (data.onhandQuantity?.toDouble() ?? 0) *

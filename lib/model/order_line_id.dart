@@ -13,6 +13,9 @@ class OrderLineID {
   String? writeDate;
   int? writeUid;
   String? barcode;
+  int? parentPromotionId;
+  bool? isPromoItem;
+  bool? onOrderPromo;
 
   OrderLineID({
     this.id,
@@ -29,6 +32,9 @@ class OrderLineID {
     this.writeDate,
     this.writeUid,
     this.barcode,
+    this.parentPromotionId,
+    this.isPromoItem,
+    this.onOrderPromo,
   });
 
   OrderLineID.fromJson(Map<String, dynamic> json) {
@@ -49,7 +55,7 @@ class OrderLineID {
     barcode = json["barcode"];
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool? isOnlyForDatabase}) {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id?.toString();
     data['order_id'] = orderId?.toString();
@@ -64,6 +70,11 @@ class OrderLineID {
     data['discount'] = discount;
     data['write_date'] = writeDate;
     data['write_uid'] = writeUid;
+    if (isOnlyForDatabase == true) {
+      data["parent_promotion_id"] = parentPromotionId;
+      data["is_promo_item"] = isPromoItem?.toString();
+      data["on_order_item"] = onOrderPromo?.toString();
+    }
     return data;
   }
 }
