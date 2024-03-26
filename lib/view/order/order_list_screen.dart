@@ -41,14 +41,70 @@ class _OrderListScreenState extends State<OrderListScreen> {
     List<OrderHistory> list = context.read<OrderListController>().orderList;
     context.read<OrderListController>().orderInfoDataSource =
         DataSourceForOrderListScreen(
-      context,
-      list,
-      context.read<OrderListController>().offset,
-      () {},
-      () {
-        getAllOrderHistory();
-      },
-    );
+            context, list, context.read<OrderListController>().offset, () {},
+            () {
+      getAllOrderHistory();
+    }, (order) {
+      if (order.state == OrderState.draft.text) {
+        OrderHistoryTable.getOrderById(order.id).then(
+          (value) {
+            if (value != null) {
+              CurrentOrderController currentOrderController =
+                  context.read<CurrentOrderController>();
+              currentOrderController.orderHistory = value;
+              currentOrderController.selectedCustomer = (value.partnerId != 0
+                  ? Customer(
+                      id: value.partnerId,
+                      name: value.partnerName,
+                    )
+                  : null);
+              List<int> productIds = [];
+              for (OrderLineID data in value.lineIds ?? []) {
+                productIds.add(data.productId ?? 0);
+              }
+              ProductTable.getProductListByIds(productIds)
+                  .then((products) async {
+                for (OrderLineID data in value.lineIds ?? []) {
+                  for (Product product in products) {
+                    if (product.productVariantIds == data.productId) {
+                      product.onhandQuantity = data.qty?.toInt();
+                      product.priceListItem?.fixedPrice =
+                          data.priceUnit?.toInt() ?? 0;
+                      if (product.isPromoItem != true) {
+                        List<Promotion> promotionList =
+                            await PromotionTable.getPromotionByProductId(
+                                product.productId ?? 0, value.sessionId ?? 0);
+                        product.promotionList = promotionList;
+                      }
+                    }
+                  }
+                }
+                currentOrderController.currentOrderList = products;
+                PendingOrderTable.insertOrUpdatePendingOrderWithDB(
+                    value: jsonEncode(currentOrderController.orderHistory));
+
+                PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
+                    productList: jsonEncode(products));
+
+                if (mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MainScreen(
+                              resetController: false,
+                            )),
+                    ModalRoute.withName("/Home"),
+                  );
+                }
+              });
+            }
+          },
+        );
+      } else {
+        Navigator.pushNamed(context, OrderDetailScreen.routeName,
+            arguments: OrderDetailScreen(orderId: order.id ?? 0));
+      }
+    });
   }
 
   @override
@@ -364,6 +420,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
   int offset;
   Function() reloadDataCallback;
   Function() deletedCallback;
+  Function(OrderHistory order) goToPOSScreen;
 
   DataSourceForOrderListScreen(
     this.context,
@@ -371,6 +428,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
     this.offset,
     this.reloadDataCallback,
     this.deletedCallback,
+    this.goToPOSScreen,
   );
 
   @override
@@ -403,56 +461,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
     OrderHistory order = orderList[index];
 
     onTap() {
-      if (order.state == OrderState.draft.text) {
-        OrderHistoryTable.getOrderById(order.id).then(
-          (value) {
-            if (value != null) {
-              CurrentOrderController currentOrderController =
-                  context.read<CurrentOrderController>();
-              currentOrderController.orderHistory = value;
-              currentOrderController.selectedCustomer = (value.partnerId != 0
-                  ? Customer(
-                      id: value.partnerId,
-                      name: value.partnerName,
-                    )
-                  : null);
-              List<int> productIds = [];
-              for (OrderLineID data in value.lineIds ?? []) {
-                productIds.add(data.productId ?? 0);
-              }
-              ProductTable.getProductListByIds(productIds).then((products) {
-                for (OrderLineID data in value.lineIds ?? []) {
-                  for (Product product in products) {
-                    if (product.productVariantIds == data.productId) {
-                      product.onhandQuantity = data.qty?.toInt();
-                      product.priceListItem?.fixedPrice =
-                          data.priceUnit?.toInt() ?? 0;
-                    }
-                  }
-                }
-                currentOrderController.currentOrderList = products;
-                PendingOrderTable.insertOrUpdatePendingOrderWithDB(
-                    value: jsonEncode(currentOrderController.orderHistory));
-
-                PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
-                    productList: jsonEncode(products));
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MainScreen(
-                            resetController: false,
-                          )),
-                  ModalRoute.withName("/Home"),
-                );
-              });
-            }
-          },
-        );
-      } else {
-        Navigator.pushNamed(context, OrderDetailScreen.routeName,
-            arguments: OrderDetailScreen(orderId: order.id ?? 0));
-      }
+      goToPOSScreen(order);
     }
 
     return DataRow(
