@@ -45,7 +45,7 @@ class PendingOrderTable {
         where: "$PENDING_NAME=?",
         whereArgs: [PENDING_ORDER]);
 
-    if (maps.isEmpty) {
+    if (maps.isEmpty || maps.first[PENDING_VALUE] == "[]") {
       return null;
     }
     return OrderHistory.fromJson(jsonDecode(maps.first[PENDING_VALUE]));
