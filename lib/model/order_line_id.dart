@@ -37,7 +37,7 @@ class OrderLineID {
     this.onOrderPromo,
   });
 
-  OrderLineID.fromJson(Map<String, dynamic> json) {
+  OrderLineID.fromJson(Map<String, dynamic> json, {bool? isOnlyForDatabase}) {
     id = int.tryParse(json['id']?.toString() ?? '');
     orderId = int.tryParse(json['order_id']?.toString() ?? '');
     productId = int.tryParse(json['product_id']?.toString() ?? '');
@@ -53,6 +53,12 @@ class OrderLineID {
     writeDate = json['write_date'];
     writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
     barcode = json["barcode"];
+    if (isOnlyForDatabase == true) {
+      parentPromotionId =
+          int.tryParse(json["parent_promotion_id"]?.toString() ?? '');
+      isPromoItem = bool.tryParse(json["is_promo_item"]?.toString() ?? '');
+      onOrderPromo = bool.tryParse(json["on_order_item"]?.toString() ?? '');
+    }
   }
 
   Map<String, dynamic> toJson({bool? isOnlyForDatabase}) {
