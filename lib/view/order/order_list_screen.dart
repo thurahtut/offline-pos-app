@@ -67,8 +67,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   .then((products) async {
                 for (OrderLineID data in value.lineIds ?? []) {
                   for (Product product in products) {
-                    Product prod =
-                        Product.fromJson(jsonDecode(jsonEncode(product)));
+                    Product prod = Product.fromJson(
+                      jsonDecode(jsonEncode(product)),
+                      includedOtherField: true,
+                    );
                     if (prod.productVariantIds == data.productId) {
                       prod.onhandQuantity = data.qty?.toInt();
                       prod.priceListItem?.fixedPrice =
