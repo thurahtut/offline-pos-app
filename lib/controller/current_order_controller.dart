@@ -143,9 +143,11 @@ class CurrentOrderController with ChangeNotifier {
   }) async {
     if (product.productType == "product" &&
         (product.onhandQuantity ?? 0) <= 0) {
-      CommonUtils.showSnackBar(
-        message: '${product.productName} is not remained stock.',
-      );
+      try {
+        CommonUtils.showSnackBar(
+          message: '${product.productName} is not remained stock.',
+        );
+      } catch (_) {}
     }
     int? sessionId;
     if (NavigationService.navigatorKey.currentContext != null) {
@@ -299,7 +301,8 @@ class CurrentOrderController with ChangeNotifier {
       if (promotion.rewardProduct != null &&
           promotion.rewardProduct!.productId != null) {
         Product free = promotion.rewardProduct!;
-        free.priceListItem = promotion.freeProduct!.priceListItem;
+        free.priceListItem = PriceListItem.fromJson(
+            jsonDecode(jsonEncode(promotion.freeProduct!.priceListItem)));
         free.priceListItem?.fixedPrice = -(free.priceListItem?.fixedPrice ?? 0);
         free.onhandQuantity = (promotion.rewardProductQuantity ?? 1) *
             (promoProduct.onhandQuantity ?? 1);
