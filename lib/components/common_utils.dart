@@ -689,6 +689,7 @@ class CommonUtils {
     BuildContext context,
     bool navigate,
   ) {
+    int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
     return ChooseCashierDialog.chooseCashierDialogWidget(context)
         .then((value) async {
       if (value == true) {
@@ -715,7 +716,8 @@ class CommonUtils {
                       name: customerName,
                     ));
           }
-          PendingOrderTable.getPendingCurrentOrderList().then((productList) {
+          PendingOrderTable.getPendingCurrentOrderList(sessionId: sessionId)
+              .then((productList) async {
             currentOrderController.currentOrderList = productList;
             createSessionAndGoToMainScreen(
               context,

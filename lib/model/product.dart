@@ -53,7 +53,7 @@ class Product {
       {int? pId, String? pName, bool? includedOtherField}) {
     productId = pId ?? json['id'];
     productName = pName ?? json['name'];
-    categoryId = int.tryParse(json['categ_id'].toString());
+    categoryId = int.tryParse(json['categ_id']?.toString() ?? '');
     isRoundingProduct =
         json['is_rounding_product'] == 1 || json['is_rounding_product'] == true
             ? true
@@ -62,8 +62,8 @@ class Product {
         ? true
         : false;
     shSecondaryUom = json['sh_secondary_uom'];
-    posCategId = int.tryParse(json['pos_categ_id'].toString());
-    writeUid = int.tryParse(json['write_uid'].toString());
+    posCategId = int.tryParse(json['pos_categ_id']?.toString() ?? '');
+    writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
     writeDate = json['write_date'];
     productType = json['type'];
     if (json['product_variant_ids'] != null &&
@@ -102,6 +102,10 @@ class Product {
       if (json['amountTax'] != null) {
         amountTax = AmountTax.fromJson(json['amountTax']);
       }
+      parentPromotionId =
+          int.tryParse(json['parentPromotionId']?.toString() ?? '');
+      isPromoItem = bool.tryParse(json['isPromoItem']?.toString() ?? '');
+      onOrderPromo = bool.tryParse(json['onOrderPromo']?.toString() ?? '');
     }
   }
 

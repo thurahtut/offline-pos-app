@@ -51,7 +51,8 @@ class PendingOrderTable {
     return OrderHistory.fromJson(jsonDecode(maps.first[PENDING_VALUE]));
   }
 
-  static Future<List<Product>> getPendingCurrentOrderList() async {
+  static Future<List<Product>> getPendingCurrentOrderList(
+      {int? sessionId}) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
 
@@ -66,13 +67,19 @@ class PendingOrderTable {
       return [];
     }
     List<dynamic> result = jsonDecode(maps.first[PENDING_VALUE]);
-    return List.generate(result.length, (i) {
-      Product product = Product.fromJson(result[i]);
-      PriceListItem? priceListItem =
-          PriceListItem.fromJson(result[i]["priceListItem"]);
-      product.priceListItem = priceListItem;
-      return product;
-    });
+    List<Product> productList = [];
+    for (Map<String, dynamic> value in result) {
+      Product product = Product.fromJson(value, includedOtherField: true);
+      if (product.isPromoItem != true) {
+        List<Promotion> promotionList =
+            await PromotionTable.getPromotionByProductId(
+                product.productId ?? 0, sessionId ?? 0);
+        product.promotionList = promotionList;
+      }
+      productList.add(product);
+    }
+
+    return productList;
   }
 
   static Future<bool> checkRowExist(
