@@ -62,13 +62,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ),
               Expanded(flex: isTabletMode == true ? 1 : 2, child: SizedBox()),
-              Expanded(child: _searchProductWidget()),
+              // Expanded(child: _searchProductWidget()),
               SizedBox(width: 16),
             ],
           ),
           ProductDetailFilter(),
-          spacer,
-          ProductCommonActionTitle(),
+          // spacer,
+          // ProductCommonActionTitle(),
           spacer,
           // context.watch<ProductDetailController>().mode ==
           //             ViewMode.create ||

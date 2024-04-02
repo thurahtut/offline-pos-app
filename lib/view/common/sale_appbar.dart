@@ -25,6 +25,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _clearSearch();
       ConnectivityResult connectivityResult =
           await (Connectivity().checkConnectivity());
       if (mounted) {
@@ -421,8 +422,8 @@ class _SaleAppBarState extends State<SaleAppBar> {
   }
 
   void _clearSearch() {
-    ItemListController itemListController = context.read<ItemListController>();
     _searchProductTextController.clear();
+    ItemListController itemListController = context.read<ItemListController>();
     _showSearchBox.value = false;
     itemListController.filterValue = null;
     itemListController.offset = 0;

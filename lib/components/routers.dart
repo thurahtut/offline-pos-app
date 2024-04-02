@@ -99,6 +99,10 @@ class Routers {
         return MaterialPageRoute(
           builder: (_) => SessionLoginScreen(),
         );
+      case PromotionListScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => PromotionListScreen(),
+        );
       // case DeletedProductLogScreen.routeName:
       //   return MaterialPageRoute(
       //     builder: (_) => DeletedProductLogScreen(),

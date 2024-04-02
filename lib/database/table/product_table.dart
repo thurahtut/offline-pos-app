@@ -363,8 +363,8 @@ class ProductTable {
     return str;
   }
 
-  static String getProductIncludingPriceAndTax(
-    int sessionId, {
+  static String getProductIncludingPriceAndTax({
+    int? sessionId,
     String? productTName,
     String? priTName,
     String? amtTName,
@@ -387,7 +387,7 @@ class ProductTable {
         "from $ORDER_HISTORY_TABLE_NAME ot "
         "left join $ORDER_LINE_ID_TABLE_NAME olt "
         "on $ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
-        "and $SESSION_ID =$sessionId "
+        "${sessionId != null ? "and $SESSION_ID =$sessionId " : ""}"
         ") $lineTName "
         "on $lineTName.$PRODUCT_ID_IN_LINE= $productTName.$PRODUCT_VARIANT_IDS ";
   }

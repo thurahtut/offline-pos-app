@@ -2,15 +2,15 @@ import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
 
-class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
-  static const String routeName = "/product_list_screen";
+class PromotionListScreen extends StatefulWidget {
+  const PromotionListScreen({super.key});
+  static const String routeName = "/promotion_list_screen";
 
   @override
-  State<ProductListScreen> createState() => _ProductListScreenState();
+  State<PromotionListScreen> createState() => _PromotionListScreenState();
 }
 
-class _ProductListScreenState extends State<ProductListScreen> {
+class _PromotionListScreenState extends State<PromotionListScreen> {
   final TextEditingController _searchProductTextController =
       TextEditingController();
   bool? _sortAscending = true;
@@ -32,27 +32,27 @@ class _ProductListScreenState extends State<ProductListScreen> {
       isTabletMode = CommonUtils.isTabletMode(context);
       isMobileMode = CommonUtils.isMobileMode(context);
       context.read<ProductDetailController>().resetProductDetailController();
-      context.read<ProductListController>().resetProductListController();
-      getAllProduct();
+      context.read<PromotionListController>().resetPromotionListController();
+      getAllPromotion();
     });
     super.initState();
   }
 
-  void getAllProduct() {
-    context.read<ProductListController>().loading = true;
-    context.read<ProductListController>().getAllProduct(
+  void getAllPromotion() {
+    context.read<PromotionListController>().loading = true;
+    context.read<PromotionListController>().getAllPromotion(
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
           callback: () {
-            updateProductListToTable();
-            context.read<ProductListController>().loading = false;
+            updatePromotionListToTable();
+            context.read<PromotionListController>().loading = false;
           },
         );
   }
 
-  Future<void> updateProductListToTable() async {
-    context.read<ProductListController>().productInfoDataSource =
-        DataSourceForProductListScreen(
-            context, context.read<ProductListController>().productList, () {});
+  Future<void> updatePromotionListToTable() async {
+    context.read<PromotionListController>().promotionInfoDataSource =
+        DataSourceForPromotionListScreen(context,
+            context.read<PromotionListController>().promotionList, () {});
   }
 
   @override
@@ -71,7 +71,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           children: [
             SizedBox(width: 16),
             Text(
-              'Products',
+              'Promotion',
               style: TextStyle(
                 color: Constants.textColor,
                 fontSize: 17,
@@ -79,12 +79,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ),
             ),
             Expanded(flex: isTabletMode == true ? 1 : 2, child: SizedBox()),
-            Expanded(child: _searchProductWidget()),
+            Expanded(child: _searchPromotionWidget()),
             SizedBox(width: 16),
           ],
         ),
         _filtersWidget(),
-        context.watch<ProductListController>().loading
+        context.watch<PromotionListController>().loading
             ? SizedBox(
                 width: 100,
                 height: 100,
@@ -108,7 +108,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
-  Widget _searchProductWidget() {
+  Widget _searchPromotionWidget() {
     return Center(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 8),
@@ -144,10 +144,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
             suffixIcon: InkWell(
               onTap: () {
                 _searchProductTextController.clear();
-                context.read<ProductListController>().filterValue = null;
-                context.read<ProductListController>().offset = 0;
-                context.read<ProductListController>().currentIndex = 1;
-                getAllProduct();
+                context.read<PromotionListController>().filterValue = null;
+                context.read<PromotionListController>().offset = 0;
+                context.read<PromotionListController>().currentIndex = 1;
+                getAllPromotion();
               },
               child: UnconstrainedBox(
                 child: SvgPicture.asset(
@@ -163,10 +163,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
             ),
           ),
           onChanged: (value) {
-            context.read<ProductListController>().filterValue = value;
-            context.read<ProductListController>().offset = 0;
-            context.read<ProductListController>().currentIndex = 1;
-            getAllProduct();
+            context.read<PromotionListController>().filterValue = value;
+            context.read<PromotionListController>().offset = 0;
+            context.read<PromotionListController>().currentIndex = 1;
+            getAllPromotion();
           },
         ),
       ),
@@ -242,7 +242,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
         child: _paginationTable(),
       ),
     );
-    return context.watch<ProductListController>().productInfoDataSource != null
+    return context.watch<PromotionListController>().promotionInfoDataSource !=
+            null
         ? Scrollbar(
             controller: scrollController,
             thumbVisibility: true,
@@ -292,8 +293,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
       border: TableBorder(
           horizontalInside:
               BorderSide(color: Constants.disableColor.withOpacity(0.81))),
-      rowsPerPage: min(context.read<ProductListController>().limit,
-          max(context.read<ProductListController>().productList.length, 1)),
+      rowsPerPage: min(context.read<PromotionListController>().limit,
+          max(context.read<PromotionListController>().promotionList.length, 1)),
       minWidth: MediaQuery.of(context).size.width,
       showCheckboxColumn: true,
       fit: FlexFit.tight,
@@ -309,55 +310,54 @@ class _ProductListScreenState extends State<ProductListScreen> {
           // onSort: (columnIndex, ascending) =>
           //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
         ),
-        CommonUtils.dataColumn(
-          // fixedWidth: isTabletMode ? 150 : 120,
-          text: 'Product Name',
-          // onSort: (columnIndex, ascending) =>
-          //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
-        ),
-        CommonUtils.dataColumn(
-          fixedWidth: isTabletMode == true ? 300 : 300,
-          text: 'Product',
-          // onSort: (columnIndex, ascending) =>
-          //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
-        ),
-        CommonUtils.dataColumn(
-          fixedWidth: isTabletMode == true ? 300 : 300,
-          text: 'Price',
-        ),
-        CommonUtils.dataColumn(
-          // fixedWidth: 180,
-          text: 'Barcode',
-        ),
-        CommonUtils.dataColumn(
-          // fixedWidth: 180,
-          text: 'Sale Price',
-        ),
-        CommonUtils.dataColumn(
-          // fixedWidth: 180,
-          text: 'Latest Price',
-        ),
-        CommonUtils.dataColumn(
-          // fixedWidth: 180,
-          text: 'Product Category',
-        ),
-        CommonUtils.dataColumn(
-          // fixedWidth: 180,
-          text: 'Product Type',
-        ),
-        DataColumn2(
-          fixedWidth: 20,
-          label: _moreInfoWidget(),
-
-          // onSort: onSort,
-        )
+        // CommonUtils.dataColumn(
+        //   // fixedWidth: isTabletMode ? 150 : 120,
+        //   text: 'Product Name',
+        //   // onSort: (columnIndex, ascending) =>
+        //   //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
+        // ),
+        // CommonUtils.dataColumn(
+        //   fixedWidth: isTabletMode == true ? 300 : 300,
+        //   text: 'Product',
+        //   // onSort: (columnIndex, ascending) =>
+        //   //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+        // ),
+        // CommonUtils.dataColumn(
+        //   fixedWidth: isTabletMode == true ? 300 : 300,
+        //   text: 'Price',
+        // ),
+        // CommonUtils.dataColumn(
+        //   // fixedWidth: 180,
+        //   text: 'Barcode',
+        // ),
+        // CommonUtils.dataColumn(
+        //   // fixedWidth: 180,
+        //   text: 'Sale Price',
+        // ),
+        // CommonUtils.dataColumn(
+        //   // fixedWidth: 180,
+        //   text: 'Latest Price',
+        // ),
+        // CommonUtils.dataColumn(
+        //   // fixedWidth: 180,
+        //   text: 'Product Category',
+        // ),
+        // CommonUtils.dataColumn(
+        //   // fixedWidth: 180,
+        //   text: 'Product Type',
+        // ),
+        // DataColumn2(
+        //   fixedWidth: 20,
+        //   label: _moreInfoWidget(),
+        //   // onSort: onSort,
+        // ),
       ],
-      source: context.read<ProductListController>().productInfoDataSource!,
+      source: context.read<PromotionListController>().promotionInfoDataSource!,
     );
   }
 
   Widget _paginationWidget() {
-    return Consumer<ProductListController>(builder: (_, controller, __) {
+    return Consumer<PromotionListController>(builder: (_, controller, __) {
       return Wrap(
         alignment: WrapAlignment.center,
         children: [
@@ -369,25 +369,25 @@ class _ProductListScreenState extends State<ProductListScreen> {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              getAllProduct();
+              getAllPromotion();
             },
             onBackToFirstPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              getAllProduct();
+              getAllPromotion();
             },
             onNextPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              getAllProduct();
+              getAllPromotion();
             },
             onGoToLastPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
-              getAllProduct();
+              getAllPromotion();
             },
             backgroundColor: Theme.of(context).colorScheme.background,
             previousPageIcon: Icons.keyboard_arrow_left,
@@ -567,14 +567,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 }
 
-class DataSourceForProductListScreen extends DataTableSource {
+class DataSourceForPromotionListScreen extends DataTableSource {
   BuildContext context;
-  late List<Product> productList;
+  late List<Promotion> promotionList;
   Function() reloadDataCallback;
 
-  DataSourceForProductListScreen(
+  DataSourceForPromotionListScreen(
     this.context,
-    this.productList,
+    this.promotionList,
     this.reloadDataCallback,
   );
   @override
@@ -582,8 +582,8 @@ class DataSourceForProductListScreen extends DataTableSource {
     return _createRow(index);
   }
 
-  void sort<T>(Comparable<T> Function(Product d) getField, bool ascending) {
-    productList.sort((a, b) {
+  void sort<T>(Comparable<T> Function(Promotion d) getField, bool ascending) {
+    promotionList.sort((a, b) {
       final aValue = getField(a);
       final bValue = getField(b);
       return ascending
@@ -597,96 +597,96 @@ class DataSourceForProductListScreen extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => productList.length;
+  int get rowCount => promotionList.length;
 
   @override
   int get selectedRowCount => 0;
 
-  onTap(Product product) {
+  onTap(Promotion promotion) {
     context.read<ProductDetailController>().mode == ViewMode.view;
-    context.read<ProductDetailController>().creatingProduct = product;
+    // context.read<ProductDetailController>().creatingProduct = promotion;
     Navigator.pushNamed(context, ProductDetailScreen.routeName);
   }
 
   DataRow _createRow(int index) {
-    Product product = productList[index];
+    Promotion promotion = promotionList[index];
     return DataRow(
       onSelectChanged: (value) {},
       cells: [
         DataCell(
-          Text('${context.read<ProductListController>().offset + index + 1}'),
+          Text('${context.read<PromotionListController>().offset + index + 1}'),
         ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(product.productName ?? ''),
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(
-            '', //product.package ??
-            style: TextStyle(
-              color: Constants.successColor,
-            ),
-          ),
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(
-            '${0} Ks', //product.price ??
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-          ),
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(product.barcode ?? ''),
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(
-            '${product.priceListItem?.fixedPrice ?? 0} Ks', //
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-          ),
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(
-            '${product.priceListItem?.fixedPrice ?? 0} Ks',
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-          ),
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(product.categoryId?.toString() ?? ''),
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(('').toUpperCase()), //product.productType?.name ??
-        ),
-        DataCell(
-          onTap: () {
-            onTap(product);
-          },
-          Text(''),
-        ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(promotion.productName ?? ''),
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(
+        //     '', //product.package ??
+        //     style: TextStyle(
+        //       color: Constants.successColor,
+        //     ),
+        //   ),
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(
+        //     '${0} Ks', //product.price ??
+        //     overflow: TextOverflow.ellipsis,
+        //     maxLines: 2,
+        //   ),
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(promotion.barcode ?? ''),
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(
+        //     '${promotion.priceListItem?.fixedPrice ?? 0} Ks', //
+        //     overflow: TextOverflow.ellipsis,
+        //     maxLines: 2,
+        //   ),
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(
+        //     '${promotion.priceListItem?.fixedPrice ?? 0} Ks',
+        //     overflow: TextOverflow.ellipsis,
+        //     maxLines: 2,
+        //   ),
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(promotion.categoryId?.toString() ?? ''),
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(('').toUpperCase()), //product.productType?.name ??
+        // ),
+        // DataCell(
+        //   onTap: () {
+        //     onTap(promotion);
+        //   },
+        //   Text(''),
+        // ),
       ],
     );
   }

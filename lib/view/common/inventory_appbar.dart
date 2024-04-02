@@ -22,11 +22,11 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
         Navigator.pushNamed(context, ProductListScreen.routeName);
       }
     },
-    {"title": "Product Variants", "onTap": (context) {}},
-    {"title": "Product Tags", "onTap": (context) {}},
-    {"title": "Custom Product Template", "onTap": (context) {}},
+    // {"title": "Product Variants", "onTap": (context) {}},
+    // {"title": "Product Tags", "onTap": (context) {}},
+    // {"title": "Custom Product Template", "onTap": (context) {}},
     // {"title": "Pricelists", "onTap": (context) {}},
-    {"title": "Product Multi UOM", "onTap": (context) {}},
+    // {"title": "Product Multi UOM", "onTap": (context) {}},
     {
       "title": "Product Packagings",
       "onTap": (context) {
@@ -39,49 +39,54 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
         Navigator.pushNamed(context, PriceItemListScreen.routeName);
       }
     },
-    {"title": "Weight Barcode", "onTap": (context) {}},
-    {"title": "Loyalty Programs", "onTap": (context) {}},
-    {"title": "Coupon Programs", "onTap": (context) {}},
-    {"title": "Notification", "onTap": (context) {}},
-  ];
-
-  final List _configurationMenuList = [
-    {"title": "Settings", "onTap": () {}},
-    {"title": "Point of Sale", "onTap": () {}},
-    {"title": "POS Theme Settings", "onTap": () {}},
-    {"title": "Shop Information", "onTap": () {}},
+    // {"title": "Weight Barcode", "onTap": (context) {}},
+    // {"title": "Loyalty Programs", "onTap": (context) {}},
     {
-      "title": "Payment Methods",
-      "onTap": () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-              PaymentMethodScreen.routeName);
-        }
+      "title": "Promotion Programs",
+      "onTap": (context) {
+        Navigator.pushNamed(context, PromotionListScreen.routeName);
       }
     },
-    {"title": "POS Discount", "onTap": () {}},
-    {"title": "Login Popup", "onTap": () {}},
-    {"title": "Coins/Bills", "onTap": () {}},
-    {"title": "Special Terms", "onTap": () {}},
-    {"title": "Multi Banners", "onTap": () {}},
-    {"title": "Member Config", "onTap": () {}},
-    {"title": "Gift Card", "onTap": () {}},
-    {"title": "Order Note", "onTap": () {}},
-    {"title": "POS Cash In/Out", "onTap": () {}},
-    {"title": "POS Product Delete History", "onTap": () {}},
-    {
-      "title": "Products",
-      "children": [
-        {"title": "POS Product Categories", "onTap": () {}},
-        {"title": "Attributes", "onTap": () {}},
-      ],
-      "onTap": () {}
-    },
-    {"title": "Advanced Loyalty Programme", "onTap": () {}},
-    {"title": "All Advanced Coupon", "onTap": () {}},
-    {"title": "Merge POS Category", "onTap": () {}},
-    {"title": "Log Track", "onTap": () {}},
+    // {"title": "Notification", "onTap": (context) {}},
   ];
+
+  // final List _configurationMenuList = [
+  //   {"title": "Settings", "onTap": () {}},
+  //   {"title": "Point of Sale", "onTap": () {}},
+  //   {"title": "POS Theme Settings", "onTap": () {}},
+  //   {"title": "Shop Information", "onTap": () {}},
+  //   {
+  //     "title": "Payment Methods",
+  //     "onTap": () {
+  //       if (NavigationService.navigatorKey.currentContext != null) {
+  //         Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+  //             PaymentMethodScreen.routeName);
+  //       }
+  //     }
+  //   },
+  //   {"title": "POS Discount", "onTap": () {}},
+  //   {"title": "Login Popup", "onTap": () {}},
+  //   {"title": "Coins/Bills", "onTap": () {}},
+  //   {"title": "Special Terms", "onTap": () {}},
+  //   {"title": "Multi Banners", "onTap": () {}},
+  //   {"title": "Member Config", "onTap": () {}},
+  //   {"title": "Gift Card", "onTap": () {}},
+  //   {"title": "Order Note", "onTap": () {}},
+  //   {"title": "POS Cash In/Out", "onTap": () {}},
+  //   {"title": "POS Product Delete History", "onTap": () {}},
+  //   {
+  //     "title": "Products",
+  //     "children": [
+  //       {"title": "POS Product Categories", "onTap": () {}},
+  //       {"title": "Attributes", "onTap": () {}},
+  //     ],
+  //     "onTap": () {}
+  //   },
+  //   {"title": "Advanced Loyalty Programme", "onTap": () {}},
+  //   {"title": "All Advanced Coupon", "onTap": () {}},
+  //   {"title": "Merge POS Category", "onTap": () {}},
+  //   {"title": "Log Track", "onTap": () {}},
+  // ];
 
   @override
   void dispose() {

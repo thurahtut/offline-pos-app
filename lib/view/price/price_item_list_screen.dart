@@ -199,18 +199,18 @@ class _PriceItemListScreenState extends State<PriceItemListScreen> {
               Expanded(
                 child: Row(
                   children: [
-                    BorderContainer(
-                      text: 'Create',
-                      containerColor: primaryColor,
-                      textColor: Colors.white,
-                      width: 150,
-                      onTap: () {
-                        context.read<PriceListItemController>().isDetail =
-                            false;
-                        context.read<PriceListItemController>().isNew = true;
-                      },
-                    ),
-                    SizedBox(width: 4),
+                    // BorderContainer(
+                    //   text: 'Create',
+                    //   containerColor: primaryColor,
+                    //   textColor: Colors.white,
+                    //   width: 150,
+                    //   onTap: () {
+                    //     context.read<PriceListItemController>().isDetail =
+                    //         false;
+                    //     context.read<PriceListItemController>().isNew = true;
+                    //   },
+                    // ),
+                    // SizedBox(width: 4),
                     CommonUtils.svgIconActionButton(
                         'assets/svg/export_notes.svg'),
                     (isTabletMode != true && isMobileMode != true)
@@ -232,17 +232,17 @@ class _PriceItemListScreenState extends State<PriceItemListScreen> {
                         CommonUtils.appBarActionButtonWithText(
                             'assets/svg/filter_alt.svg', 'Filters',
                             width: 35, height: 35),
-                        SizedBox(width: 4),
-                        CommonUtils.appBarActionButtonWithText(
-                          'assets/svg/ad_group.svg',
-                          'Group By',
-                          // width: 25,
-                        ),
-                        SizedBox(width: 4),
-                        CommonUtils.appBarActionButtonWithText(
-                          'assets/svg/favorite.svg',
-                          'Favorites',
-                        ),
+                        // SizedBox(width: 4),
+                        // CommonUtils.appBarActionButtonWithText(
+                        //   'assets/svg/ad_group.svg',
+                        //   'Group By',
+                        //   // width: 25,
+                        // ),
+                        // SizedBox(width: 4),
+                        // CommonUtils.appBarActionButtonWithText(
+                        //   'assets/svg/favorite.svg',
+                        //   'Favorites',
+                        // ),
                       ],
                     ),
                   ],

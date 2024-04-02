@@ -180,6 +180,7 @@ class OrderHistoryTable {
     String? filter,
     int? limit,
     int? offset,
+    String? typeFilter,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
@@ -190,7 +191,9 @@ class OrderHistoryTable {
         "on ct.$CUSTOMER_ID_IN_CT=ot.$PARTNER_ID "
         "left join $EMPLOYEE_TABLE_NAME emt "
         "on emt.$EMPLOYEE_ID=ot.$EMPLOYEE_ID_IN_OH "
-        "${(filter != null && filter.isNotEmpty ? "where $SEQUENCE_NUMBER LIKE '%$filter%' or lower($NAME_IN_OH) LIKE '%${filter.toLowerCase()}%' " : "")}"
+        "where 1=1 "
+        "${(filter != null && filter.isNotEmpty ? "and ($SEQUENCE_NUMBER LIKE '%$filter%' or lower(ot.$NAME_IN_OH) LIKE '%${filter.toLowerCase()}%' or lower(ot.$RECEIPT_NUMBER) LIKE '%${filter.toLowerCase()}%') " : "")}"
+        "${(typeFilter != null && typeFilter.isNotEmpty ? "and $STATE_IN_OT='$typeFilter' " : "")}"
         "group by ot.$ORDER_HISTORY_ID "
         "order by ot.$ORDER_HISTORY_ID DESC"
         "${limit != null ? " limit $limit " : " "}"

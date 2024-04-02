@@ -148,17 +148,17 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
         Expanded(
           child: Row(
             children: [
-              BorderContainer(
-                text: 'Create',
-                containerColor: primaryColor,
-                textColor: Colors.white,
-                width: 150,
-                onTap: () {
-                  // context.read<ProductPackagingController>().isDetail = false;
-                  // context.read<ProductPackagingController>().isNew = true;
-                },
-              ),
-              SizedBox(width: 4),
+              // BorderContainer(
+              //   text: 'Create',
+              //   containerColor: primaryColor,
+              //   textColor: Colors.white,
+              //   width: 150,
+              //   onTap: () {
+              //     // context.read<ProductPackagingController>().isDetail = false;
+              //     // context.read<ProductPackagingController>().isNew = true;
+              //   },
+              // ),
+              // SizedBox(width: 4),
               CommonUtils.svgIconActionButton('assets/svg/export_notes.svg'),
               (isTabletMode != true && isMobileMode != true)
                   ? Expanded(child: SizedBox())
@@ -179,27 +179,27 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                   CommonUtils.appBarActionButtonWithText(
                       'assets/svg/filter_alt.svg', 'Filters',
                       width: 35, height: 35),
-                  SizedBox(width: 4),
-                  CommonUtils.appBarActionButtonWithText(
-                    'assets/svg/ad_group.svg',
-                    'Group By',
-                    // width: 25,
-                  ),
-                  SizedBox(width: 4),
-                  CommonUtils.appBarActionButtonWithText(
-                    'assets/svg/favorite.svg',
-                    'Favorites',
-                    // width: 25,
-                  ),
-                  SizedBox(width: 4),
-                  CommonUtils.svgIconActionButton('assets/svg/view_list.svg'),
-                  SizedBox(width: 4),
-                  CommonUtils.svgIconActionButton('assets/svg/grid_view.svg'),
-                  SizedBox(width: 4),
-                  CommonUtils.svgIconActionButton(
-                      'assets/svg/calendar_month.svg'),
-                  SizedBox(width: 4),
-                  CommonUtils.svgIconActionButton('assets/svg/alarm.svg'),
+                  // SizedBox(width: 4),
+                  // CommonUtils.appBarActionButtonWithText(
+                  //   'assets/svg/ad_group.svg',
+                  //   'Group By',
+                  //   // width: 25,
+                  // ),
+                  // SizedBox(width: 4),
+                  // CommonUtils.appBarActionButtonWithText(
+                  //   'assets/svg/favorite.svg',
+                  //   'Favorites',
+                  //   // width: 25,
+                  // ),
+                  // SizedBox(width: 4),
+                  // CommonUtils.svgIconActionButton('assets/svg/view_list.svg'),
+                  // SizedBox(width: 4),
+                  // CommonUtils.svgIconActionButton('assets/svg/grid_view.svg'),
+                  // SizedBox(width: 4),
+                  // CommonUtils.svgIconActionButton(
+                  //     'assets/svg/calendar_month.svg'),
+                  // SizedBox(width: 4),
+                  // CommonUtils.svgIconActionButton('assets/svg/alarm.svg'),
                 ],
               ),
             ],
@@ -268,8 +268,7 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
       columnSpacing: 0.0,
       sortColumnIndex: _sortColumnIndex,
       sortAscending: _sortAscending ?? false,
-      headingRowColor:
-          MaterialStateColor.resolveWith((states) => primaryColor),
+      headingRowColor: MaterialStateColor.resolveWith((states) => primaryColor),
       columns: [
         CommonUtils.dataColumn(
           // fixedWidth: isTabletMode ? 150 : 120,
@@ -307,8 +306,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         value: false,
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
-                        side: MaterialStateBorderSide.resolveWith((_) =>
-                             BorderSide(width: 2, color: primaryColor)),
+                        side: MaterialStateBorderSide.resolveWith(
+                            (_) => BorderSide(width: 2, color: primaryColor)),
                         checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
@@ -318,8 +317,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         value: true,
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
-                        side: MaterialStateBorderSide.resolveWith((_) =>
-                             BorderSide(width: 2, color: primaryColor)),
+                        side: MaterialStateBorderSide.resolveWith(
+                            (_) => BorderSide(width: 2, color: primaryColor)),
                         checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
@@ -329,8 +328,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         value: true,
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
-                        side: MaterialStateBorderSide.resolveWith((_) =>
-                             BorderSide(width: 2, color: primaryColor)),
+                        side: MaterialStateBorderSide.resolveWith(
+                            (_) => BorderSide(width: 2, color: primaryColor)),
                         checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),
@@ -340,8 +339,8 @@ class _ProductPackagingScreenState extends State<ProductPackagingScreen> {
                         value: true,
                         onChanged: (bool? value) {},
                         controlAffinity: ListTileControlAffinity.leading,
-                        side: MaterialStateBorderSide.resolveWith((_) =>
-                             BorderSide(width: 2, color: primaryColor)),
+                        side: MaterialStateBorderSide.resolveWith(
+                            (_) => BorderSide(width: 2, color: primaryColor)),
                         checkColor: primaryColor,
                         fillColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white),

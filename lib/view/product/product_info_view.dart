@@ -70,15 +70,15 @@ class ProductInfoView extends StatelessWidget {
                   ],
                 ),
               ),
-              CommonUtils.svgIconActionButton(
-                'assets/svg/broken_image.svg',
-                width: 32,
-                height: 32,
-                withContianer: true,
-                containerColor: Constants.calculatorBgColor,
-                padding: 30,
-                radius: 12,
-              )
+              // CommonUtils.svgIconActionButton(
+              //   'assets/svg/broken_image.svg',
+              //   width: 32,
+              //   height: 32,
+              //   withContianer: true,
+              //   containerColor: Constants.calculatorBgColor,
+              //   padding: 30,
+              //   radius: 12,
+              // )
             ],
           ),
         ],
@@ -104,7 +104,7 @@ class ProductInfoView extends StatelessWidget {
     return CheckboxListTile(
       value:
           // context.watch<ProductDetailController>().creatingProduct.shIsBundle ??
-              false,
+          false,
       onChanged: (bool? value) {},
       contentPadding: EdgeInsets.zero,
       controlAffinity: ListTileControlAffinity.leading,
@@ -1036,8 +1036,7 @@ class ProductInfoView extends StatelessWidget {
 
   Widget _barcodeWidget(BuildContext context) {
     return TextFormField(
-      initialValue:
-          context
+      initialValue: context
               .read<ProductDetailController>()
               .creatingProduct
               .barcode
@@ -1241,8 +1240,7 @@ class ProductInfoView extends StatelessWidget {
     return RadioListTile(
       value: value,
       activeColor: primaryColor,
-      fillColor:
-          MaterialStateColor.resolveWith((states) => primaryColor),
+      fillColor: MaterialStateColor.resolveWith((states) => primaryColor),
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       groupValue: groupValue,

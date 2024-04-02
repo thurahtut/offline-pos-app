@@ -1,17 +1,19 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class OrderListController with ChangeNotifier {
-  List<OrderHistory> _orderList = [];
-  List<OrderHistory> get orderList => _orderList;
-  set orderList(List<OrderHistory> orderList) {
-    _orderList = orderList;
+class PromotionListController with ChangeNotifier {
+  List<Promotion> _promotionList = [];
+  List<Promotion> get promotionList => _promotionList;
+  set promotionList(List<Promotion> promotionList) {
+    _promotionList = promotionList;
     notifyListeners();
   }
 
-  DataSourceForOrderListScreen? _orderInfoDataSource;
-  DataSourceForOrderListScreen? get orderInfoDataSource => _orderInfoDataSource;
-  set orderInfoDataSource(DataSourceForOrderListScreen? orderInfoDataSource) {
-    _orderInfoDataSource = orderInfoDataSource;
+  DataSourceForPromotionListScreen? _promotionInfoDataSource;
+  DataSourceForPromotionListScreen? get promotionInfoDataSource =>
+      _promotionInfoDataSource;
+  set promotionInfoDataSource(
+      DataSourceForPromotionListScreen? promotionInfoDataSource) {
+    _promotionInfoDataSource = promotionInfoDataSource;
     notifyListeners();
   }
 
@@ -20,14 +22,6 @@ class OrderListController with ChangeNotifier {
   set filterValue(String? filterValue) {
     if (_filterValue == filterValue) return;
     _filterValue = filterValue;
-    notifyListeners();
-  }
-
-  String? _typefilterValue;
-  String? get typefilterValue => _typefilterValue;
-  set typefilterValue(String? typefilterValue) {
-    if (_typefilterValue == typefilterValue) return;
-    _typefilterValue = typefilterValue;
     notifyListeners();
   }
 
@@ -75,31 +69,32 @@ class OrderListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllOrderHistory() async {
-    getAllOrderHistoryCount();
-    await OrderHistoryTable.getOrderHistorysFiltering(
-      filter: filterValue,
-      typeFilter: typefilterValue,
-      limit: limit,
-      offset: offset,
-    ).then((list) {
-      orderList = [];
-      orderList.addAll(list);
-      notifyListeners();
-    });
+  Future<void> getAllPromotion({Function()? callback, int? sessionId}) async {
+    promotionList = [];
+    getTotalPromotionCount();
+    // await PromotionTable.getPromotionByProductId(
+    //   filter: filterValue,
+    //   limit: limit,
+    //   offset: offset,
+    //   sessionId: sessionId,
+    // ).then((list) {
+    //   promotionList.addAll(list);
+    //   notifyListeners();
+    //   callback?.call();
+    // });
   }
 
-  Future<void> getAllOrderHistoryCount() async {
-    OrderHistoryTable.getAllOrderHistoryCount(
+  Future<void> getTotalPromotionCount() async {
+    PromotionTable.getAllPromotionCount(
       filter: filterValue,
     ).then((count) {
       total = count;
     });
   }
 
-  resetCustomerListController() {
-    _orderList = [];
-    _orderInfoDataSource = null;
+  resetPromotionListController() {
+    _promotionList = [];
+    _promotionInfoDataSource = null;
     _currentIndex = 1;
     _total = 0;
     _offset = 0;

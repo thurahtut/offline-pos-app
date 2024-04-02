@@ -18,7 +18,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
   bool? isTabletMode;
   final scrollController = ScrollController();
 
-  static List<String> list = ["All Active Orders", "Quotation", "On Going"];
+  static List<String> stateFilterlist = [
+    "All Active Orders",
+    OrderState.draft.text,
+    OrderState.paid.text,
+  ];
 
   @override
   void dispose() {
@@ -227,7 +231,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
     );
   }
 
-  static Widget _searchCustomerWidget() {
+  Widget _searchCustomerWidget() {
     TextEditingController searchOrderTextController = TextEditingController();
     return Center(
       child: Container(
@@ -235,79 +239,103 @@ class _OrderListScreenState extends State<OrderListScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Constants.greyColor2.withOpacity(0.6),
-                blurRadius: 2,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-          child: TextField(
-            controller: searchOrderTextController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
+        child: Consumer<OrderListController>(builder: (_, controller, __) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Constants.greyColor2.withOpacity(0.6),
+                  blurRadius: 2,
+                  offset: Offset(0, 3),
                 ),
-              ),
-              contentPadding: EdgeInsets.all(8),
-              hintText: 'Search Orders',
-              hintStyle: TextStyle(fontSize: 14, color: Constants.disableColor),
-              filled: true,
-              fillColor: Constants.greyColor,
-              prefixIcon: UnconstrainedBox(
-                child: SvgPicture.asset(
-                  'assets/svg/search.svg',
-                  width: 25,
-                  height: 25,
-                  colorFilter: ColorFilter.mode(
-                    primaryColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-              suffixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("| "),
-                  DropdownButton(
-                    value: list.first,
-                    icon: Icon(
-                      Icons.keyboard_arrow_down,
-                      color: primaryColor,
-                    ),
-                    underline: Container(),
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    items: list.map((String items) {
-                      return DropdownMenuItem(
-                        value: items,
-                        child: Text(items,
-                            style: TextStyle(
-                              color: Colors.black,
-                            )),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {},
-                  ),
-                ],
-              ),
+              ],
             ),
-          ),
-        ),
+            child: TextFormField(
+              controller: searchOrderTextController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
+                ),
+                contentPadding: EdgeInsets.all(8),
+                hintText: 'Search Orders',
+                hintStyle:
+                    TextStyle(fontSize: 14, color: Constants.disableColor),
+                filled: true,
+                fillColor: Constants.greyColor,
+                prefixIcon: UnconstrainedBox(
+                  child: SvgPicture.asset(
+                    'assets/svg/search.svg',
+                    width: 25,
+                    height: 25,
+                    colorFilter: ColorFilter.mode(
+                      primaryColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("| "),
+                    DropdownButton<String>(
+                      value: stateFilterlist
+                              .contains(controller.typefilterValue ?? '')
+                          ? controller.typefilterValue
+                          : stateFilterlist.first,
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: primaryColor,
+                      ),
+                      underline: Container(),
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      items: stateFilterlist.map(
+                        (String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(
+                              items.toUpperCase(),
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue == OrderState.draft.text ||
+                            newValue == OrderState.paid.text) {
+                          controller.typefilterValue = newValue;
+                        } else {
+                          controller.typefilterValue = null;
+                        }
+                        controller.offset = 0;
+                        getAllOrderHistory();
+                      },
+                    )
+                  ],
+                ),
+              ),
+              onFieldSubmitted: (value) {
+                controller.filterValue = value.isNotEmpty ? value : null;
+                controller.offset = 0;
+                getAllOrderHistory();
+              },
+            ),
+          );
+        }),
       ),
     );
   }
 
   Widget _orderHistoryListWidget(OrderListController controller) {
     return Stack(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.bottomLeft,
       children: [
         controller.orderInfoDataSource == null
             ? SizedBox()
@@ -349,6 +377,12 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       text: 'Date',
                       // onSort: (columnIndex, ascending) =>
                       //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+                    ),
+                    CommonUtils.dataColumn(
+                      // fixedWidth: isTabletMode ? 150 : 120,
+                      text: 'Sequence Number',
+                      // onSort: (columnIndex, ascending) =>
+                      //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
                     ),
                     CommonUtils.dataColumn(
                       // fixedWidth: isTabletMode ? 150 : 120,
@@ -519,6 +553,10 @@ class DataSourceForOrderListScreen extends DataTableSource {
               order.createDate,
             ),
           ),
+          // onTap: onTap,
+        ),
+        DataCell(
+          Text(order.sequenceNumber ?? ''),
           // onTap: onTap,
         ),
         DataCell(
