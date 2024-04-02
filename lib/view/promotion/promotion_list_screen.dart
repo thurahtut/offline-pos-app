@@ -41,12 +41,11 @@ class _PromotionListScreenState extends State<PromotionListScreen> {
   void getAllPromotion() {
     context.read<PromotionListController>().loading = true;
     context.read<PromotionListController>().getAllPromotion(
-          sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
-          callback: () {
-            updatePromotionListToTable();
-            context.read<PromotionListController>().loading = false;
-          },
-        );
+      callback: () {
+        updatePromotionListToTable();
+        context.read<PromotionListController>().loading = false;
+      },
+    );
   }
 
   Future<void> updatePromotionListToTable() async {
@@ -306,51 +305,38 @@ class _PromotionListScreenState extends State<PromotionListScreen> {
       columns: [
         CommonUtils.dataColumn(
           // fixedWidth: isTabletMode ? 150 : 120,
-          text: '#',
+          text: 'No',
           // onSort: (columnIndex, ascending) =>
           //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
         ),
-        // CommonUtils.dataColumn(
-        //   // fixedWidth: isTabletMode ? 150 : 120,
-        //   text: 'Product Name',
-        //   // onSort: (columnIndex, ascending) =>
-        //   //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
-        // ),
-        // CommonUtils.dataColumn(
-        //   fixedWidth: isTabletMode == true ? 300 : 300,
-        //   text: 'Product',
-        //   // onSort: (columnIndex, ascending) =>
-        //   //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
-        // ),
-        // CommonUtils.dataColumn(
-        //   fixedWidth: isTabletMode == true ? 300 : 300,
-        //   text: 'Price',
-        // ),
-        // CommonUtils.dataColumn(
-        //   // fixedWidth: 180,
-        //   text: 'Barcode',
-        // ),
-        // CommonUtils.dataColumn(
-        //   // fixedWidth: 180,
-        //   text: 'Sale Price',
-        // ),
-        // CommonUtils.dataColumn(
-        //   // fixedWidth: 180,
-        //   text: 'Latest Price',
-        // ),
-        // CommonUtils.dataColumn(
-        //   // fixedWidth: 180,
-        //   text: 'Product Category',
-        // ),
-        // CommonUtils.dataColumn(
-        //   // fixedWidth: 180,
-        //   text: 'Product Type',
-        // ),
-        // DataColumn2(
-        //   fixedWidth: 20,
-        //   label: _moreInfoWidget(),
-        //   // onSort: onSort,
-        // ),
+        CommonUtils.dataColumn(
+          // fixedWidth: isTabletMode ? 150 : 120,
+          text: 'Name',
+          // onSort: (columnIndex, ascending) =>
+          //     sort<String>((d) => (d["name"] ?? ''), columnIndex, ascending),
+        ),
+        CommonUtils.dataColumn(
+          fixedWidth: 130,
+          text: 'Active',
+          // onSort: (columnIndex, ascending) =>
+          //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
+        ),
+        CommonUtils.dataColumn(
+          fixedWidth: 180,
+          text: 'Created On',
+        ),
+        CommonUtils.dataColumn(
+          fixedWidth: 180,
+          text: 'Start Date',
+        ),
+        CommonUtils.dataColumn(
+          fixedWidth: 180,
+          text: 'End Date',
+        ),
+        CommonUtils.dataColumn(
+          fixedWidth: 180,
+          text: 'Company',
+        ),
       ],
       source: context.read<PromotionListController>().promotionInfoDataSource!,
     );
@@ -400,171 +386,171 @@ class _PromotionListScreenState extends State<PromotionListScreen> {
     });
   }
 
-  PopupMenuButton<int> _moreInfoWidget() {
-    return PopupMenuButton(
-      tooltip: "",
-      itemBuilder: (bContext) {
-        return [
-          PopupMenuItem<int>(
-            value: 0,
-            child: Column(
-              children: [
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Responsible'),
-                ),
-                CheckboxListTile(
-                  value: true,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Favorite'),
-                ),
-                CheckboxListTile(
-                  value: true,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Website'),
-                ),
-                CheckboxListTile(
-                  value: true,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Company'),
-                ),
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Sales Price'),
-                ),
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Latest Price'),
-                ),
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Cost'),
-                ),
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('POS Product Category'),
-                ),
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Product Type'),
-                ),
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Forecasted Quantity'),
-                ),
-                CheckboxListTile(
-                  value: false,
-                  onChanged: (bool? value) {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                  side: MaterialStateBorderSide.resolveWith(
-                      (_) => BorderSide(width: 2, color: primaryColor)),
-                  checkColor: primaryColor,
-                  fillColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
-                  title: Text('Unit of Measure'),
-                ),
-                Divider(
-                  thickness: 1.3,
-                  color: Constants.disableColor.withOpacity(0.96),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CommonUtils.iconActionButton(
-                        Icons.add_rounded,
-                      ),
-                      SizedBox(width: 4),
-                      Text(
-                        'Add custom field',
-                        style: TextStyle(
-                          color: Constants.textColor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ];
-      },
-      child: Icon(
-        Icons.more_horiz_rounded,
-        color: Colors.white,
-      ),
-    );
-  }
+  // PopupMenuButton<int> _moreInfoWidget() {
+  //   return PopupMenuButton(
+  //     tooltip: "",
+  //     itemBuilder: (bContext) {
+  //       return [
+  //         PopupMenuItem<int>(
+  //           value: 0,
+  //           child: Column(
+  //             children: [
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Responsible'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: true,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Favorite'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: true,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Website'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: true,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Company'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Sales Price'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Latest Price'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Cost'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('POS Product Category'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Product Type'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Forecasted Quantity'),
+  //               ),
+  //               CheckboxListTile(
+  //                 value: false,
+  //                 onChanged: (bool? value) {},
+  //                 controlAffinity: ListTileControlAffinity.leading,
+  //                 side: MaterialStateBorderSide.resolveWith(
+  //                     (_) => BorderSide(width: 2, color: primaryColor)),
+  //                 checkColor: primaryColor,
+  //                 fillColor:
+  //                     MaterialStateColor.resolveWith((states) => Colors.white),
+  //                 title: Text('Unit of Measure'),
+  //               ),
+  //               Divider(
+  //                 thickness: 1.3,
+  //                 color: Constants.disableColor.withOpacity(0.96),
+  //               ),
+  //               InkWell(
+  //                 onTap: () {},
+  //                 child: Row(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   children: [
+  //                     CommonUtils.iconActionButton(
+  //                       Icons.add_rounded,
+  //                     ),
+  //                     SizedBox(width: 4),
+  //                     Text(
+  //                       'Add custom field',
+  //                       style: TextStyle(
+  //                         color: Constants.textColor,
+  //                         fontWeight: FontWeight.w500,
+  //                         fontSize: 16,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         ),
+  //       ];
+  //     },
+  //     child: Icon(
+  //       Icons.more_horiz_rounded,
+  //       color: Colors.white,
+  //     ),
+  //   );
+  // }
 }
 
 class DataSourceForPromotionListScreen extends DataTableSource {
@@ -616,77 +602,62 @@ class DataSourceForPromotionListScreen extends DataTableSource {
         DataCell(
           Text('${context.read<PromotionListController>().offset + index + 1}'),
         ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(promotion.productName ?? ''),
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(
-        //     '', //product.package ??
-        //     style: TextStyle(
-        //       color: Constants.successColor,
-        //     ),
-        //   ),
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(
-        //     '${0} Ks', //product.price ??
-        //     overflow: TextOverflow.ellipsis,
-        //     maxLines: 2,
-        //   ),
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(promotion.barcode ?? ''),
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(
-        //     '${promotion.priceListItem?.fixedPrice ?? 0} Ks', //
-        //     overflow: TextOverflow.ellipsis,
-        //     maxLines: 2,
-        //   ),
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(
-        //     '${promotion.priceListItem?.fixedPrice ?? 0} Ks',
-        //     overflow: TextOverflow.ellipsis,
-        //     maxLines: 2,
-        //   ),
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(promotion.categoryId?.toString() ?? ''),
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(('').toUpperCase()), //product.productType?.name ??
-        // ),
-        // DataCell(
-        //   onTap: () {
-        //     onTap(promotion);
-        //   },
-        //   Text(''),
-        // ),
+        DataCell(
+          onTap: () {
+            onTap(promotion);
+          },
+          Text(promotion.name ?? ''),
+        ),
+        DataCell(
+          onTap: () {
+            onTap(promotion);
+          },
+          Text(
+            promotion.active?.toString() ?? 'false',
+            style: TextStyle(
+              color: Constants.successColor,
+            ),
+          ),
+        ),
+        DataCell(
+          onTap: () {
+            onTap(promotion);
+          },
+          Text(
+            CommonUtils.getLocaleDateTime(
+              "hh:mm:ss dd-MM-yyyy",
+              promotion.createDate,
+            ),
+          ),
+        ),
+        DataCell(
+          onTap: () {
+            onTap(promotion);
+          },
+          Text(
+            CommonUtils.getLocaleDateTime(
+              "hh:mm:ss dd-MM-yyyy",
+              promotion.ruleDateFrom,
+            ),
+          ),
+        ),
+        DataCell(
+          onTap: () {
+            onTap(promotion);
+          },
+          Text(
+            CommonUtils.getLocaleDateTime(
+              "hh:mm:ss dd-MM-yyyy",
+              promotion.ruleDateTo,
+            ),
+          ),
+        ),
+        DataCell(
+          onTap: () {
+            onTap(promotion);
+          },
+          Text('SSS International Co.,ltd'),
+        ),
       ],
     );
   }

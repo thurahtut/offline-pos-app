@@ -69,19 +69,18 @@ class PromotionListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllPromotion({Function()? callback, int? sessionId}) async {
+  Future<void> getAllPromotion({Function()? callback}) async {
     promotionList = [];
     getTotalPromotionCount();
-    // await PromotionTable.getPromotionByProductId(
-    //   filter: filterValue,
-    //   limit: limit,
-    //   offset: offset,
-    //   sessionId: sessionId,
-    // ).then((list) {
-    //   promotionList.addAll(list);
-    //   notifyListeners();
-    //   callback?.call();
-    // });
+    await PromotionTable.getPromotionByFiltering(
+      filter: filterValue,
+      limit: limit,
+      offset: offset,
+    ).then((list) {
+      promotionList.addAll(list);
+      notifyListeners();
+      callback?.call();
+    });
   }
 
   Future<void> getTotalPromotionCount() async {

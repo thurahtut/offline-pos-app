@@ -71,7 +71,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                       () {
                 context.read<PosCategoryController>().notify();
                 Navigator.pushReplacementNamed(
-                    context, ProductListScreen.routeName);
+                    context, WelcomeScreen.routeName);
               });
             });
           } else {
