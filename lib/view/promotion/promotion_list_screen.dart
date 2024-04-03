@@ -52,6 +52,14 @@ class _PromotionListScreenState extends State<PromotionListScreen> {
     context.read<PromotionListController>().promotionInfoDataSource =
         DataSourceForPromotionListScreen(context,
             context.read<PromotionListController>().promotionList, () {});
+//todo: to delete
+    Navigator.pushNamed(
+      context,
+      PromotionListDetailScreen.routeName,
+      arguments: PromotionListDetailScreen(
+          promotion:
+              context.read<PromotionListController>().promotionList.first),
+    );
   }
 
   @override
@@ -279,23 +287,13 @@ class _PromotionListScreenState extends State<PromotionListScreen> {
       dataRowHeight: 65,
       headingRowHeight: 70,
       dividerThickness: 0.0,
-      headingCheckboxTheme: CheckboxThemeData(
-        side: MaterialStateBorderSide.resolveWith(
-            (_) => const BorderSide(width: 2, color: Colors.white)),
-        checkColor: MaterialStateProperty.all(Colors.white),
-      ),
-      datarowCheckboxTheme: CheckboxThemeData(
-        side: MaterialStateBorderSide.resolveWith(
-            (_) => BorderSide(width: 2, color: primaryColor)),
-        checkColor: MaterialStateProperty.all(primaryColor),
-      ),
       border: TableBorder(
           horizontalInside:
               BorderSide(color: Constants.disableColor.withOpacity(0.81))),
       rowsPerPage: min(context.read<PromotionListController>().limit,
           max(context.read<PromotionListController>().promotionList.length, 1)),
       minWidth: MediaQuery.of(context).size.width,
-      showCheckboxColumn: true,
+      showCheckboxColumn: false,
       fit: FlexFit.tight,
       hidePaginator: true,
       columnSpacing: 0.0,
@@ -385,172 +383,6 @@ class _PromotionListScreenState extends State<PromotionListScreen> {
       );
     });
   }
-
-  // PopupMenuButton<int> _moreInfoWidget() {
-  //   return PopupMenuButton(
-  //     tooltip: "",
-  //     itemBuilder: (bContext) {
-  //       return [
-  //         PopupMenuItem<int>(
-  //           value: 0,
-  //           child: Column(
-  //             children: [
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Responsible'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: true,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Favorite'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: true,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Website'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: true,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Company'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Sales Price'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Latest Price'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Cost'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('POS Product Category'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Product Type'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Forecasted Quantity'),
-  //               ),
-  //               CheckboxListTile(
-  //                 value: false,
-  //                 onChanged: (bool? value) {},
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 side: MaterialStateBorderSide.resolveWith(
-  //                     (_) => BorderSide(width: 2, color: primaryColor)),
-  //                 checkColor: primaryColor,
-  //                 fillColor:
-  //                     MaterialStateColor.resolveWith((states) => Colors.white),
-  //                 title: Text('Unit of Measure'),
-  //               ),
-  //               Divider(
-  //                 thickness: 1.3,
-  //                 color: Constants.disableColor.withOpacity(0.96),
-  //               ),
-  //               InkWell(
-  //                 onTap: () {},
-  //                 child: Row(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     CommonUtils.iconActionButton(
-  //                       Icons.add_rounded,
-  //                     ),
-  //                     SizedBox(width: 4),
-  //                     Text(
-  //                       'Add custom field',
-  //                       style: TextStyle(
-  //                         color: Constants.textColor,
-  //                         fontWeight: FontWeight.w500,
-  //                         fontSize: 16,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //         ),
-  //       ];
-  //     },
-  //     child: Icon(
-  //       Icons.more_horiz_rounded,
-  //       color: Colors.white,
-  //     ),
-  //   );
-  // }
 }
 
 class DataSourceForPromotionListScreen extends DataTableSource {
@@ -589,9 +421,11 @@ class DataSourceForPromotionListScreen extends DataTableSource {
   int get selectedRowCount => 0;
 
   onTap(Promotion promotion) {
-    context.read<ProductDetailController>().mode == ViewMode.view;
-    // context.read<ProductDetailController>().creatingProduct = promotion;
-    Navigator.pushNamed(context, ProductDetailScreen.routeName);
+    Navigator.pushNamed(
+      context,
+      PromotionListDetailScreen.routeName,
+      arguments: PromotionListDetailScreen(promotion: promotion),
+    );
   }
 
   DataRow _createRow(int index) {

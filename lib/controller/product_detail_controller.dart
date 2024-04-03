@@ -9,7 +9,7 @@ class ProductDetailController with ChangeNotifier {
     notifyListeners();
   }
 
-  Product _creatingProduct = Product(); 
+  Product _creatingProduct = Product();
   Product get creatingProduct => _creatingProduct;
   set creatingProduct(Product creatingProduct) {
     _creatingProduct = creatingProduct;
@@ -28,7 +28,7 @@ class ProductDetailController with ChangeNotifier {
     _isBarcodeView = isBarcodeView;
     notifyListeners();
   }
-  
+
   resetProductDetailController() {
     _mode = ViewMode.view;
     _creatingProduct = Product();

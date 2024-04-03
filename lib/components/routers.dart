@@ -103,6 +103,14 @@ class Routers {
         return MaterialPageRoute(
           builder: (_) => PromotionListScreen(),
         );
+      case PromotionListDetailScreen.routeName:
+        final PromotionListDetailScreen? args =
+            settings.arguments as PromotionListDetailScreen?;
+        return MaterialPageRoute(
+          builder: (_) => PromotionListDetailScreen(
+            promotion: args?.promotion,
+          ),
+        );
       // case DeletedProductLogScreen.routeName:
       //   return MaterialPageRoute(
       //     builder: (_) => DeletedProductLogScreen(),

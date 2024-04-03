@@ -116,6 +116,7 @@ export '../view/product/product_information_dialog.dart';
 export '../view/product/product_list_screen.dart';
 export '../view/product/product_packaging_dialog.dart';
 export '../view/product/product_packaging_screen.dart';
+export '../view/promotion/promotion_list_detail_screen.dart';
 export '../view/promotion/promotion_list_screen.dart';
 export '../view/quotation/quotation_order_list_screen.dart';
 export '../view/session/create_session_dialog.dart';

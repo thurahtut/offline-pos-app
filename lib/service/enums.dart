@@ -76,3 +76,13 @@ enum OrderCondition {
 }
 
 enum CurrentOrderKeyboardState { disc, qty, price, refund }
+
+enum DiscountApplyOn {
+  // ignore: constant_identifier_names
+  on_order("On Order"),
+  // ignore: constant_identifier_names
+  specific_products("On Specific Products");
+
+  const DiscountApplyOn(this.text);
+  final String text;
+}
