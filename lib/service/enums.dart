@@ -86,3 +86,11 @@ enum DiscountApplyOn {
   const DiscountApplyOn(this.text);
   final String text;
 }
+
+enum RewardType {
+  discount("Discount"),
+  product("Free Product");
+
+  const RewardType(this.text);
+  final String text;
+}

@@ -14,32 +14,60 @@ class PromotionListDetailScreen extends StatelessWidget {
   }
 
   Widget _bodyWidget(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width / 10, vertical: 20),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.black.withOpacity(0.6)),
-        boxShadow: [
-          BoxShadow(
-            color: Constants.greyColor2.withOpacity(0.3),
-            blurRadius: 4,
-            offset: Offset(0, 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 4),
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width / 13,
+                vertical: 20),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width / 30,
+            ),
+            child: BorderContainer(
+              text: 'Back',
+              width: 140,
+              borderWithPrimaryColor: true,
+              textColor: primaryColor,
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 1.3,
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width / 10,
+                vertical: 20),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.black.withOpacity(0.6)),
+              boxShadow: [
+                BoxShadow(
+                  color: Constants.greyColor2.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ..._promotionNameWidget(),
+                  ..._detailInfo(context),
+                ],
+              ),
+            ),
           ),
         ],
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ..._promotionNameWidget(),
-            ..._detailInfo(context),
-          ],
-        ),
       ),
     );
   }
@@ -84,7 +112,7 @@ class PromotionListDetailScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
-              children: _rightDetailWidget(),
+              children: _rightDetailWidget(context),
             ),
           )),
         ],
@@ -107,8 +135,9 @@ class PromotionListDetailScreen extends StatelessWidget {
       Divider(
         color: Constants.greyColor.withOpacity(0.7),
       ),
-      ..._basedOnProductsWidget(),
+      ..._basedOnProductsWidget(context),
       ..._quantityWidget(),
+      SizedBox(height: 50),
       ..._companyWidget(),
       ..._freeProductWidget(),
       ..._rewardQuantityWidget(),
@@ -119,7 +148,7 @@ class PromotionListDetailScreen extends StatelessWidget {
     ];
   }
 
-  List<Widget> _rightDetailWidget() {
+  List<Widget> _rightDetailWidget(BuildContext context) {
     return [
       Text(
         'Validity',
@@ -132,10 +161,15 @@ class PromotionListDetailScreen extends StatelessWidget {
       Divider(
         color: Constants.greyColor.withOpacity(0.7),
       ),
+      ..._dateWidget('Start', promotion?.ruleDateFrom),
+      ..._dateWidget('Start', promotion?.ruleDateTo),
+      SizedBox(height: 50),
+      ..._rewardTypeWidget(context),
+      ..._rewardLineProductWidget(),
     ];
   }
 
-  List<Widget> _basedOnProductsWidget() {
+  List<Widget> _basedOnProductsWidget(BuildContext context) {
     return [
       spacer,
       Row(
@@ -164,24 +198,114 @@ class PromotionListDetailScreen extends StatelessWidget {
                     ),
                   ),
                   spacer,
-                  Row(
-                    children: [
-                      Icon(Icons.arrow_forward_rounded),
-                      Text(
-                        '${promotion?.promotionRule?.validProductIds?.length ?? 0} RECORD(S)',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                  InkWell(
+                    onTap: () {
+                      _recordProductListDialog(
+                          context, promotion?.promotionRule?.validProductIds);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.arrow_forward_rounded),
+                        Text(
+                          '${promotion?.promotionRule?.validProductIds?.length ?? 0} RECORD(S)',
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               )),
         ],
       ),
     ];
+  }
+
+  Future<dynamic> _recordProductListDialog(
+      BuildContext context, List<IdAndName>? list) {
+    bool isMobileMode = CommonUtils.isMobileMode(context);
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Selected Record'),
+          content: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width / (isMobileMode ? 1 : 2),
+              padding: const EdgeInsets.all(8.0),
+              child: Column(children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width /
+                              (isMobileMode ? 1 : 2)) /
+                          3,
+                      child: Text(
+                        'Id',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Product Name',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                ...list
+                        ?.map(
+                          (e) => Column(
+                            children: [
+                              Divider(),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: (MediaQuery.of(context).size.width /
+                                            (isMobileMode ? 1 : 2)) /
+                                        3,
+                                    child: Text(e.id?.toString() ?? ''),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      e.name?.toString() ?? '',
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                        .toList() ??
+                    []
+              ]),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   List<Widget> _quantityWidget() {
@@ -246,7 +370,7 @@ class PromotionListDetailScreen extends StatelessWidget {
   }
 
   List<Widget> _freeProductWidget() {
-    return promotion?.freeProduct == null
+    return promotion?.freeProduct?.productId == null
         ? []
         : [
             spacer,
@@ -278,7 +402,7 @@ class PromotionListDetailScreen extends StatelessWidget {
   }
 
   List<Widget> _rewardQuantityWidget() {
-    return promotion?.freeProduct == null
+    return promotion?.freeProduct?.productId == null
         ? []
         : [
             spacer,
@@ -473,6 +597,106 @@ class PromotionListDetailScreen extends StatelessWidget {
                         );
                       }).toList(),
                     )),
+              ],
+            ),
+          ];
+  }
+
+  List<Widget> _dateWidget(String preText, String? value) {
+    return [
+      spacer,
+      Row(
+        children: [
+          Expanded(
+            child: Text(
+              '$preText Date',
+              style: TextStyle(
+                color: Constants.textColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              CommonUtils.getLocaleDateTime(
+                "dd/MM/yyyy hh:mm:ss",
+                value,
+              ),
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: Constants.textColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _rewardTypeWidget(BuildContext context) {
+    return [
+      spacer,
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              'Reward',
+              style: TextStyle(
+                color: Constants.textColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: RewardType.values.map((e) {
+                  return _eachRadioWidget(
+                    text: e.text,
+                    value: e.index,
+                    groupValue: promotion?.rewardType == e.name ? e.index : -1,
+                    onChanged: null,
+                  );
+                }).toList(),
+              )),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _rewardLineProductWidget() {
+    return promotion?.rewardProduct?.productId == null
+        ? []
+        : [
+            spacer,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Reware Line Product',
+                    style: TextStyle(
+                      color: Constants.textColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    '${promotion?.rewardProduct?.barcode != null ? '[${promotion?.rewardProduct!.barcode}]' : ''} ${promotion?.rewardProduct?.productName ?? ''}',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ],
             ),
           ];

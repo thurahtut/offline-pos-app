@@ -52,14 +52,6 @@ class _PromotionListScreenState extends State<PromotionListScreen> {
     context.read<PromotionListController>().promotionInfoDataSource =
         DataSourceForPromotionListScreen(context,
             context.read<PromotionListController>().promotionList, () {});
-//todo: to delete
-    Navigator.pushNamed(
-      context,
-      PromotionListDetailScreen.routeName,
-      arguments: PromotionListDetailScreen(
-          promotion:
-              context.read<PromotionListController>().promotionList.first),
-    );
   }
 
   @override
