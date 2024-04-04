@@ -115,6 +115,7 @@ class PromotionListDetailScreen extends StatelessWidget {
       ..._applyDiscountWidget(),
       ..._fixedAmountWidget(),
       ..._discountApplyOnWidget(context),
+      ..._discountSpecificProductWidget(),
     ];
   }
 
@@ -431,5 +432,49 @@ class PromotionListDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _discountSpecificProductWidget() {
+    return promotion?.discountSpecificProducts?.isEmpty ?? true
+        ? []
+        : [
+            spacer,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Products',
+                    style: TextStyle(
+                      color: Constants.textColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: promotion!.discountSpecificProducts!.map((e) {
+                        return Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Constants.textColor)),
+                          child: Text(
+                            '${e.barcode != null ? '[${e.barcode}]' : ''} ${e.productName ?? ''}',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: primaryColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    )),
+              ],
+            ),
+          ];
   }
 }

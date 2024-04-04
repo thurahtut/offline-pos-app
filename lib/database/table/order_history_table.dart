@@ -462,9 +462,12 @@ class OrderHistoryTable {
   static Future<bool> isExistDraftOrders({Database? db, int? sessionId}) async {
     db ??= await DatabaseHelper().db;
     String query = "select count() "
-        "from $ORDER_HISTORY_TABLE_NAME "
-        "where $STATE_IN_OT='${OrderState.draft.text}' "
-        "and $SESSION_ID=$sessionId";
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "on ot.$ORDER_HISTORY_ID = olt.$ORDER_ID_IN_LINE "
+        "where ot.$STATE_IN_OT='${OrderState.draft.text}' "
+        "and ot.$SESSION_ID=$sessionId "
+        "and olt.id is not null";
     final result = await db.rawQuery(query);
 
     int? count = Sqflite.firstIntValue(result);
