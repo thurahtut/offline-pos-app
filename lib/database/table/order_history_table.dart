@@ -473,4 +473,33 @@ class OrderHistoryTable {
     int? count = Sqflite.firstIntValue(result);
     return (count ?? 0) > 0;
   }
+
+  static Future<List<Map<String, dynamic>>> getTotalAmountByCategory({
+    Database? db,
+    int? sessionId,
+  }) async {
+    db ??= await DatabaseHelper().db;
+    String query =
+        "select sum(case when ot.$AMOUNT_PAID is not null then ot.$AMOUNT_PAID else 0 end) as totalAmt,"
+        "sum(case when ot.$AMOUNT_TAX is not null then ot.$AMOUNT_TAX else 0 end) as totalTax,"
+        "cat.$POS_CATEGORY_ID,cat.$POS_CATEGORY_NAME "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
+        "left join $PRODUCT_TABLE_NAME pt "
+        "on pt.$PRODUCT_VARIANT_IDS = olt.$PRODUCT_ID_IN_LINE "
+        "left join $POS_CATEGORY_TABLE_NAME cat "
+        "on cat.$POS_CATEGORY_ID = pt.$POS_CATEG_ID_IN_PT "
+        "where ot.$SESSION_ID =$sessionId "
+        "group by cat.$POS_CATEGORY_ID";
+
+    List<Map<String, dynamic>> maps = [];
+    try {
+      maps = await db.rawQuery(query);
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return maps;
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/view/report/summary_report_screen.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -110,6 +111,10 @@ class Routers {
           builder: (_) => PromotionListDetailScreen(
             promotion: args?.promotion,
           ),
+        );
+      case SummaryReportScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => SummaryReportScreen(),
         );
       // case DeletedProductLogScreen.routeName:
       //   return MaterialPageRoute(

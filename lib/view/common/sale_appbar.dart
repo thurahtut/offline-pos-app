@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:offline_pos/view/report/summary_report_screen.dart';
 
 import '../../components/export_files.dart';
 
@@ -91,46 +92,54 @@ class _SaleAppBarState extends State<SaleAppBar> {
             style: TextStyle(fontSize: 16),
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,
-          CommonUtils.appBarActionButtonWithText(
-            'assets/svg/order_approve.svg',
-            'Order',
-            fontSize: 16,
-            onPressed: () {
-              if (context
-                  .read<CurrentOrderController>()
-                  .currentOrderList
-                  .isNotEmpty) {
-                CommonUtils.uploadOrderHistoryToDatabase(
-                  context,
-                  isNavigate: false,
-                ).then((value) {
-                  context
-                      .read<CurrentOrderController>()
-                      .resetCurrentOrderController();
+          TooltipWidget(
+            message: 'Order',
+            child: CommonUtils.appBarActionButtonWithText(
+              'assets/svg/order_approve.svg',
+              'Order',
+              fontSize: 16,
+              onPressed: () {
+                if (context
+                    .read<CurrentOrderController>()
+                    .currentOrderList
+                    .isNotEmpty) {
+                  CommonUtils.uploadOrderHistoryToDatabase(
+                    context,
+                    isNavigate: false,
+                  ).then((value) {
+                    context
+                        .read<CurrentOrderController>()
+                        .resetCurrentOrderController();
+                    Navigator.pushNamed(
+                      context,
+                      OrderListScreen.routeName,
+                    );
+                  });
+                } else {
                   Navigator.pushNamed(
                     context,
                     OrderListScreen.routeName,
                   );
-                });
-              } else {
-                Navigator.pushNamed(
-                  context,
-                  OrderListScreen.routeName,
-                );
-              }
-            },
+                }
+              },
+            ),
           ),
           isTabletMode ? SizedBox(width: 10) : spacer,
-          CommonUtils.svgIconActionButton(
-            context.watch<ViewController>().hideCategory == true
-                ? 'assets/svg/category_fill.svg'
-                : 'assets/svg/category_unfill.svg',
-            width: 22,
-            height: 22,
-            onPressed: () {
-              context.read<ViewController>().hideCategory =
-                  !context.read<ViewController>().hideCategory;
-            },
+          TooltipWidget(
+            message: context.watch<ViewController>().hideCategory == true
+                ? 'Show Category'
+                : 'Hide Category',
+            child: CommonUtils.svgIconActionButton(
+              context.watch<ViewController>().hideCategory == true
+                  ? 'assets/svg/category_fill.svg'
+                  : 'assets/svg/category_unfill.svg',
+              width: 22,
+              height: 22,
+              onPressed: () {
+                context.read<ViewController>().hideCategory =
+                    !context.read<ViewController>().hideCategory;
+              },
+            ),
           ),
           ...isTabletMode ? _forTabletView : _forWindowView,
         ],
@@ -156,12 +165,15 @@ class _SaleAppBarState extends State<SaleAppBar> {
         },
       ),
       SizedBox(width: 4),
-      Consumer<ViewController>(builder: (_, controller, __) {
-        return CommonUtils.iconActionButton(
-          controller.connectedWifi ? Icons.wifi : Icons.signal_wifi_0_bar,
-          size: 30,
-        );
-      }),
+      TooltipWidget(
+        message: 'Wifi',
+        child: Consumer<ViewController>(builder: (_, controller, __) {
+          return CommonUtils.iconActionButton(
+            controller.connectedWifi ? Icons.wifi : Icons.signal_wifi_0_bar,
+            size: 30,
+          );
+        }),
+      ),
       SizedBox(width: 4),
       PopupMenuButton(
         tooltip: "",
@@ -170,6 +182,20 @@ class _SaleAppBarState extends State<SaleAppBar> {
         ),
         itemBuilder: (bContext) {
           return [
+            PopupMenuItem<int>(
+              value: 0,
+              child: TooltipWidget(
+                message: 'Summary Report',
+                child: CommonUtils.iconActionButtonWithText(
+                  Icons.assignment_rounded,
+                  'Summary Report',
+                  fontSize: 16,
+                  onPressed: () {
+                    _summaryReportAction(bContext, isPopup: true);
+                  },
+                ),
+              ),
+            ),
             PopupMenuItem<int>(
               value: 0,
               child: _cashierWidget(bContext, true),
@@ -182,25 +208,34 @@ class _SaleAppBarState extends State<SaleAppBar> {
             // ),
             PopupMenuItem<int>(
               value: 2,
-              child: CommonUtils.appBarActionButtonWithText(
-                  'assets/svg/credit_card.svg', 'Customer\'s Screen',
-                  fontSize: 16, onPressed: () {}),
+              child: TooltipWidget(
+                message: 'Customer\'s Screen',
+                child: CommonUtils.appBarActionButtonWithText(
+                    'assets/svg/credit_card.svg', 'Customer\'s Screen',
+                    fontSize: 16, onPressed: () {}),
+              ),
             ),
             PopupMenuItem<int>(
               value: 3,
-              child: CommonUtils.appBarActionButtonWithText(
-                  'assets/svg/lock_open_right.svg', 'Lock / Unlock',
-                  fontSize: 16, onPressed: () {
-                _logOut();
-              }),
+              child: TooltipWidget(
+                message: 'Lock / Unlock',
+                child: CommonUtils.appBarActionButtonWithText(
+                    'assets/svg/lock_open_right.svg', 'Lock / Unlock',
+                    fontSize: 16, onPressed: () {
+                  _logOut();
+                }),
+              ),
             ),
             PopupMenuItem<int>(
               value: 3,
-              child: CommonUtils.appBarActionButtonWithText(
-                  'assets/svg/sync.svg', 'Sync Order History', fontSize: 16,
-                  onPressed: () {
-                _syncOrderHistory();
-              }),
+              child: TooltipWidget(
+                message: 'Sync Order History',
+                child: CommonUtils.appBarActionButtonWithText(
+                    'assets/svg/sync.svg', 'Sync Order History', fontSize: 16,
+                    onPressed: () {
+                  _syncOrderHistory();
+                }),
+              ),
             ),
             PopupMenuItem<int>(
               value: 4,
@@ -213,44 +248,60 @@ class _SaleAppBarState extends State<SaleAppBar> {
   }
 
   Widget _closeSessionWidget(BuildContext bContext, bool isPopup) {
-    return CommonUtils.appBarActionButtonWithText(
-      'assets/svg/move_item.svg',
-      'Close',
-      fontSize: 16,
-      onPressed: () {
-        if (isPopup) {
-          Navigator.pop(bContext);
-        }
-        return CreateSessionDialog.createSessionDialogWidget(context, false);
-      },
+    return TooltipWidget(
+      message: 'Close Session',
+      child: CommonUtils.appBarActionButtonWithText(
+        'assets/svg/move_item.svg',
+        'Close',
+        fontSize: 16,
+        onPressed: () {
+          if (isPopup) {
+            Navigator.pop(bContext);
+          }
+          return CreateSessionDialog.createSessionDialogWidget(context, false);
+        },
+      ),
     );
   }
 
   Widget _cashierWidget(BuildContext bContext, bool isPopup) {
-    return CommonUtils.appBarActionButtonWithText(
-      'assets/svg/account_circle.svg',
-      context.watch<LoginUserController>().loginEmployee?.name != null
+    return TooltipWidget(
+      message: context.watch<LoginUserController>().loginEmployee?.name != null
           ? context.read<LoginUserController>().loginEmployee!.name!
-          : '',
-      fontSize: 16,
-      onPressed: () {
-        int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
-        OrderHistoryTable.isExistDraftOrders(sessionId: sessionId)
-            .then((value) {
-          if (value == true) {
-            CommonUtils.showSnackBar(
-              context: context,
-              message:
-                  'You can\'t change cashier due to existing draft orders.',
-            );
-          } else {
-            if (isPopup) {
-              Navigator.pop(bContext);
+          : 'Account',
+      child: CommonUtils.appBarActionButtonWithText(
+        'assets/svg/account_circle.svg',
+        context.watch<LoginUserController>().loginEmployee?.name != null
+            ? context.read<LoginUserController>().loginEmployee!.name!
+            : '',
+        fontSize: 16,
+        onPressed: () {
+          int sessionId =
+              context.read<LoginUserController>().posSession?.id ?? 0;
+          OrderHistoryTable.isExistDraftOrders(sessionId: sessionId)
+              .then((value) {
+            if (value == true) {
+              CommonUtils.showSnackBar(
+                context: context,
+                message:
+                    'You can\'t change cashier due to existing draft orders.',
+              );
+            } else {
+              if (isPopup) {
+                Navigator.pop(bContext);
+              }
+              CommonUtils.sessionLoginMethod(context, false);
             }
-            CommonUtils.sessionLoginMethod(context, false);
-          }
-        });
-      },
+          });
+        },
+      ),
+    );
+  }
+
+  void _summaryReportAction(BuildContext bContext, {bool? isPopup}) {
+    Navigator.pushNamed(
+      context,
+      SummaryReportScreen.routeName,
     );
   }
 
@@ -327,26 +378,48 @@ class _SaleAppBarState extends State<SaleAppBar> {
       //   'assets/svg/network_wifi.svg',
       // ),
       spacer,
-      CommonUtils.svgIconActionButton(
-        'assets/svg/credit_card.svg',
+      TooltipWidget(
+        message: 'Customer\'s Screen',
+        child: CommonUtils.svgIconActionButton(
+          'assets/svg/credit_card.svg',
+        ),
       ),
       spacer,
-      CommonUtils.svgIconActionButton('assets/svg/lock_open_right.svg',
+      TooltipWidget(
+        message: 'Lock / Unlock',
+        child: CommonUtils.svgIconActionButton('assets/svg/lock_open_right.svg',
+            onPressed: () {
+          _logOut();
+        }),
+      ),
+      spacer,
+      TooltipWidget(
+        message: 'Summary Report',
+        child: CommonUtils.iconActionButton(
+          Icons.assignment_rounded,
           onPressed: () {
-        _logOut();
-      }),
+            _summaryReportAction(context);
+          },
+        ),
+      ),
       spacer,
-      Consumer<ViewController>(builder: (_, controller, __) {
-        return CommonUtils.iconActionButton(
-          controller.connectedWifi ? Icons.wifi : Icons.signal_wifi_0_bar,
-          size: 30,
-        );
-      }),
+      TooltipWidget(
+        message: 'Wifi',
+        child: Consumer<ViewController>(builder: (_, controller, __) {
+          return CommonUtils.iconActionButton(
+            controller.connectedWifi ? Icons.wifi : Icons.signal_wifi_0_bar,
+            size: 30,
+          );
+        }),
+      ),
       spacer,
-      CommonUtils.svgIconActionButton('assets/svg/sync.svg',
-          width: 30, height: 30, onPressed: () {
-        _syncOrderHistory();
-      }),
+      TooltipWidget(
+        message: 'Sync Order History',
+        child: CommonUtils.svgIconActionButton('assets/svg/sync.svg',
+            width: 30, height: 30, onPressed: () {
+          _syncOrderHistory();
+        }),
+      ),
       spacer,
       _closeSessionWidget(context, false),
     ];

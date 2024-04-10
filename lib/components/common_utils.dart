@@ -513,26 +513,6 @@ class CommonUtils {
     );
   }
 
-  static List<String> categoryList = [
-    "Dry Grocery",
-    "Food To Go",
-    "Men Wears",
-    "Women Wears",
-    "B.W.S , Wine, Accessories and Tabacco",
-    "Basic Grocery",
-    "Beverage",
-    "Bakery",
-    "Butchery",
-    "Cosmetic",
-    "Kitchen Accessories",
-    "Drink",
-    "Alcohol",
-    "Juice",
-    "Water",
-    "Tissue",
-    "Electronic"
-  ];
-
   static List<String> unitList = [
     "none",
     "mm",

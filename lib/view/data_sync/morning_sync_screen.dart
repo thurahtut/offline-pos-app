@@ -1,5 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/database/table/pos_category_table.dart';
+import 'package:offline_pos/view/report/summary_report_screen.dart';
 
 class MorningSyncScreen extends StatefulWidget {
   const MorningSyncScreen({super.key, required this.alreadyLogin});
@@ -71,7 +71,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                       () {
                 context.read<PosCategoryController>().notify();
                 Navigator.pushReplacementNamed(
-                    context, WelcomeScreen.routeName);
+                    context, SummaryReportScreen.routeName);
               });
             });
           } else {
