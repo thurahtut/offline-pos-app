@@ -260,6 +260,7 @@ class OrderHistoryTable {
         "'$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL, "
         "'$DISCOUNT_IN_LINE', 0.0, '$CREATE_DATE_IN_LINE', olt.$CREATE_DATE_IN_LINE, '$CREATE_UID_IN_LINE', olt.$CREATE_UID_IN_LINE "
         "${isCloseSession != true ? ", '$IS_PROMO_ITEM' , olt.$IS_PROMO_ITEM, '$PARENT_PROMOTION_ID', olt.$PARENT_PROMOTION_ID, '$ON_ORDER_ITEM', olt.$ON_ORDER_ITEM" : ""}"
+        "'$SH_DISCOUNT_CODE' , olt.$SH_DISCOUNT_CODE,'$SH_DISCOUNT_REASON' , olt.$SH_DISCOUNT_REASON"
         "), '\$' )) as line_ids, " //'$BARCODE_IN_PT', olt.$BARCODE_IN_PT ,
         "${isCloseSession == true ? "case when ptt.$PAYMENT_TRANSACTION_ID is not null then " : ""}"
         "json_group_array("

@@ -14,10 +14,20 @@ class CurrentOrderScreen extends StatefulWidget {
 class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
   bool isTabletMode = false;
   final FocusNode _textNode = FocusNode();
+  final TextEditingController noteTextController = TextEditingController();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<CurrentOrderController>().getDiscountList();
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
     _textNode.dispose();
+    noteTextController.dispose();
     super.dispose();
   }
 
@@ -394,7 +404,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
         onPressed: () {
           currentOrderController.currentOrderKeyboardState =
               CurrentOrderKeyboardState.disc;
-          // _addManualDiscountProduct(currentOrderController);
+          _showDisDialog();
         },
       ),
       CommonUtils.eachCalculateButtonWidget(
@@ -536,20 +546,232 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     );
   }
 
-  // void _addManualDiscountProduct(
-  //     CurrentOrderController currentOrderController) {
-  //   if (currentOrderController.selectedIndex != null &&
-  //       currentOrderController.currentOrderKeyboardState ==
-  //           CurrentOrderKeyboardState.disc) {
-  //     Product product = currentOrderController.currentOrderList
-  //         .elementAt(currentOrderController.selectedIndex!);
-  //     product.priceListItem ??= PriceListItem();
-  //     Product promotionProduct = product.cloneProduct();
-  //     promotionProduct.onhandQuantity = 1;
-  //     promotionProduct.priceListItem?.fixedPrice = 0;
-  //     currentOrderController.currentOrderList
-  //         .insert(currentOrderController.selectedIndex! + 1, promotionProduct);
-  //     currentOrderController.notify();
-  //   }
-  // }
+  Future<dynamic> _showDisDialog() {
+    bool isMobileMode = CommonUtils.isMobileMode(context);
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            children: [
+              Text(
+                'Discounts',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Constants.textColor,
+                  fontSize: 18,
+                ),
+              ),
+              Container(
+                color: primaryColor,
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Text(
+                        'Name',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Code',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Value(%)',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Container(
+              color: primaryColor.withOpacity(0.03),
+              width: MediaQuery.of(context).size.width / (isMobileMode ? 1 : 3),
+              padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+              child: Consumer<CurrentOrderController>(
+                  builder: (_, controller, __) {
+                return Column(
+                  children: [
+                    ...controller.discountList
+                        .asMap()
+                        .map((i, e) => MapEntry(
+                              i,
+                              Column(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      controller.selectedDiscountIndex = i;
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              e.shDiscountName ?? '',
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: controller
+                                                            .selectedDiscountIndex ==
+                                                        i
+                                                    ? primaryColor
+                                                    : Constants.textColor,
+                                                fontSize: controller
+                                                            .selectedDiscountIndex ==
+                                                        i
+                                                    ? 16
+                                                    : 14,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              e.shDiscountCode ?? '',
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: controller
+                                                            .selectedDiscountIndex ==
+                                                        i
+                                                    ? primaryColor
+                                                    : Constants.textColor,
+                                                fontSize: controller
+                                                            .selectedDiscountIndex ==
+                                                        i
+                                                    ? 16
+                                                    : 14,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              '${e.shDiscountValue ?? ''}',
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: controller
+                                                            .selectedDiscountIndex ==
+                                                        i
+                                                    ? primaryColor
+                                                    : Constants.textColor,
+                                                fontSize: controller
+                                                            .selectedDiscountIndex ==
+                                                        i
+                                                    ? 16
+                                                    : 14,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(),
+                                ],
+                              ),
+                            ))
+                        .values
+                        .toList(),
+                    Text(
+                      'Reason',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all()),
+                            child: TextField(
+                              controller: noteTextController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 4,
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.all(16),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text("Confirm"),
+              onPressed: () {
+                if (noteTextController.text.isEmpty) {
+                  CommonUtils.showSnackBar(message: 'Need Reason');
+                  return;
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) => context
+        .read<CurrentOrderController>()
+        .currentOrderKeyboardState = CurrentOrderKeyboardState.qty);
+  }
+
+  void _addManualDiscountProduct(
+      CurrentOrderController currentOrderController) {
+    if (currentOrderController.selectedIndex != null &&
+        currentOrderController.currentOrderKeyboardState ==
+            CurrentOrderKeyboardState.disc) {
+      Product product = currentOrderController.currentOrderList
+          .elementAt(currentOrderController.selectedIndex!);
+      product.priceListItem ??= PriceListItem();
+      Product promotionProduct = product.cloneProduct();
+      promotionProduct.onhandQuantity = 1;
+      promotionProduct.priceListItem?.fixedPrice = 0;
+      currentOrderController.currentOrderList
+          .insert(currentOrderController.selectedIndex! + 1, promotionProduct);
+      currentOrderController.notify();
+    }
+  }
 }

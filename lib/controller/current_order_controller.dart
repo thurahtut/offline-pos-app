@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/database/table/discount_table.dart';
 
 class CurrentOrderController with ChangeNotifier {
   List<Product> _currentOrderList = [];
@@ -134,6 +135,21 @@ class CurrentOrderController with ChangeNotifier {
   set selectingCustomer(Customer? selectingCustomer) {
     if (_selectingCustomer == selectingCustomer) return;
     _selectingCustomer = selectingCustomer;
+    notifyListeners();
+  }
+
+  List<Discount> _discountList = [];
+  List<Discount> get discountList => _discountList;
+  set discountList(List<Discount> discountList) {
+    _discountList = discountList;
+    notifyListeners();
+  }
+
+  int _selectedDiscountIndex = 0;
+  int get selectedDiscountIndex => _selectedDiscountIndex;
+  set selectedDiscountIndex(int selectedDiscountIndex) {
+    if (_selectedDiscountIndex == selectedDiscountIndex) return;
+    _selectedDiscountIndex = selectedDiscountIndex;
     notifyListeners();
   }
 
@@ -627,6 +643,14 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getDiscountList() async {
+    DiscountTable.getDiscountList().then((discountLis) {
+      if (discountLis.isNotEmpty) {
+        discountList = discountLis;
+      }
+    });
+  }
+
   final FocusNode productTextFieldFocusNode = FocusNode();
 
   resetCurrentOrderController() {
@@ -640,6 +664,8 @@ class CurrentOrderController with ChangeNotifier {
     _selectedCustomer = null;
     _selectingCustomer = null;
     _chooseCusFromCart = false;
+    _discountList = [];
+    _selectedDiscountIndex = 0;
     notifyListeners();
   }
 }

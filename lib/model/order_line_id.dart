@@ -9,13 +9,15 @@ class OrderLineID {
   String? fullProductName;
   String? createDate;
   int? createUid;
-  int? discount;
+  double? discount;
   String? writeDate;
   int? writeUid;
   String? barcode;
   int? parentPromotionId;
   bool? isPromoItem;
   bool? onOrderPromo;
+  String? shDiscountCode;
+  String? shDiscountReason;
 
   OrderLineID({
     this.id,
@@ -35,6 +37,8 @@ class OrderLineID {
     this.parentPromotionId,
     this.isPromoItem,
     this.onOrderPromo,
+    this.shDiscountCode,
+    this.shDiscountReason,
   });
 
   OrderLineID.fromJson(Map<String, dynamic> json, {bool? isOnlyForDatabase}) {
@@ -49,7 +53,7 @@ class OrderLineID {
     fullProductName = json["full_product_name"];
     createDate = json['create_date'];
     createUid = int.tryParse(json['create_uid']?.toString() ?? '');
-    discount = int.tryParse(json['discount']?.toString() ?? '');
+    discount = double.tryParse(json['discount']?.toString() ?? '');
     writeDate = json['write_date'];
     writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
     barcode = json["barcode"];
@@ -59,6 +63,8 @@ class OrderLineID {
       isPromoItem = bool.tryParse(json["is_promo_item"]?.toString() ?? '');
       onOrderPromo = bool.tryParse(json["on_order_item"]?.toString() ?? '');
     }
+    shDiscountCode = json['sh_discount_code'];
+    shDiscountReason = json['sh_discount_reason'];
   }
 
   Map<String, dynamic> toJson({bool? isOnlyForDatabase}) {
@@ -81,6 +87,8 @@ class OrderLineID {
       data["is_promo_item"] = isPromoItem?.toString();
       data["on_order_item"] = onOrderPromo?.toString();
     }
+    data['sh_discount_code'] = shDiscountCode;
+    data['sh_discount_reason'] = shDiscountReason;
     return data;
   }
 }

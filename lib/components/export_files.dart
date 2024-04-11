@@ -28,6 +28,7 @@ export '../../database/table/pos_category_table.dart';
 export '../../model/app_config.dart';
 export '../../model/close_session.dart';
 export '../../model/customer.dart';
+export '../../model/discount.dart';
 export '../../model/employee.dart';
 export '../../model/order_history.dart';
 export '../../model/product.dart';

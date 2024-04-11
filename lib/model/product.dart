@@ -24,6 +24,7 @@ class Product {
   int? parentPromotionId;
   bool? isPromoItem;
   bool? onOrderPromo;
+  double? discount;
 
   Product({
     this.productId,
@@ -47,6 +48,7 @@ class Product {
     this.parentPromotionId,
     this.isPromoItem,
     this.onOrderPromo,
+    this.discount,
   });
 
   Product.fromJson(Map<String, dynamic> json,

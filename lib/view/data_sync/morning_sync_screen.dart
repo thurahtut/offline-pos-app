@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/report/summary_report_screen.dart';
 
 class MorningSyncScreen extends StatefulWidget {
   const MorningSyncScreen({super.key, required this.alreadyLogin});
@@ -70,8 +69,7 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                   .getAllAmountTax(// amount tax
                       () {
                 context.read<PosCategoryController>().notify();
-                Navigator.pushReplacementNamed(
-                    context, SummaryReportScreen.routeName);
+                Navigator.pushReplacementNamed(context, MainScreen.routeName);
               });
             });
           } else {
@@ -195,10 +193,12 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
                         // promotion
                         context.read<LoginUserController>().posConfig?.id ?? 0,
                         () {
-                      context.read<MorningsyncController>().currentTaskTitle =
-                          "";
-                      Navigator.pushReplacementNamed(
-                          context, WelcomeScreen.routeName);
+                      context.read<MorningsyncController>().getAllDiscount(() {
+                        context.read<MorningsyncController>().currentTaskTitle =
+                            "";
+                        Navigator.pushReplacementNamed(
+                            context, WelcomeScreen.routeName);
+                      });
                     });
                   });
                 });

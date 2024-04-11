@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/database/table/amount_tax_table.dart';
+import 'package:offline_pos/database/table/discount_table.dart';
 import 'package:offline_pos/database/table/order_and_order_line_table.dart';
 import 'package:offline_pos/database/table/order_and_transaction_table.dart';
-import 'package:offline_pos/database/table/pos_category_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_mapping_table.dart';
 import 'package:offline_pos/database/table/promotion_rules_table.dart';
 import 'package:path/path.dart';
@@ -150,6 +150,7 @@ class DatabaseHelper {
     await PromotionRuleTable.onCreate(db, version);
     await PromotionRuleMappingTable.onCreate(db, version);
     await DiscountSpecificProductMappingTable.onCreate(db, version);
+    await DiscountTable.onCreate(db, version);
 
     await DBUpgrade.uploadAppConfigForVersion1(db);
   }
@@ -181,6 +182,7 @@ class DatabaseHelper {
     await db.delete(PROMOTION_RULE_TABLE_NAME);
     await db.delete(PROMOTION_RULE_MAPPING_TABLE_NAME);
     await db.delete(DISCOUNT_SPECIFIC_PRODUCT_MAPPING_TABLE_NAME);
+    await db.delete(DISCOUNT_TABLE_NAME);
   }
 
   static Future<void> userLogOut() async {

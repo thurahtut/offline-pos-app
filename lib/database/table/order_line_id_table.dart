@@ -20,6 +20,8 @@ const WRITE_UID_IN_LINE = "write_uid";
 const PARENT_PROMOTION_ID = "parent_promotion_id";
 const IS_PROMO_ITEM = "is_promo_item";
 const ON_ORDER_ITEM = "on_order_item";
+const SH_DISCOUNT_CODE = "sh_discount_code";
+const SH_DISCOUNT_REASON = "sh_discount_reason";
 
 class OrderLineIdTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -39,7 +41,9 @@ class OrderLineIdTable {
         "$WRITE_UID_IN_LINE INTEGER,"
         "$PARENT_PROMOTION_ID INTEGER,"
         "$IS_PROMO_ITEM TEXT,"
-        "$ON_ORDER_ITEM TEXT"
+        "$ON_ORDER_ITEM TEXT,"
+        "$SH_DISCOUNT_CODE TEXT,"
+        "$SH_DISCOUNT_REASON TEXT"
         ")");
   }
 

@@ -504,4 +504,19 @@ class Api {
       sendTimeout: Duration(milliseconds: 900000),
     );
   }
+
+  static Future<Response?> getDiscountList({
+    void Function(int, int)? onReceiveProgress,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+    };
+    return request(
+      endpoint: '/discount'.onEndPoint(),
+      method: Method.GET.name,
+      onReceiveProgress: onReceiveProgress,
+      receiveTimeout: Duration(milliseconds: 900000),
+      sendTimeout: Duration(milliseconds: 900000),
+    );
+  }
 }

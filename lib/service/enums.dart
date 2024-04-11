@@ -55,6 +55,7 @@ enum DataSync {
   reset,
   productPackaging,
   promotion,
+  discount,
 }
 
 enum OrderState {
