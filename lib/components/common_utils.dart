@@ -1027,7 +1027,9 @@ class CommonUtils {
           createDate: orderDate.toString(),
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          discount: 0,
+          discount: data.discount,
+          shDiscountCode: data.shDiscountCode,
+          shDiscountReason: data.shDiscountReason,
           parentPromotionId: data.parentPromotionId,
           isPromoItem: data.isPromoItem,
           onOrderPromo: data.onOrderPromo,

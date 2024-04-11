@@ -42,12 +42,20 @@ class CurrentOrderController with ChangeNotifier {
     for (var i = 0; i < cOrderList.length; i++) {
       tQty +=
           double.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0;
-      tTotal += (double.tryParse(
-                  cOrderList[i].onhandQuantity?.toString() ?? "0") ??
-              0) *
-          (double.tryParse(
-                  cOrderList[i].priceListItem?.fixedPrice?.toString() ?? "0") ??
-              0);
+      tTotal += ((double.tryParse(
+                      cOrderList[i].onhandQuantity?.toString() ?? "0") ??
+                  0) *
+              (double.tryParse(
+                      cOrderList[i].priceListItem?.fixedPrice?.toString() ??
+                          "0") ??
+                  0)) -
+          (((double.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ??
+                      0) *
+                  (double.tryParse(
+                          cOrderList[i].priceListItem?.fixedPrice?.toString() ??
+                              "0") ??
+                      0)) *
+              ((cOrderList[i].discount ?? 0) / 100));
 
       tTax += (cOrderList[i].onhandQuantity?.toDouble() ?? 0) *
           (CommonUtils.getPercentAmountTaxOnProduct(cOrderList[i]) > 0
@@ -453,6 +461,8 @@ class CurrentOrderController with ChangeNotifier {
   Future<void> updateCurrentOrder(
     String value, {
     bool? isBack,
+    Discount? discount,
+    String? shDiscountReason,
   }) async {
     if (selectedIndex != null) {
       Product product = currentOrderList.elementAt(selectedIndex!);
@@ -547,16 +557,13 @@ class CurrentOrderController with ChangeNotifier {
           currentOrderList.addAll(promoProductList);
         }
         notifyListeners();
+      } else if (currentOrderKeyboardState == CurrentOrderKeyboardState.disc &&
+          discount != null) {
+        product.discount = discount.shDiscountValue;
+        product.shDiscountCode = discount.shDiscountCode;
+        product.shDiscountReason = shDiscountReason;
+        notifyListeners();
       }
-      // else if (currentOrderKeyboardState ==
-      //     CurrentOrderKeyboardState.disc) {
-      //   Product promotionProduct = product.cloneProduct();
-      //   promotionProduct.onhandQuantity = 1;
-      //   promotionProduct.priceListItem?.fixedPrice = 0;
-      //   currentOrderList.insert(=
-      //       selectedIndex! + 1, promotionProduct);
-      //   notify();
-      // }
       PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
           productList: jsonEncode(currentOrderList));
     }

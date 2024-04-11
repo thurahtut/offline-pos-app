@@ -173,7 +173,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                       InkWell(
                                         onTap: () {},
                                         child: Text(
-                                            "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} Ks"
+                                            "${((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) - (((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) * ((e.discount ?? 0) / 100))} Ks"
                                                 .toString(), // product.salePrice
                                             style: textStyle.copyWith(
                                               fontWeight: FontWeight.bold,
@@ -186,7 +186,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                            "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit with a 0.00 % discount"),
+                                            "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit "
+                                            "with a ${e.discount ?? 0.00} % discount"),
                                       ),
                                       Container(
                                         width: 35,
@@ -738,9 +739,17 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
               child: Text("Confirm"),
               onPressed: () {
                 if (noteTextController.text.isEmpty) {
-                  CommonUtils.showSnackBar(message: 'Need Reason');
+                  _showDisReasonErrorDialog();
                   return;
                 }
+
+                CurrentOrderController controller =
+                    context.read<CurrentOrderController>();
+                controller.updateCurrentOrder(
+                  noteTextController.text,
+                  discount:
+                      controller.discountList[controller.selectedDiscountIndex],
+                );
                 Navigator.of(context).pop();
               },
             ),
@@ -756,6 +765,51 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
     ).then((value) => context
         .read<CurrentOrderController>()
         .currentOrderKeyboardState = CurrentOrderKeyboardState.qty);
+  }
+
+  Future<dynamic> _showDisReasonErrorDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext bcontext) {
+        return AlertDialog(
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Please, enter reason',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Constants.textColor,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(4)),
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(bcontext).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _addManualDiscountProduct(

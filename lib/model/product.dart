@@ -25,6 +25,8 @@ class Product {
   bool? isPromoItem;
   bool? onOrderPromo;
   double? discount;
+  String? shDiscountCode;
+  String? shDiscountReason;
 
   Product({
     this.productId,
@@ -49,6 +51,8 @@ class Product {
     this.isPromoItem,
     this.onOrderPromo,
     this.discount,
+    this.shDiscountCode,
+    this.shDiscountReason,
   });
 
   Product.fromJson(Map<String, dynamic> json,
@@ -108,6 +112,9 @@ class Product {
           int.tryParse(json['parentPromotionId']?.toString() ?? '');
       isPromoItem = bool.tryParse(json['isPromoItem']?.toString() ?? '');
       onOrderPromo = bool.tryParse(json['onOrderPromo']?.toString() ?? '');
+      discount = json['discount'];
+      shDiscountCode = json['shDiscountCode'];
+      shDiscountReason = json['shDiscountReason'];
     }
   }
 
@@ -135,6 +142,9 @@ class Product {
       data["parentPromotionId"] = parentPromotionId;
       data["isPromoItem"] = isPromoItem;
       data["onOrderPromo"] = onOrderPromo;
+      data['discount'] = discount;
+      data['shDiscountCode'] = shDiscountCode;
+      data['shDiscountReason'] = shDiscountReason;
     }
     return data;
   }

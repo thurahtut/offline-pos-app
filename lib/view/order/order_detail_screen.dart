@@ -1,6 +1,5 @@
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/order_detail_controller.dart';
-import 'package:offline_pos/model/order_line_id.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   const OrderDetailScreen({super.key, required this.orderId});
@@ -471,10 +470,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         // DataCell(_textForDetailInfo('1.00')),
         // DataCell(_textForDetailInfo('')),
         DataCell(_textForDetailInfo('${data?.priceUnit}')),
-        DataCell(_textForDetailInfo('0.00')),
+        DataCell(_textForDetailInfo('${data?.discount ?? 0} %')),
         DataCell(_textForDetailInfo('0.00 Ks')),
-        DataCell(_textForDetailInfo('')),
-        DataCell(_textForDetailInfo('')),
+        DataCell(_textForDetailInfo(data?.shDiscountCode ?? '')),
+        DataCell(_textForDetailInfo(data?.shDiscountReason ?? '')),
         DataCell(_textForDetailInfo('')),
         DataCell(_textForDetailInfo('${data?.priceSubtotal}')),
         DataCell(_textForDetailInfo('${data?.priceSubtotalIncl}')),
