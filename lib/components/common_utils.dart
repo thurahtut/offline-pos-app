@@ -1014,14 +1014,26 @@ class CommonUtils {
           productId: data.productVariantIds ?? 0,
           qty: data.onhandQuantity?.toDouble(),
           priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
-          priceSubtotal: (data.onhandQuantity?.toDouble() ?? 0) *
-              ((data.priceListItem?.fixedPrice ?? 0) -
-                  (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
-                      ? ((data.priceListItem?.fixedPrice ?? 0) *
-                          CommonUtils.getPercentAmountTaxOnProduct(data))
-                      : 0)),
-          priceSubtotalIncl: (data.onhandQuantity?.toDouble() ?? 0) *
-              (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+          priceSubtotal: ((data.onhandQuantity?.toDouble() ?? 0) *
+                  ((data.priceListItem?.fixedPrice ?? 0) -
+                      (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                          ? ((data.priceListItem?.fixedPrice ?? 0) *
+                              CommonUtils.getPercentAmountTaxOnProduct(data))
+                          : 0))) -
+              (((double.tryParse(data.onhandQuantity?.toString() ?? "0") ?? 0) *
+                      (double.tryParse(
+                              data.priceListItem?.fixedPrice?.toString() ??
+                                  "0") ??
+                          0)) *
+                  ((data.discount ?? 0) / 100)),
+          priceSubtotalIncl: ((data.onhandQuantity?.toDouble() ?? 0) *
+                  (data.priceListItem?.fixedPrice ?? 0).toDouble()) -
+              (((double.tryParse(data.onhandQuantity?.toString() ?? "0") ?? 0) *
+                      (double.tryParse(
+                              data.priceListItem?.fixedPrice?.toString() ??
+                                  "0") ??
+                          0)) *
+                  ((data.discount ?? 0) / 100)),
           fullProductName:
               '${data.barcode != null ? '[${data.barcode}] ' : ''}${data.productName}',
           createDate: orderDate.toString(),

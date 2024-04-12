@@ -58,6 +58,20 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
               .paymentTransactionList[
                   int.tryParse(element["id"]?.toString() ?? "") ?? 0]
               ?.amount = element["tPaid"]?.toString();
+          if (!(context
+                  .read<CloseSessionController>()
+                  .paymentTransactionList[
+                      int.tryParse(element["id"]?.toString() ?? "") ?? 0]
+                  ?.paymentMethodName
+                  ?.toLowerCase()
+                  .contains('cash') ??
+              false)) {
+            context
+                .read<CloseSessionController>()
+                .paymentTransactionList[
+                    int.tryParse(element["id"]?.toString() ?? "") ?? 0]
+                ?.payingAmount = element["tPaid"]?.toString();
+          }
         }
         context.read<CloseSessionController>().notify();
       });

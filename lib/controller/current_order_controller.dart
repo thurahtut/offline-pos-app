@@ -238,7 +238,7 @@ class CurrentOrderController with ChangeNotifier {
       orderProduct.promotionList = promotionList;
 
       currentOrderList.add(orderProduct);
-      selectedIndex = currentOrderList.length - 1;
+      // selectedIndex = currentOrderList.length - 1;
     }
 
     // promotion product

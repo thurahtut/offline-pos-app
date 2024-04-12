@@ -28,7 +28,7 @@ class PendingOrderTable {
         "$PENDING_NAME, $PENDING_VALUE"
         ")"
         " VALUES("
-        "'$columnName', '${value != null ? utf8.encode(value) : value}'"
+        "'$columnName', '${value != null ? base64.encode(utf8.encode(value)) : value}'"
         ")";
     int inq = await db.rawInsert(sql);
     return inq;
@@ -52,7 +52,7 @@ class PendingOrderTable {
     print(pendingValue);
     String value =
         maps.first[PENDING_VALUE] != null && maps.first[PENDING_VALUE] != ''
-            ? utf8.decode(pendingValue)
+            ? utf8.decode(base64.decode(pendingValue))
             : '{}';
     return OrderHistory.fromJson(jsonDecode(value));
   }
@@ -74,8 +74,8 @@ class PendingOrderTable {
     }
     String value =
         maps.first[PENDING_VALUE] != null && maps.first[PENDING_VALUE] != ''
-            ? utf8.decode(maps.first[PENDING_VALUE])
-            : '{}';
+            ? utf8.decode(base64.decode(maps.first[PENDING_VALUE]))
+            : '[]';
     List<dynamic> result = jsonDecode(value);
     List<Product> productList = [];
     for (Map<String, dynamic> value in result) {
@@ -114,7 +114,7 @@ class PendingOrderTable {
     db ??= await DatabaseHelper().db;
     if (await checkRowExist(db, PENDING_ORDER)) {
       String sql = "UPDATE $PENDING_ORDER_TABLE_NAME "
-          "SET $PENDING_VALUE = '$value' "
+          "SET $PENDING_VALUE = '${base64.encode(utf8.encode(value))}' "
           "WHERE $PENDING_NAME='$PENDING_ORDER'";
       return db.rawInsert(sql);
     } else {
@@ -129,7 +129,7 @@ class PendingOrderTable {
     db ??= await DatabaseHelper().db;
     if (await checkRowExist(db, CURRENT_ORDERS_LIST)) {
       String sql = "UPDATE $PENDING_ORDER_TABLE_NAME "
-          "SET $PENDING_VALUE = '$productList' "
+          "SET $PENDING_VALUE = '${base64.encode(utf8.encode(productList))}' "
           "WHERE $PENDING_NAME='$CURRENT_ORDERS_LIST'";
       return db.rawInsert(sql);
     } else {

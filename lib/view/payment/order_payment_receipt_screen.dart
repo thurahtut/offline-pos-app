@@ -162,10 +162,10 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   ..._transactionWidget(),
                   pw.SizedBox(height: 40),
                   _changeWidget(),
-                  if ((map["tax"] ?? 0) > 0) pw.SizedBox(height: 20),
-                  if ((map["tax"] ?? 0) > 0) _s5TaxWidget(map),
                   pw.SizedBox(height: 20),
                   _totalDisWidget(map),
+                  if ((map["tax"] ?? 0) > 0) pw.SizedBox(height: 20),
+                  if ((map["tax"] ?? 0) > 0) _s5TaxWidget(map),
                   pw.SizedBox(height: 20),
                   _totalTaxWidget(map),
                   pw.SizedBox(height: 20),
@@ -323,7 +323,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             text: pw.TextSpan(text: "", children: [
               pw.TextSpan(
                   text:
-                      "\n ${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} \n Discount:${double.tryParse(e.discount?.toString() ?? '0')?.toStringAsFixed(2) ?? 0.00}%",
+                      "\n ${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} \n Discount: ${double.tryParse(e.discount?.toString() ?? '0')?.toStringAsFixed(2) ?? 0.00}%",
                   style: textStyle.copyWith(
                     fontSize: 9,
                   )),
