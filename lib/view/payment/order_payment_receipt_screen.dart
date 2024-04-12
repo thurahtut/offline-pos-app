@@ -165,6 +165,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   if ((map["tax"] ?? 0) > 0) pw.SizedBox(height: 20),
                   if ((map["tax"] ?? 0) > 0) _s5TaxWidget(map),
                   pw.SizedBox(height: 20),
+                  _totalDisWidget(map),
+                  pw.SizedBox(height: 20),
                   _totalTaxWidget(map),
                   pw.SizedBox(height: 20),
                   _totalQtyWidget(map),
@@ -272,43 +274,63 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
       // fontWeight: pw.FontWeight.w500,
     );
     double maxPageWidth = PdfPageFormat.roll80.width;
-    return pw.Row(children: [
-      pw.Expanded(
-        // width: (maxPageWidth / 8) * 3,
-        child: pw.RichText(
-          maxLines: 2,
-          // overflow: pw.TextOverflow.ellipsis,
-          text: pw.TextSpan(text: "", children: [
-            pw.TextSpan(
-              text: e.barcode != null ? " [${e.barcode}]" : "",
-              style: textStyle,
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Row(
+          children: [
+            pw.Expanded(
+              // width: (maxPageWidth / 8) * 3,
+              child: pw.RichText(
+                maxLines: 2,
+                // overflow: pw.TextOverflow.ellipsis,
+                text: pw.TextSpan(text: "", children: [
+                  pw.TextSpan(
+                    text: e.barcode != null ? " [${e.barcode}]" : "",
+                    style: textStyle,
+                  ),
+                  pw.TextSpan(text: e.productName, style: textStyle),
+                ]),
+              ),
             ),
-            pw.TextSpan(text: e.productName, style: textStyle),
-          ]),
+            pw.SizedBox(
+              width: (maxPageWidth / 8),
+              child: pw.Text(
+                "${e.onhandQuantity ?? 0}",
+                style: textStyle,
+              ),
+            ),
+            pw.SizedBox(
+              width: (maxPageWidth / 8) * 2,
+              child: pw.Text(
+                "${e.priceListItem?.fixedPrice ?? 0}",
+                style: textStyle,
+              ),
+            ),
+            pw.SizedBox(
+              width: (maxPageWidth / 8) * 1.7,
+              child: pw.Text(
+                "${((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) - (((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) * ((e.discount ?? 0)) / 100)}",
+                style: textStyle,
+              ),
+            ),
+          ],
         ),
-      ),
-      pw.SizedBox(
-        width: (maxPageWidth / 8),
-        child: pw.Text(
-          "${e.onhandQuantity ?? 0}",
-          style: textStyle,
-        ),
-      ),
-      pw.SizedBox(
-        width: (maxPageWidth / 8) * 2,
-        child: pw.Text(
-          "${e.priceListItem?.fixedPrice ?? 0}",
-          style: textStyle,
-        ),
-      ),
-      pw.SizedBox(
-        width: (maxPageWidth / 8) * 1.7,
-        child: pw.Text(
-          "${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)}",
-          style: textStyle,
-        ),
-      ),
-    ]);
+        if (e.discount != null && e.discount != 0)
+          pw.RichText(
+            // maxLines: 2,
+            // overflow: pw.TextOverflow.ellipsis,
+            text: pw.TextSpan(text: "", children: [
+              pw.TextSpan(
+                  text:
+                      "\n ${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} \n Discount:${double.tryParse(e.discount?.toString() ?? '0')?.toStringAsFixed(2) ?? 0.00}%",
+                  style: textStyle.copyWith(
+                    fontSize: 9,
+                  )),
+            ]),
+          ),
+      ],
+    );
   }
 
   pw.Widget _totalWidget(Map<String, double> map) {
@@ -449,6 +471,35 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  pw.Widget _totalDisWidget(Map<String, double> map) {
+    double? fontSize = 9;
+    return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        pw.Expanded(
+          child: pw.Text(
+            "Discounts",
+            textAlign: pw.TextAlign.start,
+            style: pw.TextStyle(
+              color: PdfColor.fromHex("#262927"),
+              fontSize: fontSize,
+            ),
+          ),
+        ),
+        pw.SizedBox(width: 4),
+        pw.Text(
+          "${map["tDis"] ?? 0} Ks",
+          style: pw.TextStyle(
+            color: PdfColor.fromHex("#171717"),
+            fontSize: fontSize,
+            // fontWeight: pw.FontWeight.w400,
+          ),
+        ),
+        pw.SizedBox(width: 12),
+      ],
     );
   }
 

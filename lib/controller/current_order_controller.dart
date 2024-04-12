@@ -39,6 +39,7 @@ class CurrentOrderController with ChangeNotifier {
     double tQty = 0;
     double tTotal = 0;
     double tTax = 0;
+    double tDis = 0;
     for (var i = 0; i < cOrderList.length; i++) {
       tQty +=
           double.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ?? 0;
@@ -57,6 +58,15 @@ class CurrentOrderController with ChangeNotifier {
                       0)) *
               ((cOrderList[i].discount ?? 0) / 100));
 
+      tDis +=
+          ((double.tryParse(cOrderList[i].onhandQuantity?.toString() ?? "0") ??
+                      0) *
+                  (double.tryParse(
+                          cOrderList[i].priceListItem?.fixedPrice?.toString() ??
+                              "0") ??
+                      0)) *
+              ((cOrderList[i].discount ?? 0) / 100);
+
       tTax += (cOrderList[i].onhandQuantity?.toDouble() ?? 0) *
           (CommonUtils.getPercentAmountTaxOnProduct(cOrderList[i]) > 0
               ? ((cOrderList[i].priceListItem?.fixedPrice ?? 0) *
@@ -67,6 +77,7 @@ class CurrentOrderController with ChangeNotifier {
     map["qty"] = double.tryParse(tQty.toStringAsFixed(2)) ?? 0;
     map["total"] = double.tryParse(tTotal.toStringAsFixed(2)) ?? 0;
     map["tax"] = double.tryParse(tTax.toStringAsFixed(2)) ?? 0;
+    map["tDis"] = double.tryParse(tDis.toStringAsFixed(2)) ?? 0;
     return map;
   }
 
@@ -227,6 +238,7 @@ class CurrentOrderController with ChangeNotifier {
       orderProduct.promotionList = promotionList;
 
       currentOrderList.add(orderProduct);
+      selectedIndex = currentOrderList.length - 1;
     }
 
     // promotion product

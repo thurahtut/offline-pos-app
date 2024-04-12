@@ -28,7 +28,7 @@ class PendingOrderTable {
         "$PENDING_NAME, $PENDING_VALUE"
         ")"
         " VALUES("
-        "'$columnName','$value'"
+        "'$columnName', '${value != null ? utf8.encode(value) : value}'"
         ")";
     int inq = await db.rawInsert(sql);
     return inq;
@@ -48,7 +48,13 @@ class PendingOrderTable {
     if (maps.isEmpty || maps.first[PENDING_VALUE] == "[]") {
       return null;
     }
-    return OrderHistory.fromJson(jsonDecode(maps.first[PENDING_VALUE]));
+    var pendingValue = maps.first[PENDING_VALUE];
+    print(pendingValue);
+    String value =
+        maps.first[PENDING_VALUE] != null && maps.first[PENDING_VALUE] != ''
+            ? utf8.decode(pendingValue)
+            : '{}';
+    return OrderHistory.fromJson(jsonDecode(value));
   }
 
   static Future<List<Product>> getPendingCurrentOrderList(
@@ -66,7 +72,11 @@ class PendingOrderTable {
     if (maps.isEmpty) {
       return [];
     }
-    List<dynamic> result = jsonDecode(maps.first[PENDING_VALUE]);
+    String value =
+        maps.first[PENDING_VALUE] != null && maps.first[PENDING_VALUE] != ''
+            ? utf8.decode(maps.first[PENDING_VALUE])
+            : '{}';
+    List<dynamic> result = jsonDecode(value);
     List<Product> productList = [];
     for (Map<String, dynamic> value in result) {
       Product product = Product.fromJson(value, includedOtherField: true);
