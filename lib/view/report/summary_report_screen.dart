@@ -20,6 +20,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
       context.read<SummaryReportController>().resetSummaryReportController();
       context.read<SummaryReportController>().getTotalSummaryByCategory(
           sessionId: context.read<LoginUserController>().posSession?.id ?? 0);
+
       fontData = await rootBundle.load("assets/font/PyidaungsuRegular.ttf");
     });
     super.initState();
@@ -152,6 +153,8 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                   spacer,
                   ..._saleSummaryWidget(controller),
                   spacer,
+                  ..._discountWidget(controller),
+                  spacer,
                   ..._refundWidget(),
                   spacer,
                   ..._totalTaxWidget(controller),
@@ -252,6 +255,105 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
             ),
             pw.Text(
               '$totalAmt Ks',
+              textAlign: pw.TextAlign.center,
+              style: pw.TextStyle(
+                color: PdfColor.fromHex("#171717"),
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 8,
+                font: fontData != null ? pw.Font.ttf(fontData!) : null,
+              ),
+            )
+          ],
+        ),
+      ),
+    ];
+  }
+
+  List<pw.Widget> _discountWidget(SummaryReportController controller) {
+    return [
+      pw.Align(
+          alignment: pw.Alignment.centerLeft,
+          child: pw.Text(
+            'Discounts',
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              color: PdfColor.fromHex("#171717"),
+              fontSize: 10.2,
+              fontWeight: pw.FontWeight.bold,
+              font: fontData != null ? pw.Font.ttf(fontData!) : null,
+            ),
+          )),
+      pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text(
+            'Discount Amount:',
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              color: PdfColor.fromInt(Constants.textColor.value),
+              fontSize: 8,
+              fontWeight: pw.FontWeight.bold,
+              font: fontData != null ? pw.Font.ttf(fontData!) : null,
+            ),
+          ),
+          pw.Text(
+            '${controller.discountMap?['disco'] ?? ''} Ks',
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              color: PdfColor.fromInt(Constants.textColor.value),
+              fontSize: 8,
+              fontWeight: pw.FontWeight.bold,
+              font: fontData != null ? pw.Font.ttf(fontData!) : null,
+            ),
+          ),
+        ],
+      ),
+      pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text(
+            'Total FOC Discount:',
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              color: PdfColor.fromInt(Constants.textColor.value),
+              fontSize: 8,
+              fontWeight: pw.FontWeight.bold,
+              font: fontData != null ? pw.Font.ttf(fontData!) : null,
+            ),
+          ),
+          pw.Text(
+            '${controller.discountMap?['foc'] ?? ''} Ks',
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              color: PdfColor.fromInt(Constants.textColor.value),
+              fontSize: 8,
+              fontWeight: pw.FontWeight.bold,
+              font: fontData != null ? pw.Font.ttf(fontData!) : null,
+            ),
+          ),
+        ],
+      ),
+      pw.Padding(
+        padding: pw.EdgeInsets.only(bottom: 4),
+        child: pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Expanded(
+              child: pw.Text(
+                'Total Discount:',
+                textAlign: pw.TextAlign.start,
+                maxLines: 3,
+                style: pw.TextStyle(
+                  color: PdfColor.fromInt(Colors.black.value),
+                  fontSize: 8,
+                  fontWeight: pw.FontWeight.bold,
+                  font: fontData != null ? pw.Font.ttf(fontData!) : null,
+                ),
+              ),
+            ),
+            pw.Text(
+              '${(controller.discountMap?['disco'] ?? 0) + (controller.discountMap?['foc'] ?? 0)} Ks',
               textAlign: pw.TextAlign.center,
               style: pw.TextStyle(
                 color: PdfColor.fromHex("#171717"),

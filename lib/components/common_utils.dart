@@ -229,7 +229,14 @@ class CommonUtils {
     {
       "svgPicture": 'assets/svg/sell.svg',
       "text": 'Print Summary Report',
-      "onTap": () {},
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          Navigator.pushNamed(
+            NavigationService.navigatorKey.currentContext!,
+            SummaryReportScreen.routeName,
+          );
+        }
+      },
     },
     {
       "svgPicture": 'assets/svg/history.svg',

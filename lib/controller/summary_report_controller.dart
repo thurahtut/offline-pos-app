@@ -16,6 +16,9 @@ class SummaryReportController with ChangeNotifier {
   List<Map<String, dynamic>> _transactionReportMap = [];
   List<Map<String, dynamic>> get transactionReportMap => _transactionReportMap;
 
+  Map<String, dynamic>? _discountMap;
+  Map<String, dynamic>? get discountMap => _discountMap;
+
   void getTotalSummaryByCategory({required int sessionId}) async {
     Database db = await DatabaseHelper().db;
     OrderHistoryTable.getTotalAmountByCategory(
@@ -27,7 +30,13 @@ class SummaryReportController with ChangeNotifier {
         PaymentTransactionTable.getTotalTransactionSummaryWithName(sessionId)
             .then((tranMap) {
           _transactionReportMap = tranMap;
-          notifyListeners();
+          OrderLineIdTable.getDiscountAmtAndFOC(db: db, sessionId: sessionId)
+              .then(
+            (disMap) {
+              _discountMap = disMap;
+              notifyListeners();
+            },
+          );
         });
       } else {
         CommonUtils.showSnackBar(message: 'Please check your order!');

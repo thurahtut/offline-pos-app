@@ -157,4 +157,19 @@ class OrderLineIdTable {
       return insert(db: db, orderLine: orderLineID);
     }
   }
+
+  static Future<Map<String, dynamic>?> getDiscountAmtAndFOC(
+      {Database? db, required int sessionId}) async {
+    db ??= await DatabaseHelper().db;
+    String query = "select "
+        "sum(case when olt.discount <> 100 then (CAST(olt.price_unit AS REAL) * (CAST(olt.discount AS REAL)/100)) else 0 end ) as disco, "
+        "sum(case when olt.discount <> 100 then 0 else (CAST(olt.price_unit AS REAL) * (CAST(olt.discount AS REAL)/100)) end ) as foc "
+        "from order_history_table ot "
+        "left join order_line_id_table olt "
+        "on olt.order_id = ot.id "
+        "where ot.session_id=$sessionId";
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
+    return maps.isEmpty ? null : maps.first;
+  }
 }

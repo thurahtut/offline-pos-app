@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:offline_pos/view/report/summary_report_screen.dart';
 
 import '../../components/export_files.dart';
 
@@ -184,20 +183,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
           return [
             PopupMenuItem<int>(
               value: 0,
-              child: TooltipWidget(
-                message: 'Summary Report',
-                child: CommonUtils.iconActionButtonWithText(
-                  Icons.assignment_rounded,
-                  'Summary Report',
-                  fontSize: 16,
-                  onPressed: () {
-                    _summaryReportAction(bContext, isPopup: true);
-                  },
-                ),
-              ),
-            ),
-            PopupMenuItem<int>(
-              value: 0,
               child: _cashierWidget(bContext, true),
             ),
             // PopupMenuItem<int>(
@@ -298,13 +283,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
     );
   }
 
-  void _summaryReportAction(BuildContext bContext, {bool? isPopup}) {
-    Navigator.pushNamed(
-      context,
-      SummaryReportScreen.routeName,
-    );
-  }
-
   void _logOut() {
     int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
     OrderHistoryTable.isExistDraftOrders(sessionId: sessionId).then((value) {
@@ -391,16 +369,6 @@ class _SaleAppBarState extends State<SaleAppBar> {
             onPressed: () {
           _logOut();
         }),
-      ),
-      spacer,
-      TooltipWidget(
-        message: 'Summary Report',
-        child: CommonUtils.iconActionButton(
-          Icons.assignment_rounded,
-          onPressed: () {
-            _summaryReportAction(context);
-          },
-        ),
       ),
       spacer,
       TooltipWidget(
