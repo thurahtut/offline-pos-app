@@ -16,11 +16,13 @@ class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight + 10);
 }
 
-class _SaleAppBarState extends State<SaleAppBar> {
+class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
   final TextEditingController _searchProductTextController =
       TextEditingController();
   final spacer = Expanded(flex: 1, child: SizedBox());
   final ValueNotifier<bool> _showSearchBox = ValueNotifier(false);
+  final ValueNotifier<bool> _isSyncOH = ValueNotifier(false);
+  AnimationController? _controller;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
   void dispose() {
     _searchProductTextController.dispose();
     _showSearchBox.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -179,6 +182,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
         child: CommonUtils.svgIconActionButton(
           'assets/svg/menu.svg',
         ),
+        onSelected: (value) {},
         itemBuilder: (bContext) {
           return [
             PopupMenuItem<int>(
@@ -192,7 +196,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
             //       fontSize: 16, onPressed: () {}),
             // ),
             PopupMenuItem<int>(
-              value: 2,
+              value: 1,
               child: TooltipWidget(
                 message: 'Customer\'s Screen',
                 child: CommonUtils.appBarActionButtonWithText(
@@ -201,7 +205,7 @@ class _SaleAppBarState extends State<SaleAppBar> {
               ),
             ),
             PopupMenuItem<int>(
-              value: 3,
+              value: 2,
               child: TooltipWidget(
                 message: 'Lock / Unlock',
                 child: CommonUtils.appBarActionButtonWithText(
@@ -215,11 +219,26 @@ class _SaleAppBarState extends State<SaleAppBar> {
               value: 3,
               child: TooltipWidget(
                 message: 'Sync Order History',
-                child: CommonUtils.appBarActionButtonWithText(
-                    'assets/svg/sync.svg', 'Sync Order History', fontSize: 16,
-                    onPressed: () {
-                  _syncOrderHistory();
-                }),
+                child: ValueListenableBuilder<bool>(
+                    valueListenable: _isSyncOH,
+                    builder: (_, isSyncOH, __) {
+                      return _controller != null
+                          ? CommonUtils.appBarActionButtonWithText(
+                              'assets/svg/sync.svg', 'Sync Order History',
+                              fontSize: 16, iconParentWidget: (child) {
+                              return RotationTransition(
+                                turns: _controller!,
+                                child: child,
+                              );
+                            }, onPressed: () {
+                              _syncOrderHistory();
+                            })
+                          : CommonUtils.appBarActionButtonWithText(
+                              'assets/svg/sync.svg', 'Sync Order History',
+                              fontSize: 16, onPressed: () {
+                              _syncOrderHistory();
+                            });
+                    }),
               ),
             ),
             PopupMenuItem<int>(
@@ -250,37 +269,38 @@ class _SaleAppBarState extends State<SaleAppBar> {
   }
 
   Widget _cashierWidget(BuildContext bContext, bool isPopup) {
-    return TooltipWidget(
-      message: context.watch<LoginUserController>().loginEmployee?.name != null
-          ? context.read<LoginUserController>().loginEmployee!.name!
-          : 'Account',
-      child: CommonUtils.appBarActionButtonWithText(
-        'assets/svg/account_circle.svg',
-        context.watch<LoginUserController>().loginEmployee?.name != null
-            ? context.read<LoginUserController>().loginEmployee!.name!
-            : '',
-        fontSize: 16,
-        onPressed: () {
-          int sessionId =
-              context.read<LoginUserController>().posSession?.id ?? 0;
-          OrderHistoryTable.isExistDraftOrders(sessionId: sessionId)
-              .then((value) {
-            if (value == true) {
-              CommonUtils.showSnackBar(
-                context: context,
-                message:
-                    'You can\'t change cashier due to existing draft orders.',
-              );
-            } else {
-              if (isPopup) {
-                Navigator.pop(bContext);
+    return Consumer<LoginUserController>(builder: (_, controller, __) {
+      return TooltipWidget(
+        message: controller.loginEmployee?.name != null
+            ? controller.loginEmployee!.name!
+            : 'Account',
+        child: CommonUtils.appBarActionButtonWithText(
+          'assets/svg/account_circle.svg',
+          controller.loginEmployee?.name != null
+              ? controller.loginEmployee!.name!
+              : '',
+          fontSize: 16,
+          onPressed: () {
+            int sessionId = controller.posSession?.id ?? 0;
+            OrderHistoryTable.isExistDraftOrders(sessionId: sessionId)
+                .then((value) {
+              if (value == true) {
+                CommonUtils.showSnackBar(
+                  context: context,
+                  message:
+                      'You can\'t change cashier due to existing draft orders.',
+                );
+              } else {
+                if (isPopup) {
+                  Navigator.pop(bContext);
+                }
+                CommonUtils.sessionLoginMethod(context, false);
               }
-              CommonUtils.sessionLoginMethod(context, false);
-            }
-          });
-        },
-      ),
-    );
+            });
+          },
+        ),
+      );
+    });
   }
 
   void _logOut() {
@@ -310,10 +330,21 @@ class _SaleAppBarState extends State<SaleAppBar> {
       return;
     }
     int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 100),
+    )..repeat();
+    _isSyncOH.value = true;
     OrderHistoryTable.getOrderHistoryList(
       isCloseSession: true,
       sessionId: sessionId,
     ).then((value) async {
+      if (value.isEmpty) {
+        CommonUtils.showSnackBar(
+            context: context,
+            message: 'There is no record to sync order history.');
+      }
       for (var mapArg in value) {
         log(jsonEncode(mapArg));
         await Api.syncOrders(
@@ -339,6 +370,8 @@ class _SaleAppBarState extends State<SaleAppBar> {
               context: context, message: 'Order synced successful!');
         }
       }
+      _controller?.stop();
+      _isSyncOH.value = false;
     });
   }
 
@@ -383,10 +416,24 @@ class _SaleAppBarState extends State<SaleAppBar> {
       spacer,
       TooltipWidget(
         message: 'Sync Order History',
-        child: CommonUtils.svgIconActionButton('assets/svg/sync.svg',
-            width: 30, height: 30, onPressed: () {
-          _syncOrderHistory();
-        }),
+        child: ValueListenableBuilder<bool>(
+            valueListenable: _isSyncOH,
+            builder: (_, isSyncOH, __) {
+              return _controller != null
+                  ? RotationTransition(
+                      turns: _controller!,
+                      child: CommonUtils.svgIconActionButton(
+                          'assets/svg/sync.svg',
+                          width: 30,
+                          height: 30, onPressed: () {
+                        _syncOrderHistory();
+                      }),
+                    )
+                  : CommonUtils.svgIconActionButton('assets/svg/sync.svg',
+                      width: 30, height: 30, onPressed: () {
+                      _syncOrderHistory();
+                    });
+            }),
       ),
       spacer,
       _closeSessionWidget(context, false),

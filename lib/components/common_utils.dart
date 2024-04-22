@@ -118,6 +118,7 @@ class CommonUtils {
     Color? iconColor,
     Color? textColor,
     double? fontSize,
+    Widget Function(Widget child)? iconParentWidget,
     Function()? onPressed,
   }) {
     return InkWell(
@@ -125,13 +126,21 @@ class CommonUtils {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CommonUtils.svgIconActionButton(
-            svg,
-            width: width,
-            height: height,
-            iconColor: iconColor,
-            onPressed: onPressed,
-          ),
+          iconParentWidget != null
+              ? iconParentWidget(CommonUtils.svgIconActionButton(
+                  svg,
+                  width: width,
+                  height: height,
+                  iconColor: iconColor,
+                  onPressed: onPressed,
+                ))
+              : CommonUtils.svgIconActionButton(
+                  svg,
+                  width: width,
+                  height: height,
+                  iconColor: iconColor,
+                  onPressed: onPressed,
+                ),
           SizedBox(width: 4),
           Text(
             text,
