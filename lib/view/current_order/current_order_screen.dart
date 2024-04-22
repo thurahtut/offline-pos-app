@@ -749,6 +749,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                   noteTextController.text,
                   discount:
                       controller.discountList[controller.selectedDiscountIndex],
+                  shDiscountReason: noteTextController.text,
                 );
                 Navigator.of(context).pop();
               },
