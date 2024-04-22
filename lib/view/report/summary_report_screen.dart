@@ -222,7 +222,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                       ),
                     ),
                     pw.Text(
-                      '${e['totalAmt']?.toString() ?? ''} Ks',
+                      '${e['totalAmt']?.toString() ?? '0'} Ks',
                       textAlign: pw.TextAlign.center,
                       style: pw.TextStyle(
                         color: PdfColor.fromInt(Constants.textColor.value),
@@ -297,7 +297,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
             ),
           ),
           pw.Text(
-            '${controller.discountMap?['disco'] ?? ''} Ks',
+            '${controller.discountMap?['disco'] ?? '0'} Ks',
             textAlign: pw.TextAlign.center,
             style: pw.TextStyle(
               color: PdfColor.fromInt(Constants.textColor.value),
@@ -322,7 +322,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
             ),
           ),
           pw.Text(
-            '${controller.discountMap?['foc'] ?? ''} Ks',
+            '${controller.discountMap?['foc'] ?? '0'} Ks',
             textAlign: pw.TextAlign.center,
             style: pw.TextStyle(
               color: PdfColor.fromInt(Constants.textColor.value),
@@ -548,7 +548,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                       ),
                     ),
                     pw.Text(
-                      '${e['tPaid']?.toString() ?? ''} Ks',
+                      '${e['tPaid']?.toString() ?? '0'} Ks',
                       textAlign: pw.TextAlign.center,
                       style: pw.TextStyle(
                         color: PdfColor.fromInt(Constants.textColor.value),
