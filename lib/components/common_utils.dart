@@ -195,46 +195,31 @@ class CommonUtils {
   }
 
   static List sideBarList = [
-    {
-      "svgPicture": 'assets/svg/info.svg',
-      "text": 'Info',
-      "onTap": () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          ProductInfomationDialog.productInformationDialogWidget(
-              NavigationService.navigatorKey.currentContext!);
-        }
-      },
-    },
-    {
-      "svgPicture": 'assets/svg/refresh.svg',
-      "text": 'Refund',
-      "onTap": () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          ProductDiscountDialog.productDiscountDialogWidget(
-              NavigationService.navigatorKey.currentContext!);
-        }
-      },
-    },
-    {
-      "svgPicture": 'assets/svg/barcode_scanner.svg',
-      "text": 'Enter Code',
-      "onTap": () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          EnterCouponCodeDialog.enterCouponCodeDialogWidget(
-              NavigationService.navigatorKey.currentContext!);
-        }
-      },
-    },
-    {
-      "svgPicture": 'assets/svg/kid_star.svg',
-      "text": 'Reset Programs',
-      "onTap": () {},
-    },
-    {
-      "svgPicture": 'assets/svg/qr_code.svg',
-      "text": 'QR',
-      "onTap": () {},
-    },
+    // {
+    //   "svgPicture": 'assets/svg/info.svg',
+    //   "text": 'Info',
+    //   "onTap": () {
+    //     if (NavigationService.navigatorKey.currentContext != null) {
+    //       ProductInfomationDialog.productInformationDialogWidget(
+    //           NavigationService.navigatorKey.currentContext!);
+    //     }
+    //   },
+    // },
+    // {
+    //   "svgPicture": 'assets/svg/refresh.svg',
+    //   "text": 'Refund',
+    //   "onTap": () {
+    //     if (NavigationService.navigatorKey.currentContext != null) {
+    //       ProductDiscountDialog.productDiscountDialogWidget(
+    //           NavigationService.navigatorKey.currentContext!);
+    //     }
+    //   },
+    // },
+    // {
+    //   "svgPicture": 'assets/svg/qr_code.svg',
+    //   "text": 'QR',
+    //   "onTap": () {},
+    // },
     {
       "svgPicture": 'assets/svg/sell.svg',
       "text": 'Print Summary Report',
@@ -259,16 +244,16 @@ class CommonUtils {
         }
       },
     },
-    {
-      "svgPicture": 'assets/svg/payments.svg',
-      "text": 'Cash In/Out Statement',
-      "onTap": () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          PrintStatementDialog.printStatementDialogWidget(
-              NavigationService.navigatorKey.currentContext!);
-        }
-      },
-    },
+    // {
+    //   "svgPicture": 'assets/svg/payments.svg',
+    //   "text": 'Cash In/Out Statement',
+    //   "onTap": () {
+    //     if (NavigationService.navigatorKey.currentContext != null) {
+    //       PrintStatementDialog.printStatementDialogWidget(
+    //           NavigationService.navigatorKey.currentContext!);
+    //     }
+    //   },
+    // },
     {
       "svgPicture": 'assets/svg/credit_card.svg',
       "text": 'Payments',
@@ -284,33 +269,33 @@ class CommonUtils {
         }
       },
     },
-    {
-      "svgPicture": 'assets/svg/link.svg',
-      "text": 'Quotation / Order',
-      "onTap": () {
-        if (NavigationService.navigatorKey.currentContext != null) {
-          Navigator.pushNamed(
-            NavigationService.navigatorKey.currentContext!,
-            QuotationOrderListScreen.routeName,
-          );
-        }
-      },
-    },
-    {
-      "svgPicture": 'assets/svg/sell.svg',
-      "text": 'Change UOM',
-      "onTap": () {},
-    },
-    {
-      "svgPicture": 'assets/svg/assignment.svg',
-      "text": 'Template Products',
-      "onTap": () {},
-    },
-    {
-      "svgPicture": 'assets/svg/sync.svg',
-      "text": 'Sync',
-      "onTap": () {},
-    },
+    // {
+    //   "svgPicture": 'assets/svg/link.svg',
+    //   "text": 'Quotation / Order',
+    //   "onTap": () {
+    //     if (NavigationService.navigatorKey.currentContext != null) {
+    //       Navigator.pushNamed(
+    //         NavigationService.navigatorKey.currentContext!,
+    //         QuotationOrderListScreen.routeName,
+    //       );
+    //     }
+    //   },
+    // },
+    // {
+    //   "svgPicture": 'assets/svg/sell.svg',
+    //   "text": 'Change UOM',
+    //   "onTap": () {},
+    // },
+    // {
+    //   "svgPicture": 'assets/svg/assignment.svg',
+    //   "text": 'Template Products',
+    //   "onTap": () {},
+    // },
+    // {
+    //   "svgPicture": 'assets/svg/sync.svg',
+    //   "text": 'Sync',
+    //   "onTap": () {},
+    // },
   ];
 
   static Widget eachCalculateButtonWidget({

@@ -162,12 +162,13 @@ class OrderLineIdTable {
       {Database? db, required int sessionId}) async {
     db ??= await DatabaseHelper().db;
     String query = "select "
-        "sum(case when olt.discount <> 100 then (CAST(olt.price_unit AS REAL) * (CAST(olt.discount AS REAL)/100)) else 0 end ) as disco, "
-        "sum(case when olt.discount <> 100 then 0 else (CAST(olt.price_unit AS REAL) * (CAST(olt.discount AS REAL)/100)) end ) as foc "
-        "from order_history_table ot "
-        "left join order_line_id_table olt "
-        "on olt.order_id = ot.id "
-        "where ot.session_id=$sessionId";
+        "sum(case when olt.$DISCOUNT_IN_LINE <> 100 then (CAST(olt.$PRICE_UNIT AS REAL) * (CAST(olt.$DISCOUNT_IN_LINE AS REAL)/100)) else 0 end ) as disco, "
+        "sum(case when olt.$DISCOUNT_IN_LINE <> 100 then 0 else (CAST(olt.$PRICE_UNIT AS REAL) * (CAST(olt.$DISCOUNT_IN_LINE AS REAL)/100)) end ) as foc "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
+        "where ot.$SESSION_ID=$sessionId "
+        "and ot.$STATE_IN_OT='${OrderState.paid.text}' ";
 
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
     return maps.isEmpty ? null : maps.first;

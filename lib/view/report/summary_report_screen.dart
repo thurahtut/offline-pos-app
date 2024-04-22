@@ -732,6 +732,16 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
             }
           },
         ),
+        SizedBox(height: 20),
+        BorderContainer(
+          width: MediaQuery.of(context).size.width / 4.5,
+          text: 'Back',
+          textColor: Colors.white,
+          containerColor: primaryColor,
+          onTap: () async {
+            Navigator.pop(context);
+          },
+        ),
       ],
     );
   }

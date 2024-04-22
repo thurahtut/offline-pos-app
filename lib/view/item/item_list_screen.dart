@@ -394,10 +394,11 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 text: TextSpan(text: "", children: [
-                  TextSpan(
-                    text: "[${product.productId}]",
-                    style: textStyle.copyWith(color: Constants.successColor),
-                  ),
+                  if (product.barcode != null)
+                    TextSpan(
+                      text: "[${product.barcode}]",
+                      style: textStyle.copyWith(color: Constants.successColor),
+                    ),
                   TextSpan(text: product.productName, style: textStyle),
                 ]),
               ),

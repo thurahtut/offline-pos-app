@@ -762,9 +762,11 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
           ],
         );
       },
-    ).then((value) => context
-        .read<CurrentOrderController>()
-        .currentOrderKeyboardState = CurrentOrderKeyboardState.qty);
+    ).then((value) {
+      context.read<CurrentOrderController>().currentOrderKeyboardState =
+          CurrentOrderKeyboardState.qty;
+      noteTextController.clear();
+    });
   }
 
   Future<dynamic> _showDisReasonErrorDialog() {

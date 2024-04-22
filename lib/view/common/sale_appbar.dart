@@ -195,15 +195,15 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
             //       'assets/svg/network_wifi.svg', 'Wifi Address Name',
             //       fontSize: 16, onPressed: () {}),
             // ),
-            PopupMenuItem<int>(
-              value: 1,
-              child: TooltipWidget(
-                message: 'Customer\'s Screen',
-                child: CommonUtils.appBarActionButtonWithText(
-                    'assets/svg/credit_card.svg', 'Customer\'s Screen',
-                    fontSize: 16, onPressed: () {}),
-              ),
-            ),
+            // PopupMenuItem<int>(
+            //   value: 1,
+            //   child: TooltipWidget(
+            //     message: 'Customer\'s Screen',
+            //     child: CommonUtils.appBarActionButtonWithText(
+            //         'assets/svg/credit_card.svg', 'Customer\'s Screen',
+            //         fontSize: 16, onPressed: () {}),
+            //   ),
+            // ),
             PopupMenuItem<int>(
               value: 2,
               child: TooltipWidget(
@@ -388,13 +388,13 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
       // CommonUtils.svgIconActionButton(
       //   'assets/svg/network_wifi.svg',
       // ),
-      spacer,
-      TooltipWidget(
-        message: 'Customer\'s Screen',
-        child: CommonUtils.svgIconActionButton(
-          'assets/svg/credit_card.svg',
-        ),
-      ),
+      // spacer,
+      // TooltipWidget(
+      //   message: 'Customer\'s Screen',
+      //   child: CommonUtils.svgIconActionButton(
+      //     'assets/svg/credit_card.svg',
+      //   ),
+      // ),
       spacer,
       TooltipWidget(
         message: 'Lock / Unlock',

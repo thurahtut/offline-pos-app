@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
 
 class SelectUserScreen extends StatefulWidget {
@@ -110,7 +111,7 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
         ),
         child: TextField(
           controller: _searchEmployeeTextController,
-          // autofocus: true,
+          autofocus: kIsWeb || Platform.isWindows,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

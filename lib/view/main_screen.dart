@@ -189,44 +189,44 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    CommonUtils.svgIconActionButton(
-                      'assets/svg/grid_view.svg',
-                      withContianer: true,
-                      containerColor: !context.watch<ViewController>().isList
-                          ? primaryColor
-                          : Constants.unselectedColor,
-                      iconColor: !context.watch<ViewController>().isList
-                          ? Colors.white
-                          : primaryColor,
-                      onPressed: () {
-                        context.read<ViewController>().isList = false;
-                      },
-                    ),
-                    spacer,
-                    CommonUtils.iconActionButton(
-                      Icons.view_list_outlined,
-                      withContianer: true,
-                      containerColor: context.watch<ViewController>().isList
-                          ? primaryColor
-                          : Constants.unselectedColor,
-                      iconColor: context.watch<ViewController>().isList
-                          ? Colors.white
-                          : primaryColor,
-                      onPressed: () {
-                        context.read<ViewController>().isList = true;
-                      },
-                    ),
-                    spacer,
-                    CommonUtils.svgIconActionButton(
-                      'assets/svg/home.svg',
-                      withContianer: true,
-                      containerColor: context.watch<ViewController>().isHome
-                          ? primaryColor
-                          : Constants.unselectedColor,
-                      iconColor: context.watch<ViewController>().isHome
-                          ? Colors.white
-                          : primaryColor,
-                    ),
+                    // CommonUtils.svgIconActionButton(
+                    //   'assets/svg/grid_view.svg',
+                    //   withContianer: true,
+                    //   containerColor: !context.watch<ViewController>().isList
+                    //       ? primaryColor
+                    //       : Constants.unselectedColor,
+                    //   iconColor: !context.watch<ViewController>().isList
+                    //       ? Colors.white
+                    //       : primaryColor,
+                    //   onPressed: () {
+                    //     context.read<ViewController>().isList = false;
+                    //   },
+                    // ),
+                    // spacer,
+                    // CommonUtils.iconActionButton(
+                    //   Icons.view_list_outlined,
+                    //   withContianer: true,
+                    //   containerColor: context.watch<ViewController>().isList
+                    //       ? primaryColor
+                    //       : Constants.unselectedColor,
+                    //   iconColor: context.watch<ViewController>().isList
+                    //       ? Colors.white
+                    //       : primaryColor,
+                    //   onPressed: () {
+                    //     context.read<ViewController>().isList = true;
+                    //   },
+                    // ),
+                    // spacer,
+                    // CommonUtils.svgIconActionButton(
+                    //   'assets/svg/home.svg',
+                    //   withContianer: true,
+                    //   containerColor: context.watch<ViewController>().isHome
+                    //       ? primaryColor
+                    //       : Constants.unselectedColor,
+                    //   iconColor: context.watch<ViewController>().isHome
+                    //       ? Colors.white
+                    //       : primaryColor,
+                    // ),
                     // spacer,
                     // CommonUtils.svgIconActionButton(
                     //   'assets/svg/home.svg',
