@@ -129,32 +129,33 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        BorderContainer(
-                          text: 'Load Customers',
-                          prefixSvg: 'assets/svg/account_circle.svg',
-                          svgSize: 30,
-                          svgColor: Colors.white,
-                          width: (width - 100) /
-                              (isMobileMode
-                                  ? 3
-                                  : isTabletMode
-                                      ? 4
-                                      : 6),
-                          containerColor: primaryColor,
-                          textColor: Colors.white,
-                          textSize: (isMobileMode
-                              ? 13
-                              : isTabletMode
-                                  ? 14
-                                  : 16),
-                          radius: 16,
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Row(
+                  //     children: [
+                  //       BorderContainer(
+                  //         text: 'Load Customers',
+                  //         prefixSvg: 'assets/svg/account_circle.svg',
+                  //         svgSize: 30,
+                  //         svgColor: Colors.white,
+                  //         width: (width - 100) /
+                  //             (isMobileMode
+                  //                 ? 3
+                  //                 : isTabletMode
+                  //                     ? 4
+                  //                     : 6),
+                  //         containerColor: primaryColor,
+                  //         textColor: Colors.white,
+                  //         textSize: (isMobileMode
+                  //             ? 13
+                  //             : isTabletMode
+                  //                 ? 14
+                  //                 : 16),
+                  //         radius: 16,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  Expanded(child: SizedBox()),
                   Expanded(
                     child: Row(
                       children: [
@@ -205,6 +206,7 @@ class _CustomerPaginationTableState extends State<CustomerPaginationTable> {
                               },
                               cancelLabel: 'Discard',
                               cancelCallback: () {
+                                controller.selectingCustomer = null;
                                 Navigator.pop(widget.bContext, false);
                               },
                             );

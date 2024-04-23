@@ -22,6 +22,12 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
         Navigator.pushNamed(context, ProductListScreen.routeName);
       }
     },
+    {
+      "title": "Payment Methods",
+      "onTap": (context) {
+        Navigator.pushNamed(context, PaymentMethodScreen.routeName);
+      }
+    },
     // {"title": "Product Variants", "onTap": (context) {}},
     // {"title": "Product Tags", "onTap": (context) {}},
     // {"title": "Custom Product Template", "onTap": (context) {}},
@@ -228,7 +234,7 @@ class _InventoryAppBarState extends State<InventoryAppBar> {
       ),
       InkWell(
         onTap: () {
-          Navigator.pushNamed(context, OrderHistoryListScreen.routeName);
+          Navigator.pushNamed(context, OrderListScreen.routeName);
         },
         child: Text(
           'Orders',

@@ -71,6 +71,14 @@ class OrderListController with ChangeNotifier {
     notifyListeners();
   }
 
+  DateTime? _dateFilter;
+  DateTime? get dateFilter => _dateFilter;
+  set dateFilter(DateTime? dateFilter) {
+    if (_dateFilter == dateFilter) return;
+    _dateFilter = dateFilter;
+    notify();
+  }
+
   notify() {
     notifyListeners();
   }
@@ -82,6 +90,7 @@ class OrderListController with ChangeNotifier {
       typeFilter: typefilterValue,
       limit: limit,
       offset: offset,
+      dateFilter: dateFilter?.toString(),
     ).then((list) {
       orderList = [];
       orderList.addAll(list);
@@ -104,6 +113,7 @@ class OrderListController with ChangeNotifier {
     _total = 0;
     _offset = 0;
     _loading = false;
+    _dateFilter = null;
     notifyListeners();
   }
 }

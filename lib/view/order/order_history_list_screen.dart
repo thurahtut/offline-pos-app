@@ -130,27 +130,29 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              flex: 2,
-              child: BorderContainer(
-                text: 'Discard',
-                containerColor: Colors.white,
-                // width: 140,
-                borderWithPrimaryColor: true,
-                textColor: primaryColor,
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainScreen()),
-                      ModalRoute.withName("/Home"));
-                },
-              ),
-            ),
-            SizedBox(width: 5),
+            // Expanded(
+            //   flex: 2,
+            //   child: BorderContainer(
+            //     text: 'Discard',
+            //     containerColor: Colors.white,
+            //     // width: 140,
+            //     borderWithPrimaryColor: true,
+            //     textColor: primaryColor,
+            //     onTap: () {
+            //       // Navigator.pushAndRemoveUntil(
+            //       //     context,
+            //       //     MaterialPageRoute(builder: (context) => MainScreen()),
+            //       //     ModalRoute.withName("/Home"));
+            //     },
+            //   ),
+            // ),
+            // SizedBox(width: 5),
             Expanded(
               flex: 1,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 child: Container(
                   // width: 80,
                   padding: EdgeInsets.all(6),
@@ -182,24 +184,35 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
             Expanded(
               flex: 2,
               child: BorderContainer(
-                text: 'Posted',
+                text: 'Draft',
                 containerColor: Colors.white,
                 // width: 140,
                 borderWithPrimaryColor: true,
                 textColor: primaryColor,
               ),
             ),
-            SizedBox(width: 5),
-            Expanded(
-              flex: 2,
-              child: BorderContainer(
-                text: 'Invoive',
-                containerColor: Colors.white,
-                // width: 140,
-                borderWithPrimaryColor: true,
-                textColor: primaryColor,
-              ),
-            ),
+            // SizedBox(width: 5),
+            // Expanded(
+            //   flex: 2,
+            //   child: BorderContainer(
+            //     text: 'Posted',
+            //     containerColor: Colors.white,
+            //     // width: 140,
+            //     borderWithPrimaryColor: true,
+            //     textColor: primaryColor,
+            //   ),
+            // ),
+            // SizedBox(width: 5),
+            // Expanded(
+            //   flex: 2,
+            //   child: BorderContainer(
+            //     text: 'Invoive',
+            //     containerColor: Colors.white,
+            //     // width: 140,
+            //     borderWithPrimaryColor: true,
+            //     textColor: primaryColor,
+            //   ),
+            // ),
             SizedBox(width: 5),
             Expanded(flex: 6, child: _searchCustomerWidget()),
             SizedBox(width: 5),
@@ -466,8 +479,8 @@ class _OrderHistoryListScreenState extends State<OrderHistoryListScreen> {
                       context.read<OrderHistoryListController>().limit,
                       max(
                           context
-                          .read<OrderHistoryListController>()
-                          .orderHistoryList
+                              .read<OrderHistoryListController>()
+                              .orderHistoryList
                               .length,
                           1)),
                   minWidth: MediaQuery.of(context).size.width - 100,
@@ -593,7 +606,7 @@ class DataSourceForOrderHistoryListScreen extends DataTableSource {
           ),
         ),
         DataCell(
-          Text(orderHistory.partnerId?.toString() ?? ''), 
+          Text(orderHistory.partnerId?.toString() ?? ''),
         ),
         DataCell(
           Text(

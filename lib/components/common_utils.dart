@@ -239,7 +239,7 @@ class CommonUtils {
         if (NavigationService.navigatorKey.currentContext != null) {
           Navigator.pushNamed(
             NavigationService.navigatorKey.currentContext!,
-            OrderHistoryListScreen.routeName,
+            OrderListScreen.routeName,
           );
         }
       },
@@ -445,17 +445,6 @@ class CommonUtils {
     total: 467000,
     state: "Quotation",
   );
-
-  static PaymentMethods demoPaymentMethod = PaymentMethods(
-      method: "American Express Settlement(Easy 1)",
-      journal: "American Express Settlement Easy 1",
-      company: "SSS International Co.,Ltd",
-      forPoint: false,
-      identifyCustomer: false,
-      outstandingAccount: "201397 POS Clearing Account_Bank (TD_Easy/Maxi)",
-      intermediaryAccount: "202610 POS Accounts Receivable (MT)",
-      allowPaymentViaWallet: true,
-      shortCode: "1234567");
 
   // static ProductPackaging demoProductPackaging = ProductPackaging(
   //   product: "100 Pipers whisky 175ML",

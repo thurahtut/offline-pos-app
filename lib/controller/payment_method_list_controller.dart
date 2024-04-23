@@ -1,9 +1,9 @@
 import 'package:offline_pos/components/export_files.dart';
 
 class PaymentMethodListController with ChangeNotifier {
-  List<PaymentMethods> _paymentMethodList = [];
-  List<PaymentMethods> get paymentMethodList => _paymentMethodList;
-  set paymentMethodList(List<PaymentMethods> paymentMethodList) {
+  List<PaymentMethod> _paymentMethodList = [];
+  List<PaymentMethod> get paymentMethodList => _paymentMethodList;
+  set paymentMethodList(List<PaymentMethod> paymentMethodList) {
     _paymentMethodList = paymentMethodList;
     notifyListeners();
   }
@@ -33,9 +33,9 @@ class PaymentMethodListController with ChangeNotifier {
     notifyListeners();
   }
 
-  PaymentMethods? _editingPaymentMethod;
-  PaymentMethods? get editingPaymentMethod => _editingPaymentMethod;
-  set editingPaymentMethod(PaymentMethods? editingPaymentMethod) {
+  PaymentMethod? _editingPaymentMethod;
+  PaymentMethod? get editingPaymentMethod => _editingPaymentMethod;
+  set editingPaymentMethod(PaymentMethod? editingPaymentMethod) {
     if (_editingPaymentMethod == editingPaymentMethod) return;
     _editingPaymentMethod = editingPaymentMethod;
     notifyListeners();

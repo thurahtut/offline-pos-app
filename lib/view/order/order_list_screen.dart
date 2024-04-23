@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -17,6 +19,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
   int? _sortColumnIndex;
   bool? isTabletMode;
   final scrollController = ScrollController();
+  // String headerString = "";
+  DateTime selectedDate = CommonUtils.getDateTimeNow();
+  // final ValueNotifier<DateTime?> _dateTimeNotifier = ValueNotifier(null);
 
   static List<String> stateFilterlist = [
     "All Active Orders",
@@ -124,6 +129,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // headerString = DateFormat('MMMM yyyy')
+      //     .format(CommonUtils.getDateTimeNow())
+      //     .toString();
       isTabletMode = CommonUtils.isTabletMode(context);
       getAllOrderHistory();
     });
@@ -225,6 +233,26 @@ class _OrderListScreenState extends State<OrderListScreen> {
             context.read<OrderListController>().currentIndex = 1;
             getAllOrderHistory();
           }),
+          SizedBox(width: 5),
+          Expanded(
+            flex: 2,
+            child: Consumer<OrderListController>(builder: (_, controller, __) {
+              return BorderContainer(
+                text: controller.dateFilter != null
+                    ? DateFormat('dd/MM/yyyy')
+                        .format(controller.dateFilter!)
+                        .toString()
+                    : 'dd--yyyy',
+                suffixSvg: 'assets/svg/calendar_month.svg',
+                svgColor: primaryColor,
+                // width: 140,
+                onTap: () {
+                  _showDateTimePicker();
+                },
+              );
+            }),
+          ),
+          SizedBox(width: 5),
           Expanded(flex: 4, child: _searchCustomerWidget()),
         ],
       ),
@@ -333,6 +361,172 @@ class _OrderListScreenState extends State<OrderListScreen> {
     );
   }
 
+  Future<void> _showDateTimePicker() {
+    return CommonUtils.showGeneralDialogWidget(
+        context,
+        (context, animation, secondaryAnimation) => Dialog(
+              insetPadding: EdgeInsets.zero,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              shadowColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                constraints: BoxConstraints(
+                  maxWidth: 500,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22),
+                  color: Colors.white,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        child: _buildTableCalendarWithBuilders(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              context.read<OrderListController>().dateFilter =
+                                  null;
+                              context.read<OrderListController>().offset = 0;
+                              getAllOrderHistory();
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Clear',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.read<OrderListController>().dateFilter =
+                                  CommonUtils.getDateTimeNow();
+                              context.read<OrderListController>().offset = 0;
+                              getAllOrderHistory();
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Today',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ));
+  }
+
+  Widget _buildTableCalendarWithBuilders() {
+    var textStyle = TextStyle(
+      color: primaryColor,
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+    );
+    return Consumer<OrderListController>(builder: (_, controller, __) {
+      return TableCalendar(
+        firstDay: DateTime.utc(2010, 10, 16),
+        lastDay: DateTime(CommonUtils.getDateTimeNow().year + 100, 1),
+        focusedDay: controller.dateFilter ?? CommonUtils.getDateTimeNow(),
+        pageJumpingEnabled: true,
+        headerStyle: HeaderStyle(
+          formatButtonVisible: false,
+          leftChevronIcon: Icon(
+            Icons.chevron_left,
+            color: Constants.accentColor,
+            size: 28,
+          ),
+          rightChevronIcon: Icon(
+            Icons.chevron_right,
+            color: Constants.accentColor,
+            size: 28,
+          ),
+        ),
+        calendarBuilders: CalendarBuilders(
+          dowBuilder: (context, day) {
+            final text = DateFormat.E().format(day);
+            Color color = Colors.black;
+            if (day.weekday == DateTime.sunday ||
+                day.weekday == DateTime.saturday) {
+              color = Constants.accentColor;
+            }
+            return Center(
+              child: Text(
+                text,
+                style: textStyle.copyWith(color: color),
+              ),
+            );
+          },
+        ),
+        calendarStyle: CalendarStyle(
+          defaultTextStyle: textStyle.copyWith(
+            color: Constants.disableColor,
+          ),
+          weekendTextStyle: textStyle.copyWith(color: Constants.accentColor),
+          outsideDaysVisible: false,
+          todayTextStyle: textStyle.copyWith(
+            color: primaryColor,
+          ),
+          selectedTextStyle: textStyle.copyWith(
+            color: Colors.white,
+          ),
+          todayDecoration: BoxDecoration(),
+        ),
+        onHeaderTapped: (focusedDay) {
+          Navigator.pop(context);
+          _yearPicker();
+        },
+        onDaySelected: (date, events) {
+          context.read<OrderListController>().dateFilter = date;
+          controller.offset = 0;
+          getAllOrderHistory();
+          Navigator.pop(context);
+        },
+        selectedDayPredicate: (day) => isSameDay(day, controller.dateFilter),
+      );
+    });
+  }
+
+  void _yearPicker() {
+    showDialog(
+      context: context,
+      builder: (BuildContext bContext) {
+        return AlertDialog(
+          title: Text("Select Year"),
+          content: SizedBox(
+            width: 300,
+            height: 300,
+            child: YearPicker(
+              firstDate: DateTime(CommonUtils.getDateTimeNow().year - 100, 1),
+              lastDate: DateTime(CommonUtils.getDateTimeNow().year + 100, 1),
+              selectedDate: context.read<OrderListController>().dateFilter ??
+                  CommonUtils.getDateTimeNow(),
+              onChanged: (DateTime dateTime) {
+                context.read<OrderListController>().dateFilter =
+                    DateTime(dateTime.year);
+                Navigator.pop(bContext);
+                _showDateTimePicker();
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _orderHistoryListWidget(OrderListController controller) {
     return Stack(
       alignment: Alignment.bottomLeft,
@@ -357,7 +551,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   dividerThickness: 0.0,
                   rowsPerPage: math.min(controller.limit,
                       math.max(controller.orderList.length, 1)),
-                  minWidth: MediaQuery.of(context).size.width + 400,
+                  minWidth: MediaQuery.of(context).size.width,
                   showCheckboxColumn: false,
                   fit: FlexFit.tight,
                   hidePaginator: true,
