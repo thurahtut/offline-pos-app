@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -107,12 +105,8 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 in currentOrderController.paymentTransactionList.values) {
               if (data.paymentMethodName?.toLowerCase().contains('cash') ??
                   false) {
-                PaymentTransaction p1 =
-                    PaymentTransaction.fromJson(jsonDecode(jsonEncode(data)));
-                PaymentTransaction p2 =
-                    PaymentTransaction.fromJson(data.toJson());
-
-                cashTransaction = p1;
+                cashTransaction = PaymentTransaction.fromJson(
+                    data.toJson(includedOtherField: true));
               }
               totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
               data.orderId = currentOrderController.orderHistory?.id ?? 0;

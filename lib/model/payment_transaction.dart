@@ -67,7 +67,9 @@ class PaymentTransaction {
     data['order_id'] = orderId;
     data['payment_date'] = paymentDate;
     data['payment_method_id'] = paymentMethodId;
-    data['name'] = paymentMethodName;
+    if (includedOtherField == true) {
+      data['name'] = paymentMethodName;
+    }
     data['amount'] = amount;
     data['card_type'] = cardType;
     data['cardholder_name'] = cardholderName;
