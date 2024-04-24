@@ -103,18 +103,16 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             List<int> toDeleteTransaction = [];
             for (PaymentTransaction data
                 in currentOrderController.paymentTransactionList.values) {
+              totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
+              data.orderId = currentOrderController.orderHistory?.id ?? 0;
+              data.paymentDate =
+                  currentOrderController.orderHistory?.createDate ?? '';
               if (data.paymentMethodName?.toLowerCase().contains('cash') ??
                   false) {
                 cashTransaction = PaymentTransaction.fromJson(
                     data.toJson(includedOtherField: true));
               }
-              totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
-              data.orderId = currentOrderController.orderHistory?.id ?? 0;
-              data.paymentDate =
-                  currentOrderController.orderHistory?.createDate ?? '';
               if ((double.tryParse(data.amount ?? '') ?? 0) <= 0) {
-                // currentOrderController.paymentTransactionList
-                //     .remove(data.paymentMethodId);
                 toDeleteTransaction.add(data.paymentMethodId ?? -1);
               }
             }
@@ -145,6 +143,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                   isChange: false,
                   paymentStatus: "",
                   sessionId: sessionId,
+                  orderId: currentOrderController.orderHistory?.id ?? 0,
+                  paymentDate:
+                      currentOrderController.orderHistory?.createDate ?? '',
                 );
                 currentOrderController
                         .paymentTransactionList[cashResult.id ?? -1]?.amount =
