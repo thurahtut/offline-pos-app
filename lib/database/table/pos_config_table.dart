@@ -19,6 +19,7 @@ const RECEIPT_HEADER = "receipt_header";
 const RECEIPT_FOOTER = "receipt_footer";
 const SEQUENCE_ID_IN_CONFIG = "sequence_id";
 const SEQUENCE_LINE_ID_IN_CONFIG = "sequence_line_id";
+const STARTING_AMT = "starting_amt";
 
 class POSConfigTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -125,6 +126,8 @@ class POSConfigTable {
           posConfig.sequenceLineId = int.tryParse(data[POS_CONFIG_VALUE]);
         } else if (data[POS_CONFIG_NAME] == SEQUENCE_ID_IN_CONFIG) {
           posConfig.sequenceId = int.tryParse(data[POS_CONFIG_VALUE]);
+        } else if (data[POS_CONFIG_NAME] == STARTING_AMT) {
+          posConfig.startingAmt = double.tryParse(data[POS_CONFIG_VALUE]);
         }
       }
     }

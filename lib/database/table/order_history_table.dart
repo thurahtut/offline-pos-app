@@ -26,6 +26,7 @@ const ORDER_CONDITION = "order_condition";
 const AMOUNT_PAID = "amount_paid";
 const AMOUNT_RETURN = "amount_return";
 const AMOUNT_TAX = "amount_tax";
+const AMOUNT_UNTAXED = "amount_untaxed";
 const LOYALTY_POINTS = "loyalty_points";
 const NB_PRINT = "nb_print";
 const POINTS_WON = "points_won";
@@ -65,6 +66,7 @@ class OrderHistoryTable {
         "$AMOUNT_PAID REAL NOT NULL,"
         "$AMOUNT_RETURN REAL,"
         "$AMOUNT_TAX REAL,"
+        "$AMOUNT_UNTAXED REAL,"
         "$LOYALTY_POINTS REAL,"
         "$NB_PRINT INTEGER,"
         "$POINTS_WON TEXT,"

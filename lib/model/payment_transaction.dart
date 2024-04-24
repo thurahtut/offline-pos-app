@@ -61,12 +61,13 @@ class PaymentTransaction {
     writeUid = int.tryParse(json['write_uid']?.toString() ?? '');
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool? includedOtherField}) {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['order_id'] = orderId;
     data['payment_date'] = paymentDate;
     data['payment_method_id'] = paymentMethodId;
+    data['name'] = paymentMethodName;
     data['amount'] = amount;
     data['card_type'] = cardType;
     data['cardholder_name'] = cardholderName;

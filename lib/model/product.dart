@@ -27,6 +27,7 @@ class Product {
   double? discount;
   String? shDiscountCode;
   String? shDiscountReason;
+  Promotion? validPromotion;
 
   Product({
     this.productId,
@@ -53,6 +54,7 @@ class Product {
     this.discount,
     this.shDiscountCode,
     this.shDiscountReason,
+    this.validPromotion,
   });
 
   Product.fromJson(Map<String, dynamic> json,
@@ -115,6 +117,9 @@ class Product {
       discount = json['discount'];
       shDiscountCode = json['shDiscountCode'];
       shDiscountReason = json['shDiscountReason'];
+      if (json['validPromotion'] != null) {
+        validPromotion = Promotion.fromJson(json['validPromotion']);
+      }
     }
   }
 
@@ -145,6 +150,7 @@ class Product {
       data['discount'] = discount;
       data['shDiscountCode'] = shDiscountCode;
       data['shDiscountReason'] = shDiscountReason;
+      data['validPromotion'] = validPromotion?.toJson();
     }
     return data;
   }

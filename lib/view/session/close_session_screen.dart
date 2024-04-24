@@ -591,7 +591,14 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                                   ?.toLowerCase()
                                   .contains("cash") ??
                               false) &&
-                          double.tryParse(paymentTransaction.amount ?? '') !=
+                          ((context
+                                          .read<LoginUserController>()
+                                          .posConfig
+                                          ?.startingAmt ??
+                                      0) +
+                                  (double.tryParse(
+                                          paymentTransaction.amount ?? '') ??
+                                      0)) !=
                               double.tryParse(
                                   paymentTransaction.payingAmount ?? '')) {
                         allowCloseSession = false;

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:offline_pos/components/export_files.dart';
@@ -72,12 +71,13 @@ class CurrentOrderController with ChangeNotifier {
               ? ((cOrderList[i].priceListItem?.fixedPrice ?? 0) *
                   CommonUtils.getPercentAmountTaxOnProduct(cOrderList[i]))
               : 0);
-      log(tTax);
     }
     map["qty"] = double.tryParse(tQty.toStringAsFixed(2)) ?? 0;
     map["total"] = double.tryParse(tTotal.toStringAsFixed(2)) ?? 0;
     map["tax"] = double.tryParse(tTax.toStringAsFixed(2)) ?? 0;
     map["tDis"] = double.tryParse(tDis.toStringAsFixed(2)) ?? 0;
+    map["untaxed"] = (double.tryParse(tTotal.toStringAsFixed(2)) ?? 0) -
+        (double.tryParse(tTax.toStringAsFixed(2)) ?? 0);
     return map;
   }
 
@@ -267,13 +267,14 @@ class CurrentOrderController with ChangeNotifier {
   }
 
   void removePromotionItemsByProduct(Product orderProduct) {
-    Promotion? promotion = orderProduct.promotionList?.firstWhere(
-      (e) {
-        return (orderProduct.onhandQuantity ?? 0) >=
-            (e.promotionRule?.ruleMinQuantity ?? 0);
-      },
-      orElse: () => Promotion(),
-    );
+    Promotion? promotion = orderProduct.validPromotion ??
+        orderProduct.promotionList?.firstWhere(
+          (e) {
+            return (orderProduct.onhandQuantity ?? 0) >=
+                (e.promotionRule?.ruleMinQuantity ?? 0);
+          },
+          orElse: () => Promotion(),
+        );
     currentOrderList.removeWhere((element) {
       return element.isPromoItem == true &&
           element.parentPromotionId == promotion?.id;
@@ -292,6 +293,7 @@ class CurrentOrderController with ChangeNotifier {
       return (orderProduct.onhandQuantity ?? 0) >=
           (e.promotionRule?.ruleMinQuantity ?? 0);
     }, orElse: () => Promotion());
+    orderProduct.validPromotion = promotion;
     Product? promoProduct = promotion != null
         ? Product.fromJson(jsonDecode(jsonEncode(orderProduct)),
             includedOtherField: true)
@@ -328,8 +330,10 @@ class CurrentOrderController with ChangeNotifier {
     if (promotion.freeProduct != null &&
         promotion.freeProduct!.productId != null) {
       promotion.freeProduct!.onhandQuantity =
-          (promotion.rewardProductQuantity ?? 1) *
-              (promoProduct.onhandQuantity ?? 1);
+          (((promotion.rewardProductQuantity ?? 1) /
+                      (promotion.promotionRule?.ruleMinQuantity ?? 1)) *
+                  (promoProduct.onhandQuantity ?? 1))
+              .toInt();
       promotion.freeProduct!.parentPromotionId = promoProduct.parentPromotionId;
       promotion.freeProduct!.isPromoItem = true;
       promoProductList.add(promotion.freeProduct!);
@@ -340,8 +344,10 @@ class CurrentOrderController with ChangeNotifier {
         free.priceListItem = PriceListItem.fromJson(
             jsonDecode(jsonEncode(promotion.freeProduct!.priceListItem)));
         free.priceListItem?.fixedPrice = -(free.priceListItem?.fixedPrice ?? 0);
-        free.onhandQuantity = (promotion.rewardProductQuantity ?? 1) *
-            (promoProduct.onhandQuantity ?? 1);
+        free.onhandQuantity = (((promotion.rewardProductQuantity ?? 1) /
+                    (promotion.promotionRule?.ruleMinQuantity ?? 1)) *
+                (promoProduct.onhandQuantity ?? 1))
+            .toInt();
         free.parentPromotionId = promoProduct.parentPromotionId;
         free.isPromoItem = true;
         promoProductList.add(free);
@@ -372,7 +378,7 @@ class CurrentOrderController with ChangeNotifier {
                   promotion.discountMaxAmount!) {
                 product.priceListItem?.fixedPrice = -promotion
                     .discountMaxAmount!; // to ask how about amount tax
-                product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+                product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
                 product.parentPromotionId = promoProduct.parentPromotionId;
                 product.isPromoItem = true;
                 promoProductList.add(product);
@@ -380,7 +386,7 @@ class CurrentOrderController with ChangeNotifier {
                 product.priceListItem?.fixedPrice = -(totalMap["total"]! *
                         ((promotion.discountPercentage ?? 0) / 100))
                     .toInt();
-                product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+                product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
                 product.parentPromotionId = promoProduct.parentPromotionId;
                 product.isPromoItem = true;
                 promoProductList.add(product);
@@ -391,7 +397,7 @@ class CurrentOrderController with ChangeNotifier {
               product.priceListItem?.fixedPrice = -(totalMap["total"]! *
                       ((promotion.discountPercentage ?? 0) / 100))
                   .toInt();
-              product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+              product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
               product.parentPromotionId = promoProduct.parentPromotionId;
               product.isPromoItem = true;
               promoProductList.add(product);
@@ -408,7 +414,7 @@ class CurrentOrderController with ChangeNotifier {
                 promotion.discountMaxAmount!) {
               product.priceListItem?.fixedPrice =
                   -promotion.discountMaxAmount!; // to ask how about amount tax
-              product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+              product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
               product.parentPromotionId = promoProduct.parentPromotionId;
               product.isPromoItem = true;
               promoProductList.add(product);
@@ -417,7 +423,7 @@ class CurrentOrderController with ChangeNotifier {
                   -((promoProduct.priceListItem?.fixedPrice ?? 0) *
                           ((promotion.discountPercentage ?? 0) / 100))
                       .toInt();
-              product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+              product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
               product.parentPromotionId = promoProduct.parentPromotionId;
               product.isPromoItem = true;
               promoProductList.add(product);
@@ -427,7 +433,7 @@ class CurrentOrderController with ChangeNotifier {
                 ((promoProduct.priceListItem?.fixedPrice ?? 0) *
                         (promotion.discountPercentage! / 100))
                     .toInt();
-            product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+            product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
             product.parentPromotionId = promoProduct.parentPromotionId;
             product.isPromoItem = true;
             promoProductList.add(product);
@@ -441,7 +447,7 @@ class CurrentOrderController with ChangeNotifier {
         if (promotion.discountApplyOn == 'specific_products') {
           product.priceListItem?.fixedPrice =
               -promotion.discountFixedAmount!; // to ask how about amount tax
-          product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+          product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
           product.parentPromotionId = promoProduct.parentPromotionId;
           product.isPromoItem = true;
           promoProductList.add(product);
@@ -454,7 +460,7 @@ class CurrentOrderController with ChangeNotifier {
               existingProduct.productId == 0) {
             product.priceListItem?.fixedPrice =
                 -promotion.discountFixedAmount!; // to ask how about amount tax
-            product.onhandQuantity = promoProduct.onhandQuantity ?? 1;
+            product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
             product.parentPromotionId = promoProduct.parentPromotionId;
             product.isPromoItem = true;
             promoProductList.add(product);

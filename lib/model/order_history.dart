@@ -23,6 +23,7 @@ class OrderHistory {
   int? amountPaid;
   int? amountReturn;
   double? amountTax;
+  double? amountUntaxed;
   int? loyaltyPoints;
   int? nbPrint;
   String? pointsWon;
@@ -66,6 +67,7 @@ class OrderHistory {
     this.amountPaid,
     this.amountReturn,
     this.amountTax,
+    this.amountUntaxed,
     this.loyaltyPoints,
     this.nbPrint,
     this.pointsWon,
@@ -107,6 +109,7 @@ class OrderHistory {
     amountReturn =
         double.tryParse(json['amount_return']?.toString() ?? '')?.toInt();
     amountTax = double.tryParse(json['amount_tax']?.toString() ?? '');
+    amountUntaxed = double.tryParse(json['amount_untaxed']?.toString() ?? '');
     loyaltyPoints = int.tryParse(json['loyalty_points']?.toString() ?? '');
     nbPrint = int.tryParse(json['nb_print']?.toString() ?? '');
     pointsWon = json['points_won'];
@@ -146,6 +149,7 @@ class OrderHistory {
     data['amount_paid'] = amountPaid;
     data['amount_return'] = amountReturn;
     data['amount_tax'] = amountTax;
+    data['amount_untaxed'] = amountUntaxed;
     data['loyalty_points'] = loyaltyPoints;
     data['nb_print'] = nbPrint;
     data['points_won'] = pointsWon;

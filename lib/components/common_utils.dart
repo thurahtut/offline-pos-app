@@ -941,6 +941,7 @@ class CommonUtils {
     orderHistory.totalQty = map["qty"]?.toInt() ?? 0;
     orderHistory.totalItem = currentOrderController.currentOrderList.length;
     orderHistory.amountTax = map["tax"] ?? 0;
+    orderHistory.amountUntaxed = map["untaxed"] ?? 0;
 
     final Database db = await DatabaseHelper().db;
     await OrderHistoryTable.insertOrUpdate(db, orderHistory)
@@ -985,6 +986,7 @@ class CommonUtils {
     currentOrderController.orderHistory?.totalItem =
         currentOrderController.currentOrderList.length;
     currentOrderController.orderHistory?.amountTax = map["tax"] ?? 0;
+    currentOrderController.orderHistory?.amountUntaxed = map["untaxed"] ?? 0;
     List<OrderLineID> orderLineIdList = [];
 
     final Database db = await DatabaseHelper().db;
@@ -1044,6 +1046,8 @@ class CommonUtils {
                 : 0);
       }
       currentOrderController.orderHistory?.amountTax = totalTax;
+      currentOrderController.orderHistory?.amountUntaxed =
+          (currentOrderController.orderHistory?.amountTotal ?? 0) - totalTax;
       if (currentOrderController.orderHistory == null) {
         CommonUtils.showSnackBar(
             context: context,

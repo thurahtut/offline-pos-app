@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -87,6 +89,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           onTap: () async {
             CurrentOrderController currentOrderController =
                 context.read<CurrentOrderController>();
+            int userId =
+                context.read<LoginUserController>().loginUser?.userData?.id ??
+                    0;
+            int sessionId =
+                context.read<LoginUserController>().posSession?.id ?? 0;
             final Database db = await DatabaseHelper().db;
             double totalAmt = currentOrderController.getTotalQty(
                     currentOrderController.currentOrderList)["total"] ??
@@ -94,17 +101,64 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
             double totalPayAmt = 0;
             PaymentTransactionTable.deleteByOrderId(
                 db: db, orderID: currentOrderController.orderHistory?.id ?? 0);
+            PaymentTransaction? cashTransaction;
+            List<int> toDeleteTransaction = [];
             for (PaymentTransaction data
                 in currentOrderController.paymentTransactionList.values) {
+              if (data.paymentMethodName?.toLowerCase().contains('cash') ??
+                  false) {
+                PaymentTransaction p1 =
+                    PaymentTransaction.fromJson(jsonDecode(jsonEncode(data)));
+                PaymentTransaction p2 =
+                    PaymentTransaction.fromJson(data.toJson());
+
+                cashTransaction = p1;
+              }
               totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
               data.orderId = currentOrderController.orderHistory?.id ?? 0;
               data.paymentDate =
                   currentOrderController.orderHistory?.createDate ?? '';
               if ((double.tryParse(data.amount ?? '') ?? 0) <= 0) {
-                currentOrderController.paymentTransactionList
-                    .remove(data.paymentMethodId);
+                // currentOrderController.paymentTransactionList
+                //     .remove(data.paymentMethodId);
+                toDeleteTransaction.add(data.paymentMethodId ?? -1);
               }
             }
+
+            for (var dd in toDeleteTransaction) {
+              currentOrderController.paymentTransactionList.remove(dd);
+            }
+
+            if (currentOrderController.paymentTransactionList.isEmpty) {
+              if (cashTransaction != null) {
+                currentOrderController.paymentTransactionList[
+                    cashTransaction.paymentMethodId ?? -1] = cashTransaction;
+              } else {
+                PaymentMethod cashResult =
+                    currentOrderController.paymentMethodList.firstWhere(
+                        (e) => e.name?.toLowerCase().contains('cash') ?? false,
+                        orElse: () => PaymentMethod());
+                if (cashResult.id == null || cashResult.id == 0) {
+                  cashResult = currentOrderController.paymentMethodList.first;
+                }
+                currentOrderController
+                        .paymentTransactionList[cashResult.id ?? -1] ??=
+                    PaymentTransaction(
+                  paymentMethodId: cashResult.id,
+                  paymentMethodName: cashResult.name,
+                  createDate: CommonUtils.getDateTimeNow().toString(),
+                  createUid: userId,
+                  isChange: false,
+                  paymentStatus: "",
+                  sessionId: sessionId,
+                );
+                currentOrderController
+                        .paymentTransactionList[cashResult.id ?? -1]?.amount =
+                    (totalPayAmt < totalAmt ? totalAmt - totalPayAmt : 0)
+                        .toString();
+              }
+            }
+
             if (totalAmt > totalPayAmt) {
               if (mounted) {
                 CommonUtils.showSnackBar(
