@@ -51,24 +51,6 @@ class PaymentTransactionTable {
         PAYMENT_TRANSACTION_TABLE_NAME, paymentTransaction.toJson());
   }
 
-  static Future<List<PaymentTransaction>?> getProductByProductId(
-      int orderId) async {
-    // Get a reference to the database.
-    final Database db = await DatabaseHelper().db;
-
-    // Query the table for all The Categories.
-    final List<Map<String, dynamic>> maps = await db.query(
-      PAYMENT_TRANSACTION_TABLE_NAME,
-      where: "$ORDER_ID_IN_TRAN=?",
-      whereArgs: [orderId],
-      limit: 1,
-    );
-
-    return List.generate(maps.length, (i) {
-      return PaymentTransaction.fromJson(maps[i]);
-    });
-  }
-
   static Future<int> update(PaymentTransaction paymentTransaction) async {
     final Database db = await DatabaseHelper().db;
 
@@ -190,5 +172,26 @@ class PaymentTransactionTable {
     // }).toList();
 
     return maps;
+  }
+
+  static Future<Map<int, PaymentTransaction>>
+      getPaymentTransactionListByOrderId(int orderId) async {
+    final Database db = await DatabaseHelper().db;
+    String query = "select pt.*, pm.$PAYMENT_METHOD_NAME "
+        "from $PAYMENT_TRANSACTION_TABLE_NAME pt "
+        "left join $PAYMENT_METHOD_TABLE_NAME pm "
+        "on pm.$PAYMENT_METHOD_ID = pt.$PAYMENT_METHOD_ID_TRAN "
+        "where pt.$ORDER_ID_IN_TRAN=$orderId";
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query);
+
+    Map<int, PaymentTransaction> map = {};
+    List.generate(maps.length, (i) {
+      PaymentTransaction paymentTransaction =
+          PaymentTransaction.fromJson(maps[i]);
+      paymentTransaction.paymentMethodName = maps[i][PAYMENT_METHOD_NAME];
+      map[paymentTransaction.paymentMethodId ?? 0] = paymentTransaction;
+    });
+
+    return map;
   }
 }

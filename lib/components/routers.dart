@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/report/summary_report_screen.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -61,8 +60,12 @@ class Routers {
           builder: (_) => ProductDetailScreen(),
         );
       case OrderPaymentReceiptScreen.routeName:
+        final OrderPaymentReceiptScreen? args =
+            settings.arguments as OrderPaymentReceiptScreen?;
         return MaterialPageRoute(
-          builder: (_) => OrderPaymentReceiptScreen(),
+          builder: (_) => OrderPaymentReceiptScreen(
+            isNewOrder: args?.isNewOrder,
+          ),
         );
       case ProductCategoryListScreen.routeName:
         return MaterialPageRoute(

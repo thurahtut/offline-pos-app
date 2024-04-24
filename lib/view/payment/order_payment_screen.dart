@@ -139,7 +139,11 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               Navigator.popUntil(context, (route) {
                 return count++ == 1;
               });
-              Navigator.pushNamed(context, OrderPaymentReceiptScreen.routeName);
+              Navigator.pushNamed(
+                context,
+                OrderPaymentReceiptScreen.routeName,
+                arguments: OrderPaymentReceiptScreen(isNewOrder: true),
+              );
             });
           },
         ),

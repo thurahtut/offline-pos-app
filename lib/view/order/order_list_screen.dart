@@ -55,75 +55,95 @@ class _OrderListScreenState extends State<OrderListScreen> {
       getAllOrderHistory();
     }, (order) {
       if (order.state == OrderState.draft.text) {
-        OrderHistoryTable.getOrderById(order.id).then(
-          (value) {
-            if (value != null) {
-              CurrentOrderController currentOrderController =
-                  context.read<CurrentOrderController>();
-              currentOrderController.orderHistory = value;
-              currentOrderController.selectedCustomer = (value.partnerId != 0
-                  ? Customer(
-                      id: value.partnerId,
-                      name: value.partnerName,
-                    )
-                  : null);
-              List<int> productIds = [];
-              for (OrderLineID data in value.lineIds ?? []) {
-                productIds.add(data.productId ?? 0);
-              }
-              currentOrderController.currentOrderList = [];
-              ProductTable.getProductListByIds(productIds)
-                  .then((products) async {
-                for (OrderLineID data in value.lineIds ?? []) {
-                  for (Product product in products) {
-                    Product prod = Product.fromJson(
-                      jsonDecode(jsonEncode(product)),
-                      includedOtherField: true,
-                    );
-                    if (prod.productVariantIds == data.productId) {
-                      prod.onhandQuantity = data.qty?.toInt();
-                      prod.priceListItem?.fixedPrice =
-                          data.priceUnit?.toInt() ?? 0;
-                      prod.isPromoItem = data.isPromoItem;
-                      prod.parentPromotionId = data.parentPromotionId;
-                      prod.onOrderPromo = data.onOrderPromo;
-                      if (prod.isPromoItem != true) {
-                        List<Promotion> promotionList =
-                            await PromotionTable.getPromotionByProductId(
-                                prod.productId ?? 0, value.sessionId ?? 0);
-                        prod.promotionList = promotionList;
-                      }
-                      currentOrderController.currentOrderList.add(prod);
-                      break;
-                    }
-                  }
-                }
-                // currentOrderController.currentOrderList = products;
-                PendingOrderTable.insertOrUpdatePendingOrderWithDB(
-                    value: jsonEncode(currentOrderController.orderHistory));
-
-                PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
-                    productList: jsonEncode(products));
-
-                if (mounted) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MainScreen(
-                              resetController: false,
-                            )),
-                    ModalRoute.withName("/Home"),
-                  );
-                }
-              });
-            }
-          },
-        );
+        _reBuildingOrder(order, true);
       } else {
         Navigator.pushNamed(context, OrderDetailScreen.routeName,
             arguments: OrderDetailScreen(orderId: order.id ?? 0));
       }
+    }, (order) {
+      _reBuildingOrder(order, false);
     });
+  }
+
+  void _reBuildingOrder(OrderHistory order, bool isDraft) {
+    OrderHistoryTable.getOrderById(order.id).then(
+      (value) {
+        if (value != null) {
+          CurrentOrderController currentOrderController =
+              context.read<CurrentOrderController>();
+          currentOrderController.orderHistory = value;
+          currentOrderController.selectedCustomer = (value.partnerId != 0
+              ? Customer(
+                  id: value.partnerId,
+                  name: value.partnerName,
+                )
+              : null);
+          List<int> productIds = [];
+          for (OrderLineID data in value.lineIds ?? []) {
+            productIds.add(data.productId ?? 0);
+          }
+          currentOrderController.currentOrderList = [];
+          ProductTable.getProductListByIds(productIds).then((products) async {
+            for (OrderLineID data in value.lineIds ?? []) {
+              for (Product product in products) {
+                Product prod = Product.fromJson(
+                  jsonDecode(jsonEncode(product)),
+                  includedOtherField: true,
+                );
+                if (prod.productVariantIds == data.productId) {
+                  prod.onhandQuantity = data.qty?.toInt();
+                  prod.priceListItem?.fixedPrice = data.priceUnit?.toInt() ?? 0;
+                  prod.isPromoItem = data.isPromoItem;
+                  prod.parentPromotionId = data.parentPromotionId;
+                  prod.onOrderPromo = data.onOrderPromo;
+                  if (prod.isPromoItem != true) {
+                    List<Promotion> promotionList =
+                        await PromotionTable.getPromotionByProductId(
+                            prod.productId ?? 0, value.sessionId ?? 0);
+                    prod.promotionList = promotionList;
+                  }
+                  prod.discount = data.discount;
+                  prod.shDiscountCode = data.shDiscountCode;
+                  prod.shDiscountReason = data.shDiscountReason;
+                  currentOrderController.currentOrderList.add(prod);
+                  break;
+                }
+              }
+            }
+            // currentOrderController.currentOrderList = products;
+            if (isDraft) {
+              PendingOrderTable.insertOrUpdatePendingOrderWithDB(
+                  value: jsonEncode(currentOrderController.orderHistory));
+
+              PendingOrderTable.insertOrUpdateCurrentOrderListWithDB(
+                  productList: jsonEncode(products));
+
+              if (mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MainScreen(
+                            resetController: false,
+                          )),
+                  ModalRoute.withName("/Home"),
+                );
+              }
+            } else {
+              PaymentTransactionTable.getPaymentTransactionListByOrderId(
+                      order.id ?? 0)
+                  .then((tranList) {
+                currentOrderController.paymentTransactionList = tranList;
+                Navigator.pushNamed(
+                  context,
+                  OrderPaymentReceiptScreen.routeName,
+                  arguments: OrderPaymentReceiptScreen(isNewOrder: false),
+                );
+              });
+            }
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -659,6 +679,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
   Function() reloadDataCallback;
   Function() deletedCallback;
   Function(OrderHistory order) goToPOSScreen;
+  Function(OrderHistory order) printOrder;
 
   DataSourceForOrderListScreen(
     this.context,
@@ -667,6 +688,7 @@ class DataSourceForOrderListScreen extends DataTableSource {
     this.reloadDataCallback,
     this.deletedCallback,
     this.goToPOSScreen,
+    this.printOrder,
   );
 
   @override
@@ -774,8 +796,10 @@ class DataSourceForOrderListScreen extends DataTableSource {
           // onTap: onTap,
         ),
         DataCell(
-          order.state == OrderState.draft.text
-              ? CommonUtils.svgIconActionButton(
+          Row(
+            children: [
+              if (order.state == OrderState.draft.text)
+                CommonUtils.svgIconActionButton(
                   'assets/svg/delete.svg',
                   onPressed: () async {
                     if (order.state != OrderState.draft.text) {
@@ -805,8 +829,23 @@ class DataSourceForOrderListScreen extends DataTableSource {
                       });
                     });
                   },
-                )
-              : Text(""),
+                ),
+              if (order.state == OrderState.paid.text)
+                CommonUtils.svgIconActionButton(
+                  'assets/svg/print.svg',
+                  onPressed: () async {
+                    if (order.state != OrderState.paid.text) {
+                      CommonUtils.showSnackBar(
+                        context: context,
+                        message: 'This order is not allowed to print!',
+                      );
+                      return;
+                    }
+                    printOrder(order);
+                  },
+                ),
+            ],
+          ),
         ),
       ],
     );

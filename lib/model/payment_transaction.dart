@@ -19,7 +19,6 @@ class PaymentTransaction {
   int? writeUid;
   String? payingAmount;
 
-
   PaymentTransaction({
     this.id,
     this.orderId,
@@ -53,7 +52,7 @@ class PaymentTransaction {
     cardholderName = json['cardholder_name'];
     createDate = json['create_date'];
     createUid = int.tryParse(json['create_uid']?.toString() ?? '');
-    isChange = json['is_change'];
+    isChange = bool.tryParse(json['is_change']?.toString() ?? '');
     paymentStatus = json['payment_status'];
     sessionId = int.tryParse(json['session_id']?.toString() ?? '');
     ticket = json['ticket'];

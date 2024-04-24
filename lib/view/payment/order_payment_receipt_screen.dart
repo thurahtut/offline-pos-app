@@ -6,8 +6,9 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class OrderPaymentReceiptScreen extends StatefulWidget {
-  const OrderPaymentReceiptScreen({super.key});
+  const OrderPaymentReceiptScreen({super.key, required this.isNewOrder});
   static const String routeName = "/order_payment_receipt_screen";
+  final bool? isNewOrder;
 
   @override
   State<OrderPaymentReceiptScreen> createState() =>
@@ -690,21 +691,34 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         //   textColor: primaryColor,
         // ),
         SizedBox(height: 20),
-        BorderContainer(
-          width: MediaQuery.of(context).size.width / 4.5,
-          text: 'New Order',
-          textColor: Colors.white,
-          containerColor: primaryColor,
-          onTap: () {
-            context
-                .read<CurrentOrderController>()
-                .resetCurrentOrderController();
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => MainScreen()),
-                ModalRoute.withName("/Home"));
-          },
-        ),
+        widget.isNewOrder == false
+            ? BorderContainer(
+                width: MediaQuery.of(context).size.width / 4.5,
+                text: 'Back',
+                textColor: Colors.white,
+                containerColor: primaryColor,
+                onTap: () {
+                  context
+                      .read<CurrentOrderController>()
+                      .resetCurrentOrderController();
+                  Navigator.pop(context);
+                },
+              )
+            : BorderContainer(
+                width: MediaQuery.of(context).size.width / 4.5,
+                text: 'New Order',
+                textColor: Colors.white,
+                containerColor: primaryColor,
+                onTap: () {
+                  context
+                      .read<CurrentOrderController>()
+                      .resetCurrentOrderController();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainScreen()),
+                      ModalRoute.withName("/Home"));
+                },
+              ),
       ],
     );
   }
