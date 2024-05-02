@@ -7,6 +7,7 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/close_session_controller.dart';
 import 'package:offline_pos/controller/order_detail_controller.dart';
 import 'package:offline_pos/controller/order_product_packaging_controller.dart';
+import 'package:offline_pos/controller/refund_order_controller.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
             create: (_) => OrderProductPackagingController()),
         ChangeNotifierProvider(create: (_) => PromotionListController()),
         ChangeNotifierProvider(create: (_) => SummaryReportController()),
+        ChangeNotifierProvider(create: (_) => RefundOrderController()),
       ],
       child: InitializePage(),
     );

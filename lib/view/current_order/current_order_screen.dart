@@ -189,24 +189,24 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
                                             "${e.onhandQuantity ?? 0} Unit at ${e.priceListItem?.fixedPrice?.toString() ?? "0"} Ks/Unit "
                                             "with a ${e.discount ?? 0.00} % discount"),
                                       ),
-                                      Container(
-                                        width: 35,
-                                        height: 35,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: primaryColor),
-                                        child: Center(
-                                          child: Text(
-                                            "%",
-                                            style: TextStyle(
-                                              color: Constants.accentColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      )
+                                      // Container(
+                                      //   width: 35,
+                                      //   height: 35,
+                                      //   decoration: BoxDecoration(
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(20),
+                                      //       color: primaryColor),
+                                      //   child: Center(
+                                      //     child: Text(
+                                      //       "%",
+                                      //       style: TextStyle(
+                                      //         color: Constants.accentColor,
+                                      //         fontWeight: FontWeight.bold,
+                                      //         fontSize: 16,
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ),
@@ -241,7 +241,7 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
       Map<String, double> map =
           controller.getTotalQty(controller.currentOrderList);
       return Container(
-        width: widget.width,
+        width: isTabletMode ? widget.width - 16 : widget.width,
         padding: const EdgeInsets.symmetric(horizontal: 14.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -549,6 +549,8 @@ class _CurrentOrderScreenState extends State<CurrentOrderScreen> {
 
   Future<dynamic> _showDisDialog() {
     bool isMobileMode = CommonUtils.isMobileMode(context);
+    //  ProductDiscountDialog.productDiscountDialogWidget(
+    //           NavigationService.navigatorKey.currentContext!);
     return showDialog(
       context: context,
       builder: (BuildContext context) {

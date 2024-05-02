@@ -3,6 +3,8 @@ import 'dart:math' as math;
 
 import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
+import 'package:offline_pos/controller/refund_order_controller.dart';
+import 'package:offline_pos/view/refund/refund_order_screen.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -50,19 +52,27 @@ class _OrderListScreenState extends State<OrderListScreen> {
     List<OrderHistory> list = context.read<OrderListController>().orderList;
     context.read<OrderListController>().orderInfoDataSource =
         DataSourceForOrderListScreen(
-            context, list, context.read<OrderListController>().offset, () {},
-            () {
-      getAllOrderHistory();
-    }, (order) {
-      if (order.state == OrderState.draft.text) {
-        _reBuildingOrder(order, true);
-      } else {
-        Navigator.pushNamed(context, OrderDetailScreen.routeName,
-            arguments: OrderDetailScreen(orderId: order.id ?? 0));
-      }
-    }, (order) {
-      _reBuildingOrder(order, false);
-    });
+      context,
+      orderList: list,
+      offset: context.read<OrderListController>().offset,
+      reloadDataCallback: () {},
+      deletedCallback: () {
+        getAllOrderHistory();
+      },
+      goToPOSScreen: (order) {
+        if (context.read<OrderListController>().isRefund == true) {
+          _refundOrder(order);
+        } else if (order.state == OrderState.draft.text) {
+          _reBuildingOrder(order, true);
+        } else {
+          Navigator.pushNamed(context, OrderDetailScreen.routeName,
+              arguments: OrderDetailScreen(orderId: order.id ?? 0));
+        }
+      },
+      printOrder: (order) {
+        _reBuildingOrder(order, false);
+      },
+    );
   }
 
   void _reBuildingOrder(OrderHistory order, bool isDraft) {
@@ -71,6 +81,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
         if (value != null) {
           CurrentOrderController currentOrderController =
               context.read<CurrentOrderController>();
+          currentOrderController.resetCurrentOrderController();
           currentOrderController.orderHistory = value;
           currentOrderController.selectedCustomer = (value.partnerId != 0
               ? Customer(
@@ -110,7 +121,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 }
               }
             }
-            // currentOrderController.currentOrderList = products;
             if (isDraft) {
               PendingOrderTable.insertOrUpdatePendingOrderWithDB(
                   value: jsonEncode(currentOrderController.orderHistory));
@@ -133,13 +143,90 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       order.id ?? 0)
                   .then((tranList) {
                 currentOrderController.paymentTransactionList = tranList;
+                if (context.read<OrderListController>().isRefund == true) {
+                  Navigator.pushNamed(
+                    context,
+                    RefundOrderScreen.routeName,
+                  );
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    OrderPaymentReceiptScreen.routeName,
+                    arguments: OrderPaymentReceiptScreen(isNewOrder: false),
+                  );
+                }
+              });
+            }
+          });
+        }
+      },
+    );
+  }
+
+  void _refundOrder(OrderHistory order) {
+    OrderHistoryTable.getOrderById(order.id).then(
+      (value) {
+        if (value != null) {
+          RefundOrderController refundOrderController =
+              context.read<RefundOrderController>();
+          refundOrderController.resetRefundOrderController();
+          refundOrderController.orderHistory = value;
+          refundOrderController.selectedCustomer = (value.partnerId != 0
+              ? Customer(
+                  id: value.partnerId,
+                  name: value.partnerName,
+                )
+              : null);
+          List<int> productIds = [];
+          for (OrderLineID data in value.lineIds ?? []) {
+            productIds.add(data.productId ?? 0);
+          }
+          refundOrderController.currentOrderList = [];
+          ProductTable.getProductListByIds(productIds).then((products) async {
+            for (OrderLineID data in value.lineIds ?? []) {
+              for (Product product in products) {
+                Product prod = Product.fromJson(
+                  jsonDecode(jsonEncode(product)),
+                  includedOtherField: true,
+                );
+                if (prod.productVariantIds == data.productId) {
+                  prod.onhandQuantity = data.qty?.toInt();
+                  prod.priceListItem?.fixedPrice = data.priceUnit?.toInt() ?? 0;
+                  prod.isPromoItem = data.isPromoItem;
+                  prod.parentPromotionId = data.parentPromotionId;
+                  prod.onOrderPromo = data.onOrderPromo;
+                  if (prod.isPromoItem != true) {
+                    List<Promotion> promotionList =
+                        await PromotionTable.getPromotionByProductId(
+                            prod.productId ?? 0, value.sessionId ?? 0);
+                    prod.promotionList = promotionList;
+                  }
+                  prod.discount = data.discount;
+                  prod.shDiscountCode = data.shDiscountCode;
+                  prod.shDiscountReason = data.shDiscountReason;
+                  refundOrderController.currentOrderList.add(prod);
+                  break;
+                }
+              }
+            }
+
+            PaymentTransactionTable.getPaymentTransactionListByOrderId(
+                    order.id ?? 0)
+                .then((tranList) {
+              refundOrderController.paymentTransactionList = tranList;
+              if (context.read<OrderListController>().isRefund == true) {
+                Navigator.pushNamed(
+                  context,
+                  RefundOrderScreen.routeName,
+                );
+              } else {
                 Navigator.pushNamed(
                   context,
                   OrderPaymentReceiptScreen.routeName,
                   arguments: OrderPaymentReceiptScreen(isNewOrder: false),
                 );
-              });
-            }
+              }
+            });
           });
         }
       },
@@ -149,9 +236,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // headerString = DateFormat('MMMM yyyy')
-      //     .format(CommonUtils.getDateTimeNow())
-      //     .toString();
       isTabletMode = CommonUtils.isTabletMode(context);
       getAllOrderHistory();
     });
@@ -162,7 +246,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.currentOrderDividerColor,
-      // appBar: SaleAppBar(),
       body: _bodyWidget(),
     );
   }
@@ -682,14 +765,14 @@ class DataSourceForOrderListScreen extends DataTableSource {
   Function(OrderHistory order) printOrder;
 
   DataSourceForOrderListScreen(
-    this.context,
-    this.orderList,
-    this.offset,
-    this.reloadDataCallback,
-    this.deletedCallback,
-    this.goToPOSScreen,
-    this.printOrder,
-  );
+    this.context, {
+    required this.orderList,
+    required this.offset,
+    required this.reloadDataCallback,
+    required this.deletedCallback,
+    required this.goToPOSScreen,
+    required this.printOrder,
+  });
 
   @override
   DataRow? getRow(int index) {

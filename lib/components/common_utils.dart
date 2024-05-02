@@ -205,16 +205,21 @@ class CommonUtils {
     //     }
     //   },
     // },
-    // {
-    //   "svgPicture": 'assets/svg/refresh.svg',
-    //   "text": 'Refund',
-    //   "onTap": () {
-    //     if (NavigationService.navigatorKey.currentContext != null) {
-    //       ProductDiscountDialog.productDiscountDialogWidget(
-    //           NavigationService.navigatorKey.currentContext!);
-    //     }
-    //   },
-    // },
+    {
+      "svgPicture": 'assets/svg/refresh.svg',
+      "text": 'Refund',
+      "onTap": () {
+        if (NavigationService.navigatorKey.currentContext != null) {
+          NavigationService.navigatorKey.currentContext!
+              .read<OrderListController>()
+              .isRefund = true;
+          Navigator.pushNamed(
+            NavigationService.navigatorKey.currentContext!,
+            OrderListScreen.routeName,
+          );
+        }
+      },
+    },
     // {
     //   "svgPicture": 'assets/svg/qr_code.svg',
     //   "text": 'QR',

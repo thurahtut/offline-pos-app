@@ -79,6 +79,14 @@ class OrderListController with ChangeNotifier {
     notify();
   }
 
+  bool _isRefund = false;
+  bool get isRefund => _isRefund;
+  set isRefund(bool isRefund) {
+    if (_isRefund == isRefund) return;
+    _isRefund = isRefund;
+    notifyListeners();
+  }
+
   notify() {
     notifyListeners();
   }

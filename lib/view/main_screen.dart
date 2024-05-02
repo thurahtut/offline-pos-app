@@ -20,6 +20,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _showSideBar.dispose();
     context.read<ViewController>().searchProductFocusNode.unfocus();
     context.read<CurrentOrderController>().productTextFieldFocusNode.unfocus();
+    context.read<OrderListController>().isRefund = false;
     scrollController.dispose();
     super.dispose();
   }

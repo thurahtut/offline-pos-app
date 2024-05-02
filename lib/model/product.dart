@@ -17,6 +17,7 @@ class Product {
   List<int>? taxesId;
   String? barcode;
   int? onhandQuantity;
+  int? refundQuantity;
   PriceListItem? priceListItem;
   bool? firstTime;
   AmountTax? amountTax;
@@ -55,6 +56,7 @@ class Product {
     this.shDiscountCode,
     this.shDiscountReason,
     this.validPromotion,
+    this.refundQuantity,
   });
 
   Product.fromJson(Map<String, dynamic> json,
