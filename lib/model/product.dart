@@ -122,6 +122,8 @@ class Product {
       if (json['validPromotion'] != null) {
         validPromotion = Promotion.fromJson(json['validPromotion']);
       }
+      refundQuantity =
+          double.tryParse(json['refundQuantity'].toString())?.toInt() ?? 0;
     }
   }
 
@@ -153,6 +155,7 @@ class Product {
       data['shDiscountCode'] = shDiscountCode;
       data['shDiscountReason'] = shDiscountReason;
       data['validPromotion'] = validPromotion?.toJson();
+      data['refundQuantity'] = refundQuantity?.toString();
     }
     return data;
   }

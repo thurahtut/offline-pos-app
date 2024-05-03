@@ -172,6 +172,14 @@ class CurrentOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isRefund = false;
+  bool get isRefund => _isRefund;
+  set isRefund(bool isRefund) {
+    if (_isRefund == isRefund) return;
+    _isRefund = isRefund;
+    notifyListeners();
+  }
+
   Future<void> addItemToList(
     Product product, {
     ProductPackaging? productPackaging,
@@ -691,6 +699,7 @@ class CurrentOrderController with ChangeNotifier {
     _chooseCusFromCart = false;
     _discountList = [];
     _selectedDiscountIndex = 0;
+    _isRefund = false;
     notifyListeners();
   }
 }

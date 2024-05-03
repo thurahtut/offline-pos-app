@@ -326,11 +326,13 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                                       0) <=
                                   0
                               ? ''
-                              : CommonUtils.priceFormat.format(double.tryParse(
-                                      controller.paymentTransactionList[e.id]
-                                              ?.amount ??
-                                          '') ??
-                                  0),
+                              : (controller.isRefund ? '-' : '') +
+                                  CommonUtils.priceFormat.format(
+                                      double.tryParse(controller
+                                                  .paymentTransactionList[e.id]
+                                                  ?.amount ??
+                                              '') ??
+                                          0),
                           textAlign: TextAlign.end,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
@@ -395,7 +397,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                       ),
                       TextSpan(
                         text:
-                            '${CommonUtils.priceFormat.format(totalPayAmt >= totalAmt ? 0 : remainingAmt)} Ks',
+                            '${controller.isRefund ? '-' : ''}${CommonUtils.priceFormat.format(totalPayAmt >= totalAmt ? 0 : remainingAmt)} Ks',
                         style: TextStyle(
                           color: primaryColor,
                           fontWeight: FontWeight.w700,

@@ -3,7 +3,6 @@ import 'dart:math' as math;
 
 import 'package:intl/intl.dart';
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/refund_order_controller.dart';
 import 'package:offline_pos/view/refund/refund_order_screen.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -48,6 +47,23 @@ class _OrderListScreenState extends State<OrderListScreen> {
     });
   }
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      isTabletMode = CommonUtils.isTabletMode(context);
+      getAllOrderHistory();
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Constants.currentOrderDividerColor,
+      body: _bodyWidget(),
+    );
+  }
+
   Future<void> updateOrderHistoryListToTable() async {
     List<OrderHistory> list = context.read<OrderListController>().orderList;
     context.read<OrderListController>().orderInfoDataSource =
@@ -61,10 +77,15 @@ class _OrderListScreenState extends State<OrderListScreen> {
       },
       goToPOSScreen: (order) {
         if (context.read<OrderListController>().isRefund == true) {
+          if (order.state == OrderState.draft.text) {
+            CommonUtils.showSnackBar(
+                message: 'Draft Order can\'t refund!', context: context);
+            return;
+          }
           _refundOrder(order);
         } else if (order.state == OrderState.draft.text) {
           _reBuildingOrder(order, true);
-        } else {
+        } else if (order.state == OrderState.paid.text) {
           Navigator.pushNamed(context, OrderDetailScreen.routeName,
               arguments: OrderDetailScreen(orderId: order.id ?? 0));
         }
@@ -210,43 +231,15 @@ class _OrderListScreenState extends State<OrderListScreen> {
               }
             }
 
-            PaymentTransactionTable.getPaymentTransactionListByOrderId(
-                    order.id ?? 0)
-                .then((tranList) {
-              refundOrderController.paymentTransactionList = tranList;
-              if (context.read<OrderListController>().isRefund == true) {
-                Navigator.pushNamed(
-                  context,
-                  RefundOrderScreen.routeName,
-                );
-              } else {
-                Navigator.pushNamed(
-                  context,
-                  OrderPaymentReceiptScreen.routeName,
-                  arguments: OrderPaymentReceiptScreen(isNewOrder: false),
-                );
-              }
-            });
+            await Navigator.pushNamed(
+              context,
+              RefundOrderScreen.routeName,
+            );
+            // todo : delete unpaid refund order
+            refundOrderController.resetRefundOrderController();
           });
         }
       },
-    );
-  }
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      isTabletMode = CommonUtils.isTabletMode(context);
-      getAllOrderHistory();
-    });
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Constants.currentOrderDividerColor,
-      body: _bodyWidget(),
     );
   }
 
@@ -311,6 +304,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
               textColor: primaryColor,
               onTap: () {
                 Navigator.pop(context);
+                context.read<OrderListController>().isRefund = false;
               },
             ),
           ),

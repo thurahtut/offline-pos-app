@@ -11,11 +11,27 @@ class RefundOrderController with ChangeNotifier {
     notifyListeners();
   }
 
+  List<Product> _selectedOrderList = [];
+  List<Product> get selectedOrderList => _selectedOrderList;
+
+  set selectedOrderList(List<Product> selectedOrderList) {
+    _selectedOrderList = selectedOrderList;
+    notifyListeners();
+  }
+
   int? _selectedIndex;
   int? get selectedIndex => _selectedIndex;
   set selectedIndex(int? selectedIndex) {
     if (_selectedIndex == selectedIndex) return;
     _selectedIndex = selectedIndex;
+    notifyListeners();
+  }
+
+  int? _orderId;
+  int? get orderId => _orderId;
+  set orderId(int? orderId) {
+    if (_orderId == orderId) return;
+    _orderId = orderId;
     notifyListeners();
   }
 
@@ -181,7 +197,7 @@ class RefundOrderController with ChangeNotifier {
 
         qty = qty.substring(0, qty.length - 1);
         if (qty.isEmpty) {
-          qty = "1";
+          qty = "0";
         }
         deletedProductLog.updatedQty = qty;
 
@@ -216,8 +232,11 @@ class RefundOrderController with ChangeNotifier {
                     color: Colors.white,
                     child: Text(
                       'The requested quantity to be refunded is higher than the ordered quantity. '
-                      '${qty + value} is requested while only ${product.onhandQuantity} cand be refunded.',
-                      style: TextStyle(color: Colors.red.shade500),
+                      '${qty + value} is requested while only ${product.onhandQuantity} can be refunded.',
+                      style: TextStyle(
+                        color: Colors.red.shade500,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                   actions: [
@@ -228,6 +247,7 @@ class RefundOrderController with ChangeNotifier {
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: primaryColor,
+                              width: 3,
                             ),
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -253,8 +273,7 @@ class RefundOrderController with ChangeNotifier {
     }
   }
 
-  void handleKeyEvent(
-      RawKeyEvent event, ItemListController itemListController) {
+  void handleKeyEvent(RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.backspace ||
           event.logicalKey == LogicalKeyboardKey.delete) {
@@ -277,6 +296,7 @@ class RefundOrderController with ChangeNotifier {
 
   resetRefundOrderController() {
     _currentOrderList = [];
+    _selectedOrderList = [];
     _selectedIndex = null;
     _paymentMethodList = [];
     _paymentTransactionList = {};
@@ -284,6 +304,7 @@ class RefundOrderController with ChangeNotifier {
     _orderHistory = null;
     _selectedCustomer = null;
     _selectingCustomer = null;
+    _orderId = null;
     notifyListeners();
   }
 }
