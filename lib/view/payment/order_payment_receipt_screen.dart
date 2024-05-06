@@ -691,7 +691,8 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
         //   textColor: primaryColor,
         // ),
         SizedBox(height: 20),
-        widget.isNewOrder == false
+        widget.isNewOrder == false ||
+                context.read<CurrentOrderController>().isRefund == true
             ? BorderContainer(
                 width: MediaQuery.of(context).size.width / 4.5,
                 text: 'Back',
@@ -701,6 +702,12 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   context
                       .read<CurrentOrderController>()
                       .resetCurrentOrderController();
+                  context
+                      .read<OrderListController>()
+                      .resetCustomerListController();
+                  context
+                      .read<RefundOrderController>()
+                      .resetRefundOrderController();
                   Navigator.pop(context);
                 },
               )

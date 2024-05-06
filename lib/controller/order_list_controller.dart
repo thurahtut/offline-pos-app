@@ -122,6 +122,7 @@ class OrderListController with ChangeNotifier {
     _offset = 0;
     _loading = false;
     _dateFilter = null;
+    _isRefund = false;
     notifyListeners();
   }
 }

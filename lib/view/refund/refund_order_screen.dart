@@ -386,6 +386,8 @@ class _RefundOrderScreenState extends State<RefundOrderScreen> {
               );
               pp.onhandQuantity = pp.refundQuantity;
               pp.refundQuantity = 0;
+              pp.priceListItem?.fixedPrice =
+                  -1 * (pp.priceListItem?.fixedPrice ?? 0);
               context.read<RefundOrderController>().selectedOrderList.add(pp);
             }
           }

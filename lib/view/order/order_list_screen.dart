@@ -317,6 +317,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
               containerColor: primaryColor,
               textColor: Colors.white,
               onTap: () {
+                context.read<OrderListController>().isRefund = false;
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => MainScreen()),
