@@ -989,15 +989,12 @@ class CommonUtils {
         currentOrderController.selectedCustomer?.id;
 
     currentOrderController.orderHistory?.amountTotal =
-        (currentOrderController.isRefund ? -1 : 1) *
-            (map["total"]?.toInt() ?? 0);
+        map["total"]?.toInt() ?? 0;
     currentOrderController.orderHistory?.totalQty = map["qty"]?.toInt() ?? 0;
     currentOrderController.orderHistory?.totalItem =
         currentOrderController.currentOrderList.length;
-    currentOrderController.orderHistory?.amountTax =
-        (currentOrderController.isRefund ? -1 : 1) * (map["tax"] ?? 0);
-    currentOrderController.orderHistory?.amountUntaxed =
-        (currentOrderController.isRefund ? -1 : 1) * (map["untaxed"] ?? 0);
+    currentOrderController.orderHistory?.amountTax = map["tax"] ?? 0;
+    currentOrderController.orderHistory?.amountUntaxed = map["untaxed"] ?? 0;
     List<OrderLineID> orderLineIdList = [];
 
     final Database db = await DatabaseHelper().db;
@@ -1011,45 +1008,41 @@ class CommonUtils {
               context: context,
               message: '${data.productName} is something wrong!');
         }
+        double priceSubtotal = (((data.onhandQuantity?.toDouble() ?? 0) *
+                ((data.priceListItem?.fixedPrice ?? 0) -
+                    (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
+                        ? ((data.priceListItem?.fixedPrice ?? 0) *
+                            CommonUtils.getPercentAmountTaxOnProduct(data))
+                        : 0))) -
+            (((double.tryParse(data.onhandQuantity?.toString() ?? "0") ?? 0) *
+                    (double.tryParse(
+                            data.priceListItem?.fixedPrice?.toString() ??
+                                "0") ??
+                        0)) *
+                ((data.discount ?? 0) / 100)));
+
+        double priceSubtotalIncl = (((data.onhandQuantity?.toDouble() ?? 0) *
+                (data.priceListItem?.fixedPrice ?? 0).toDouble()) -
+            (((double.tryParse(data.onhandQuantity?.toString() ?? "0") ?? 0) *
+                    (double.tryParse(
+                            data.priceListItem?.fixedPrice?.toString() ??
+                                "0") ??
+                        0)) *
+                ((data.discount ?? 0) / 100)));
 
         OrderLineID orderLineID = OrderLineID(
           orderId: currentOrderController.orderHistory?.id ?? 0,
           productId: data.productVariantIds ?? 0,
           qty: data.onhandQuantity?.toDouble(),
-          priceUnit: (currentOrderController.isRefund ? -1 : 1) *
-              (data.priceListItem?.fixedPrice ?? 0).toDouble(),
-          priceSubtotal: (currentOrderController.isRefund ? -1 : 1) *
-              (((data.onhandQuantity?.toDouble() ?? 0) *
-                      ((data.priceListItem?.fixedPrice ?? 0) -
-                          (CommonUtils.getPercentAmountTaxOnProduct(data) > 0
-                              ? ((data.priceListItem?.fixedPrice ?? 0) *
-                                  CommonUtils.getPercentAmountTaxOnProduct(
-                                      data))
-                              : 0))) -
-                  (((double.tryParse(data.onhandQuantity?.toString() ?? "0") ??
-                              0) *
-                          (double.tryParse(
-                                  data.priceListItem?.fixedPrice?.toString() ??
-                                      "0") ??
-                              0)) *
-                      ((data.discount ?? 0) / 100))),
-          priceSubtotalIncl: (currentOrderController.isRefund ? -1 : 1) *
-              (((data.onhandQuantity?.toDouble() ?? 0) *
-                      (data.priceListItem?.fixedPrice ?? 0).toDouble()) -
-                  (((double.tryParse(data.onhandQuantity?.toString() ?? "0") ??
-                              0) *
-                          (double.tryParse(
-                                  data.priceListItem?.fixedPrice?.toString() ??
-                                      "0") ??
-                              0)) *
-                      ((data.discount ?? 0) / 100))),
+          priceUnit: (data.priceListItem?.fixedPrice ?? 0).toDouble(),
+          priceSubtotal: priceSubtotal,
+          priceSubtotalIncl: priceSubtotalIncl,
           fullProductName:
               '${data.barcode != null ? '[${data.barcode}] ' : ''}${data.productName}',
           createDate: orderDate.toString(),
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          discount:
-              (currentOrderController.isRefund ? -1 : 1) * (data.discount ?? 0),
+          discount: data.discount ?? 0,
           shDiscountCode: data.shDiscountCode,
           shDiscountReason: data.shDiscountReason,
           parentPromotionId: data.parentPromotionId,
@@ -1063,12 +1056,9 @@ class CommonUtils {
                     CommonUtils.getPercentAmountTaxOnProduct(data))
                 : 0);
       }
-      currentOrderController.orderHistory?.amountTax =
-          (currentOrderController.isRefund ? -1 : 1) * totalTax;
+      currentOrderController.orderHistory?.amountTax = totalTax;
       currentOrderController.orderHistory?.amountUntaxed =
-          (currentOrderController.isRefund ? -1 : 1) *
-              ((currentOrderController.orderHistory?.amountTotal ?? 0) -
-                  totalTax);
+          ((currentOrderController.orderHistory?.amountTotal ?? 0) - totalTax);
       if (currentOrderController.orderHistory == null) {
         CommonUtils.showSnackBar(
             context: context,
