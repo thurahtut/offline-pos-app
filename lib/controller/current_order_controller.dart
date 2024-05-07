@@ -313,8 +313,6 @@ class CurrentOrderController with ChangeNotifier {
       if (promotion.discountApplyOn == "on_order") {
         promoProduct.onOrderPromo = true;
       }
-
-      // todo: return promoProductList
       return calculatePromotion(promoProduct, promotion);
     }
     return [];

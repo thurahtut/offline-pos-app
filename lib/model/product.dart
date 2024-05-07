@@ -29,6 +29,7 @@ class Product {
   String? shDiscountCode;
   String? shDiscountReason;
   Promotion? validPromotion;
+  int? lineId;
 
   Product({
     this.productId,
@@ -57,6 +58,7 @@ class Product {
     this.shDiscountReason,
     this.validPromotion,
     this.refundQuantity,
+    this.lineId,
   });
 
   Product.fromJson(Map<String, dynamic> json,
@@ -124,6 +126,7 @@ class Product {
       }
       refundQuantity =
           double.tryParse(json['refundQuantity'].toString())?.toInt() ?? 0;
+      lineId = json['orderId'];
     }
   }
 
@@ -156,6 +159,7 @@ class Product {
       data['shDiscountReason'] = shDiscountReason;
       data['validPromotion'] = validPromotion?.toJson();
       data['refundQuantity'] = refundQuantity?.toString();
+      data['orderId'] = lineId;
     }
     return data;
   }

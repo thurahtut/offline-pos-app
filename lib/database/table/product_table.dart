@@ -177,7 +177,7 @@ class ProductTable {
         "select sum(qty) as totalQty, $PRODUCT_ID_IN_LINE "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         " left join $ORDER_LINE_ID_TABLE_NAME olt "
-        " on $ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
+        " on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
         " and $SESSION_ID =$sessionId "
         ") line "
         "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS "
@@ -386,7 +386,7 @@ class ProductTable {
         "select sum(qty) as totalQty, $PRODUCT_ID_IN_LINE "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         "left join $ORDER_LINE_ID_TABLE_NAME olt "
-        "on $ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
+        "on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
         "${sessionId != null ? "and $SESSION_ID =$sessionId " : ""}"
         ") $lineTName "
         "on $lineTName.$PRODUCT_ID_IN_LINE= $productTName.$PRODUCT_VARIANT_IDS ";

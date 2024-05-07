@@ -41,6 +41,7 @@ const TOTAL_QTY = "total_qty";
 const USER_ID = "user_id";
 const SEQUENCE_ID = "sequence_id";
 const SEQUENCE_LINE_ID = "sequence_line_id";
+const IS_RETURN_ORDER = "is_return_order";
 
 class OrderHistoryTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -81,6 +82,7 @@ class OrderHistoryTable {
         "$USER_ID INTEGER,"
         "$SEQUENCE_ID INTEGER,"
         "$SEQUENCE_LINE_ID INTEGER,"
+        "$IS_RETURN_ORDER TEXT,"
         "unique ($NAME_IN_OH, $SESSION_ID, $SEQUENCE_NUMBER)"
         ")");
   }
@@ -254,17 +256,20 @@ class OrderHistoryTable {
     bool? includedPaymentMethodName = true,
     String? orderHistoryKeys,
     bool? isCloseSession,
+    bool? isReturnOrder,
   }) {
     return "select ${orderHistoryKeys ?? "ot.*"}, "
         "${includedCustomerName == true ? "ct.$CUSTOMER_NAME as customer_name, " : ""}"
         "${includedEmployeeName == true ? "emt.$NAME_IN_ET as employee_name, " : ""}"
         "json_group_array(distinct json_extract(json_object("
-        "${isCloseSession != true ? "'$ORDER_LINE_ID', olt.$ORDER_LINE_ID, '$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, " : ""}"
+        "'$ORDER_LINE_ID', olt.$ORDER_LINE_ID, "
+        "${isCloseSession != true ? "'$ORDER_ID_IN_LINE', olt.$ORDER_ID_IN_LINE, " : ""}"
         "'$PRODUCT_ID_IN_LINE' , olt.$PRODUCT_ID_IN_LINE, '$FULL_PRODUCT_NAME', ${getValueWithCase("olt.$FULL_PRODUCT_NAME")}, "
         "'$QTY_IN_LINE' , olt.$QTY_IN_LINE, '$PRICE_UNIT', olt.$PRICE_UNIT, '$PRICE_SUBTOTAL', olt.$PRICE_SUBTOTAL, '$PRICE_SUBTOTAL_INCL', olt.$PRICE_SUBTOTAL_INCL, "
         "'$DISCOUNT_IN_LINE', olt.$DISCOUNT_IN_LINE, '$CREATE_DATE_IN_LINE', olt.$CREATE_DATE_IN_LINE, '$CREATE_UID_IN_LINE', olt.$CREATE_UID_IN_LINE "
         "${isCloseSession != true ? ", '$IS_PROMO_ITEM' , olt.$IS_PROMO_ITEM, '$PARENT_PROMOTION_ID', olt.$PARENT_PROMOTION_ID, '$ON_ORDER_ITEM', olt.$ON_ORDER_ITEM" : ""}"
         ",'$SH_DISCOUNT_CODE' , olt.$SH_DISCOUNT_CODE,'$SH_DISCOUNT_REASON' , olt.$SH_DISCOUNT_REASON"
+        "${isReturnOrder != true ? ", '$REFUNDED_ORDER_LINE_ID', olt.$REFUNDED_ORDER_LINE_ID" : ""}"
         "), '\$' )) as line_ids, " //'$BARCODE_IN_PT', olt.$BARCODE_IN_PT ,
         "${isCloseSession == true ? "case when ptt.$PAYMENT_TRANSACTION_ID is not null then " : ""}"
         "json_group_array("
@@ -310,7 +315,8 @@ class OrderHistoryTable {
         "${isCloseSession == true ? " and ot.$STATE_IN_OT='${OrderState.paid.text}' " : ""}"
         "${isCloseSession == true ? " and ot.$ORDER_CONDITION<>'${OrderCondition.sync.text}' " : ""}"
         "${sessionId != null ? " and ot.$SESSION_ID=$sessionId " : ""}"
-        "group by ot.$ORDER_HISTORY_ID ";
+        "group by ot.$ORDER_HISTORY_ID "
+        "order by ot.$ORDER_HISTORY_ID ";
   }
 
   static String getValueWithCase(String trt) {
@@ -364,6 +370,7 @@ class OrderHistoryTable {
     int? orderHistoryId,
     int? sessionId,
     bool? isCloseSession,
+    bool? isReturnOrder,
   }) async {
     db ??= await DatabaseHelper().db;
     String ohKeys = getOrderHistorySelectKeys(
@@ -376,6 +383,7 @@ class OrderHistoryTable {
         WRITE_DATE_IN_OH,
         WRITE_UID_IN_OH,
         SESSION_NAME_IN_OH,
+        if (isReturnOrder != true) IS_RETURN_ORDER,
       ],
     );
     String query = getOrderHistoryQuery(
@@ -386,6 +394,7 @@ class OrderHistoryTable {
       includedEmployeeName: false,
       includedPaymentMethodName: true,
       isCloseSession: isCloseSession,
+      isReturnOrder: isReturnOrder,
     );
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
     List<Map<String, dynamic>> cloneMaps =
@@ -472,7 +481,7 @@ class OrderHistoryTable {
         "on ot.$ORDER_HISTORY_ID = olt.$ORDER_ID_IN_LINE "
         "where ot.$STATE_IN_OT='${OrderState.draft.text}' "
         "and ot.$SESSION_ID=$sessionId "
-        "and olt.id is not null";
+        "and olt.$ORDER_LINE_ID is not null";
     final result = await db.rawQuery(query);
 
     int? count = Sqflite.firstIntValue(result);

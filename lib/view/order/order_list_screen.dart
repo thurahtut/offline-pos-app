@@ -225,6 +225,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   prod.discount = data.discount;
                   prod.shDiscountCode = data.shDiscountCode;
                   prod.shDiscountReason = data.shDiscountReason;
+                  prod.lineId = data.id;
                   refundOrderController.currentOrderList.add(prod);
                   break;
                 }
@@ -235,7 +236,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
               context,
               RefundOrderScreen.routeName,
             );
-            // todo : delete unpaid refund order
+            OrderHistory? refundOrderHistory =
+                await OrderHistoryTable.getOrderById(
+                    refundOrderController.orderId);
+            if (refundOrderHistory?.state != OrderState.paid.text) {
+              OrderHistoryTable.deleteByOrderId(
+                  orderHistoryId: refundOrderController.orderId ?? 0);
+            }
             refundOrderController.resetRefundOrderController();
           });
         }

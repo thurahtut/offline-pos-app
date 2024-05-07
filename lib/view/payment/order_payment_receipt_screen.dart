@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:offline_pos/components/export_files.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -311,7 +309,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             pw.SizedBox(
               width: (maxPageWidth / 8) * 1.7,
               child: pw.Text(
-                "${((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) - (((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) * ((e.discount ?? 0)) / 100)}",
+                "${((e.priceListItem?.fixedPrice ?? 0) * (e.onhandQuantity ?? 0)) - (((e.priceListItem?.fixedPrice ?? 0) * (e.onhandQuantity ?? 0)) * ((e.discount ?? 0)) / 100)}",
                 style: textStyle,
               ),
             ),
@@ -324,7 +322,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             text: pw.TextSpan(text: "", children: [
               pw.TextSpan(
                   text:
-                      "\n ${(e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)} \n Discount: ${double.tryParse(e.discount?.toString() ?? '0')?.toStringAsFixed(2) ?? 0.00}%",
+                      "\n ${(e.priceListItem?.fixedPrice ?? 0) * (e.onhandQuantity ?? 0)} \n Discount: ${double.tryParse(e.discount?.toString() ?? '0')?.toStringAsFixed(2) ?? 0.00}%",
                   style: textStyle.copyWith(
                     fontSize: 9,
                   )),
@@ -702,9 +700,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                   context
                       .read<CurrentOrderController>()
                       .resetCurrentOrderController();
-                  context
-                      .read<OrderListController>()
-                      .resetCustomerListController();
+                  context.read<OrderListController>().isRefund = false;
                   context
                       .read<RefundOrderController>()
                       .resetRefundOrderController();

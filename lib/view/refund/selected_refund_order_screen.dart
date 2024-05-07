@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:offline_pos/components/export_files.dart';
 
 class SelectedRefundOrderScreen extends StatefulWidget {
@@ -59,6 +57,12 @@ class _SelectedRefundOrderScreenState extends State<SelectedRefundOrderScreen> {
                   currentOrderController.resetCurrentOrderController();
                   await CommonUtils.createOrderHistory(
                       NavigationService.navigatorKey.currentContext!);
+                  if (refundOrderController.orderHistory?.name?.isNotEmpty ??
+                      false) {
+                    currentOrderController.orderHistory?.name =
+                        "${refundOrderController.orderHistory!.name!} REFUND";
+                  }
+                  currentOrderController.orderHistory?.isReturnOrder = true;
                   currentOrderController.currentOrderList =
                       refundOrderController.selectedOrderList;
                   currentOrderController.selectedCustomer =
@@ -146,7 +150,7 @@ class _SelectedRefundOrderScreenState extends State<SelectedRefundOrderScreen> {
                                   InkWell(
                                     onTap: () {},
                                     child: Text(
-                                        "${((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) - (((e.priceListItem?.fixedPrice ?? 0) * max(e.onhandQuantity ?? 0, 1)) * ((e.discount ?? 0) / 100))} Ks"
+                                        "${((e.priceListItem?.fixedPrice ?? 0) * (e.onhandQuantity ?? 0)) - (((e.priceListItem?.fixedPrice ?? 0) * (e.onhandQuantity ?? 0)) * ((e.discount ?? 0) / 100))} Ks"
                                             .toString(), // product.salePrice
                                         style: textStyle.copyWith(
                                           fontWeight: FontWeight.bold,

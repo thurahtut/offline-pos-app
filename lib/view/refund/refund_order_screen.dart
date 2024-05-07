@@ -48,9 +48,6 @@ class _RefundOrderScreenState extends State<RefundOrderScreen> {
             containerColor: primaryColor,
             onTap: () {
               Navigator.pop(context);
-              context
-                  .read<RefundOrderController>()
-                  .resetRefundOrderController();
             },
           ),
           SizedBox(height: 20),
@@ -384,10 +381,8 @@ class _RefundOrderScreenState extends State<RefundOrderScreen> {
                 product.toJson(removed: false),
                 includedOtherField: true,
               );
-              pp.onhandQuantity = pp.refundQuantity;
+              pp.onhandQuantity = -1 * (pp.refundQuantity ?? 0);
               pp.refundQuantity = 0;
-              pp.priceListItem?.fixedPrice =
-                  -1 * (pp.priceListItem?.fixedPrice ?? 0);
               context.read<RefundOrderController>().selectedOrderList.add(pp);
             }
           }

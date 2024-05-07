@@ -116,7 +116,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
         cashTransaction =
             PaymentTransaction.fromJson(data.toJson(includedOtherField: true));
       }
-      if ((double.tryParse(data.amount ?? '') ?? 0) <= 0) {
+      if ((double.tryParse(data.amount ?? '') ?? 0).abs() <= 0) {
         toDeleteTransaction.add(data.paymentMethodId ?? -1);
       }
     }
@@ -635,9 +635,12 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           currentOrderController.paymentTransactionList[
               currentOrderController.selectedPaymentMethodId]!;
       String price = paymentTransaction.amount?.toString() ?? "";
+      if (price.isEmpty) {
+        price = currentOrderController.isRefund ? "-" : "";
+      }
       if (isBack == true) {
         if (paymentTransaction.firstTime == true) {
-          price = "";
+          price = currentOrderController.isRefund ? "-" : "";
           paymentTransaction.firstTime = false;
         } else {
           price = price.substring(0, price.length - 1);

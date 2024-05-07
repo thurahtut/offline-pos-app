@@ -4,7 +4,7 @@ import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
 const ORDER_LINE_ID_TABLE_NAME = "order_line_id_table";
-const ORDER_LINE_ID = "id";
+const ORDER_LINE_ID = "f_id";
 const ORDER_ID_IN_LINE = "order_id";
 const PRODUCT_ID_IN_LINE = "product_id";
 const QTY_IN_LINE = "qty";
@@ -22,6 +22,7 @@ const IS_PROMO_ITEM = "is_promo_item";
 const ON_ORDER_ITEM = "on_order_item";
 const SH_DISCOUNT_CODE = "sh_discount_code";
 const SH_DISCOUNT_REASON = "sh_discount_reason";
+const REFUNDED_ORDER_LINE_ID = "refunded_orderline_id";
 
 class OrderLineIdTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -43,7 +44,8 @@ class OrderLineIdTable {
         "$IS_PROMO_ITEM TEXT,"
         "$ON_ORDER_ITEM TEXT,"
         "$SH_DISCOUNT_CODE TEXT,"
-        "$SH_DISCOUNT_REASON TEXT"
+        "$SH_DISCOUNT_REASON TEXT,"
+        "$REFUNDED_ORDER_LINE_ID INTEGER"
         ")");
   }
 
