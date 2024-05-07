@@ -181,9 +181,9 @@ class OrderLineIdTable {
   static Future<int> updateValue({
     Database? db,
     required String whereColumnName,
-    String? whereValue,
+    int? whereValue,
     required String columnName,
-    String? value,
+    int? value,
   }) async {
     db ??= await DatabaseHelper().db;
     String sql = "UPDATE $ORDER_LINE_ID_TABLE_NAME "
