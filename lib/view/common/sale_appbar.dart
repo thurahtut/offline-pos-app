@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../../components/export_files.dart';
 
@@ -345,20 +346,31 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
             context: context,
             message: 'There is no record to sync order history.');
       }
+      final Database db = await DatabaseHelper().db;
       for (var mapArg in value) {
         log(jsonEncode(mapArg));
         await Api.syncOrders(
           orderMap: mapArg,
-        ).then((syncedResult) {
+        ).then((syncedResult) async {
           if (syncedResult != null &&
               syncedResult.statusCode == 200 &&
               syncedResult.data != null) {
             OrderHistoryTable.updateValue(
+              db: db,
               whereColumnName: RECEIPT_NUMBER,
               whereValue: mapArg[RECEIPT_NUMBER],
               columnName: ORDER_CONDITION,
               value: OrderCondition.sync.text,
             );
+            for (var lineMap in syncedResult.data['orderLines'] ?? []) {
+              await OrderLineIdTable.updateValue(
+                db: db,
+                whereColumnName: ORDER_LINE_ID,
+                whereValue: lineMap[ORDER_LINE_ID],
+                columnName: ODOO_ORDER_LINE_ID,
+                value: lineMap['id'],
+              );
+            }
           } else if (syncedResult == null || syncedResult.statusCode != 200) {
             CommonUtils.showSnackBar(
                 context: context,

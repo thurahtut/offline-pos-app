@@ -19,6 +19,7 @@ class OrderLineID {
   String? shDiscountCode;
   String? shDiscountReason;
   int? refundedOrderlineId;
+  int? odooOrderLineId;
 
   OrderLineID({
     this.id,
@@ -41,6 +42,7 @@ class OrderLineID {
     this.shDiscountCode,
     this.shDiscountReason,
     this.refundedOrderlineId,
+    this.odooOrderLineId,
   });
 
   OrderLineID.fromJson(Map<String, dynamic> json, {bool? isOnlyForDatabase}) {
@@ -68,6 +70,7 @@ class OrderLineID {
     shDiscountCode = json['sh_discount_code'];
     shDiscountReason = json['sh_discount_reason'];
     refundedOrderlineId = json['refunded_orderline_id'];
+    odooOrderLineId = json['odoo_order_line_id'];
   }
 
   Map<String, dynamic> toJson({bool? isOnlyForDatabase}) {
@@ -93,6 +96,7 @@ class OrderLineID {
     data['sh_discount_code'] = shDiscountCode;
     data['sh_discount_reason'] = shDiscountReason;
     data['refunded_orderline_id'] = refundedOrderlineId;
+    data['odoo_order_line_id'] = odooOrderLineId;
     return data;
   }
 }

@@ -23,6 +23,7 @@ const ON_ORDER_ITEM = "on_order_item";
 const SH_DISCOUNT_CODE = "sh_discount_code";
 const SH_DISCOUNT_REASON = "sh_discount_reason";
 const REFUNDED_ORDER_LINE_ID = "refunded_orderline_id";
+const ODOO_ORDER_LINE_ID = "odoo_order_line_id";
 
 class OrderLineIdTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -45,7 +46,8 @@ class OrderLineIdTable {
         "$ON_ORDER_ITEM TEXT,"
         "$SH_DISCOUNT_CODE TEXT,"
         "$SH_DISCOUNT_REASON TEXT,"
-        "$REFUNDED_ORDER_LINE_ID INTEGER"
+        "$REFUNDED_ORDER_LINE_ID INTEGER,"
+        "$ODOO_ORDER_LINE_ID INTEGER"
         ")");
   }
 
@@ -174,5 +176,19 @@ class OrderLineIdTable {
 
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
     return maps.isEmpty ? null : maps.first;
+  }
+
+  static Future<int> updateValue({
+    Database? db,
+    required String whereColumnName,
+    String? whereValue,
+    required String columnName,
+    String? value,
+  }) async {
+    db ??= await DatabaseHelper().db;
+    String sql = "UPDATE $ORDER_LINE_ID_TABLE_NAME "
+        "SET $columnName = $value"
+        " Where $whereColumnName = $whereColumnName";
+    return db.rawInsert(sql);
   }
 }

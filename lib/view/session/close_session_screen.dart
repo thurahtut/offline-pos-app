@@ -635,18 +635,26 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
       log(jsonEncode(mapArg));
       await Api.syncOrders(
         orderMap: mapArg,
-      ).then((syncedResult) {
+      ).then((syncedResult) async {
         if (syncedResult != null &&
             syncedResult.statusCode == 200 &&
             syncedResult.data != null) {
-          OrderHistoryTable.updateValue(
+          await OrderHistoryTable.updateValue(
             db: db,
             whereColumnName: RECEIPT_NUMBER,
             whereValue: mapArg[RECEIPT_NUMBER],
             columnName: ORDER_CONDITION,
             value: OrderCondition.sync.text,
           );
-          _closeSessionAndCloseCashRegister(db);
+          for (var lineMap in syncedResult.data['orderLines'] ?? []) {
+            await OrderLineIdTable.updateValue(
+              db: db,
+              whereColumnName: ORDER_LINE_ID,
+              whereValue: lineMap[ORDER_LINE_ID],
+              columnName: ODOO_ORDER_LINE_ID,
+              value: lineMap['id'],
+            );
+          }
         } else if (syncedResult == null || syncedResult.statusCode != 200) {
           CommonUtils.showSnackBar(
               context: widget.mainContext,
@@ -654,6 +662,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
         }
       });
     }
+    _closeSessionAndCloseCashRegister(db);
   }
 
   void _closeSessionAndCloseCashRegister(Database? db) {
