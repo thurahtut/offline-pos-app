@@ -1053,6 +1053,9 @@ class CommonUtils {
           onOrderPromo: data.onOrderPromo,
           referenceOrderlineId:
               currentOrderController.isRefund == true ? data.lineId : null,
+          refundedOrderLineId: currentOrderController.isRefund == true
+              ? data.refundedOrderLineId
+              : null,
         );
         // todo: check and set refund_orderLineId
         orderLineIdList.add(orderLineID);

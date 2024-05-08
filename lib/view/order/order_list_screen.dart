@@ -226,6 +226,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   prod.shDiscountCode = data.shDiscountCode;
                   prod.shDiscountReason = data.shDiscountReason;
                   prod.lineId = data.id;
+                  prod.refundedOrderLineId = data.odooOrderLineId;
                   refundOrderController.currentOrderList.add(prod);
                   break;
                 }
