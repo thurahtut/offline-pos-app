@@ -190,7 +190,7 @@ class OrderLineIdTable {
     db ??= await DatabaseHelper().db;
     String sql = "UPDATE $ORDER_LINE_ID_TABLE_NAME "
         "SET $columnName = $value"
-        " Where $whereColumnName = $whereColumnName";
+        " Where $whereColumnName = $whereValue";
     return db.rawInsert(sql);
   }
 }
