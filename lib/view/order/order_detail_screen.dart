@@ -208,7 +208,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Expanded(
                       flex: 2,
                       child: CheckboxListTile(
-                        value: false,
+                        value: controller.orderHistory?.isReturnOrder ?? false,
                         onChanged: null,
                         side: MaterialStateBorderSide.resolveWith(
                             (_) => BorderSide(width: 2, color: primaryColor)),
