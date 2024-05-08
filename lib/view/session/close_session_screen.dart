@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
 import 'package:offline_pos/controller/close_session_controller.dart';
@@ -642,7 +641,7 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
   Future<void> _syncOrderHistory(
       {required List<Map<String, dynamic>> value, Database? db}) async {
     for (var mapArg in value) {
-      log(jsonEncode(mapArg));
+      print(jsonEncode(mapArg));
       await Api.syncOrders(
         orderMap: mapArg,
       ).then((syncedResult) async {

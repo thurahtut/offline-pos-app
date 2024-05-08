@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:sqflite/sqflite.dart';
@@ -343,6 +342,9 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
         sessionId: sessionId,
         isReturnOrder: false,
       ).then((value) async {
+        for (var mapArg in value) {
+          print(jsonEncode(mapArg));
+        }
         await _uploadSyncOrderHistoryToOfflineDb(value);
         OrderHistoryTable.getOrderHistoryList(
           isCloseSession: true,
@@ -354,7 +356,10 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
                 context: context,
                 message: 'There is no record to sync order history.');
           }
-          await _uploadSyncOrderHistoryToOfflineDb(value2);
+          for (var mapArg in value2) {
+            print(jsonEncode(mapArg));
+          }
+          // await _uploadSyncOrderHistoryToOfflineDb(value2);
           _isSyncOH.value = false;
           _controller?.stop();
         });
@@ -369,7 +374,7 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
       List<Map<String, dynamic>> value) async {
     final Database db = await DatabaseHelper().db;
     for (var mapArg in value) {
-      log(jsonEncode(mapArg));
+      print(jsonEncode(mapArg));
       await Api.syncOrders(
         orderMap: mapArg,
       ).then((syncedResult) async {

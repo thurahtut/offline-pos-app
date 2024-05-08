@@ -176,7 +176,7 @@ class OrderHistoryTable {
     db ??= await DatabaseHelper().db;
     String sql = "UPDATE $ORDER_HISTORY_TABLE_NAME "
         "SET $columnName = '$value'"
-        " Where $whereColumnName = $whereColumnName";
+        " Where $whereColumnName = $whereValue";
     return db.rawInsert(sql);
   }
 
@@ -269,7 +269,7 @@ class OrderHistoryTable {
         "'$DISCOUNT_IN_LINE', olt.$DISCOUNT_IN_LINE, '$CREATE_DATE_IN_LINE', olt.$CREATE_DATE_IN_LINE, '$CREATE_UID_IN_LINE', olt.$CREATE_UID_IN_LINE "
         "${isCloseSession != true ? ", '$IS_PROMO_ITEM' , olt.$IS_PROMO_ITEM, '$PARENT_PROMOTION_ID', olt.$PARENT_PROMOTION_ID, '$ON_ORDER_ITEM', olt.$ON_ORDER_ITEM" : ""}"
         ",'$SH_DISCOUNT_CODE' , olt.$SH_DISCOUNT_CODE,'$SH_DISCOUNT_REASON' , olt.$SH_DISCOUNT_REASON"
-        "${isCloseSession != true ? ", '$REFERENCE_ORDER_LINE_ID', olt.$REFERENCE_ORDER_LINE_ID, '$REFUNDED_ORDER_LINE_ID', olt.$REFUNDED_ORDER_LINE_ID, '$ODOO_ORDER_LINE_ID', olt.$ODOO_ORDER_LINE_ID" : isReturnOrder != true ? ", '$REFUNDED_ORDER_LINE_ID', olt.$REFUNDED_ORDER_LINE_ID" : ""}"
+        "${isCloseSession != true ? ", '$REFERENCE_ORDER_LINE_ID', olt.$REFERENCE_ORDER_LINE_ID, '$REFUNDED_ORDER_LINE_ID', olt.$REFUNDED_ORDER_LINE_ID, '$ODOO_ORDER_LINE_ID', olt.$ODOO_ORDER_LINE_ID" : (isReturnOrder == true ? ", '$REFUNDED_ORDER_LINE_ID', olt.$REFUNDED_ORDER_LINE_ID" : "")}"
         "), '\$' )) as line_ids, " //'$BARCODE_IN_PT', olt.$BARCODE_IN_PT ,
         "${isCloseSession == true ? "case when ptt.$PAYMENT_TRANSACTION_ID is not null then " : ""}"
         "json_group_array("
@@ -409,8 +409,13 @@ class OrderHistoryTable {
       for (Map<String, dynamic> tran in cloneMap["payment_ids"] ?? []) {
         tran['is_change'] = bool.tryParse(tran['is_change'] ?? '') ?? false;
       }
-      cloneMap[TO_INVOICE] = bool.tryParse(cloneMap[TO_INVOICE]) ?? false;
-      cloneMap[TO_SHIP] = bool.tryParse(cloneMap[TO_SHIP]) ?? false;
+      cloneMap[TO_INVOICE] =
+          bool.tryParse(cloneMap[TO_INVOICE] ?? 'false') ?? false;
+      cloneMap[TO_SHIP] = bool.tryParse(cloneMap[TO_SHIP] ?? 'false') ?? false;
+      if (cloneMap[IS_RETURN_ORDER] != null) {
+        cloneMap[IS_RETURN_ORDER] =
+            bool.tryParse(cloneMap[IS_RETURN_ORDER] ?? 'false') ?? false;
+      }
     }
     // List<OrderHistory> orderHistoryList = [];
     // OrderHistory? orderHistory;
