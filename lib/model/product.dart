@@ -31,6 +31,7 @@ class Product {
   Promotion? validPromotion;
   int? lineId;
   int? refundedOrderLineId;
+  int? odooOrderLineId;
 
   Product({
     this.productId,
@@ -61,6 +62,7 @@ class Product {
     this.refundQuantity,
     this.lineId,
     this.refundedOrderLineId,
+    this.odooOrderLineId,
   });
 
   Product.fromJson(Map<String, dynamic> json,
@@ -130,6 +132,7 @@ class Product {
           double.tryParse(json['refundQuantity'].toString())?.toInt() ?? 0;
       lineId = json['orderId'];
       refundedOrderLineId = json['refundedOrderLineId'];
+      odooOrderLineId = json['odooOrderLineId'];
     }
   }
 
@@ -164,6 +167,7 @@ class Product {
       data['refundQuantity'] = refundQuantity?.toString();
       data['orderId'] = lineId;
       data['refundedOrderLineId'] = refundedOrderLineId;
+      data['odooOrderLineId'] = odooOrderLineId;
     }
     return data;
   }

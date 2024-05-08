@@ -1056,6 +1056,9 @@ class CommonUtils {
           refundedOrderLineId: currentOrderController.isRefund == true
               ? data.refundedOrderLineId
               : null,
+          odooOrderLineId: currentOrderController.isRefund == true
+              ? data.odooOrderLineId
+              : null,
         );
         // todo: check and set refund_orderLineId
         orderLineIdList.add(orderLineID);
