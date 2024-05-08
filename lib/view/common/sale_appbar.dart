@@ -349,6 +349,11 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
           sessionId: sessionId,
           isReturnOrder: true,
         ).then((value2) async {
+          if (value.isEmpty && value2.isEmpty) {
+            CommonUtils.showSnackBar(
+                context: context,
+                message: 'There is no record to sync order history.');
+          }
           await _uploadSyncOrderHistoryToOfflineDb(value2);
           _isSyncOH.value = false;
           _controller?.stop();
@@ -362,11 +367,6 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
 
   Future<void> _uploadSyncOrderHistoryToOfflineDb(
       List<Map<String, dynamic>> value) async {
-    if (value.isEmpty) {
-      CommonUtils.showSnackBar(
-          context: context,
-          message: 'There is no record to sync order history.');
-    }
     final Database db = await DatabaseHelper().db;
     for (var mapArg in value) {
       log(jsonEncode(mapArg));

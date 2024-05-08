@@ -167,7 +167,7 @@ class OrderHistory {
     data['user_id'] = userId;
     data['sequence_id'] = sequenceId;
     data['sequence_line_id'] = sequenceLineId;
-    data['is_return_order'] = isReturnOrder?.toString();
+    data['is_return_order'] = isReturnOrder?.toString() ?? 'false';
     return data;
   }
 }
