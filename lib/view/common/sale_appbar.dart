@@ -337,54 +337,79 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
       duration: Duration(milliseconds: 100),
     )..repeat();
     _isSyncOH.value = true;
-    OrderHistoryTable.getOrderHistoryList(
-      isCloseSession: true,
-      sessionId: sessionId,
-    ).then((value) async {
-      if (value.isEmpty) {
-        CommonUtils.showSnackBar(
-            context: context,
-            message: 'There is no record to sync order history.');
-      }
-      final Database db = await DatabaseHelper().db;
-      for (var mapArg in value) {
-        log(jsonEncode(mapArg));
-        await Api.syncOrders(
-          orderMap: mapArg,
-        ).then((syncedResult) async {
-          if (syncedResult != null &&
-              syncedResult.statusCode == 200 &&
-              syncedResult.data != null) {
-            OrderHistoryTable.updateValue(
-              db: db,
-              whereColumnName: RECEIPT_NUMBER,
-              whereValue: mapArg[RECEIPT_NUMBER],
-              columnName: ORDER_CONDITION,
-              value: OrderCondition.sync.text,
-            );
-            for (var lineMap in syncedResult.data['orderLines'] ?? []) {
-              await OrderLineIdTable.updateValue(
-                db: db,
-                whereColumnName: ORDER_LINE_ID,
-                whereValue: lineMap[ORDER_LINE_ID],
-                columnName: ODOO_ORDER_LINE_ID,
-                value: lineMap['id'],
-              );
-            }
-          } else if (syncedResult == null || syncedResult.statusCode != 200) {
-            CommonUtils.showSnackBar(
-                context: context,
-                message: syncedResult!.statusMessage ?? 'Something was wrong!');
-          }
+    try {
+      OrderHistoryTable.getOrderHistoryList(
+        isCloseSession: true,
+        sessionId: sessionId,
+        isReturnOrder: false,
+      ).then((value) async {
+        await _uploadSyncOrderHistoryToOfflineDb(value);
+        OrderHistoryTable.getOrderHistoryList(
+          isCloseSession: true,
+          sessionId: sessionId,
+          isReturnOrder: true,
+        ).then((value2) async {
+          await _uploadSyncOrderHistoryToOfflineDb(value2);
+          _isSyncOH.value = false;
+          _controller?.stop();
         });
-        if (mounted) {
-          CommonUtils.showSnackBar(
-              context: context, message: 'Order synced successful!');
-        }
-      }
-      _controller?.stop();
+      });
+    } catch (e) {
       _isSyncOH.value = false;
-    });
+      _controller?.stop();
+    }
+  }
+
+  Future<void> _uploadSyncOrderHistoryToOfflineDb(
+      List<Map<String, dynamic>> value) async {
+    if (value.isEmpty) {
+      CommonUtils.showSnackBar(
+          context: context,
+          message: 'There is no record to sync order history.');
+    }
+    final Database db = await DatabaseHelper().db;
+    for (var mapArg in value) {
+      log(jsonEncode(mapArg));
+      await Api.syncOrders(
+        orderMap: mapArg,
+      ).then((syncedResult) async {
+        if (syncedResult != null &&
+            syncedResult.statusCode == 200 &&
+            syncedResult.data != null) {
+          OrderHistoryTable.updateValue(
+            db: db,
+            whereColumnName: RECEIPT_NUMBER,
+            whereValue: mapArg[RECEIPT_NUMBER],
+            columnName: ORDER_CONDITION,
+            value: OrderCondition.sync.text,
+          );
+          for (var lineMap in syncedResult.data['orderLines'] ?? []) {
+            await OrderLineIdTable.updateValue(
+              db: db,
+              whereColumnName: ORDER_LINE_ID,
+              whereValue: lineMap[ORDER_LINE_ID],
+              columnName: ODOO_ORDER_LINE_ID,
+              value: lineMap['id'],
+            );
+            await OrderLineIdTable.updateValue(
+              db: db,
+              whereColumnName: REFERENCE_ORDER_LINE_ID,
+              whereValue: lineMap[ORDER_LINE_ID],
+              columnName: REFUNDED_ORDER_LINE_ID,
+              value: lineMap['id'],
+            );
+          }
+        } else if (syncedResult == null || syncedResult.statusCode != 200) {
+          CommonUtils.showSnackBar(
+              context: context,
+              message: syncedResult!.statusMessage ?? 'Something was wrong!');
+        }
+      });
+      if (mounted) {
+        CommonUtils.showSnackBar(
+            context: context, message: 'Order synced successful!');
+      }
+    }
   }
 
   List<Widget> get _forWindowView {

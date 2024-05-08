@@ -1051,7 +1051,7 @@ class CommonUtils {
           parentPromotionId: data.parentPromotionId,
           isPromoItem: data.isPromoItem,
           onOrderPromo: data.onOrderPromo,
-          refundedOrderlineId:
+          referenceOrderlineId:
               currentOrderController.isRefund == true ? data.lineId : null,
         );
         // todo: check and set refund_orderLineId

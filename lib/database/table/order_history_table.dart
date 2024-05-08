@@ -315,6 +315,7 @@ class OrderHistoryTable {
         "${isCloseSession == true ? " and ot.$STATE_IN_OT='${OrderState.paid.text}' " : ""}"
         "${isCloseSession == true ? " and ot.$ORDER_CONDITION<>'${OrderCondition.sync.text}' " : ""}"
         "${sessionId != null ? " and ot.$SESSION_ID=$sessionId " : ""}"
+        "${isReturnOrder != null ? " and ot.$IS_RETURN_ORDER=${isReturnOrder == true ? 'true' : 'false'} " : ""}"
         "group by ot.$ORDER_HISTORY_ID "
         "order by ot.$ORDER_HISTORY_ID ";
   }

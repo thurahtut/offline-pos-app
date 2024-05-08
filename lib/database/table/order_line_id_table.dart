@@ -22,6 +22,7 @@ const IS_PROMO_ITEM = "is_promo_item";
 const ON_ORDER_ITEM = "on_order_item";
 const SH_DISCOUNT_CODE = "sh_discount_code";
 const SH_DISCOUNT_REASON = "sh_discount_reason";
+const REFERENCE_ORDER_LINE_ID = "reference_orderline_id";
 const REFUNDED_ORDER_LINE_ID = "refunded_orderline_id";
 const ODOO_ORDER_LINE_ID = "odoo_order_line_id";
 
@@ -46,6 +47,7 @@ class OrderLineIdTable {
         "$ON_ORDER_ITEM TEXT,"
         "$SH_DISCOUNT_CODE TEXT,"
         "$SH_DISCOUNT_REASON TEXT,"
+        "$REFERENCE_ORDER_LINE_ID INTEGER,"
         "$REFUNDED_ORDER_LINE_ID INTEGER,"
         "$ODOO_ORDER_LINE_ID INTEGER"
         ")");

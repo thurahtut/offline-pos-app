@@ -613,8 +613,22 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                     db: db,
                     isCloseSession: true,
                     sessionId: sessionId,
+                    isReturnOrder: false,
                   ).then((value) async {
-                    _syncOrderHistory(value: value, db: db);
+                    await _syncOrderHistory(value: value, db: db);
+                    await OrderHistoryTable.getOrderHistoryList(
+                      db: db,
+                      isCloseSession: true,
+                      sessionId: sessionId,
+                      isReturnOrder: true,
+                    ).then((value2) async {
+                      if (value2.isEmpty) {
+                        _closeSessionAndCloseCashRegister(db);
+                        return;
+                      }
+                      await _syncOrderHistory(value: value2, db: db);
+                      _closeSessionAndCloseCashRegister(db);
+                    });
                   });
                 }
               });
@@ -627,10 +641,6 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
 
   Future<void> _syncOrderHistory(
       {required List<Map<String, dynamic>> value, Database? db}) async {
-    if (value.isEmpty) {
-      _closeSessionAndCloseCashRegister(db);
-      return;
-    }
     for (var mapArg in value) {
       log(jsonEncode(mapArg));
       await Api.syncOrders(
@@ -654,6 +664,13 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
               columnName: ODOO_ORDER_LINE_ID,
               value: lineMap['id'],
             );
+            await OrderLineIdTable.updateValue(
+              db: db,
+              whereColumnName: REFERENCE_ORDER_LINE_ID,
+              whereValue: lineMap[ORDER_LINE_ID],
+              columnName: REFUNDED_ORDER_LINE_ID,
+              value: lineMap['id'],
+            );
           }
         } else if (syncedResult == null || syncedResult.statusCode != 200) {
           CommonUtils.showSnackBar(
@@ -662,7 +679,6 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
         }
       });
     }
-    _closeSessionAndCloseCashRegister(db);
   }
 
   void _closeSessionAndCloseCashRegister(Database? db) {

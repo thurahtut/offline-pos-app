@@ -18,7 +18,8 @@ class OrderLineID {
   bool? onOrderPromo;
   String? shDiscountCode;
   String? shDiscountReason;
-  int? refundedOrderlineId;
+  int? referenceOrderlineId;
+  int? refundedOrderLineId;
   int? odooOrderLineId;
 
   OrderLineID({
@@ -41,7 +42,8 @@ class OrderLineID {
     this.onOrderPromo,
     this.shDiscountCode,
     this.shDiscountReason,
-    this.refundedOrderlineId,
+    this.referenceOrderlineId,
+    this.refundedOrderLineId,
     this.odooOrderLineId,
   });
 
@@ -69,7 +71,8 @@ class OrderLineID {
     }
     shDiscountCode = json['sh_discount_code'];
     shDiscountReason = json['sh_discount_reason'];
-    refundedOrderlineId = json['refunded_orderline_id'];
+    referenceOrderlineId = json['reference_orderline_id'];
+    refundedOrderLineId = json['refunded_orderline_id'];
     odooOrderLineId = json['odoo_order_line_id'];
   }
 
@@ -95,7 +98,8 @@ class OrderLineID {
     }
     data['sh_discount_code'] = shDiscountCode;
     data['sh_discount_reason'] = shDiscountReason;
-    data['refunded_orderline_id'] = refundedOrderlineId;
+    data['reference_orderline_id'] = referenceOrderlineId;
+    data['refunded_orderline_id'] = refundedOrderLineId;
     data['odoo_order_line_id'] = odooOrderLineId;
     return data;
   }
