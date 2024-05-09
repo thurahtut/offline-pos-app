@@ -176,7 +176,7 @@ class OrderHistoryTable {
     db ??= await DatabaseHelper().db;
     String sql = "UPDATE $ORDER_HISTORY_TABLE_NAME "
         "SET $columnName = '$value'"
-        " Where $whereColumnName = $whereValue";
+        " Where $whereColumnName = '$whereValue'";
     return db.rawInsert(sql);
   }
 
