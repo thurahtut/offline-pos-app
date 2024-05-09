@@ -667,45 +667,56 @@ class CommonUtils {
     BuildContext context,
     bool navigate,
   ) {
-    int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
-    return ChooseCashierDialog.chooseCashierDialogWidget(context)
-        .then((value) async {
-      if (value == true) {
-        LoginUserController controller = context.read<LoginUserController>();
-        CurrentOrderController currentOrderController =
-            context.read<CurrentOrderController>();
-
-        PendingOrderTable.getPendingOrder().then((orderHistory) async {
-          if (orderHistory == null) {
-            createSessionAndGoToMainScreen(
-              context,
-              navigate,
-              controller,
-            );
-            return;
-          }
-          currentOrderController.orderHistory = orderHistory;
-          if (orderHistory.partnerId != null && orderHistory.partnerId != 0) {
-            await CustomerTable.getCustomerNameByCustomerId(
-                    customerId: orderHistory.partnerId)
-                .then((customerName) =>
-                    currentOrderController.selectedCustomer = Customer(
-                      id: orderHistory.partnerId,
-                      name: customerName,
-                    ));
-          }
-          PendingOrderTable.getPendingCurrentOrderList(sessionId: sessionId)
-              .then((productList) async {
-            currentOrderController.currentOrderList = productList;
-            createSessionAndGoToMainScreen(
-              context,
-              navigate,
-              controller,
-              resetController: false,
-            );
-          });
-        });
+    int? configId = context.read<LoginUserController>().posConfig?.id;
+    Api.getPosSessionByID(configId: configId).then((sessionResponse) {
+      if (sessionResponse != null &&
+          sessionResponse.statusCode == 200 &&
+          sessionResponse.data != null &&
+          sessionResponse.data is List &&
+          (sessionResponse.data as List).isNotEmpty) {
+        context.read<LoginUserController>().posSession =
+            POSSession.fromJson((sessionResponse.data as List).first);
       }
+      int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
+      return ChooseCashierDialog.chooseCashierDialogWidget(context)
+          .then((value) async {
+        if (value == true) {
+          LoginUserController controller = context.read<LoginUserController>();
+          CurrentOrderController currentOrderController =
+              context.read<CurrentOrderController>();
+
+          PendingOrderTable.getPendingOrder().then((orderHistory) async {
+            if (orderHistory == null) {
+              createSessionAndGoToMainScreen(
+                context,
+                navigate,
+                controller,
+              );
+              return;
+            }
+            currentOrderController.orderHistory = orderHistory;
+            if (orderHistory.partnerId != null && orderHistory.partnerId != 0) {
+              await CustomerTable.getCustomerNameByCustomerId(
+                      customerId: orderHistory.partnerId)
+                  .then((customerName) =>
+                      currentOrderController.selectedCustomer = Customer(
+                        id: orderHistory.partnerId,
+                        name: customerName,
+                      ));
+            }
+            PendingOrderTable.getPendingCurrentOrderList(sessionId: sessionId)
+                .then((productList) async {
+              currentOrderController.currentOrderList = productList;
+              createSessionAndGoToMainScreen(
+                context,
+                navigate,
+                controller,
+                resetController: false,
+              );
+            });
+          });
+        }
+      });
     });
   }
 
