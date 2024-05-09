@@ -41,6 +41,7 @@ class OrderHistory {
   List<PaymentTransaction>? paymentIds;
   int? sequenceLineId;
   bool? isReturnOrder;
+  int? changeAmt;
 
   OrderHistory({
     this.id,
@@ -84,6 +85,7 @@ class OrderHistory {
     this.sequenceId,
     this.sequenceLineId,
     this.isReturnOrder,
+    this.changeAmt,
   });
 
   OrderHistory.fromJson(Map<String, dynamic> json) {
@@ -127,6 +129,8 @@ class OrderHistory {
     sequenceId = int.tryParse(json['sequence_id']?.toString() ?? '');
     sequenceLineId = int.tryParse(json['sequence_line_id']?.toString() ?? '');
     isReturnOrder = bool.tryParse(json['is_return_order']?.toString() ?? '');
+    changeAmt =
+        double.tryParse(json['change_amount']?.toString() ?? '')?.toInt();
   }
 
   Map<String, dynamic> toJson() {
@@ -168,6 +172,7 @@ class OrderHistory {
     data['sequence_id'] = sequenceId;
     data['sequence_line_id'] = sequenceLineId;
     data['is_return_order'] = isReturnOrder?.toString() ?? 'false';
+    data['change_amount'] = changeAmt;
     return data;
   }
 }

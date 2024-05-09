@@ -411,8 +411,16 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 child: pw.SizedBox(),
               ),
               pw.Text(
-                CommonUtils.priceFormat
-                    .format(double.tryParse(e.amount ?? "") ?? 0),
+                CommonUtils.priceFormat.format(
+                    (double.tryParse(e.amount ?? "") ?? 0) +
+                        (e.paymentMethodName?.toLowerCase().contains('cash') ??
+                                false
+                            ? (context
+                                    .read<CurrentOrderController>()
+                                    .orderHistory
+                                    ?.changeAmt ??
+                                0)
+                            : 0)),
                 style: pw.TextStyle(
                   color: PdfColors.black,
                   fontSize: fontSize,
@@ -430,19 +438,19 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   pw.Widget _changeWidget() {
-    Map<String, double> map = context
-        .read<CurrentOrderController>()
-        .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
-    double totalAmt = map["total"] ?? 0;
-    double totalPayAmt = 0;
+    // Map<String, double> map = context
+    //     .read<CurrentOrderController>()
+    //     .getTotalQty(context.read<CurrentOrderController>().currentOrderList);
+    // double totalAmt = map["total"] ?? 0;
+    // double totalPayAmt = 0;
 
-    // ;
-    for (var data in context
-        .read<CurrentOrderController>()
-        .paymentTransactionList
-        .values) {
-      totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
-    }
+    // // ;
+    // for (var data in context
+    //     .read<CurrentOrderController>()
+    //     .paymentTransactionList
+    //     .values) {
+    //   totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
+    // }
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(horizontal: 14.0),
       child: pw.Row(
@@ -461,7 +469,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           ),
           pw.SizedBox(width: 4),
           pw.Text(
-            totalPayAmt > totalAmt ? '${totalPayAmt - totalAmt} Ks' : "0.00Ks",
+            "${context.read<CurrentOrderController>().orderHistory?.changeAmt ?? 0.00}Ks",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#171717"),
               fontSize: 11.6,

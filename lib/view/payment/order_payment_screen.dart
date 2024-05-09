@@ -124,6 +124,62 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
     for (var dd in toDeleteTransaction) {
       currentOrderController.paymentTransactionList.remove(dd);
     }
+    toDeleteTransaction = [];
+
+    double changeAmt = totalPayAmt >= totalAmt
+        ? (double.tryParse(currentOrderController
+                        .paymentTransactionList[
+                            currentOrderController.selectedPaymentMethodId]
+                        ?.amount ??
+                    '') ??
+                0) -
+            (totalAmt -
+                (totalPayAmt -
+                    (double.tryParse(currentOrderController
+                                .paymentTransactionList[currentOrderController
+                                    .selectedPaymentMethodId]
+                                ?.amount ??
+                            '') ??
+                        0)))
+        : 0;
+    double copyChangeAmt = double.tryParse(changeAmt.toString()) ?? 0;
+    if (changeAmt > 0) {
+      for (int i =
+              currentOrderController.paymentTransactionList.values.length - 1;
+          i >= 0;
+          i--) {
+        PaymentTransaction data =
+            currentOrderController.paymentTransactionList.values.elementAt(i);
+        double amt = double.tryParse(data.amount ?? '') ?? 0;
+        if (changeAmt >= amt) {
+          changeAmt = changeAmt - amt;
+          amt = 0;
+          currentOrderController
+              .paymentTransactionList[data.paymentMethodId ?? -1]
+              ?.amount = amt.toString();
+        } else {
+          amt = amt - changeAmt;
+          changeAmt = 0;
+          currentOrderController
+              .paymentTransactionList[data.paymentMethodId ?? -1]
+              ?.amount = amt.toString();
+          break;
+        }
+      }
+      totalPayAmt = 0;
+      for (PaymentTransaction data
+          in currentOrderController.paymentTransactionList.values) {
+        totalPayAmt += (double.tryParse(data.amount ?? '') ?? 0);
+        if ((double.tryParse(data.amount ?? '') ?? 0).abs() <= 0) {
+          toDeleteTransaction.add(data.paymentMethodId ?? -1);
+        }
+      }
+
+      for (var dd in toDeleteTransaction) {
+        currentOrderController.paymentTransactionList.remove(dd);
+      }
+      toDeleteTransaction = [];
+    }
 
     if (currentOrderController.paymentTransactionList.isEmpty) {
       if (cashTransaction != null) {
@@ -173,7 +229,9 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
       currentOrderController.orderHistory?.receiptNumber =
           'Order $changedTimeToReadable';
       currentOrderController.orderHistory?.state = OrderState.paid.text;
-      currentOrderController.orderHistory?.amountPaid = totalPayAmt.toInt();
+      currentOrderController.orderHistory?.changeAmt = copyChangeAmt.toInt();
+      currentOrderController.orderHistory?.amountPaid =
+          totalPayAmt.toInt() + (copyChangeAmt).toInt();
       currentOrderController.orderHistory?.partnerId =
           currentOrderController.selectedCustomer?.id;
       currentOrderController.orderHistory?.partnerName =

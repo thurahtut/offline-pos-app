@@ -42,6 +42,7 @@ const USER_ID = "user_id";
 const SEQUENCE_ID = "sequence_id";
 const SEQUENCE_LINE_ID = "sequence_line_id";
 const IS_RETURN_ORDER = "is_return_order";
+const CHANGE_AMOUNT = "change_amount";
 
 class OrderHistoryTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -83,6 +84,7 @@ class OrderHistoryTable {
         "$SEQUENCE_ID INTEGER,"
         "$SEQUENCE_LINE_ID INTEGER,"
         "$IS_RETURN_ORDER TEXT,"
+        "$CHANGE_AMOUNT REAL,"
         "unique ($NAME_IN_OH, $SESSION_ID, $SEQUENCE_NUMBER)"
         ")");
   }
@@ -378,12 +380,13 @@ class OrderHistoryTable {
       initialKey: "ot.",
       toRemoveKeys: [
         ORDER_HISTORY_ID,
-        NAME_IN_OH,
+        if (isReturnOrder != true) NAME_IN_OH,
         ORDER_CONDITION,
         SEQUENCE_NUMBER,
         WRITE_DATE_IN_OH,
         WRITE_UID_IN_OH,
         SESSION_NAME_IN_OH,
+        CHANGE_AMOUNT,
         if (isReturnOrder != true) IS_RETURN_ORDER,
       ],
     );
@@ -500,7 +503,7 @@ class OrderHistoryTable {
   }) async {
     db ??= await DatabaseHelper().db;
     String query =
-        "select sum(case when ot.$AMOUNT_PAID is not null then ot.$AMOUNT_PAID else 0 end) as totalAmt,"
+        "select sum(case when ot.$AMOUNT_TOTAL is not null then ot.$AMOUNT_TOTAL else 0 end) as totalAmt,"
         "sum(case when ot.$AMOUNT_TAX is not null then ot.$AMOUNT_TAX else 0 end) as totalTax,"
         "cat.$POS_CATEGORY_ID,cat.$POS_CATEGORY_NAME "
         "from $ORDER_HISTORY_TABLE_NAME ot "
