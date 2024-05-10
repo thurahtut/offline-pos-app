@@ -503,11 +503,11 @@ class OrderHistoryTable {
   }) async {
     db ??= await DatabaseHelper().db;
     String query =
-        "select sum(case when ot.$AMOUNT_TOTAL is not null then ot.$AMOUNT_TOTAL else 0 end) as totalAmt,"
+        "select sum(case when olt.$PRICE_SUBTOTAL_INCL is not null then olt.$PRICE_SUBTOTAL_INCL else 0 end) as totalAmt,"
         "sum(case when ot.$AMOUNT_TAX is not null then ot.$AMOUNT_TAX else 0 end) as totalTax,"
         "cat.$POS_CATEGORY_ID,cat.$POS_CATEGORY_NAME "
-        "from $ORDER_HISTORY_TABLE_NAME ot "
-        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "from $ORDER_LINE_ID_TABLE_NAME olt "
+        "left join $ORDER_HISTORY_TABLE_NAME ot "
         "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
         "left join $PRODUCT_TABLE_NAME pt "
         "on pt.$PRODUCT_VARIANT_IDS = olt.$PRODUCT_ID_IN_LINE "
