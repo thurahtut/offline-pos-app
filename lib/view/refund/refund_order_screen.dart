@@ -20,9 +20,12 @@ class _RefundOrderScreenState extends State<RefundOrderScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       RefundOrderController refundOrderController =
           context.read<RefundOrderController>();
-      for (Product product in refundOrderController.currentOrderList) {
-        product.refundQuantity = await OrderLineIdTable.refundQtyByProductId(
-            productId: product.lineId ?? 0);
+      for (int i = 0; i < refundOrderController.currentOrderList.length; i++) {
+        refundOrderController.currentOrderList[i].refundedQuantity =
+            await OrderLineIdTable.refundQtyByProductId(
+                productId:
+                    refundOrderController.currentOrderList[i].lineId ?? 0);
+        refundOrderController.notify();
       }
     });
     super.initState();
@@ -207,7 +210,7 @@ class _RefundOrderScreenState extends State<RefundOrderScreen> {
                                         ],
                                       ),
                                       Text(
-                                        '${e.refundQuantity ?? 0} Refunded',
+                                        '${e.refundedQuantity ?? 0} Refunded',
                                         style: textStyle.copyWith(
                                           color: Colors.grey,
                                           fontWeight: FontWeight.bold,

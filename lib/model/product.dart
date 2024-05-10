@@ -18,6 +18,7 @@ class Product {
   String? barcode;
   int? onhandQuantity;
   int? refundQuantity;
+  int? refundedQuantity;
   PriceListItem? priceListItem;
   bool? firstTime;
   AmountTax? amountTax;
@@ -60,6 +61,7 @@ class Product {
     this.shDiscountReason,
     this.validPromotion,
     this.refundQuantity,
+    this.refundedQuantity,
     this.lineId,
     this.refundedOrderLineId,
     this.odooOrderLineId,
@@ -130,6 +132,8 @@ class Product {
       }
       refundQuantity =
           double.tryParse(json['refundQuantity'].toString())?.toInt() ?? 0;
+      refundedQuantity =
+          double.tryParse(json['refundedQuantity'].toString())?.toInt() ?? 0;
       lineId = json['orderId'];
       refundedOrderLineId = json['refundedOrderLineId'];
       odooOrderLineId = json['odooOrderLineId'];
@@ -165,6 +169,7 @@ class Product {
       data['shDiscountReason'] = shDiscountReason;
       data['validPromotion'] = validPromotion?.toJson();
       data['refundQuantity'] = refundQuantity?.toString();
+      data['refundedQuantity'] = refundedQuantity?.toString();
       data['orderId'] = lineId;
       data['refundedOrderLineId'] = refundedOrderLineId;
       data['odooOrderLineId'] = odooOrderLineId;

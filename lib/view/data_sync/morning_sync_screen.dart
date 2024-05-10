@@ -24,6 +24,9 @@ class _MorningSyncScreenState extends State<MorningSyncScreen> {
 
   void _alreadyLogin() {
     LoginUserController controller = context.read<LoginUserController>();
+    // if (context.read<ThemeSettingController>().appConfig == null) {
+    //   context.read<ThemeSettingController>().getThemeConfig();
+    // }
     LoginUserTable.getLoginUser().then((loginUser) {
       if (loginUser == null) {
         _alreadyLoginError();

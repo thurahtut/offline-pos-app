@@ -208,7 +208,8 @@ class RefundOrderController with ChangeNotifier {
           product.firstTime = false;
         }
 
-        if ((product.onhandQuantity ?? 0) < (int.tryParse(qty + value) ?? 0)) {
+        if (((product.onhandQuantity ?? 0) - (product.refundedQuantity ?? 0)) <
+            (int.tryParse(qty + value) ?? 0)) {
           if (NavigationService.navigatorKey.currentContext != null) {
             showDialog(
               context: NavigationService.navigatorKey.currentContext!,
@@ -232,7 +233,7 @@ class RefundOrderController with ChangeNotifier {
                     color: Colors.white,
                     child: Text(
                       'The requested quantity to be refunded is higher than the ordered quantity. '
-                      '${qty + value} is requested while only ${product.onhandQuantity} can be refunded.',
+                      '${int.tryParse(qty + value) ?? 0} is requested while only ${((product.onhandQuantity ?? 0) - (product.refundedQuantity ?? 0))} can be refunded.',
                       style: TextStyle(
                         color: Colors.red.shade500,
                         fontWeight: FontWeight.w400,
