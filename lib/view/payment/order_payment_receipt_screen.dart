@@ -469,7 +469,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
           ),
           pw.SizedBox(width: 4),
           pw.Text(
-            "${context.read<CurrentOrderController>().orderHistory?.changeAmt ?? 0.00}Ks",
+            "${context.read<CurrentOrderController>().orderHistory?.changeAmt ?? 0.00} Ks",
             style: pw.TextStyle(
               color: PdfColor.fromHex("#171717"),
               fontSize: 11.6,

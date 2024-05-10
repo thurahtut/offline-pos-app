@@ -525,4 +525,27 @@ class OrderHistoryTable {
 
     return maps;
   }
+
+  static Future<double> getTotalRefundAmount({
+    Database? db,
+    int? sessionId,
+  }) async {
+    db ??= await DatabaseHelper().db;
+    String query =
+        "select sum(case when ot.$AMOUNT_TOTAL is not null then ot.$AMOUNT_TOTAL else 0 end) as totalRefund "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "where ot.$SESSION_ID =$sessionId "
+        "and ot.$IS_RETURN_ORDER='true'";
+
+    List<Map<String, dynamic>> maps = [];
+    try {
+      maps = await db.rawQuery(query);
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return maps.isEmpty
+        ? 0
+        : double.tryParse(maps.first['totalRefund']?.toString() ?? '') ?? 0;
+  }
 }

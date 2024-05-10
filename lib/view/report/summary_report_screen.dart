@@ -155,7 +155,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
                   spacer,
                   ..._discountWidget(controller),
                   spacer,
-                  ..._refundWidget(),
+                  ..._refundWidget(controller),
                   spacer,
                   ..._totalTaxWidget(controller),
                   spacer,
@@ -368,7 +368,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
     ];
   }
 
-  List<pw.Widget> _refundWidget() {
+  List<pw.Widget> _refundWidget(SummaryReportController controller) {
     return [
       pw.Align(
           alignment: pw.Alignment.centerLeft,
@@ -396,7 +396,7 @@ class _SummaryReportScreenState extends State<SummaryReportScreen> {
             ),
           ),
           pw.Text(
-            '0.00 Ks',
+            '${controller.totalRefund} Ks',
             textAlign: pw.TextAlign.center,
             style: pw.TextStyle(
               color: PdfColor.fromInt(Constants.textColor.value),

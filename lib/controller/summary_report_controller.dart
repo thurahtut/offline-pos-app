@@ -19,6 +19,14 @@ class SummaryReportController with ChangeNotifier {
   Map<String, dynamic>? _discountMap;
   Map<String, dynamic>? get discountMap => _discountMap;
 
+  double _totalRefund = 0;
+  double get totalRefund => _totalRefund;
+  set totalRefund(double totalRefund) {
+    if (_totalRefund == totalRefund) return;
+    _totalRefund = totalRefund;
+    notifyListeners();
+  }
+
   void getTotalSummaryByCategory({required int sessionId}) async {
     Database db = await DatabaseHelper().db;
     OrderHistoryTable.getTotalAmountByCategory(
@@ -34,7 +42,14 @@ class SummaryReportController with ChangeNotifier {
               .then(
             (disMap) {
               _discountMap = disMap;
-              notifyListeners();
+              OrderHistoryTable.getTotalRefundAmount(
+                      db: db, sessionId: sessionId)
+                  .then(
+                (refund) {
+                  _totalRefund = refund;
+                  notifyListeners();
+                },
+              );
             },
           );
         });
@@ -48,6 +63,7 @@ class SummaryReportController with ChangeNotifier {
     _loading = false;
     _summaryReportMap = [];
     _transactionReportMap = [];
+    _totalRefund = 0;
     notifyListeners();
   }
 }
