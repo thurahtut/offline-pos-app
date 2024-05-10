@@ -1,5 +1,4 @@
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/order_detail_controller.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   const OrderDetailScreen({super.key, required this.orderId});
@@ -12,8 +11,12 @@ class OrderDetailScreen extends StatefulWidget {
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Future<void> _getOrder() async {
-    context.read<OrderDetailController>().orderHistory =
+    OrderDetailController orderDetailController =
+        context.read<OrderDetailController>();
+    orderDetailController.orderHistory =
         await OrderHistoryTable.getOrderById(widget.orderId);
+    orderDetailController.refundCount =
+        await OrderHistoryTable.refundCount(orderId: widget.orderId);
   }
 
   @override
@@ -47,14 +50,31 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width / 30,
             ),
-            child: BorderContainer(
-              text: 'Back',
-              width: 140,
-              borderWithPrimaryColor: true,
-              textColor: primaryColor,
-              onTap: () {
-                Navigator.pop(context);
-              },
+            child: Row(
+              children: [
+                BorderContainer(
+                  text: 'Back',
+                  width: 140,
+                  borderWithPrimaryColor: true,
+                  textColor: primaryColor,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Expanded(child: SizedBox()),
+                if (context.watch<OrderDetailController>().refundCount > 0)
+                  BorderContainer(
+                    text:
+                        '${context.read<OrderDetailController>().refundCount} Refunded Order',
+                    width: 140,
+                    borderWithPrimaryColor: true,
+                    containerColor: primaryColor,
+                    textColor: Colors.white,
+                    onTap: () {
+                      // Navigator.pop(context);
+                    },
+                  ),
+              ],
             ),
           ),
           Expanded(

@@ -31,7 +31,8 @@ class PriceListItem {
   PriceListItem.fromJson(Map<String, dynamic> json, {int? priceListItemId}) {
     id = priceListItemId ?? json['id'];
     productTmplId = json['product_tmpl_id'];
-    minQuantity = int.tryParse(json['min_quantity'].toString());
+    minQuantity =
+        double.tryParse(json['min_quantity']?.toString() ?? '')?.toInt();
     appliedOn = json['applied_on'];
     currencyId = json['currency_id'];
     packageId = json['package_id'];

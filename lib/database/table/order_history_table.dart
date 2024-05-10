@@ -497,6 +497,26 @@ class OrderHistoryTable {
     return (count ?? 0) > 0;
   }
 
+  static Future<int> refundCount({Database? db, int? orderId}) async {
+    db ??= await DatabaseHelper().db;
+    String query = "select count() as count "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "on olt.$ORDER_ID_IN_LINE = ot.$ORDER_HISTORY_ID "
+        "where olt.$REFERENCE_ORDER_LINE_ID in  "
+        "( "
+        "select olt.$ORDER_LINE_ID "
+        "from $ORDER_LINE_ID_TABLE_NAME olt "
+        "where 1=1 "
+        "and olt.$ORDER_ID_IN_LINE =$orderId "
+        ")"
+        "and olt.$REFERENCE_ORDER_LINE_ID is not null ";
+    final result = await db.rawQuery(query);
+
+    int? count = Sqflite.firstIntValue(result);
+    return count ?? 0;
+  }
+
   static Future<List<Map<String, dynamic>>> getTotalAmountByCategory({
     Database? db,
     int? sessionId,

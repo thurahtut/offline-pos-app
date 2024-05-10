@@ -17,6 +17,14 @@ class OrderDetailController with ChangeNotifier {
     notifyListeners();
   }
 
+  int _refundCount = 0;
+  int get refundCount => _refundCount;
+  set refundCount(int refundCount) {
+    if (_refundCount == refundCount) return;
+    _refundCount = refundCount;
+    notifyListeners();
+  }
+
   notify() {
     notifyListeners();
   }
@@ -24,6 +32,7 @@ class OrderDetailController with ChangeNotifier {
   resetOrderDetailController() {
     _orderHistory = null;
     _headerIndex = 0;
+    _refundCount = 0;
     notifyListeners();
   }
 }
