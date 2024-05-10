@@ -302,11 +302,15 @@ class CurrentOrderController with ChangeNotifier {
           (e.promotionRule?.ruleMinQuantity ?? 0);
     }, orElse: () => Promotion());
     orderProduct.validPromotion = promotion;
-    Product? promoProduct = promotion != null
-        ? Product.fromJson(jsonDecode(jsonEncode(orderProduct)),
-            includedOtherField: true)
-        : null;
-    if (promoProduct != null && promotion != null) {
+    Product? promoProduct =
+        promotion != null && promotion.id != null && promotion.id != 0
+            ? Product.fromJson(jsonDecode(jsonEncode(orderProduct)),
+                includedOtherField: true)
+            : null;
+    if (promoProduct != null &&
+        promotion != null &&
+        promotion.id != null &&
+        promotion.id != 0) {
       promoProduct.parentPromotionId = promotion.id;
       promoProduct.isPromoItem = true;
 

@@ -87,16 +87,17 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
                 children: [
                   if (context.read<ThemeSettingController>().appConfig?.logo !=
                       null)
-                    pw.SizedBox(
-                        height: 160,
-                        child: pw.Image(
-                            pw.MemoryImage(
-                              context
-                                  .read<ThemeSettingController>()
-                                  .appConfig!
-                                  .logo!, //  Uint8List.fromList(byteList),
-                            ),
-                            fit: pw.BoxFit.fitHeight)),
+                    pw.Image(
+                        pw.MemoryImage(
+                          context
+                              .read<ThemeSettingController>()
+                              .appConfig!
+                              .logo!, //  Uint8List.fromList(byteList),
+                        ),
+                        fit: pw.BoxFit.contain,
+                        width: 150,
+                        height: 80),
+                  pw.SizedBox(height: 4),
                   pw.Text(
                     'SSS International Co.,ltd',
                     textAlign: pw.TextAlign.center,
