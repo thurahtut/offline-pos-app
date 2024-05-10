@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/refund/refund_order_screen.dart';
-import 'package:offline_pos/view/refund/selected_refund_order_screen.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -98,6 +96,14 @@ class Routers {
             settings.arguments as OrderDetailScreen?;
         return MaterialPageRoute(
           builder: (_) => OrderDetailScreen(
+            orderId: args?.orderId ?? 0,
+          ),
+        );
+      case RefundedOrderDetailScreen.routeName:
+        final RefundedOrderDetailScreen? args =
+            settings.arguments as RefundedOrderDetailScreen?;
+        return MaterialPageRoute(
+          builder: (_) => RefundedOrderDetailScreen(
             orderId: args?.orderId ?? 0,
           ),
         );

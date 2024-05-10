@@ -193,4 +193,18 @@ class OrderLineIdTable {
         " Where $whereColumnName = $whereValue";
     return db.rawInsert(sql);
   }
+
+  static Future<int> refundQtyByProductId(
+      {Database? db, int? productId}) async {
+    db ??= await DatabaseHelper().db;
+    String query =
+        "select sum(case when olt.$QTY_IN_LINE is not null then olt.$QTY_IN_LINE else 0 end) as totalRefundedQty "
+        "from  $ORDER_LINE_ID_TABLE_NAME olt "
+        "where olt.$REFERENCE_ORDER_LINE_ID=$productId "
+        "and olt.$REFERENCE_ORDER_LINE_ID is not null ";
+    final result = await db.rawQuery(query);
+
+    int? value = Sqflite.firstIntValue(result);
+    return value?.abs() ?? 0;
+  }
 }

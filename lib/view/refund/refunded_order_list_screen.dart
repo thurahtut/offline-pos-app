@@ -39,7 +39,7 @@ class _RefundedOrderListScreenState extends State<RefundedOrderListScreen> {
     context.read<RefundedOrderListController>().loading = true;
     await context
         .read<RefundedOrderListController>()
-        .getAllOrderHistory()
+        .getAllOrderHistory(parentOrderIdForRefundedOrder: widget.orderId)
         .then((value) {
       updateOrderHistoryListToTable();
       context.read<RefundedOrderListController>().loading = false;
@@ -73,8 +73,8 @@ class _RefundedOrderListScreenState extends State<RefundedOrderListScreen> {
       offset: context.read<RefundedOrderListController>().offset,
       reloadDataCallback: () {},
       goToPOSScreen: (order) {
-        Navigator.pushNamed(context, OrderDetailScreen.routeName,
-            arguments: OrderDetailScreen(orderId: order.id ?? 0));
+        Navigator.pushNamed(context, RefundedOrderDetailScreen.routeName,
+            arguments: RefundedOrderDetailScreen(orderId: order.id ?? 0));
       },
     );
   }

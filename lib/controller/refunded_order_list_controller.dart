@@ -93,7 +93,7 @@ class RefundedOrderListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllOrderHistory() async {
+  Future<void> getAllOrderHistory({int? parentOrderIdForRefundedOrder}) async {
     getAllOrderHistoryCount();
     await OrderHistoryTable.getOrderHistorysFiltering(
       filter: filterValue,
@@ -101,6 +101,8 @@ class RefundedOrderListController with ChangeNotifier {
       limit: limit,
       offset: offset,
       dateFilter: dateFilter?.toString(),
+      refundedOrder: true,
+      parentOrderIdForRefundedOrder: parentOrderIdForRefundedOrder,
     ).then((list) {
       orderList = [];
       orderList.addAll(list);

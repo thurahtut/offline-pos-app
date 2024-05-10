@@ -359,7 +359,7 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
           for (var mapArg in value2) {
             print(jsonEncode(mapArg));
           }
-          // await _uploadSyncOrderHistoryToOfflineDb(value2);
+          await _uploadSyncOrderHistoryToOfflineDb(value2);
           _isSyncOH.value = false;
           _controller?.stop();
         });

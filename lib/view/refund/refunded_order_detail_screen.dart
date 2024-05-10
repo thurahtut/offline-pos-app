@@ -1,28 +1,31 @@
 import 'package:offline_pos/components/export_files.dart';
 
-class OrderDetailScreen extends StatefulWidget {
-  const OrderDetailScreen({super.key, required this.orderId});
-  static const String routeName = "/order_detail_screen";
+class RefundedOrderDetailScreen extends StatefulWidget {
+  const RefundedOrderDetailScreen({super.key, required this.orderId});
+  static const String routeName = "/refunded_order_detail_screen";
   final int orderId;
 
   @override
-  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+  State<RefundedOrderDetailScreen> createState() =>
+      _RefundedOrderDetailScreenState();
 }
 
-class _OrderDetailScreenState extends State<OrderDetailScreen> {
+class _RefundedOrderDetailScreenState extends State<RefundedOrderDetailScreen> {
   Future<void> _getOrder() async {
-    OrderDetailController orderDetailController =
-        context.read<OrderDetailController>();
-    orderDetailController.orderHistory =
+    RefundedOrderDetailController refundedOrderDetailController =
+        context.read<RefundedOrderDetailController>();
+    refundedOrderDetailController.orderHistory =
         await OrderHistoryTable.getOrderById(widget.orderId);
-    orderDetailController.refundCount =
+    refundedOrderDetailController.refundCount =
         await OrderHistoryTable.refundCount(orderId: widget.orderId);
   }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<OrderDetailController>().resetOrderDetailController();
+      context
+          .read<RefundedOrderDetailController>()
+          .resetRefundedOrderDetailController();
       _getOrder();
     });
     super.initState();
@@ -62,15 +65,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   },
                 ),
                 Expanded(child: SizedBox()),
-                if (context.watch<OrderDetailController>().refundCount > 0 &&
+                if (context.watch<RefundedOrderDetailController>().refundCount >
+                        0 &&
                     context
-                            .watch<OrderDetailController>()
+                            .watch<RefundedOrderDetailController>()
                             .orderHistory
                             ?.isReturnOrder !=
                         true)
                   BorderContainer(
                     text:
-                        '${context.read<OrderDetailController>().refundCount} Refunded Order',
+                        '${context.read<RefundedOrderDetailController>().refundCount} Refunded Order',
                     width: 140,
                     borderWithPrimaryColor: true,
                     containerColor: primaryColor,
@@ -122,16 +126,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         spacer,
         _headerOfLinesAndPayment(),
         Expanded(
-            child: context.watch<OrderDetailController>().headerIndex == 0
-                ? _productLinesWidget()
-                : _paymentsWidget()),
+            child:
+                context.watch<RefundedOrderDetailController>().headerIndex == 0
+                    ? _productLinesWidget()
+                    : _paymentsWidget()),
       ],
     );
   }
 
   Widget _orderWidget() {
     var spacer = SizedBox(height: 8);
-    return Consumer<OrderDetailController>(builder: (_, controller, __) {
+    return Consumer<RefundedOrderDetailController>(
+        builder: (_, controller, __) {
       return Row(
         children: [
           Expanded(
@@ -289,14 +295,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               return Center(
                   child: InkWell(
                 onTap: () {
-                  context.read<OrderDetailController>().headerIndex = index;
+                  context.read<RefundedOrderDetailController>().headerIndex =
+                      index;
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   decoration: BoxDecoration(
                     border: Border.all(color: Constants.greyColor2),
                     // borderRadius: BorderRadius.circular(4),
-                    color: context.watch<OrderDetailController>().headerIndex ==
+                    color: context
+                                .watch<RefundedOrderDetailController>()
+                                .headerIndex ==
                             index
                         ? primaryColor
                         : null,
@@ -317,23 +326,26 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         'Products',
         fontWeight: FontWeight.bold,
         fontSize: 16,
-        textColor: context.watch<OrderDetailController>().headerIndex == 0
-            ? Colors.white
-            : null,
+        textColor:
+            context.watch<RefundedOrderDetailController>().headerIndex == 0
+                ? Colors.white
+                : null,
       ),
       _textForDetailInfo(
         'Payments',
         fontWeight: FontWeight.bold,
         fontSize: 16,
-        textColor: context.watch<OrderDetailController>().headerIndex == 1
-            ? Colors.white
-            : null,
+        textColor:
+            context.watch<RefundedOrderDetailController>().headerIndex == 1
+                ? Colors.white
+                : null,
       ),
     ];
   }
 
   Widget _productLinesWidget() {
-    return Consumer<OrderDetailController>(builder: (_, controller, __) {
+    return Consumer<RefundedOrderDetailController>(
+        builder: (_, controller, __) {
       double totalTaxes = 0;
       double totalPaidAmt = 0;
       for (OrderLineID orderLineID in controller.orderHistory?.lineIds ?? []) {
@@ -477,7 +489,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     });
   }
 
-  List<DataRow> _productLinesDataRow(OrderDetailController controller) {
+  List<DataRow> _productLinesDataRow(RefundedOrderDetailController controller) {
     List<DataRow> dataRow = [];
     for (int i = 0; i < (controller.orderHistory?.lineIds ?? []).length; i++) {
       OrderLineID? data = controller.orderHistory?.lineIds?[i];
@@ -517,7 +529,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Widget _paymentsWidget() {
     final double width = MediaQuery.of(context).size.width -
         (MediaQuery.of(context).size.width / 15);
-    return Consumer<OrderDetailController>(builder: (_, controller, __) {
+    return Consumer<RefundedOrderDetailController>(
+        builder: (_, controller, __) {
       return SingleChildScrollView(
         child: DataTable(
           // columnSpacing: 20.0,
@@ -555,7 +568,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     });
   }
 
-  List<DataRow> _paymentsDataRow(OrderDetailController controller) {
+  List<DataRow> _paymentsDataRow(RefundedOrderDetailController controller) {
     List<DataRow> dataRow = [];
     for (int i = 0;
         i < (controller.orderHistory?.paymentIds ?? []).length;

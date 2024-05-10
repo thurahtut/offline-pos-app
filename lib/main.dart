@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SummaryReportController()),
         ChangeNotifierProvider(create: (_) => RefundOrderController()),
         ChangeNotifierProvider(create: (_) => RefundedOrderListController()),
+        ChangeNotifierProvider(create: (_) => RefundedOrderDetailController()),
       ],
       child: InitializePage(),
     );

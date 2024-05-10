@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/view/refund/selected_refund_order_screen.dart';
 
 class RefundOrderScreen extends StatefulWidget {
   const RefundOrderScreen({super.key});
@@ -15,6 +14,19 @@ class _RefundOrderScreenState extends State<RefundOrderScreen> {
   bool isTabletMode = false;
   final FocusNode _textNode = FocusNode();
   double padding = 1.8;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      RefundOrderController refundOrderController =
+          context.read<RefundOrderController>();
+      for (Product product in refundOrderController.currentOrderList) {
+        product.refundQuantity = await OrderLineIdTable.refundQtyByProductId(
+            productId: product.lineId ?? 0);
+      }
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -193,6 +205,13 @@ class _RefundOrderScreenState extends State<RefundOrderScreen> {
                                           //   ),
                                           // )
                                         ],
+                                      ),
+                                      Text(
+                                        '${e.refundQuantity ?? 0} Refunded',
+                                        style: textStyle.copyWith(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                       Text(
                                         'To Refund : ${e.refundQuantity ?? 0}',

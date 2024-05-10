@@ -188,12 +188,29 @@ class OrderHistoryTable {
     int? offset,
     String? typeFilter,
     String? dateFilter,
+    bool? refundedOrder,
+    int? parentOrderIdForRefundedOrder,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
+    String refundedQuery = refundedOrder != true
+        ? ""
+        : "left join order_line_id_table olt "
+            "on olt.order_id = ot.id ";
+    String refundedWhereQuery = refundedOrder != true
+        ? ""
+        : "and "
+            "olt.reference_orderline_id in "
+            "("
+            "select olt.f_id "
+            "from order_line_id_table olt "
+            "where olt.order_id = $parentOrderIdForRefundedOrder "
+            ")"
+            "and olt.reference_orderline_id is not null ";
     String query =
         "select ot.*, ct.$CUSTOMER_NAME as customer_name, emt.$NAME_IN_ET as employee_name "
         "from $ORDER_HISTORY_TABLE_NAME ot "
+        "$refundedQuery"
         "left join $CUSTOMER_TABLE_NAME ct "
         "on ct.$CUSTOMER_ID_IN_CT=ot.$PARTNER_ID "
         "left join $EMPLOYEE_TABLE_NAME emt "
@@ -202,6 +219,7 @@ class OrderHistoryTable {
         "${(filter != null && filter.isNotEmpty ? "and ($SEQUENCE_NUMBER LIKE '%$filter%' or lower(ot.$NAME_IN_OH) LIKE '%${filter.toLowerCase()}%' or lower(ot.$RECEIPT_NUMBER) LIKE '%${filter.toLowerCase()}%') " : "")}"
         "${(typeFilter != null && typeFilter.isNotEmpty ? "and $STATE_IN_OT='$typeFilter' " : "")}"
         "${dateFilter != null ? "and strftime('%Y-%m-%d', ot.$CREATE_DATE_IN_OH)=strftime('%Y-%m-%d', '$dateFilter') " : ""}"
+        "$refundedWhereQuery"
         "group by ot.$ORDER_HISTORY_ID "
         "order by ot.$ORDER_HISTORY_ID DESC"
         "${limit != null ? " limit $limit " : " "}"
