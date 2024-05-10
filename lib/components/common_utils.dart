@@ -1014,7 +1014,8 @@ class CommonUtils {
         .then((deletedValue) async {
       double totalTax = 0;
       for (var data in currentOrderController.currentOrderList) {
-        if ((data.onhandQuantity ?? 0) <= 0) {
+        if ((data.onhandQuantity ?? 0) <= 0 &&
+            currentOrderController.orderHistory?.isReturnOrder != true) {
           CommonUtils.showSnackBar(
               context: context,
               message: '${data.productName} is something wrong!');
@@ -1056,7 +1057,8 @@ class CommonUtils {
           createDate: orderDate.toString(),
           createUid:
               context.read<LoginUserController>().loginUser?.userData?.id ?? 0,
-          discount: data.discount ?? 0,
+          discount:
+              (currentOrderController.isRefund ? -1 : 1) * (data.discount ?? 0),
           shDiscountCode: data.shDiscountCode,
           shDiscountReason: data.shDiscountReason,
           parentPromotionId: data.parentPromotionId,

@@ -546,6 +546,7 @@ class OrderHistoryTable {
 
     return maps.isEmpty
         ? 0
-        : double.tryParse(maps.first['totalRefund']?.toString() ?? '') ?? 0;
+        : double.tryParse(maps.first['totalRefund']?.toString() ?? '')?.abs() ??
+            0;
   }
 }
