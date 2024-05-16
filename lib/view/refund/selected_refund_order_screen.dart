@@ -10,6 +10,14 @@ class SelectedRefundOrderScreen extends StatefulWidget {
 }
 
 class _SelectedRefundOrderScreenState extends State<SelectedRefundOrderScreen> {
+  final TextEditingController noteTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    noteTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,30 +58,7 @@ class _SelectedRefundOrderScreenState extends State<SelectedRefundOrderScreen> {
                 textColor: Colors.white,
                 containerColor: primaryColor,
                 onTap: () async {
-                  CurrentOrderController currentOrderController =
-                      context.read<CurrentOrderController>();
-                  RefundOrderController refundOrderController =
-                      context.read<RefundOrderController>();
-                  currentOrderController.resetCurrentOrderController();
-                  await CommonUtils.createOrderHistory(
-                      NavigationService.navigatorKey.currentContext!);
-                  if (refundOrderController.orderHistory?.name?.isNotEmpty ??
-                      false) {
-                    currentOrderController.orderHistory?.name =
-                        "${refundOrderController.orderHistory!.name!} REFUND";
-                  }
-                  currentOrderController.orderHistory?.isReturnOrder = true;
-                  currentOrderController.currentOrderList =
-                      refundOrderController.selectedOrderList;
-                  currentOrderController.selectedCustomer =
-                      refundOrderController.selectedCustomer;
-                  currentOrderController.isRefund = true;
-                  if (mounted) {
-                    CommonUtils.uploadOrderHistoryToDatabase(context,
-                        isNavigate: true);
-                    refundOrderController.orderId =
-                        currentOrderController.orderHistory?.id;
-                  }
+                  _showRefundNoteDialog();
                 },
               ),
               // Expanded(
@@ -248,5 +233,169 @@ class _SelectedRefundOrderScreenState extends State<SelectedRefundOrderScreen> {
         ),
       );
     });
+  }
+
+  Future<void> _createOrderForRefund({required String refundNote}) async {
+    CurrentOrderController currentOrderController =
+        context.read<CurrentOrderController>();
+    RefundOrderController refundOrderController =
+        context.read<RefundOrderController>();
+    currentOrderController.resetCurrentOrderController();
+    await CommonUtils.createOrderHistory(
+        NavigationService.navigatorKey.currentContext!);
+    if (refundOrderController.orderHistory?.name?.isNotEmpty ?? false) {
+      currentOrderController.orderHistory?.name =
+          "${refundOrderController.orderHistory!.name!} REFUND";
+    }
+    currentOrderController.orderHistory?.isReturnOrder = true;
+    currentOrderController.currentOrderList =
+        refundOrderController.selectedOrderList;
+    currentOrderController.selectedCustomer =
+        refundOrderController.selectedCustomer;
+    currentOrderController.isRefund = true;
+    if (mounted) {
+      CommonUtils.uploadOrderHistoryToDatabase(context,
+          isNavigate: true, note: refundNote);
+      refundOrderController.orderId = currentOrderController.orderHistory?.id;
+    }
+  }
+
+  Future<dynamic> _showRefundNoteDialog() {
+    bool isMobileMode = CommonUtils.isMobileMode(context);
+    //  ProductDiscountDialog.productDiscountDialogWidget(
+    //           NavigationService.navigatorKey.currentContext!);
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Refund Note',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Constants.textColor,
+              fontSize: 18,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Container(
+              color: primaryColor.withOpacity(0.03),
+              width: MediaQuery.of(context).size.width / (isMobileMode ? 1 : 3),
+              padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+              child: Consumer<CurrentOrderController>(
+                  builder: (_, controller, __) {
+                return Column(
+                  children: [
+                    Text(
+                      'Reason',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all()),
+                            child: TextField(
+                              controller: noteTextController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 4,
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.all(16),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text("Confirm"),
+              onPressed: () {
+                if (noteTextController.text.isEmpty) {
+                  _showRefundReasonErrorDialog();
+                  return;
+                }
+                Navigator.of(context).pop();
+                _createOrderForRefund(refundNote: noteTextController.text);
+              },
+            ),
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      context.read<CurrentOrderController>().currentOrderKeyboardState =
+          CurrentOrderKeyboardState.qty;
+      noteTextController.clear();
+    });
+  }
+
+  Future<dynamic> _showRefundReasonErrorDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext bcontext) {
+        return AlertDialog(
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Please, enter reason',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Constants.textColor,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(4)),
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(bcontext).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

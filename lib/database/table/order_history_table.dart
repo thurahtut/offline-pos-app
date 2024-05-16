@@ -43,6 +43,7 @@ const SEQUENCE_ID = "sequence_id";
 const SEQUENCE_LINE_ID = "sequence_line_id";
 const IS_RETURN_ORDER = "is_return_order";
 const CHANGE_AMOUNT = "change_amount";
+const NOTE = "note";
 
 class OrderHistoryTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -85,6 +86,7 @@ class OrderHistoryTable {
         "$SEQUENCE_LINE_ID INTEGER,"
         "$IS_RETURN_ORDER TEXT,"
         "$CHANGE_AMOUNT REAL,"
+        "$NOTE TEXT,"
         "unique ($NAME_IN_OH, $SESSION_ID, $SEQUENCE_NUMBER)"
         ")");
   }

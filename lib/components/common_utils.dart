@@ -980,7 +980,7 @@ class CommonUtils {
   }
 
   static Future<void> uploadOrderHistoryToDatabase(BuildContext context,
-      {bool? isNavigate = true}) async {
+      {bool? isNavigate = true, String? note}) async {
     LoginUserController loginUserController =
         context.read<LoginUserController>();
     CurrentOrderController currentOrderController =
@@ -998,6 +998,7 @@ class CommonUtils {
         loginUserController.loginUser?.userData?.id ?? 0;
     currentOrderController.orderHistory!.partnerId =
         currentOrderController.selectedCustomer?.id;
+    currentOrderController.orderHistory?.note = note ?? "";
 
     currentOrderController.orderHistory?.amountTotal =
         map["total"]?.toInt() ?? 0;

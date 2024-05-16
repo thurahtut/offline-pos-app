@@ -42,6 +42,7 @@ class OrderHistory {
   int? sequenceLineId;
   bool? isReturnOrder;
   int? changeAmt;
+  String? note;
 
   OrderHistory({
     this.id,
@@ -86,6 +87,7 @@ class OrderHistory {
     this.sequenceLineId,
     this.isReturnOrder,
     this.changeAmt,
+    this.note,
   });
 
   OrderHistory.fromJson(Map<String, dynamic> json) {
@@ -132,6 +134,7 @@ class OrderHistory {
     isReturnOrder = bool.tryParse(json['is_return_order']?.toString() ?? '');
     changeAmt =
         double.tryParse(json['change_amount']?.toString() ?? '')?.toInt();
+    note = json['note'];
   }
 
   Map<String, dynamic> toJson() {
@@ -174,6 +177,7 @@ class OrderHistory {
     data['sequence_line_id'] = sequenceLineId;
     data['is_return_order'] = isReturnOrder?.toString() ?? 'false';
     data['change_amount'] = changeAmt;
+    data['note'] = note;
     return data;
   }
 }

@@ -517,6 +517,9 @@ class _RefundedOrderListScreenState extends State<RefundedOrderListScreen> {
                       //     sort<String>((d) => (d.name ?? ''), columnIndex, ascending),
                     ),
                     CommonUtils.dataColumn(
+                      text: 'Session',
+                    ),
+                    CommonUtils.dataColumn(
                       // fixedWidth: isTabletMode ? 150 : 120,
                       text: 'Sequence Number',
                       // onSort: (columnIndex, ascending) =>
@@ -686,6 +689,9 @@ class DataSourceForRefundedOrderListScreen extends DataTableSource {
             ),
           ),
           // onTap: onTap,
+        ),
+        DataCell(
+          Text(order.sessionName ?? ''),
         ),
         DataCell(
           Text(order.sequenceNumber ?? ''),
