@@ -63,9 +63,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
   }
 
   Future<Uint8List> _generatePdf() async {
-    final doc = pw.Document(
-      theme: myTheme,
-    );
+    final doc = pw.Document();
     Map<String, double> map = context
         .read<CurrentOrderController>()
         .getTotalQty(context.read<CurrentOrderController>().currentOrderList);

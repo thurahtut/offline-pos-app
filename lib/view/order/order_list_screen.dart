@@ -888,32 +888,100 @@ class DataSourceForOrderListScreen extends DataTableSource {
                 CommonUtils.svgIconActionButton(
                   'assets/svg/delete.svg',
                   onPressed: () async {
-                    if (order.state != OrderState.draft.text) {
-                      CommonUtils.showSnackBar(
-                        context: context,
-                        message: 'This order is not allowed to delete!',
-                      );
-                      return;
-                    }
-                    OrderHistoryTable.getOrderHistoryList(
-                      isCloseSession: false,
-                      orderHistoryId: order.id ?? 0,
-                    ).then((value) async {
-                      for (var mapArg in value) {
-                        String orderStr = jsonEncode(mapArg);
-                        CommonUtils.saveOrderDeleteLogs(orderStr);
-                      }
-                      final Database db = await DatabaseHelper().db;
-                      db.transaction((txn) async {
-                        await PaymentTransactionTable.deleteByOrderId(
-                            txn: txn, orderID: order.id ?? 0);
-                        await OrderLineIdTable.deleteByOrderId(
-                            txn: txn, orderID: order.id ?? 0);
-                        await OrderHistoryTable.deleteByOrderId(
-                            txn: txn, orderHistoryId: order.id ?? 0);
-                        deletedCallback();
-                      });
-                    });
+                    showDialog(
+                      context: NavigationService.navigatorKey.currentContext!,
+                      builder: (BuildContext bContext) {
+                        return AlertDialog(
+                          backgroundColor: Colors.grey.shade200,
+                          title: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Are you sure !',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.zero,
+                          insetPadding: EdgeInsets.all(20),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          content: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 32),
+                            color: Colors.white,
+                            child: Text(
+                              'Do you want to delete this order?',
+                              style: TextStyle(
+                                color: Colors.red.shade500,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            InkWell(
+                              child: Container(
+                                  margin: EdgeInsets.only(top: 16),
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: primaryColor,
+                                      width: 3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text("Cancel")),
+                              onTap: () {
+                                Navigator.of(bContext).pop();
+                              },
+                            ),
+                            InkWell(
+                              child: Container(
+                                  margin: EdgeInsets.only(top: 16),
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: primaryColor,
+                                      width: 3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text("Ok")),
+                              onTap: () {
+                                Navigator.of(bContext).pop();
+                                if (order.state != OrderState.draft.text) {
+                                  CommonUtils.showSnackBar(
+                                    context: context,
+                                    message:
+                                        'This order is not allowed to delete!',
+                                  );
+                                  return;
+                                }
+                                OrderHistoryTable.getOrderHistoryList(
+                                  isCloseSession: false,
+                                  orderHistoryId: order.id ?? 0,
+                                ).then((value) async {
+                                  for (var mapArg in value) {
+                                    String orderStr = jsonEncode(mapArg);
+                                    CommonUtils.saveOrderDeleteLogs(orderStr);
+                                  }
+                                  final Database db = await DatabaseHelper().db;
+                                  db.transaction((txn) async {
+                                    await PaymentTransactionTable
+                                        .deleteByOrderId(
+                                            txn: txn, orderID: order.id ?? 0);
+                                    await OrderLineIdTable.deleteByOrderId(
+                                        txn: txn, orderID: order.id ?? 0);
+                                    await OrderHistoryTable.deleteByOrderId(
+                                        txn: txn,
+                                        orderHistoryId: order.id ?? 0);
+                                    deletedCallback();
+                                  });
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
               if (order.state == OrderState.paid.text)

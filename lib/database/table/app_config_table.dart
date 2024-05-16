@@ -16,6 +16,7 @@ const PRICE_LAST_SYNC_DATE = "price_last_sync_date";
 const CUSTOMER_LAST_SYNC_DATE = "customer_last_sync_date";
 const PACKAGING_LAST_SYNC_DATE = "packaging_last_sync_date";
 const REMEMBER_PASSWORD = "remember_password";
+const STORAGE_START_DATE = "storage_start_date";
 
 class AppConfigTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -61,8 +62,8 @@ class AppConfigTable {
     isExist = maps.isNotEmpty;
     return isExist;
   }
-  static Future<int> insertOrUpdate(
-     String columnName, String? value) async {
+
+  static Future<int> insertOrUpdate(String columnName, String? value) async {
     final Database db = await DatabaseHelper().db;
     return insertOrUpdateWithDB(db, columnName, value);
   }
