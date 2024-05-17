@@ -25,6 +25,9 @@ const SH_DISCOUNT_REASON = "sh_discount_reason";
 const REFERENCE_ORDER_LINE_ID = "reference_orderline_id";
 const REFUNDED_ORDER_LINE_ID = "refunded_orderline_id";
 const ODOO_ORDER_LINE_ID = "odoo_order_line_id";
+const PACKAGING = "packaging";
+const PACKAGE_ID_IN_LINE = "package_id";
+const PACKAGE_QTY = "package_qty";
 
 class OrderLineIdTable {
   static Future<void> onCreate(Database db, int version) async {
@@ -49,7 +52,10 @@ class OrderLineIdTable {
         "$SH_DISCOUNT_REASON TEXT,"
         "$REFERENCE_ORDER_LINE_ID INTEGER,"
         "$REFUNDED_ORDER_LINE_ID INTEGER,"
-        "$ODOO_ORDER_LINE_ID INTEGER"
+        "$ODOO_ORDER_LINE_ID INTEGER,"
+        "$PACKAGING TEXT,"
+        "$PACKAGE_ID_IN_LINE INTEGER,"
+        "$PACKAGE_QTY INTEGER"
         ")");
   }
 

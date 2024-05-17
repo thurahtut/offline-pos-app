@@ -63,7 +63,7 @@ class ProductPackagingTable {
         "select *, ppt.$PRODUCT_PACKAGING_ID as packageId, pit.$PRICE_LIST_ITEM_ID as priceId "
         "from $PRODUCT_PACKAGING_TABLE_NAME ppt "
         "left join $PRICE_LIST_ITEM_TABLE_NAME pit "
-        "on pit.$PACKAGE_ID=ppt.$PRODUCT_PACKAGING_ID "
+        "on pit.$PACKAGE_ID_IN_LINE=ppt.$PRODUCT_PACKAGING_ID "
         "and (datetime($DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
         "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
         "and $APPLIED_ON='3_product_package' "
@@ -72,8 +72,7 @@ class ProductPackagingTable {
         "order by $PACKAGING_QTY asc ";
     final List<Map<String, dynamic>> maps = await db.rawQuery(query);
 
-    return List.generate(
-        maps.length, (index) {
+    return List.generate(maps.length, (index) {
       ProductPackaging productPackaging = ProductPackaging.fromJson(maps[index],
           packagingId: maps[index]["packageId"]);
       PriceListItem priceListItem = PriceListItem.fromJson(maps[index],

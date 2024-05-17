@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/order_product_packaging_controller.dart';
 
 class ProductPackagingDialog {
   static Future<dynamic> productPackagingDialogWidget(
@@ -14,7 +15,7 @@ class ProductPackagingDialog {
         color: Constants.disableColor.withOpacity(0.96),
       ),
     );
-    TextEditingController _qtyEditingController = TextEditingController();
+    TextEditingController qtyEditingController = TextEditingController();
     context
         .read<OrderProductPackagingController>()
         .resetOrderProductPackagingController();
@@ -26,7 +27,7 @@ class ProductPackagingDialog {
           shadowColor: Colors.transparent,
           content: SingleChildScrollView(
             child: Container(
-              width: MediaQuery.of(context).size.width / 4,
+              // width: MediaQuery.of(context).size.width / 4,
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -37,7 +38,7 @@ class ProductPackagingDialog {
                 children: [
                   Container(
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width / 4,
+                      // maxWidth: MediaQuery.of(context).size.width / 4,
                       maxHeight: 85,
                     ),
                     decoration: BoxDecoration(
@@ -61,15 +62,40 @@ class ProductPackagingDialog {
                     ),
                   ),
                   SizedBox(height: 8),
-                  packagesWidget(context, product, productPackagings),
+                  packagesWidget(
+                    context,
+                    product,
+                    productPackagings,
+                    qtyEditingController,
+                  ),
                   spacer,
                   _selectedPackageWidget(
-                      context, _qtyEditingController, product),
+                      context, qtyEditingController, product),
                   spacer,
                   SizedBox(height: 16),
                   CommonUtils.okCancelWidget(
                     okLabel: "Add",
                     okCallback: () {
+                      Product pro = Product.fromJson(
+                        product.toJson(removed: false),
+                      );
+                      if (qtyEditingController.text.isNotEmpty) {
+                        pro.onhandQuantity =
+                            int.tryParse(qtyEditingController.text) ?? 0;
+                        pro.priceListItem = context
+                            .read<OrderProductPackagingController>()
+                            .selectedProductPackaging
+                            ?.priceListItem;
+                      }
+                      pro.packaging = context
+                          .read<OrderProductPackagingController>()
+                          .selectedProductPackaging
+                          ?.name;
+
+                      pro.packageId = context
+                          .read<OrderProductPackagingController>()
+                          .selectedProductPackaging
+                          ?.id;
                       context
                           .read<CurrentOrderController>()
                           .addItemToList(product);
@@ -93,13 +119,30 @@ class ProductPackagingDialog {
     BuildContext context,
     Product product,
     List<ProductPackaging> productPackagings,
+    TextEditingController qtyEditingController,
   ) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: productPackagings
-          .map((e) => _eachPackageWdget(context, product, e))
-          .toList(),
+    List<Widget> list = [];
+    List<ProductPackaging> rowList = [];
+    int itemCount = 3;
+    for (var i = 0; i < productPackagings.length; i += (itemCount)) {
+      int start = (list.length * (itemCount));
+      int end = (itemCount) + (list.length * (itemCount));
+      rowList.addAll(productPackagings.getRange(
+          start, min(end, productPackagings.length)));
+      list.add(Row(
+        children: List.generate(
+          rowList.length,
+          (index) => _eachPackageWdget(
+              context, product, rowList[index], qtyEditingController),
+        ),
+      ));
+      rowList = [];
+      if (context.read<ViewController>().isKeyboardHide) {
+        break;
+      }
+    }
+    return Column(
+      children: list,
     );
   }
 
@@ -107,6 +150,7 @@ class ProductPackagingDialog {
     BuildContext context,
     Product product,
     ProductPackaging productPackaging,
+    TextEditingController qtyEditingController,
   ) {
     return InkWell(
       onTap: () {
@@ -117,13 +161,19 @@ class ProductPackagingDialog {
             .read<OrderProductPackagingController>()
             .selectedProductPackaging
             ?.qty = "1";
+        qtyEditingController.text = "1";
         context.read<OrderProductPackagingController>().notify();
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
+            width: MediaQuery.of(context).size.width / 12,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.width / 10,
+              minHeight: MediaQuery.of(context).size.width / 10,
+            ),
             padding: EdgeInsets.all(18),
             margin: EdgeInsets.all(4),
             decoration: BoxDecoration(
@@ -215,55 +265,61 @@ class ProductPackagingDialog {
     );
     return Consumer<OrderProductPackagingController>(
         builder: (_, controller, __) {
-      return Column(
-        children: [
-          Row(
-            children: [
-              Expanded(child: Text('Quantity : ')),
-              Expanded(
-                flex: 2,
-                child: TextFormField(
-                  initialValue: controller.selectedProductPackaging?.qty,
-                  // controller: qtyEditingController,
-                  style: TextStyle(
-                    color: Constants.textColor,
-                    fontWeight: FontWeight.w500,
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: Text('Quantity : ')),
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    // initialValue: controller.selectedProductPackaging?.qty,
+                    controller: qtyEditingController,
+                    style: TextStyle(
+                      color: Constants.textColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: '0.00',
+                      hintStyle:
+                          textStyle.copyWith(color: Constants.disableColor),
+                      // contentPadding: EdgeInsets.all(20),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      controller.selectedProductPackaging?.qty =
+                          value.toString();
+                      // e.payingAmount = value;
+                      controller.notify();
+                    },
                   ),
-                  decoration: InputDecoration(
-                    hintText: '0.00',
-                    hintStyle:
-                        textStyle.copyWith(color: Constants.disableColor),
-                    // contentPadding: EdgeInsets.all(20),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(),
+                )
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(child: Text('Price : ')),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    controller
+                            .selectedProductPackaging?.priceListItem?.fixedPrice
+                            ?.toString() ??
+                        '0',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  onChanged: (value) {
-                    controller.selectedProductPackaging?.qty = value.toString();
-                    // e.payingAmount = value;
-                    controller.notify();
-                  },
                 ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(child: Text('Price : ')),
-              Expanded(
-                flex: 2,
-                child: Text(
-                  controller.selectedProductPackaging?.priceListItem?.fixedPrice
-                          ?.toString() ??
-                      '0',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       );
     });
   }

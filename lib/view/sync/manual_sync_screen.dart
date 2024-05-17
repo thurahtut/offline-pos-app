@@ -116,6 +116,13 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                     thickness: 0.3,
                   ),
                 ),
+                _packagingSyncWidget(controller),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(
+                    thickness: 0.3,
+                  ),
+                ),
                 _backUpWidget(controller),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -263,6 +270,27 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
         context.read<MorningsyncController>().getAllDiscount(
           () {
             controller.doneActionList.add(DataSync.discount.name);
+            controller.notify();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _packagingSyncWidget(MorningsyncController controller) {
+    return _syncWidget(
+      'Product Packaging List Sync',
+      controller.doneActionList.contains(DataSync.productPackaging.name),
+      percentage:
+          controller.processingPercentage[DataSync.productPackaging.name],
+      onSync: () {
+        context.read<MorningsyncController>().getAllProductPackaging(
+          context
+              .read<ThemeSettingController>()
+              .appConfig
+              ?.packagingLastSyncDate,
+          () {
+            controller.doneActionList.add(DataSync.productPackaging.name);
             controller.notify();
           },
         );

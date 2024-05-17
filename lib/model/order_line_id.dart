@@ -21,6 +21,9 @@ class OrderLineID {
   int? referenceOrderlineId;
   int? refundedOrderLineId;
   int? odooOrderLineId;
+  String? packaging;
+  int? packageId;
+  double? packageQty;
 
   OrderLineID({
     this.id,
@@ -45,6 +48,9 @@ class OrderLineID {
     this.referenceOrderlineId,
     this.refundedOrderLineId,
     this.odooOrderLineId,
+    this.packaging,
+    this.packageId,
+    this.packageQty,
   });
 
   OrderLineID.fromJson(Map<String, dynamic> json, {bool? isOnlyForDatabase}) {
@@ -74,6 +80,9 @@ class OrderLineID {
     referenceOrderlineId = json['reference_orderline_id'];
     refundedOrderLineId = json['refunded_orderline_id'];
     odooOrderLineId = json['odoo_order_line_id'];
+    packaging = json["packaging"];
+    packageId = json["package_id"];
+    packageQty = json["package_qty"];
   }
 
   Map<String, dynamic> toJson({bool? isOnlyForDatabase}) {
@@ -101,6 +110,9 @@ class OrderLineID {
     data['reference_orderline_id'] = referenceOrderlineId;
     data['refunded_orderline_id'] = refundedOrderLineId;
     data['odoo_order_line_id'] = odooOrderLineId;
+    data["packaging"] = packaging;
+    data["package_id"] = packageId;
+    data["package_qty"] = packageQty;
     return data;
   }
 }

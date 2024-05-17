@@ -338,50 +338,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
     bool isTabletMode = CommonUtils.isTabletMode(context);
     return InkWell(
       onTap: () {
-        context.read<CurrentOrderController>().addItemToList(product);
-        // ProductPackagingTable.getProductPackagingByProductId(
-        //         product.productId ?? 0)
-        //     .then((packagings) {
-        //   if (packagings.isNotEmpty) {
-        //     ProductPackaging productPackaging = packagings.firstWhere(
-        //       (e) => e.packageTypeId?.name == "1_product",
-        //       orElse: () {
-        //         return ProductPackaging();
-        //       },
-        //     );
-        //     if (productPackaging.id == null) {
-        //       productPackaging = ProductPackaging(
-        //         id: 0,
-        //         productId: product.productId,
-        //         name: "Unit",
-        //         qty: "1.00",
-        //         barcode: product.barcode,
-        //         sales: true,
-        //         priceListItem: product.priceListItem ??
-        //             PriceListItem(
-        //               appliedOn: "1_product",
-        //               productTmplId: product.productId,
-        //               minQuantity: 1,
-        //             ),
-        //       );
-        //       packagings.insert(0, productPackaging);
-        //     } else {
-        //       productPackaging.priceListItem ??= product.priceListItem ??
-        //           PriceListItem(
-        //             appliedOn: "1_product",
-        //             productTmplId: product.productId,
-        //             minQuantity: 1,
-        //           );
-        //     }
-        //     ProductPackagingDialog.productPackagingDialogWidget(
-        //       context,
-        //       product: product,
-        //       productPackagings: packagings,
-        //     );
-        //   } else {
-        //     context.read<CurrentOrderController>().addItemToList(product);
-        //   }
-        // });
+        _checkPackagingAndAddItemToList(product);
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 4.5, horizontal: 18),
@@ -425,6 +382,51 @@ class _ItemListScreenState extends State<ItemListScreen> {
         ),
       ),
     );
+  }
+
+  void _checkPackagingAndAddItemToList(Product product) {
+    ProductPackagingTable.getProductPackagingByProductId(product.productId ?? 0)
+        .then((packagings) {
+      if (packagings.isNotEmpty) {
+        ProductPackaging productPackaging = packagings.firstWhere(
+          (e) => e.packageTypeId?.name == "1_product",
+          orElse: () {
+            return ProductPackaging();
+          },
+        );
+        if (productPackaging.id == null) {
+          productPackaging = ProductPackaging(
+            id: 0,
+            productId: product.productId,
+            name: "Unit",
+            qty: "1.00",
+            barcode: product.barcode,
+            sales: true,
+            priceListItem: product.priceListItem ??
+                PriceListItem(
+                  appliedOn: "1_product",
+                  productTmplId: product.productId,
+                  minQuantity: 1,
+                ),
+          );
+          packagings.insert(0, productPackaging);
+        } else {
+          productPackaging.priceListItem ??= product.priceListItem ??
+              PriceListItem(
+                appliedOn: "1_product",
+                productTmplId: product.productId,
+                minQuantity: 1,
+              );
+        }
+        ProductPackagingDialog.productPackagingDialogWidget(
+          context,
+          product: product,
+          productPackagings: packagings,
+        );
+      } else {
+        context.read<CurrentOrderController>().addItemToList(product);
+      }
+    });
   }
 
   Widget _paginationWidget() {
