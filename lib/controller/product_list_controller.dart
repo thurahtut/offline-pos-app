@@ -77,10 +77,33 @@ class ProductListController with ChangeNotifier {
       limit: limit,
       offset: offset,
       sessionId: sessionId,
-    ).then((list) {
-      productList.addAll(list);
-      notifyListeners();
-      callback?.call();
+    ).then((list) async {
+      if (filterValue?.isNotEmpty ?? false) {
+        await ProductTable.getProductByFilteringPackageWithPrice(
+          filter: filterValue,
+          limit: limit,
+          offset: offset,
+          sessionId: sessionId,
+        ).then((packageList) {
+          bool isExist = false;
+          if (list.isNotEmpty && packageList.isNotEmpty) {
+            isExist = true;
+            CommonUtils.showItemExistInPackageDialog();
+            return;
+          }
+          productList.addAll(isExist
+              ? list
+              : list.isNotEmpty
+                  ? list
+                  : packageList);
+          notifyListeners();
+          callback?.call();
+        });
+      } else {
+        productList.addAll(list);
+        notifyListeners();
+        callback?.call();
+      }
     });
   }
 

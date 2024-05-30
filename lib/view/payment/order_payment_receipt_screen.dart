@@ -280,7 +280,7 @@ class _OrderPaymentReceiptScreenState extends State<OrderPaymentReceiptScreen> {
             pw.Expanded(
               // width: (maxPageWidth / 8) * 3,
               child: pw.RichText(
-                maxLines: 2,
+                maxLines: 3,
                 // overflow: pw.TextOverflow.ellipsis,
                 text: pw.TextSpan(text: "", children: [
                   pw.TextSpan(

@@ -183,6 +183,7 @@ class CurrentOrderController with ChangeNotifier {
   Future<void> addItemToList(
     Product product, {
     ProductPackaging? productPackaging,
+    int? qty,
   }) async {
     if (product.productType == "product" &&
         (product.onhandQuantity ?? 0) <= 0) {
@@ -207,7 +208,10 @@ class CurrentOrderController with ChangeNotifier {
             NavigationService.navigatorKey.currentContext!);
       }
     }
-    Product orderProduct = Product.fromJson(jsonDecode(jsonEncode(product)));
+    Product orderProduct = Product.fromJson(
+      product.toJson(removed: false),
+      includedOtherField: true,
+    );
     PriceListItem? priceListItem = product.priceListItem != null
         ? PriceListItem.fromJson(jsonDecode(jsonEncode(product.priceListItem)))
         : null;
@@ -216,11 +220,12 @@ class CurrentOrderController with ChangeNotifier {
         ? AmountTax.fromJson(jsonDecode(jsonEncode(product.amountTax)))
         : null;
     orderProduct.amountTax = amountTax;
-    int index = currentOrderList
-        .indexWhere((e) => e.productId == orderProduct.productId);
+    int index = currentOrderList.indexWhere((e) =>
+        e.productId == orderProduct.productId &&
+        e.packageId == orderProduct.packageId);
     if (index >= 0) {
       currentOrderList[index].onhandQuantity =
-          (currentOrderList[index].onhandQuantity ?? 0) + 1;
+          (currentOrderList[index].onhandQuantity ?? 0) + (qty ?? 1);
       orderProduct = currentOrderList[index];
       if (product.productType == "product") {
         Product? orignalProduct =
@@ -237,7 +242,7 @@ class CurrentOrderController with ChangeNotifier {
       }
     } else {
       orderProduct.firstTime = true;
-      orderProduct.onhandQuantity = 1;
+      orderProduct.onhandQuantity = (qty ?? 1);
 
       // to check promotion
       List<Promotion> promotionList =

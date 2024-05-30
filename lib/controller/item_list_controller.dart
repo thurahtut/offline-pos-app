@@ -63,6 +63,7 @@ class ItemListController with ChangeNotifier {
   Future<void> getAllProduct(
     BuildContext context, {
     int? sessionId,
+    bool? getPackage = true,
   }) async {
     getTotalProductCount(context);
     await ProductTable.getProductByFilteringWithPrice(
@@ -71,10 +72,31 @@ class ItemListController with ChangeNotifier {
       limit: limit,
       offset: offset,
       sessionId: sessionId,
-    ).then((list) {
-      productList = [];
-      productList.addAll(list);
-      notifyListeners();
+    ).then((list) async {
+      if ((filterValue?.isNotEmpty ?? false) && getPackage == true) {
+        await ProductTable.getProductByFilteringPackageWithPrice(
+          filter: filterValue,
+          limit: limit,
+          offset: offset,
+          sessionId: sessionId,
+        ).then((packageList) {
+          bool isExist = false;
+          if (list.isNotEmpty && packageList.isNotEmpty) {
+            isExist = true;
+            CommonUtils.showItemExistInPackageDialog();
+
+            return;
+          }
+          productList = [];
+          productList
+              .addAll(isExist ? list : (list.isNotEmpty ? list : packageList));
+          notifyListeners();
+        });
+      } else {
+        productList = [];
+        productList.addAll(list);
+        notifyListeners();
+      }
     });
   }
 
@@ -97,9 +119,34 @@ class ItemListController with ChangeNotifier {
       offset: 0,
       barcodeOnly: true,
       sessionId: sessionId,
-    ).then((list) {
-      Product? product = list.isNotEmpty ? list.first : null;
-      callback?.call(product);
+    ).then((list) async {
+      if (filterValue?.isNotEmpty ?? false) {
+        await ProductTable.getProductByFilteringPackageWithPrice(
+          filter: filterValue,
+          limit: limit,
+          offset: offset,
+          sessionId: sessionId,
+        ).then((packageList) {
+          bool isExist = false;
+          if (list.isNotEmpty && packageList.isNotEmpty) {
+            isExist = true;
+            CommonUtils.showItemExistInPackageDialog();
+            return;
+          }
+
+          Product? product = isExist
+              ? (list.isNotEmpty ? list.first : null)
+              : (list.isNotEmpty
+                  ? list.first
+                  : packageList.isNotEmpty
+                      ? packageList.first
+                      : null);
+          callback?.call(product);
+        });
+      } else {
+        Product? product = list.isNotEmpty ? list.first : null;
+        callback?.call(product);
+      }
     });
   }
 

@@ -34,6 +34,63 @@ class CommonUtils {
     }
   }
 
+  static showItemExistInPackageDialog() {
+    if (NavigationService.navigatorKey.currentContext != null) {
+      ItemListController itemListController = NavigationService
+          .navigatorKey.currentContext!
+          .read<ItemListController>();
+      ViewController viewController =
+          NavigationService.navigatorKey.currentContext!.read<ViewController>();
+      if (viewController.barcodePackageConflict) {
+        return;
+      }
+      if (viewController.searchProductTextController == null) {
+        viewController.barcodePackageConflict = true;
+        viewController.searchProductTextController = TextEditingController();
+      }
+      viewController.searchProductTextController?.text =
+          itemListController.filterValue ?? '';
+      // itemListController.filterValue = value;
+      itemListController.offset = 0;
+      itemListController.currentIndex = 1;
+      itemListController.getAllProduct(
+        NavigationService.navigatorKey.currentContext!,
+        sessionId: NavigationService.navigatorKey.currentContext!
+                .read<LoginUserController>()
+                .posSession
+                ?.id ??
+            0,
+        getPackage: false,
+      );
+
+      CommonUtils.showGeneralDialogWidget(
+          NavigationService.navigatorKey.currentContext!,
+          (context, animation, secondaryAnimation) => AlertDialog(
+                backgroundColor: Colors.white,
+                content: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Your search item is also existing in product packages',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text("Ok"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ));
+    }
+  }
+
   static final NumberFormat priceFormat = NumberFormat("#,##0.##", "en_US");
 
   static Widget svgIconActionButton(
@@ -1072,6 +1129,7 @@ class CommonUtils {
               : null,
           packaging: data.packaging,
           packageId: data.packageId,
+          packageQty: data.packageQty,
         );
         // todo: check and set refund_orderLineId
         orderLineIdList.add(orderLineID);

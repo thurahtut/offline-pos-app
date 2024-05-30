@@ -35,6 +35,7 @@ class Product {
   int? odooOrderLineId;
   String? packaging;
   int? packageId;
+  String? packageQty;
 
   Product({
     this.productId,
@@ -69,6 +70,7 @@ class Product {
     this.odooOrderLineId,
     this.packaging,
     this.packageId,
+    this.packageQty,
   });
 
   Product.fromJson(Map<String, dynamic> json,
@@ -143,6 +145,7 @@ class Product {
       odooOrderLineId = json['odooOrderLineId'];
       packaging = json["packaging"];
       packageId = json["packageId"];
+      packageQty = json['packageQty'];
     }
   }
 
@@ -181,6 +184,7 @@ class Product {
       data['odooOrderLineId'] = odooOrderLineId;
       data['packaging'] = packaging;
       data['packageId'] = packageId;
+      data['packageQty'] = packageQty;
     }
     return data;
   }

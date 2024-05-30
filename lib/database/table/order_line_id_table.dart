@@ -55,7 +55,7 @@ class OrderLineIdTable {
         "$ODOO_ORDER_LINE_ID INTEGER,"
         "$PACKAGING TEXT,"
         "$PACKAGE_ID_IN_LINE INTEGER,"
-        "$PACKAGE_QTY INTEGER"
+        "$PACKAGE_QTY TEXT"
         ")");
   }
 

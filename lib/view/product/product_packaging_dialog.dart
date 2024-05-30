@@ -79,26 +79,30 @@ class ProductPackagingDialog {
                       Product pro = Product.fromJson(
                         product.toJson(removed: false),
                       );
-                      if (qtyEditingController.text.isNotEmpty) {
-                        pro.onhandQuantity =
-                            int.tryParse(qtyEditingController.text) ?? 0;
-                        pro.priceListItem = context
-                            .read<OrderProductPackagingController>()
-                            .selectedProductPackaging
-                            ?.priceListItem;
-                      }
-                      pro.packaging = context
-                          .read<OrderProductPackagingController>()
-                          .selectedProductPackaging
-                          ?.name;
+                      // if (qtyEditingController.text.isNotEmpty) {
+                      //   pro.onhandQuantity =
+                      //       int.tryParse(qtyEditingController.text) ?? 0;
+                      //   pro.priceListItem = context
+                      //       .read<OrderProductPackagingController>()
+                      //       .selectedProductPackaging
+                      //       ?.priceListItem;
+                      // }
+                      OrderProductPackagingController packagingController =
+                          context.read<OrderProductPackagingController>();
+                      pro.priceListItem = packagingController
+                          .selectedProductPackaging?.priceListItem;
+                      pro.packaging =
+                          packagingController.selectedProductPackaging?.name;
 
-                      pro.packageId = context
-                          .read<OrderProductPackagingController>()
-                          .selectedProductPackaging
-                          ?.id;
-                      context
-                          .read<CurrentOrderController>()
-                          .addItemToList(product);
+                      pro.packageId =
+                          packagingController.selectedProductPackaging?.id;
+
+                      pro.packageQty =
+                          packagingController.selectedProductPackaging?.qty;
+                      context.read<CurrentOrderController>().addItemToList(
+                            pro,
+                            qty: int.tryParse(qtyEditingController.text),
+                          );
                       Navigator.pop(context);
                     },
                     cancelCallback: () {
@@ -157,10 +161,6 @@ class ProductPackagingDialog {
         context
             .read<OrderProductPackagingController>()
             .selectedProductPackaging = productPackaging;
-        context
-            .read<OrderProductPackagingController>()
-            .selectedProductPackaging
-            ?.qty = "1";
         qtyEditingController.text = "1";
         context.read<OrderProductPackagingController>().notify();
       },
@@ -169,10 +169,11 @@ class ProductPackagingDialog {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: MediaQuery.of(context).size.width / 12,
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.width / 10,
               minHeight: MediaQuery.of(context).size.width / 10,
+              minWidth: MediaQuery.of(context).size.width / 12,
+              maxWidth: MediaQuery.of(context).size.width / 11,
             ),
             padding: EdgeInsets.all(18),
             margin: EdgeInsets.all(4),
@@ -183,37 +184,39 @@ class ProductPackagingDialog {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 28.0),
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Constants.accentColor,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Constants.greyColor2.withOpacity(0.3),
-                          blurRadius: 4,
-                          offset: Offset(0, 3),
+                Expanded(
+                  child: FittedBox(
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 28.0),
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Constants.accentColor,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Constants.greyColor2.withOpacity(0.3),
+                            blurRadius: 4,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        '${productPackaging.priceListItem?.fixedPrice ?? 0} Ks${productPackaging.name?.toLowerCase() == 'unit' ? '/ Unit' : ''}', //product.price
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
-                    child: Text(
-                      '${productPackaging.priceListItem?.fixedPrice ?? 0} Ks${productPackaging.name?.toLowerCase() == 'unit' ? '/ Unit' : ''}', //product.price
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-                Padding(
+                Container(
                   padding: const EdgeInsets.only(left: 28.0),
                   child: CommonUtils.svgIconActionButton(
                     "assets/svg/inventory_2.svg",
-                    width: 50,
-                    height: 50,
+                    width: 40,
+                    height: 40,
                   ),
                 ),
                 SizedBox(height: 8),

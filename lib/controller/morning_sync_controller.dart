@@ -259,10 +259,14 @@ class MorningsyncController with ChangeNotifier {
                       callback?.call();
                     });
                   }
+                } else {
+                  callback?.call();
                 }
               },
             );
           });
+        } else {
+          callback?.call();
         }
       }
     });

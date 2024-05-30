@@ -292,7 +292,8 @@ class OrderHistoryTable {
         "${isCloseSession != true ? ", '$IS_PROMO_ITEM' , olt.$IS_PROMO_ITEM, '$PARENT_PROMOTION_ID', olt.$PARENT_PROMOTION_ID, '$ON_ORDER_ITEM', olt.$ON_ORDER_ITEM" : ""}"
         ",'$SH_DISCOUNT_CODE' , olt.$SH_DISCOUNT_CODE,'$SH_DISCOUNT_REASON' , olt.$SH_DISCOUNT_REASON"
         "${isCloseSession != true ? ", '$REFERENCE_ORDER_LINE_ID', olt.$REFERENCE_ORDER_LINE_ID, '$REFUNDED_ORDER_LINE_ID', olt.$REFUNDED_ORDER_LINE_ID, '$ODOO_ORDER_LINE_ID', olt.$ODOO_ORDER_LINE_ID" : (isReturnOrder == true ? ", '$REFUNDED_ORDER_LINE_ID', olt.$REFUNDED_ORDER_LINE_ID" : "")}"
-        ",'$PACKAGING' , olt.$PACKAGING, '$PACKAGE_ID_IN_LINE', olt.$PACKAGE_ID_IN_LINE"
+        ",'$PACKAGING', CASE WHEN olt.package_id != 0 THEN olt.packaging ELSE NULL END,"
+        "'$PACKAGE_ID_IN_LINE', CASE WHEN olt.package_id != 0 THEN olt.package_id ELSE NULL END"
         "), '\$' )) as line_ids, " //'$BARCODE_IN_PT', olt.$BARCODE_IN_PT ,
         "${isCloseSession == true ? "case when ptt.$PAYMENT_TRANSACTION_ID is not null then " : ""}"
         "json_group_array("

@@ -174,7 +174,11 @@ class ProductTable {
         "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
         "left JOIN "
         "( "
-        "select sum(qty) as totalQty, $PRODUCT_ID_IN_LINE "
+        "select "
+        "sum((case when $QTY_IN_LINE is null then 0 else $QTY_IN_LINE end)"
+        "* (case when $PACKAGE_QTY is null then 1 when $PACKAGE_QTY is ''"
+        " then 1 else CAST($PACKAGE_QTY as decimal) end)) as totalQty,"
+        " $PRODUCT_ID_IN_LINE "
         "from $ORDER_HISTORY_TABLE_NAME ot "
         " left join $ORDER_LINE_ID_TABLE_NAME olt "
         " on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
@@ -205,28 +209,76 @@ class ProductTable {
     }
     final List<Map<String, dynamic>> maps = await db.rawQuery(query, objects);
 
-    // String query2 = "SELECT pt.id productId, * from $PRODUCT_TABLE_NAME pt "
-    //     "where 1=1 "
-    //     "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
-    //     "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
-    //     "ORDER by pt.$PRODUCT_ID DESC "
-    //     "${limit != null ? "limit $limit " : " "}"
-    //     "${offset != null ? "offset $offset " : " "}";
-    // List<Object?>? objects2;
-    // if ((filter != null && filter.isNotEmpty) ||
-    //     (categoryId != null && categoryId != -1)) {
-    //   objects2 = [];
-    //   if (filter != null && filter.isNotEmpty) {
-    //     objects = ['%$filter%', '%${filter.toLowerCase()}%', '%$filter%'];
-    //   }
-    //   if (categoryId != null && categoryId != -1) {
-    //     objects2.add(categoryId);
-    //   }
-    // }
-    // final List<Map<String, dynamic>> maps2 =
-    //     await db.rawQuery(query2, objects2);
+    return List.generate(maps.length, (i) {
+      Product product = Product.fromJson(maps[i],
+          pId: maps[i]["productId"], pName: maps[i]["productName"]);
+      product.onhandQuantity =
+          double.tryParse(maps[i]['remainingQty'].toString())?.toInt() ?? 0;
+      PriceListItem priceListItem = PriceListItem.fromJson(maps[i],
+          priceListItemId: maps[i]["priceListItemId"]);
+      product.priceListItem = priceListItem;
+      AmountTax amountTax = AmountTax.fromJson(maps[i],
+          amId: maps[i]["amountTaxId"], amName: maps[i]["amountTaxName"]);
+      product.amountTax = amountTax;
+      return product;
+    });
+  }
 
-    // Convert the List<Map<String, dynamic> into a List<Category>.
+  static Future<List<Product>> getProductByFilteringPackageWithPrice({
+    String? filter,
+    int? categoryId,
+    int? limit,
+    int? offset,
+    int? sessionId,
+  }) async {
+    // Get a reference to the database.
+    final Database db = await DatabaseHelper().db;
+
+    String query =
+        "SELECT pt.id productId, pt.$PRODUCT_NAME productName, pli.id priceListItemId, amt.id amountTaxId, amt.$AMOUNT_TAX_NAME amountTaxName, * ,"
+        "pt.$ON_HAND_QUANTITY - (case when line.totalQty is not null then line.totalQty else 0 end) as remainingQty "
+        "from $PRODUCT_TABLE_NAME pt "
+        "left join $PRICE_LIST_ITEM_TABLE_NAME pli "
+        "on pt.$PRODUCT_ID=pli.$PRODUCT_TMPL_ID "
+        "left join $PRODUCT_PACKAGING_TABLE_NAME pack on pack.$PRODUCT_PACKAGING_ID = pli.$PACKAGE_ID_IN_LINE "
+        // "and pli.$APPLIED_ON='1_product' "
+        "and (datetime($DATE_START) < datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_START=null or lower($DATE_START) is null or $DATE_START='') "
+        "and (datetime($DATE_END)>=  datetime('${CommonUtils.getDateTimeNow().toString()}') or $DATE_END=null or lower($DATE_END) is null or $DATE_END='') "
+        "left join $AMOUNT_TAX_TABLE_NAME amt "
+        "on '[' || amt.$AMOUNT_TAX_ID || ']'= pt.$TAXES_ID "
+        "left JOIN "
+        "( "
+        "select "
+        "sum((case when $QTY_IN_LINE is null then 0 else $QTY_IN_LINE end)"
+        "* (case when $PACKAGE_QTY is null then 1 when $PACKAGE_QTY is ''"
+        " then 1 else CAST($PACKAGE_QTY as decimal) end)) as totalQty,"
+        " $PRODUCT_ID_IN_LINE "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        " left join $ORDER_LINE_ID_TABLE_NAME olt "
+        " on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
+        " and $SESSION_ID =$sessionId "
+        ") line "
+        "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS "
+        "where 1=1 "
+        "and pack.$PACKAGING_BARCODE=?"
+        "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
+        "Group by pt.id "
+        "ORDER by pt.$PRODUCT_ID DESC "
+        "${limit != null ? "limit $limit " : " "}"
+        "${offset != null ? "offset $offset " : " "}";
+    List<Object?>? objects;
+    if ((filter != null && filter.isNotEmpty) ||
+        (categoryId != null && categoryId != -1)) {
+      objects = [];
+      if (filter != null && filter.isNotEmpty) {
+        objects = [filter];
+      }
+      if (categoryId != null && categoryId != -1) {
+        objects.add(categoryId);
+      }
+    }
+    final List<Map<String, dynamic>> maps = await db.rawQuery(query, objects);
+
     return List.generate(maps.length, (i) {
       Product product = Product.fromJson(maps[i],
           pId: maps[i]["productId"], pName: maps[i]["productName"]);

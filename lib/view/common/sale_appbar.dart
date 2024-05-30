@@ -17,8 +17,6 @@ class SaleAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
-  final TextEditingController _searchProductTextController =
-      TextEditingController();
   final spacer = Expanded(flex: 1, child: SizedBox());
   final ValueNotifier<bool> _showSearchBox = ValueNotifier(false);
   final ValueNotifier<bool> _isSyncOH = ValueNotifier(false);
@@ -44,7 +42,6 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _searchProductTextController.dispose();
     _showSearchBox.dispose();
     _controller?.dispose();
     super.dispose();
@@ -492,7 +489,8 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
         child: TextField(
           // autofocus: true,
           focusNode: context.read<ViewController>().searchProductFocusNode,
-          controller: _searchProductTextController,
+          controller:
+              context.read<ViewController>().searchProductTextController,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
@@ -535,6 +533,7 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
             ),
           ),
           onChanged: (value) {
+            context.read<ViewController>().barcodePackageConflict = false;
             ItemListController itemListController =
                 context.read<ItemListController>();
             itemListController.filterValue = value;
@@ -552,7 +551,7 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
   }
 
   void _clearSearch() {
-    _searchProductTextController.clear();
+    context.read<ViewController>().searchProductTextController?.clear();
     ItemListController itemListController = context.read<ItemListController>();
     _showSearchBox.value = false;
     itemListController.filterValue = null;

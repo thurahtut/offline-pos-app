@@ -23,7 +23,7 @@ class OrderLineID {
   int? odooOrderLineId;
   String? packaging;
   int? packageId;
-  double? packageQty;
+  String? packageQty;
 
   OrderLineID({
     this.id,

@@ -84,6 +84,23 @@ class ViewController with ChangeNotifier {
   // final FocusNode productFocusNode = FocusNode();
   final FocusNode searchProductFocusNode = FocusNode();
 
+  TextEditingController? _searchProductTextController = TextEditingController();
+  TextEditingController? get searchProductTextController =>
+      _searchProductTextController;
+  set searchProductTextController(
+      TextEditingController? searchProductTextController) {
+    _searchProductTextController = searchProductTextController;
+    notifyListeners();
+  }
+
+  bool _barcodePackageConflict = false;
+  bool get barcodePackageConflict => _barcodePackageConflict;
+  set barcodePackageConflict(bool barcodePackageConflict) {
+    if (_barcodePackageConflict == barcodePackageConflict) return;
+    _barcodePackageConflict = barcodePackageConflict;
+    notifyListeners();
+  }
+
   notify() {
     notifyListeners();
   }
