@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:offline_pos/components/export_files.dart';
-import 'package:offline_pos/controller/close_session_controller.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CloseSessionScreen extends StatefulWidget {
@@ -598,8 +597,9 @@ class _CloseSessionScreenState extends State<CloseSessionScreen> {
                                   (double.tryParse(
                                           paymentTransaction.amount ?? '') ??
                                       0)) !=
-                              double.tryParse(
-                                  paymentTransaction.payingAmount ?? '')) {
+                              (double.tryParse(
+                                      paymentTransaction.payingAmount ?? '') ??
+                                  0)) {
                         allowCloseSession = false;
                         break;
                       }

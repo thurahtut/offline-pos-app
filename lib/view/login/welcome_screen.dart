@@ -11,10 +11,124 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ThemeSettingController>().getThemeConfig();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      ThemeSettingController themeSettingController =
+          context.read<ThemeSettingController>();
+      MorningsyncController morningsyncController =
+          context.read<MorningsyncController>();
+      await themeSettingController.getThemeConfig();
+      if (themeSettingController.appConfig?.storageStartDate == null) {
+        int dateArg = CommonUtils.getDateTimeNow().millisecondsSinceEpoch;
+        themeSettingController.appConfig?.storageStartDate = dateArg;
+        AppConfigTable.insertOrUpdate(STORAGE_START_DATE, dateArg.toString());
+      } else {
+        int storageStartDate =
+            themeSettingController.appConfig?.storageStartDate ?? 0;
+        Duration diff = CommonUtils.getDateTimeNow()
+            .difference(DateTime.fromMillisecondsSinceEpoch(storageStartDate));
+        int daysDifference = diff.inSeconds; //diff.inDays;
+        if (daysDifference > 31) {
+          bool isExistUnSyncedOrders =
+              await OrderHistoryTable.isExistUnSyncedOrders();
+          if (isExistUnSyncedOrders) {
+            _dialogForDatabaseRemove(
+              text:
+                  'Your data is saved for one month. To delete these, sync the entire order and close session.',
+            );
+          } else if (mounted) {
+            int? configId = context.read<LoginUserController>().posConfig?.id;
+            Api.getPosSessionByID(configId: configId).then((sessionResponse) {
+              if (sessionResponse != null &&
+                  sessionResponse.statusCode != 200 &&
+                  sessionResponse.data['error']?.contain("no opened session")) {
+                _dialogForDatabaseRemove(
+                  text: 'Your database will now be reset.',
+                  callback: () {
+                    DatabaseHelper()
+                        .backupDatabase(context, toDelete: true)
+                        .then((value) {
+                      if (value == 1) {
+                        _dialogForDatabaseRemove(
+                            text: 'Reset database is successful!');
+                        AppConfigTable.insertOrUpdate(
+                            STORAGE_START_DATE,
+                            CommonUtils.getDateTimeNow()
+                                .millisecondsSinceEpoch
+                                .toString());
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserLoginScreen()),
+                          ModalRoute.withName("/Home"),
+                        );
+                      } else {
+                        _dialogForDatabaseRemove(
+                            text: 'Reset database is not successful!');
+                        morningsyncController.doneActionList
+                            .remove(DataSync.reset.name);
+                        morningsyncController.notify();
+                      }
+                    });
+                  },
+                );
+              } else {
+                _dialogForDatabaseRemove(
+                  text:
+                      'Your data is saved for one month. To delete these, sync the entire order and close session.',
+                );
+              }
+            });
+          }
+        }
+      }
     });
     super.initState();
+  }
+
+  Future<Object?> _dialogForDatabaseRemove(
+      {required String text, Function()? callback}) {
+    return CommonUtils.showGeneralDialogWidget(
+        NavigationService.navigatorKey.currentContext!,
+        (context, animation, secondaryAnimation) => AlertDialog(
+              backgroundColor: Colors.white,
+              content: Container(
+                padding: EdgeInsets.all(16),
+                width: MediaQuery.of(context).size.width > 300
+                    ? 300
+                    : MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 50,
+                      color: Colors.amber,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                BorderContainer(
+                  text: 'Ok',
+                  containerColor: primaryColor,
+                  textColor: Colors.white,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    callback?.call();
+                  },
+                )
+              ],
+            ));
   }
 
   @override

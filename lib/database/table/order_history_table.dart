@@ -519,6 +519,21 @@ class OrderHistoryTable {
     return (count ?? 0) > 0;
   }
 
+  static Future<bool> isExistUnSyncedOrders(
+      {Database? db, int? sessionId}) async {
+    db ??= await DatabaseHelper().db;
+    String query = "select count() "
+        "from $ORDER_HISTORY_TABLE_NAME ot "
+        "left join $ORDER_LINE_ID_TABLE_NAME olt "
+        "on ot.$ORDER_HISTORY_ID = olt.$ORDER_ID_IN_LINE "
+        "where ot.$ORDER_CONDITION<>'${OrderCondition.sync.text}' "
+        "and olt.$ORDER_LINE_ID is not null";
+    final result = await db.rawQuery(query);
+
+    int? count = Sqflite.firstIntValue(result);
+    return (count ?? 0) > 0;
+  }
+
   static Future<int> refundCount({Database? db, int? orderId}) async {
     db ??= await DatabaseHelper().db;
     String query = "select count() as count "

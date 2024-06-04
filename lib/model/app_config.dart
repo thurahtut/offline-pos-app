@@ -11,7 +11,7 @@ class AppConfig {
   String? customerLastSyncDate;
   String? packagingLastSyncDate;
   bool? rememberPassword;
-  String? storageStartDate;
+  int? storageStartDate;
 
   AppConfig({
     this.themeBodyColor,
@@ -38,8 +38,10 @@ class AppConfig {
     priceLastSyncDate = json['price_last_sync_date'];
     customerLastSyncDate = json['customer_last_sync_date'];
     packagingLastSyncDate = json['packaging_last_sync_date'];
-    rememberPassword = bool.tryParse(json['remember_password']);
-    storageStartDate = json['storage_start_date'];
+    rememberPassword =
+        bool.tryParse(json['remember_password']?.toString() ?? '');
+    storageStartDate =
+        int.tryParse(json['storage_start_date']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {

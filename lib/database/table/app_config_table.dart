@@ -96,7 +96,8 @@ class AppConfigTable {
       } else if (data[APP_CONFIG_NAME] == DB_VERSION) {
         appConfig.dbVersion = data[APP_CONFIG_VALUE];
       } else if (data[APP_CONFIG_NAME] == STORAGE_START_DATE) {
-        appConfig.storageStartDate = data[APP_CONFIG_VALUE];
+        appConfig.storageStartDate =
+            int.tryParse(data[APP_CONFIG_VALUE]?.toString() ?? '');
       }
     }
     return appConfig;
