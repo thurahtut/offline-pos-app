@@ -40,9 +40,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Api.getPosSessionByID(configId: configId).then((sessionResponse) {
               if (sessionResponse != null &&
                   sessionResponse.statusCode != 200 &&
-                  sessionResponse.data['error']?.contain("no opened session")) {
+                  sessionResponse.data['error']
+                      ?.contains("no opened session")) {
                 _dialogForDatabaseRemove(
-                  text: 'Your database will now be reset.',
+                  text:
+                      'Your data is saved for one month. Your database will now be reset.',
                   callback: () {
                     DatabaseHelper()
                         .backupDatabase(context, toDelete: true)
