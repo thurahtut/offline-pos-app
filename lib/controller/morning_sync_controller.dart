@@ -277,7 +277,7 @@ class MorningsyncController with ChangeNotifier {
       PromotionRule promotionRule = PromotionRule.fromJson(element);
       for (IdAndName variant in promotionRule.validProductIds ?? []) {
         await PromotionRuleMappingTable.insert(
-            promotionRule.id ?? 0, variant.id ?? 0, variant.name ?? '');
+            promotionRule.id ?? 0, variant.id ?? 0);
       }
     }
   }

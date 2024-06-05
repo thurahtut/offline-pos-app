@@ -26,7 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             themeSettingController.appConfig?.storageStartDate ?? 0;
         Duration diff = CommonUtils.getDateTimeNow()
             .difference(DateTime.fromMillisecondsSinceEpoch(storageStartDate));
-        int daysDifference = diff.inSeconds; //diff.inDays;
+        int daysDifference = diff.inDays;
         if (daysDifference > 31) {
           bool isExistUnSyncedOrders =
               await OrderHistoryTable.isExistUnSyncedOrders();
