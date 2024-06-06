@@ -543,7 +543,7 @@ class CurrentOrderController with ChangeNotifier {
             sessionId: sessionId,
             date: CommonUtils.getDateTimeNow().toString(),
           );
-          if (product.onhandQuantity == 1) {
+          if ((product.onhandQuantity ?? 0) <= 1) {
             isDelete = true;
             deletedProductLog.updatedQty = "0";
           } else {

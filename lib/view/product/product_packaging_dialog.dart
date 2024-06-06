@@ -292,12 +292,6 @@ class ProductPackagingDialog {
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(),
                     ),
-                    onChanged: (value) {
-                      controller.selectedProductPackaging?.qty =
-                          value.toString();
-                      // e.payingAmount = value;
-                      controller.notify();
-                    },
                   ),
                 )
               ],

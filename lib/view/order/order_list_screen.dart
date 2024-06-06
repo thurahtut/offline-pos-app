@@ -206,7 +206,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
             for (OrderLineID data in value.lineIds ?? []) {
               for (Product product in products) {
                 Product prod = Product.fromJson(
-                  jsonDecode(jsonEncode(product)),
+                  product.toJson(removed: false),
                   includedOtherField: true,
                 );
                 if (prod.productVariantIds == data.productId) {
@@ -227,6 +227,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   prod.lineId = data.id;
                   prod.refundedOrderLineId = data.refundedOrderLineId;
                   prod.odooOrderLineId = data.odooOrderLineId;
+                  prod.packageId = data.packageId;
+                  prod.packageQty = data.packageQty;
+                  prod.packaging = data.packaging;
                   refundOrderController.currentOrderList.add(prod);
                   break;
                 }
