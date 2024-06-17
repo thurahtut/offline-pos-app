@@ -89,6 +89,13 @@ class ProductPackagingDialog {
                       // }
                       OrderProductPackagingController packagingController =
                           context.read<OrderProductPackagingController>();
+                      if (packagingController.selectedProductPackaging ==
+                          null) {
+                        CommonUtils.showAlertDialogWithOkButton(context,
+                            title: "Package",
+                            content: "Please choose a package!");
+                        return;
+                      }
                       pro.priceListItem = packagingController
                           .selectedProductPackaging?.priceListItem;
                       pro.packaging =
