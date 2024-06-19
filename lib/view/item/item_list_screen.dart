@@ -27,6 +27,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
       context.read<ItemListController>().getAllProduct(
             context,
             sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
+            productLastSyncDate: context
+                .read<ThemeSettingController>()
+                .appConfig
+                ?.productLastSyncDate,
           );
     });
     super.initState();
@@ -110,6 +114,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   .posSession
                                   ?.id ??
                               0,
+                          productLastSyncDate: context
+                              .read<ThemeSettingController>()
+                              .appConfig
+                              ?.productLastSyncDate,
                           callback: (product) {
                             if (product != null) {
                               context
@@ -446,6 +454,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 context,
                 sessionId:
                     context.read<LoginUserController>().posSession?.id ?? 0,
+                productLastSyncDate: context
+                    .read<ThemeSettingController>()
+                    .appConfig
+                    ?.productLastSyncDate,
               );
             },
             onBackToFirstPage: (pageNo) {
@@ -456,6 +468,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 context,
                 sessionId:
                     context.read<LoginUserController>().posSession?.id ?? 0,
+                productLastSyncDate: context
+                    .read<ThemeSettingController>()
+                    .appConfig
+                    ?.productLastSyncDate,
               );
             },
             onNextPage: (pageNo) {
@@ -466,6 +482,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 context,
                 sessionId:
                     context.read<LoginUserController>().posSession?.id ?? 0,
+                productLastSyncDate: context
+                    .read<ThemeSettingController>()
+                    .appConfig
+                    ?.productLastSyncDate,
               );
             },
             onGoToLastPage: (pageNo) {
@@ -476,6 +496,10 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 context,
                 sessionId:
                     context.read<LoginUserController>().posSession?.id ?? 0,
+                productLastSyncDate: context
+                    .read<ThemeSettingController>()
+                    .appConfig
+                    ?.productLastSyncDate,
               );
             },
             backgroundColor: Theme.of(context).colorScheme.background,

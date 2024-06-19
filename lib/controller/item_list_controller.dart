@@ -64,6 +64,7 @@ class ItemListController with ChangeNotifier {
     BuildContext context, {
     int? sessionId,
     bool? getPackage = true,
+    required String? productLastSyncDate,
   }) async {
     getTotalProductCount(context);
     await ProductTable.getProductByFilteringWithPrice(
@@ -72,6 +73,7 @@ class ItemListController with ChangeNotifier {
       limit: limit,
       offset: offset,
       sessionId: sessionId,
+      productLastSyncDate: productLastSyncDate,
     ).then((list) async {
       if ((filterValue?.isNotEmpty ?? false) && getPackage == true) {
         await ProductTable.getProductByFilteringPackageWithPrice(
@@ -112,6 +114,7 @@ class ItemListController with ChangeNotifier {
   Future<void> searchProduct({
     Function(Product?)? callback,
     int? sessionId,
+    required String? productLastSyncDate,
   }) async {
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
@@ -119,6 +122,7 @@ class ItemListController with ChangeNotifier {
       offset: 0,
       barcodeOnly: true,
       sessionId: sessionId,
+      productLastSyncDate: productLastSyncDate,
     ).then((list) async {
       if (filterValue?.isNotEmpty ?? false) {
         await ProductTable.getProductByFilteringPackageWithPrice(

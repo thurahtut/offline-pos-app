@@ -98,6 +98,14 @@ class AppConfigTable {
       } else if (data[APP_CONFIG_NAME] == STORAGE_START_DATE) {
         appConfig.storageStartDate =
             int.tryParse(data[APP_CONFIG_VALUE]?.toString() ?? '');
+      } else if (data[APP_CONFIG_NAME] == PRODUCT_LAST_SYNC_DATE) {
+        appConfig.productLastSyncDate = data[APP_CONFIG_VALUE]?.toString();
+      } else if (data[APP_CONFIG_NAME] == PRICE_LAST_SYNC_DATE) {
+        appConfig.priceLastSyncDate = data[APP_CONFIG_VALUE]?.toString();
+      } else if (data[APP_CONFIG_NAME] == CUSTOMER_LAST_SYNC_DATE) {
+        appConfig.customerLastSyncDate = data[APP_CONFIG_VALUE]?.toString();
+      } else if (data[APP_CONFIG_NAME] == PACKAGING_LAST_SYNC_DATE) {
+        appConfig.packagingLastSyncDate = data[APP_CONFIG_VALUE]?.toString();
       }
     }
     return appConfig;

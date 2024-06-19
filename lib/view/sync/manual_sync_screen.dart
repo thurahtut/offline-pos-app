@@ -158,8 +158,12 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                 .read<ThemeSettingController>()
                 .appConfig
                 ?.productLastSyncDate = CommonUtils.getDateTimeNow().toString();
-            AppConfigTable.insertOrUpdate(PRODUCT_LAST_SYNC_DATE,
-                CommonUtils.getDateTimeNow().toString());
+            AppConfigTable.insertOrUpdate(
+                PRODUCT_LAST_SYNC_DATE,
+                context
+                    .read<ThemeSettingController>()
+                    .appConfig
+                    ?.productLastSyncDate);
           },
         );
       },
@@ -316,7 +320,19 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
           Expanded(child: SizedBox()),
           !isDone && (percentage ?? 0) > 0 && (percentage ?? 0) <= 100
               ? InkWell(
-                  onTap: onSync,
+                  onTap: () {
+                    OrderHistoryTable.isExistUnSyncedOrders().then((value) {
+                      if (value == true) {
+                        CommonUtils.showSnackBar(
+                          context: context,
+                          message:
+                              "You can't sync due to existing unsynced orders.",
+                        );
+                      } else {
+                        onSync?.call();
+                      }
+                    });
+                  },
                   child: Container(
                     constraints: BoxConstraints(
                       maxHeight: 60,
@@ -338,7 +354,22 @@ class _ManualSyncScreenState extends State<ManualSyncScreen> {
                   ),
                 )
               : IconButton(
-                  onPressed: isDone ? null : onSync,
+                  onPressed: isDone
+                      ? null
+                      : () {
+                          OrderHistoryTable.isExistUnSyncedOrders()
+                              .then((value) {
+                            if (value == true) {
+                              CommonUtils.showSnackBar(
+                                context: context,
+                                message:
+                                    "You can't sync due to existing unsynced orders.",
+                              );
+                            } else {
+                              onSync?.call();
+                            }
+                          });
+                        },
                   icon: Icon(
                     isDone ? Icons.check_rounded : Icons.replay_rounded,
                     size: isDone ? 40 : 34,

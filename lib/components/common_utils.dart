@@ -54,14 +54,17 @@ class CommonUtils {
       itemListController.offset = 0;
       itemListController.currentIndex = 1;
       itemListController.getAllProduct(
-        NavigationService.navigatorKey.currentContext!,
-        sessionId: NavigationService.navigatorKey.currentContext!
-                .read<LoginUserController>()
-                .posSession
-                ?.id ??
-            0,
-        getPackage: false,
-      );
+          NavigationService.navigatorKey.currentContext!,
+          sessionId: NavigationService.navigatorKey.currentContext!
+                  .read<LoginUserController>()
+                  .posSession
+                  ?.id ??
+              0,
+          getPackage: false,
+          productLastSyncDate: NavigationService.navigatorKey.currentContext!
+              .read<ThemeSettingController>()
+              .appConfig
+              ?.productLastSyncDate);
 
       CommonUtils.showGeneralDialogWidget(
           NavigationService.navigatorKey.currentContext!,

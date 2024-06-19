@@ -270,6 +270,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                                 .posSession
                                                 ?.id ??
                                             0,
+                                        productLastSyncDate: context
+                                            .read<ThemeSettingController>()
+                                            .appConfig
+                                            ?.productLastSyncDate,
                                       );
                                 },
                                 child: Row(

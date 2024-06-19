@@ -69,7 +69,11 @@ class ProductListController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllProduct({Function()? callback, int? sessionId}) async {
+  Future<void> getAllProduct({
+    Function()? callback,
+    int? sessionId,
+    required String? productLastSyncDate,
+  }) async {
     productList = [];
     getTotalProductCount();
     await ProductTable.getProductByFilteringWithPrice(
@@ -77,6 +81,7 @@ class ProductListController with ChangeNotifier {
       limit: limit,
       offset: offset,
       sessionId: sessionId,
+      productLastSyncDate: productLastSyncDate,
     ).then((list) async {
       if (filterValue?.isNotEmpty ?? false) {
         await ProductTable.getProductByFilteringPackageWithPrice(

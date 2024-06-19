@@ -539,11 +539,15 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
             itemListController.filterValue = value;
             itemListController.offset = 0;
             itemListController.currentIndex = 1;
-            itemListController.getAllProduct(
-              context,
-              sessionId:
-                  context.read<LoginUserController>().posSession?.id ?? 0,
-            );
+            print(
+                'Product Sync Date : ${context.read<ThemeSettingController>().appConfig?.productLastSyncDate}');
+            itemListController.getAllProduct(context,
+                sessionId:
+                    context.read<LoginUserController>().posSession?.id ?? 0,
+                productLastSyncDate: context
+                    .read<ThemeSettingController>()
+                    .appConfig
+                    ?.productLastSyncDate);
           },
         ),
       ),
@@ -560,6 +564,8 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
     itemListController.getAllProduct(
       context,
       sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
+      productLastSyncDate:
+          context.read<ThemeSettingController>().appConfig?.productLastSyncDate,
     );
   }
 }

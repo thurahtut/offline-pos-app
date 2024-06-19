@@ -157,10 +157,10 @@ class ProductTable {
     int? offset,
     bool? barcodeOnly,
     int? sessionId,
+    required String? productLastSyncDate,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
-
     String query =
         "SELECT pt.id productId, pt.$PRODUCT_NAME productName, pli.id priceListItemId, amt.id amountTaxId, amt.$AMOUNT_TAX_NAME amountTaxName, * ,"
         "pt.$ON_HAND_QUANTITY - (case when line.totalQty is not null then line.totalQty else 0 end) as remainingQty "
@@ -182,7 +182,7 @@ class ProductTable {
         "from $ORDER_HISTORY_TABLE_NAME ot "
         " left join $ORDER_LINE_ID_TABLE_NAME olt "
         " on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
-        " and $SESSION_ID =$sessionId "
+        "${productLastSyncDate?.isNotEmpty ?? false ? "and (datetime(olt.$CREATE_DATE_IN_LINE)>=  datetime('$productLastSyncDate') or olt.$CREATE_DATE_IN_LINE=null or lower(olt.$CREATE_DATE_IN_LINE) is null or olt.$CREATE_DATE_IN_LINE='') " : " and $SESSION_ID =$sessionId "} "
         ") line "
         "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS "
         "where 1=1 "
@@ -207,6 +207,7 @@ class ProductTable {
         objects.add(categoryId);
       }
     }
+    print(query);
     final List<Map<String, dynamic>> maps = await db.rawQuery(query, objects);
 
     return List.generate(maps.length, (i) {
