@@ -445,7 +445,7 @@ class CurrentOrderController with ChangeNotifier {
             }
           } else if ((promotion.discountPercentage ?? 0) > 0) {
             product.priceListItem?.fixedPrice =
-                ((promoProduct.priceListItem?.fixedPrice ?? 0) *
+                -((promoProduct.priceListItem?.fixedPrice ?? 0) *
                         (promotion.discountPercentage! / 100))
                     .toInt();
             product.onhandQuantity = 1; //promoProduct.onhandQuantity ?? 1;
