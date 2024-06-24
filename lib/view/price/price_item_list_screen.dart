@@ -41,7 +41,12 @@ class _PriceItemListScreenState extends State<PriceItemListScreen> {
 
   void getAllProduct() {
     context.read<PriceListItemController>().loading = true;
-    context.read<PriceListItemController>().getAllPriceItemList().then((value) {
+    List<int>? ids =
+        context.read<LoginUserController>().posConfig?.posCategoryIds;
+    context
+        .read<PriceListItemController>()
+        .getAllPriceItemList(categoryListFilter: ids?.join(","))
+        .then((value) {
       updatePriceItemListToTable();
       context.read<PriceListItemController>().loading = false;
     });

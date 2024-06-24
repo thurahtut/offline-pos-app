@@ -15,6 +15,7 @@ const SH_DISPLAY_STOCK = "sh_display_stock";
 const SH_SHOW_QTY_LOCATION = "sh_show_qty_location";
 const SH_POS_LOCATION = "sh_pos_location";
 const CONFIG_PAYMENT_METHOD_IDS = "payment_method_ids";
+const CONFIG_CATEGORY_IDS = "pos_category_ids";
 const RECEIPT_HEADER = "receipt_header";
 const RECEIPT_FOOTER = "receipt_footer";
 const SEQUENCE_ID_IN_CONFIG = "sequence_id";
@@ -128,6 +129,9 @@ class POSConfigTable {
           posConfig.sequenceId = int.tryParse(data[POS_CONFIG_VALUE]);
         } else if (data[POS_CONFIG_NAME] == STARTING_AMT) {
           posConfig.startingAmt = double.tryParse(data[POS_CONFIG_VALUE]);
+        } else if (data[POS_CONFIG_NAME] == CONFIG_CATEGORY_IDS) {
+          posConfig.posCategoryIds =
+              jsonDecode(data[POS_CONFIG_VALUE])?.cast<int>();
         }
       }
     }

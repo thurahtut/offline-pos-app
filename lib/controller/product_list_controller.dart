@@ -73,15 +73,17 @@ class ProductListController with ChangeNotifier {
     Function()? callback,
     int? sessionId,
     required String? productLastSyncDate,
+    required String? categoryListFilter,
   }) async {
     productList = [];
-    getTotalProductCount();
+    getTotalProductCount(categoryListFilter: categoryListFilter);
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       limit: limit,
       offset: offset,
       sessionId: sessionId,
       productLastSyncDate: productLastSyncDate,
+      categoryListFilter: categoryListFilter,
     ).then((list) async {
       if (filterValue?.isNotEmpty ?? false) {
         await ProductTable.getProductByFilteringPackageWithPrice(
@@ -89,6 +91,7 @@ class ProductListController with ChangeNotifier {
           limit: limit,
           offset: offset,
           sessionId: sessionId,
+          categoryListFilter: categoryListFilter,
         ).then((packageList) {
           bool isExist = false;
           if (list.isNotEmpty && packageList.isNotEmpty) {
@@ -112,9 +115,11 @@ class ProductListController with ChangeNotifier {
     });
   }
 
-  Future<void> getTotalProductCount() async {
+  Future<void> getTotalProductCount(
+      {required String? categoryListFilter}) async {
     ProductTable.getAllProductCount(
       filter: filterValue,
+      categoryListFilter: categoryListFilter,
     ).then((count) {
       total = count;
     });

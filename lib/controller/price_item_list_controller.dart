@@ -101,9 +101,12 @@ class PriceListItemController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getAllPriceItemList({String? filter}) async {
+  Future<void> getAllPriceItemList({
+    String? filter,
+    required String? categoryListFilter,
+  }) async {
     priceItemList = [];
-    getTotalProductCount();
+    getTotalProductCount(categoryListFilter);
     await PriceListItemTable.getPriceItemByFilteringWithProduct(
       filter: filterValue,
       limit: limit,
@@ -114,9 +117,10 @@ class PriceListItemController with ChangeNotifier {
     });
   }
 
-  Future<void> getTotalProductCount() async {
+  Future<void> getTotalProductCount(String? categoryListFilter) async {
     ProductTable.getAllProductCount(
       filter: filterValue,
+      categoryListFilter: categoryListFilter,
     ).then((count) {
       total = count;
     });

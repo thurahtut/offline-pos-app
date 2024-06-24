@@ -261,6 +261,11 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                   context
                                       .read<ItemListController>()
                                       .currentIndex = 1;
+
+                                  List<int>? ids = context
+                                      .read<LoginUserController>()
+                                      .posConfig
+                                      ?.posCategoryIds;
                                   context
                                       .read<ItemListController>()
                                       .getAllProduct(
@@ -274,6 +279,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                                             .read<ThemeSettingController>()
                                             .appConfig
                                             ?.productLastSyncDate,
+                                        categoryListFilter: ids?.join(","),
                                       );
                                 },
                                 child: Row(

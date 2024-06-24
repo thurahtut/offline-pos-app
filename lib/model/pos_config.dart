@@ -11,6 +11,7 @@ class POSConfig {
   int? sequenceLineId;
   int? sequenceId;
   double? startingAmt;
+  List<int>? posCategoryIds;
 
   POSConfig({
     this.id,
@@ -25,6 +26,7 @@ class POSConfig {
     this.sequenceLineId,
     this.sequenceId,
     this.startingAmt,
+    this.posCategoryIds,
   });
 
   POSConfig.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class POSConfig {
     sequenceLineId = json["sequence_line_id"];
     sequenceId = json["sequence_id"];
     startingAmt = double.tryParse(json["starting_amt"]?.toString() ?? '');
+    posCategoryIds = json['pos_category_ids'].cast<int>();
   }
 
   Map<String, dynamic> toJson() {
@@ -56,6 +59,7 @@ class POSConfig {
     data["sequence_line_id"] = sequenceLineId;
     data['sequence_id'] = sequenceId;
     data["starting_amt"] = startingAmt;
+    data['pos_category_ids'] = posCategoryIds;
     return data;
   }
 }

@@ -24,6 +24,8 @@ class _ItemListScreenState extends State<ItemListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<ItemListController>().resetItemListController();
 
+      List<int>? ids =
+          context.read<LoginUserController>().posConfig?.posCategoryIds;
       context.read<ItemListController>().getAllProduct(
             context,
             sessionId: context.read<LoginUserController>().posSession?.id ?? 0,
@@ -31,6 +33,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                 .read<ThemeSettingController>()
                 .appConfig
                 ?.productLastSyncDate,
+            categoryListFilter: ids?.join(","),
           );
     });
     super.initState();
@@ -108,6 +111,11 @@ class _ItemListScreenState extends State<ItemListScreen> {
                           context.read<ItemListController>();
                       itemListController.filterValue =
                           _searchProductTextController.text;
+
+                      List<int>? ids = context
+                          .read<LoginUserController>()
+                          .posConfig
+                          ?.posCategoryIds;
                       itemListController.searchProduct(
                           sessionId: context
                                   .read<LoginUserController>()
@@ -118,6 +126,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                               .read<ThemeSettingController>()
                               .appConfig
                               ?.productLastSyncDate,
+                          categoryListFilter: ids?.join(","),
                           callback: (product) {
                             if (product != null) {
                               context
@@ -450,6 +459,9 @@ class _ItemListScreenState extends State<ItemListScreen> {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
+
+              List<int>? ids =
+                  context.read<LoginUserController>().posConfig?.posCategoryIds;
               controller.getAllProduct(
                 context,
                 sessionId:
@@ -458,12 +470,16 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     .read<ThemeSettingController>()
                     .appConfig
                     ?.productLastSyncDate,
+                categoryListFilter: ids?.join(","),
               );
             },
             onBackToFirstPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
+
+              List<int>? ids =
+                  context.read<LoginUserController>().posConfig?.posCategoryIds;
               controller.getAllProduct(
                 context,
                 sessionId:
@@ -472,12 +488,16 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     .read<ThemeSettingController>()
                     .appConfig
                     ?.productLastSyncDate,
+                categoryListFilter: ids?.join(","),
               );
             },
             onNextPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
+
+              List<int>? ids =
+                  context.read<LoginUserController>().posConfig?.posCategoryIds;
               controller.getAllProduct(
                 context,
                 sessionId:
@@ -486,12 +506,16 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     .read<ThemeSettingController>()
                     .appConfig
                     ?.productLastSyncDate,
+                categoryListFilter: ids?.join(","),
               );
             },
             onGoToLastPage: (pageNo) {
               controller.offset =
                   (controller.limit * pageNo) - controller.limit;
               controller.currentIndex = pageNo;
+
+              List<int>? ids =
+                  context.read<LoginUserController>().posConfig?.posCategoryIds;
               controller.getAllProduct(
                 context,
                 sessionId:
@@ -500,6 +524,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     .read<ThemeSettingController>()
                     .appConfig
                     ?.productLastSyncDate,
+                categoryListFilter: ids?.join(","),
               );
             },
             backgroundColor: Theme.of(context).colorScheme.background,

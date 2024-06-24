@@ -65,8 +65,9 @@ class ItemListController with ChangeNotifier {
     int? sessionId,
     bool? getPackage = true,
     required String? productLastSyncDate,
+    required String? categoryListFilter,
   }) async {
-    getTotalProductCount(context);
+    getTotalProductCount(context, categoryListFilter);
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
       categoryId: context.read<PosCategoryController>().selectedCategory,
@@ -74,6 +75,7 @@ class ItemListController with ChangeNotifier {
       offset: offset,
       sessionId: sessionId,
       productLastSyncDate: productLastSyncDate,
+      categoryListFilter: categoryListFilter,
     ).then((list) async {
       if ((filterValue?.isNotEmpty ?? false) && getPackage == true) {
         await ProductTable.getProductByFilteringPackageWithPrice(
@@ -81,6 +83,7 @@ class ItemListController with ChangeNotifier {
           limit: limit,
           offset: offset,
           sessionId: sessionId,
+          categoryListFilter: categoryListFilter,
         ).then((packageList) {
           bool isExist = false;
           if (list.isNotEmpty && packageList.isNotEmpty) {
@@ -102,10 +105,12 @@ class ItemListController with ChangeNotifier {
     });
   }
 
-  Future<void> getTotalProductCount(BuildContext context) async {
+  Future<void> getTotalProductCount(
+      BuildContext context, String? categoryListFilter) async {
     ProductTable.getAllProductCount(
       filter: filterValue,
       categoryId: context.read<PosCategoryController>().selectedCategory,
+      categoryListFilter: categoryListFilter,
     ).then((count) {
       total = count;
     });
@@ -115,6 +120,7 @@ class ItemListController with ChangeNotifier {
     Function(Product?)? callback,
     int? sessionId,
     required String? productLastSyncDate,
+    required String? categoryListFilter,
   }) async {
     await ProductTable.getProductByFilteringWithPrice(
       filter: filterValue,
@@ -123,6 +129,7 @@ class ItemListController with ChangeNotifier {
       barcodeOnly: true,
       sessionId: sessionId,
       productLastSyncDate: productLastSyncDate,
+      categoryListFilter: categoryListFilter,
     ).then((list) async {
       if (filterValue?.isNotEmpty ?? false) {
         await ProductTable.getProductByFilteringPackageWithPrice(
@@ -130,6 +137,7 @@ class ItemListController with ChangeNotifier {
           limit: limit,
           offset: offset,
           sessionId: sessionId,
+          categoryListFilter: categoryListFilter,
         ).then((packageList) {
           bool isExist = false;
           if (list.isNotEmpty && packageList.isNotEmpty) {

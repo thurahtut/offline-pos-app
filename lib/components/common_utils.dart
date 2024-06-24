@@ -53,6 +53,10 @@ class CommonUtils {
       // itemListController.filterValue = value;
       itemListController.offset = 0;
       itemListController.currentIndex = 1;
+      List<int>? ids = NavigationService.navigatorKey.currentContext!
+          .read<LoginUserController>()
+          .posConfig
+          ?.posCategoryIds;
       itemListController.getAllProduct(
           NavigationService.navigatorKey.currentContext!,
           sessionId: NavigationService.navigatorKey.currentContext!
@@ -64,7 +68,8 @@ class CommonUtils {
           productLastSyncDate: NavigationService.navigatorKey.currentContext!
               .read<ThemeSettingController>()
               .appConfig
-              ?.productLastSyncDate);
+              ?.productLastSyncDate,
+          categoryListFilter: ids?.join(","));
 
       CommonUtils.showGeneralDialogWidget(
           NavigationService.navigatorKey.currentContext!,

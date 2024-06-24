@@ -158,6 +158,7 @@ class ProductTable {
     bool? barcodeOnly,
     int? sessionId,
     required String? productLastSyncDate,
+    required String? categoryListFilter,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
@@ -188,6 +189,7 @@ class ProductTable {
         "where 1=1 "
         "${filter?.isNotEmpty ?? false ? (barcodeOnly == true ? "and pt.$BARCODE_IN_PT=?" : "and (pt.$PRODUCT_ID like ? or lower(pt.$PRODUCT_NAME) Like ? or pt.$BARCODE_IN_PT like ?)") : ''} "
         "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
+        "${categoryListFilter != null && categoryListFilter.isNotEmpty ? " and pt.$POS_CATEG_ID_IN_PT in ($categoryListFilter) " : ''} "
         "Group by pt.id "
         "ORDER by pt.$PRODUCT_ID DESC "
         "${limit != null ? "limit $limit " : " "}"
@@ -231,6 +233,7 @@ class ProductTable {
     int? limit,
     int? offset,
     int? sessionId,
+    required String? categoryListFilter,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
@@ -261,8 +264,9 @@ class ProductTable {
         ") line "
         "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS "
         "where 1=1 "
-        "and pack.$PACKAGING_BARCODE=?"
-        "${categoryId != null && categoryId != -1 ? "and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
+        "and pack.$PACKAGING_BARCODE=? "
+        "${categoryId != null && categoryId != -1 ? " and pt.$POS_CATEG_ID_IN_PT=?" : ''} "
+        "${categoryListFilter != null && categoryListFilter.isNotEmpty ? " and pt.$POS_CATEG_ID_IN_PT in ($categoryListFilter) " : ''} "
         "Group by pt.id "
         "ORDER by pt.$PRODUCT_ID DESC "
         "${limit != null ? "limit $limit " : " "}"
@@ -298,6 +302,7 @@ class ProductTable {
   static Future<int> getAllProductCount({
     String? filter,
     int? categoryId,
+    required String? categoryListFilter,
   }) async {
     // Get a reference to the database.
     final Database db = await DatabaseHelper().db;
@@ -318,7 +323,8 @@ class ProductTable {
         'SELECT COUNT(*) FROM $PRODUCT_TABLE_NAME '
         'where 1=1'
         '${filter != null && filter.isNotEmpty ? ' and $PRODUCT_ID Like ? or lower($PRODUCT_NAME) Like ? or $BARCODE_IN_PT like ?' : ''}'
-        "${categoryId != null && categoryId != -1 ? " and $POS_CATEG_ID_IN_PT=?" : ''} ",
+        "${categoryId != null && categoryId != -1 ? " and $POS_CATEG_ID_IN_PT=? " : ''} "
+        "${categoryListFilter != null && categoryListFilter.isNotEmpty ? " and $POS_CATEG_ID_IN_PT in ($categoryListFilter) " : ''} ",
         objects);
     final count = Sqflite.firstIntValue(result);
 
