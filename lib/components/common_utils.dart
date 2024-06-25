@@ -886,29 +886,36 @@ class CommonUtils {
     return {"isUpdated": isUpdated, "excel": excel};
   }
 
-  static Future<void> saveOrderDeleteLogs(String logs) async {
+  static Future<void> saveOrderDeleteLogs(
+    String logs,
+    String cashierName,
+    int cashierId,
+    bool isRefund,
+  ) async {
     if (kIsWeb) {
       return;
     }
-    String externalDir =
-        await externalDirectoryPath("Offline Pos Deleted Order Logs");
+    String externalDir = await externalDirectoryPath(
+        "Offline Pos ${isRefund ? "Refund" : "Deleted"} Order Logs");
 
     String customDate = CommonUtils.getLocaleDateTime(
       "dd-MM-yyyy",
       CommonUtils.getDateTimeNow().toString(),
     );
     var filePath =
-        '$externalDir/${customDate}_order_history_log_excel_file.xlsx';
+        '$externalDir/${customDate}_order_history_${isRefund ? "refund" : "deleted"}_log_excel_file.xlsx';
     File deletedLogExcel = File(filePath);
     Map<String, dynamic> map = {};
     exl.Excel excel;
     if (await deletedLogExcel.exists()) {
       var bytes = deletedLogExcel.readAsBytesSync();
       excel = exl.Excel.decodeBytes(bytes);
-      map = addOrderDeletedDataToExcel(excel, false, logs);
+      map = addOrderDeletedDataToExcel(
+          excel, false, logs, cashierId, cashierName, isRefund);
     } else {
       excel = exl.Excel.createExcel();
-      map = addOrderDeletedDataToExcel(excel, true, logs);
+      map = addOrderDeletedDataToExcel(
+          excel, true, logs, cashierId, cashierName, isRefund);
     }
     if (map["isUpdated"]) {
       excel = map["excel"];
@@ -923,6 +930,9 @@ class CommonUtils {
     exl.Excel? excel,
     bool isNew,
     String logs,
+    int employeeId,
+    String employeeName,
+    bool isRefund,
   ) {
     bool isUpdated = false;
     if (excel != null && logs.isNotEmpty) {
@@ -932,7 +942,11 @@ class CommonUtils {
         sheetObject.cell(exl.CellIndex.indexByString('A1')).value =
             exl.TextCellValue('Time');
         sheetObject.cell(exl.CellIndex.indexByString('B1')).value =
-            exl.TextCellValue('Deleted Orders');
+            exl.TextCellValue('Employee Id');
+        sheetObject.cell(exl.CellIndex.indexByString('C1')).value =
+            exl.TextCellValue('Employee Name');
+        sheetObject.cell(exl.CellIndex.indexByString('D1')).value =
+            exl.TextCellValue(isRefund ? 'Refunded Orders' : 'Deleted Orders');
       }
 
       int nextRowIndex = sheetObject.maxRows;
@@ -941,10 +955,18 @@ class CommonUtils {
           .cell(exl.CellIndex.indexByColumnRow(
               rowIndex: nextRowIndex, columnIndex: 0))
           .value = exl.TextCellValue(CommonUtils.getDateTimeNow().toString());
-
       sheetObject
           .cell(exl.CellIndex.indexByColumnRow(
               rowIndex: nextRowIndex, columnIndex: 1))
+          .value = exl.TextCellValue(employeeId.toString());
+      sheetObject
+          .cell(exl.CellIndex.indexByColumnRow(
+              rowIndex: nextRowIndex, columnIndex: 2))
+          .value = exl.TextCellValue(employeeName);
+
+      sheetObject
+          .cell(exl.CellIndex.indexByColumnRow(
+              rowIndex: nextRowIndex, columnIndex: 3))
           .value = exl.TextCellValue(logs);
       isUpdated = true;
     }

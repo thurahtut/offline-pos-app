@@ -35,7 +35,7 @@ class POSSession {
     cashRegisterId = json['cash_register_id'];
     state = json['state'];
     updateStockAtClosing = json['update_stock_at_closing'];
-    paymentMethodIds = json['payment_method_ids'].cast<int>();
+    paymentMethodIds = json['payment_method_ids']?.cast<int>();
   }
 
   Map<String, dynamic> toJson() {

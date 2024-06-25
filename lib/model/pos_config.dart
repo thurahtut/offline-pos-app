@@ -36,13 +36,13 @@ class POSConfig {
     shDisplayStock = json['sh_display_stock'];
     shShowQtyLocation = json['sh_show_qty_location'];
     shPosLocation = json['sh_pos_location'];
-    paymentMethodIds = json['payment_method_ids'].cast<int>();
+    paymentMethodIds = json['payment_method_ids']?.cast<int>();
     receiptHeader = json['receipt_header'];
     receiptFooter = json['receipt_footer'];
     sequenceLineId = json["sequence_line_id"];
     sequenceId = json["sequence_id"];
     startingAmt = double.tryParse(json["starting_amt"]?.toString() ?? '');
-    posCategoryIds = json['pos_category_ids'].cast<int>();
+    posCategoryIds = json['pos_category_ids']?.cast<int>();
   }
 
   Map<String, dynamic> toJson() {

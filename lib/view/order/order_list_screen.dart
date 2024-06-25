@@ -971,7 +971,22 @@ class DataSourceForOrderListScreen extends DataTableSource {
                                 ).then((value) async {
                                   for (var mapArg in value) {
                                     String orderStr = jsonEncode(mapArg);
-                                    CommonUtils.saveOrderDeleteLogs(orderStr);
+                                    int employeeId = context
+                                            .read<LoginUserController>()
+                                            .loginEmployee
+                                            ?.id ??
+                                        0;
+                                    String employeeName = context
+                                            .read<LoginUserController>()
+                                            .loginEmployee
+                                            ?.name ??
+                                        '';
+                                    CommonUtils.saveOrderDeleteLogs(
+                                      orderStr,
+                                      employeeName,
+                                      employeeId,
+                                      false,
+                                    );
                                   }
                                   final Database db = await DatabaseHelper().db;
                                   db.transaction((txn) async {

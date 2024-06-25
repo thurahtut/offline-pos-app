@@ -204,11 +204,22 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
             PopupMenuItem<int>(
               value: 2,
               child: TooltipWidget(
-                message: 'Lock / Unlock',
+                message: 'Employer Lock / Unlock',
                 child: CommonUtils.appBarActionButtonWithText(
-                    'assets/svg/lock_open_right.svg', 'Lock / Unlock',
+                    'assets/svg/lock_open_right.svg', 'Employer Lock / Unlock',
                     fontSize: 16, onPressed: () {
                   _logOut();
+                }),
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 2,
+              child: TooltipWidget(
+                message: 'User Lock / Unlock',
+                child: CommonUtils.appBarActionButtonWithText(
+                    'assets/svg/logout.svg', 'User Lock / Unlock', fontSize: 16,
+                    onPressed: () {
+                  _logOut(forUser: true);
                 }),
               ),
             ),
@@ -300,7 +311,7 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
     });
   }
 
-  void _logOut() {
+  void _logOut({bool? forUser}) {
     int sessionId = context.read<LoginUserController>().posSession?.id ?? 0;
     OrderHistoryTable.isExistDraftOrders(sessionId: sessionId).then((value) {
       if (value == true) {
@@ -312,7 +323,9 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
         context.read<LoginUserController>().loginEmployee = null;
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          MaterialPageRoute(
+              builder: (context) =>
+                  forUser == true ? UserLoginScreen() : WelcomeScreen()),
           ModalRoute.withName("/Home"),
         );
       }
@@ -436,10 +449,18 @@ class _SaleAppBarState extends State<SaleAppBar> with TickerProviderStateMixin {
       // ),
       spacer,
       TooltipWidget(
-        message: 'Lock / Unlock',
+        message: 'Employer Lock / Unlock',
         child: CommonUtils.svgIconActionButton('assets/svg/lock_open_right.svg',
             onPressed: () {
           _logOut();
+        }),
+      ),
+      spacer,
+      TooltipWidget(
+        message: 'User Lock / Unlock',
+        child: CommonUtils.svgIconActionButton('assets/svg/logout.svg',
+            onPressed: () {
+          _logOut(forUser: true);
         }),
       ),
       spacer,

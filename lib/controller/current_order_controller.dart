@@ -383,7 +383,9 @@ class CurrentOrderController with ChangeNotifier {
 
         if (existingProduct.productId == null ||
             existingProduct.productId == 0) {
-          if (promotion.rewardProduct != null) {
+          if (promotion.rewardProduct != null &&
+              promotion.rewardProduct!.productId != null &&
+              promotion.rewardProduct!.productId != 0) {
             Product product = promotion.rewardProduct!;
             if ((promotion.discountMaxAmount ?? 0) > 0) {
               Map<String, double> totalMap =
@@ -421,7 +423,9 @@ class CurrentOrderController with ChangeNotifier {
         }
       } else {
         // promotion
-        if (promotion.rewardProduct != null) {
+        if (promotion.rewardProduct != null &&
+            promotion.rewardProduct!.productId != null &&
+            promotion.rewardProduct!.productId != 0) {
           Product product = promotion.rewardProduct!;
           if ((promotion.discountMaxAmount ?? 0) > 0) {
             if (((promoProduct.priceListItem?.fixedPrice ?? 0) *

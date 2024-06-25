@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:offline_pos/components/export_files.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -238,6 +240,22 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           currentOrderController.selectedCustomer?.name;
 
       OrderHistoryTable.update(db, currentOrderController.orderHistory!);
+      currentOrderController.orderHistory?.paymentIds =
+          currentOrderController.paymentTransactionList.values.toList();
+      if (currentOrderController.orderHistory != null &&
+          currentOrderController.isRefund) {
+        String orderStr = jsonEncode(currentOrderController.orderHistory!);
+        int employeeId =
+            context.read<LoginUserController>().loginEmployee?.id ?? 0;
+        String employeeName =
+            context.read<LoginUserController>().loginEmployee?.name ?? '';
+        CommonUtils.saveOrderDeleteLogs(
+          orderStr,
+          employeeName,
+          employeeId,
+          true,
+        );
+      }
       db.delete(PENDING_ORDER_TABLE_NAME);
       var count = 0;
       Navigator.popUntil(context, (route) {
