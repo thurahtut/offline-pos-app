@@ -184,6 +184,7 @@ class ProductTable {
         " left join $ORDER_LINE_ID_TABLE_NAME olt "
         " on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
         "${productLastSyncDate?.isNotEmpty ?? false ? "and (datetime(olt.$CREATE_DATE_IN_LINE)>=  datetime('$productLastSyncDate') or olt.$CREATE_DATE_IN_LINE=null or lower(olt.$CREATE_DATE_IN_LINE) is null or olt.$CREATE_DATE_IN_LINE='') " : " and $SESSION_ID =$sessionId "} "
+        " group by $PRODUCT_ID_IN_LINE"
         ") line "
         "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS "
         "where 1=1 "
@@ -261,6 +262,7 @@ class ProductTable {
         " left join $ORDER_LINE_ID_TABLE_NAME olt "
         " on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
         " and $SESSION_ID =$sessionId "
+        " group by $PRODUCT_ID_IN_LINE"
         ") line "
         "on line.$PRODUCT_ID_IN_LINE= pt.$PRODUCT_VARIANT_IDS "
         "where 1=1 "
@@ -447,6 +449,7 @@ class ProductTable {
         "left join $ORDER_LINE_ID_TABLE_NAME olt "
         "on olt.$ORDER_ID_IN_LINE=ot.$ORDER_HISTORY_ID "
         "${sessionId != null ? "and $SESSION_ID =$sessionId " : ""}"
+        " group by $PRODUCT_ID_IN_LINE"
         ") $lineTName "
         "on $lineTName.$PRODUCT_ID_IN_LINE= $productTName.$PRODUCT_VARIANT_IDS ";
   }
